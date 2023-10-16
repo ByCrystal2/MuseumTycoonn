@@ -838,6 +838,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 177116581}
     m_Modifications:
+    - target: {fileID: 130663612869302558, guid: 781ae2eff3fbbbb419fda09755a240bf,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 351702746176470566, guid: 781ae2eff3fbbbb419fda09755a240bf,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1608629307695768745, guid: 781ae2eff3fbbbb419fda09755a240bf,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3258814223099413564, guid: 781ae2eff3fbbbb419fda09755a240bf,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5153542628836642033, guid: 781ae2eff3fbbbb419fda09755a240bf,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4448,7 +4468,16 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   Agent: {fileID: 1656784174}
+  NpcSpeed: 0
   IdleLength: 1.5
+  VisitableArtAmount: 0
+  LikedColors: 
+  DislikedColor: 0
+  LikedArtist: []
+  Happiness: 0
+  Stress: 0
+  Toilet: 0
+  Education: 0
 --- !u!1 &1657673286
 GameObject:
   m_ObjectHideFlags: 0
