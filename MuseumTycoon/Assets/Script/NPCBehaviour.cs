@@ -8,12 +8,22 @@ public class NPCBehaviour : MonoBehaviour
     [SerializeField] private Transform TargetPosition;
     [SerializeField] private NPCState CurrentState;
     [SerializeField] private NavMeshAgent Agent;
-
-
+    [SerializeField] private float NpcSpeed;
     public float IdleLength;
     private float IdleTimer;
 
     Animator anim;
+
+    public int VisitableArtAmount;
+
+    public List<MyColors> LikedColors = new List<MyColors>(); //3renk
+    public MyColors DislikedColor;
+    public List<string> LikedArtist;
+    public float Happiness; //0-100; Mutlu npc daha fazla sanat gezmek isteyecek. Ve npc hizini etkileyecek.
+    public float Stress; //0-100; Stressli npc daha az sanat gormek isteyecek. Ve npc hizini etkileyecek.
+    public float Toilet; //100-0; Tuvaleti zaten biliyoruz.
+    public float Education; //0-10; Egitimli insanlar daha cok kultur kazandirir.
+
     private void Awake()
     {
         anim = GetComponent<Animator>();
@@ -84,6 +94,7 @@ public enum NPCState
 {
     Idle,
     Move,
-    LookStart,
-    LookEnd,
+    Investigate,
+    Discuss,
+    Escape,
 }

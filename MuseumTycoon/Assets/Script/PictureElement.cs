@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class PictureElement : MonoBehaviour
 {
+    public PictureElementData data;
+    public PainterData painterData;
     public int id;
     public bool isLocked;
     public bool isActive;
@@ -29,4 +32,12 @@ public class PictureElement : MonoBehaviour
             isActive = false;
         }
     }
+}
+
+[System.Serializable]
+public class PictureElementData
+{
+    [HideInInspector] public int id;
+    public Texture2D texture;
+    public List<MyColors> MostCommonColors = new List<MyColors>();
 }

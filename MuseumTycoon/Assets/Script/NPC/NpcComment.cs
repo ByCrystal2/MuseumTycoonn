@@ -9,5 +9,6 @@ public struct NpcComment
 
     private float npcStar;
     public float NpcStar { get { return npcStar; } set { if (value > 5 && value < 0) return; else { npcStar = value; } } }
-    public PainterData Painter { get; set; }
+
+    public int CommentPainterID;
 }

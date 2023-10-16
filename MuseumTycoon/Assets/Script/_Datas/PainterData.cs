@@ -9,9 +9,9 @@ public class PainterData
     public string Description;
     public int StarCount;
     public List<NpcComment> npcComments;
-    public Sprite[] Pictures;
+    public Sprite Pictures;
 
-    public PainterData(int iD, string name, string description, int starCount, Sprite[] pictures)
+    public PainterData(int iD, string name, string description, int starCount, Sprite pictures)
     {
         this.ID = iD;
         this.Name = name;

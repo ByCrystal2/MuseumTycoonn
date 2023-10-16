@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.2257134, b: 0.30692226, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -241,6 +241,58 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1 &765714395
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 765714396}
+  - component: {fileID: 765714397}
+  m_Layer: 0
+  m_Name: CatchColor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &765714396
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 765714395}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 16.666275, y: -8.359267, z: -1.8639479}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &765714397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 765714395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbcd51c2aca59a84d8aef9b09ca1f789, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  predefinedColors:
+  - {r: 1, g: 0, b: 0, a: 1}
+  - {r: 0, g: 1, b: 0, a: 1}
+  - {r: 0, g: 0, b: 1, a: 1}
+  - {r: 0, g: 1, b: 1, a: 1}
+  - {r: 1, g: 1, b: 0, a: 1}
+  - {r: 1, g: 0, b: 1, a: 1}
+  numberOfColorsToFind: 3
 --- !u!1 &1202299725
 GameObject:
   m_ObjectHideFlags: 0
@@ -359,7 +411,94 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c0bb2236c879cd49813a489beb2085d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MyPictures: []
+  MyPictures:
+  - id: 0
+    texture: {fileID: 2800000, guid: d7bef9eac861da74d8ce6544508f3ef1, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: 6b7543a5a04cf324294775d334bf6710, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: b1c2ca2a96e04e94fa01b71710e3f98b, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: ab40c3bf56323f546a215b77b5f9514a, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: 75a81034310a082408cac7f17842bffd, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: b7777be1f05eba246a1d56e4913ecd20, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: 3d764b9667ef3c5479d04fd69e3c7bb3, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: 7700a5904c6b5e748b22246af8e88b35, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: 1b4f93525903b7741b176575527fe8d7, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: 107805de9eec3f54da6d249f45172a49, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: dd36cedf42dd6b64d90ca12c746c9160, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: 2a8ab1003c362034387c1ce364e6db63, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: 877802169e0594b4d801e2a7c4a1815f, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: 0bf1f97a9eabc5a4297ec01e8998072f, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: e7c1d5ec3ac231647a412dc821dc127c, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: 95026f98df3cf0b448e9bfee6d934731, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: d5bacb2129524a540a7d41a6e0498369, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: b84349d1ba04a9b4bbda0673324a9548, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: 827179e107a94fd4abf08c6e78f2df35, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: 7a3cf2f17d34cd047ba1ff207d8b0e80, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: b32b32bcc0670014fa4a25051a4026ec, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: 6891d2f8ff6661f4aa240c8f33a1c64b, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: bf6eeb930468a90448c75c931ecd6d42, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: 046eef41ba7b6324ea39b36e894a93fc, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: ab4881b7237ec3b4bbed28751694be22, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: 478a226fef1878f48a45508ddc90faca, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: e235a79326411874db1d7f3f67655290, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: b8db0991a11633b4d9d90c9a0111366d, type: 3}
+    MostCommonColors: 
+  - id: 0
+    texture: {fileID: 2800000, guid: 37f1690278847d04a89eb509cd316b58, type: 3}
+    MostCommonColors: 
   EmptyPictureSprite: {fileID: 21300000, guid: 5cb427ca385cd1248bd3913dbcd3de5a, type: 3}
 --- !u!4 &1626886296
 Transform:
@@ -612,3 +751,4 @@ SceneRoots:
   - {fileID: 1626886296}
   - {fileID: 1956357957}
   - {fileID: 1730733974}
+  - {fileID: 765714396}
