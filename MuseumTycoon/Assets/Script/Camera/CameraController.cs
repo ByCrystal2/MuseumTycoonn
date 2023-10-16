@@ -28,12 +28,16 @@ public class CameraController : MonoBehaviour
 
     public Transform target; // Kameranýn takip edeceði nesne (küp)
     public float RotationSpeed = 2f; // Kamera'nýn dönüþ hýzý
-    public float minRotationX = -45f; // Kameranýn minimum yatay dönüþ açýsý
-    public float maxRotationX = 45f; // Kameranýn maksimum yatay dönüþ açýsý
+
+    public float minRotationX = -0.7f;
+    public float maxRotationX = 0.7f;
+
+    public float minRotationZ = -0.7f;
+    public float maxRotationZ = 0.7f; 
 
     
     
-    public float cameraRotationSpeed = 0.5f; // Kameranýn dönüþ hýzý
+    public float cameraRotationSpeed = 1.5f; // Kameranýn dönüþ hýzý
     private Vector3 lastCubeRotation;
 
     private Vector3 InitialCamOffset;
@@ -56,26 +60,28 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
-        // Küpün dönme açýsýný al
-        Vector3 cubeRotation = target.rotation.eulerAngles;
-
-        // Kamerayý küpün etrafýnda döndür
-        transform.rotation = Quaternion.Euler(cubeRotation);
-
-        // Kameranýn dönüþ hýzýný ayarla
-        float rotationSpeed = Input.touchCount > 0 ? -cameraRotationSpeed : 0f;
 
         // Dokunmatik giriþleri kontrol et
-        if (Input.touchCount > 0)
+        if (Input.touchCount > 0 && !GameManager.instance.UIControl)
         {
             Touch touch = Input.GetTouch(0);
-            float rotationY = -touch.deltaPosition.x * rotationSpeed * Time.deltaTime;
-            float rotationX = touch.deltaPosition.y * rotationSpeed * Time.deltaTime;
+            float rotationX = -touch.deltaPosition.y * cameraRotationSpeed * Time.deltaTime;
+            float rotationZ = touch.deltaPosition.x * cameraRotationSpeed * Time.deltaTime;
+            float camLookerRotationX = target.rotation.x;
+            float camLookerRotationZ = target.rotation.z;
+            Debug.Log("Cam Rotation = " + camLookerRotationX  + ", " + camLookerRotationZ);
+            if (camLookerRotationX >= minRotationX && camLookerRotationX <= maxRotationX)
+            {
+                
+                target.Rotate(Vector3.right, rotationX);
+            }
+            if (camLookerRotationZ >= minRotationZ && camLookerRotationZ <= maxRotationZ)
+            {
+                target.Rotate(Vector3.forward, rotationZ);
+            }
 
-            // Kamerayý döndür
-            target.Rotate(Vector3.up, rotationY);
-            target.Rotate(Vector3.right, rotationX);
         }
+
 
         /* Kamera Movement
          * 

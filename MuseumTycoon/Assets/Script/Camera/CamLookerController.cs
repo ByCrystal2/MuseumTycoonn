@@ -5,30 +5,64 @@ using UnityEngine;
 
 public class CamLookerController : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public float moveSpeed = 5f;
+    public GameObject joystickPrefab;
+
+    Vector2 joystickOutput = Vector2.zero;
+    UIVirtualJoystick uIVirtualJoystick;
+
+    private bool onExecuted;
+    private void Awake()
+    {
+        joystickPrefab = GameObject.FindWithTag("Joystick");
+        uIVirtualJoystick = FindObjectOfType<UIVirtualJoystick>();
+    }
     void Start()
     {
-        
+        // UIVirtualJoystick nesnesine eriþim yok, bu yüzden çýktýyý event ile al
+        uIVirtualJoystick.joystickOutputEvent.AddListener(OnJoystickOutput);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W))
+
+        // Joystick çýktýsýný kullanarak karakteri hareket ettir
+        if (Input.touchCount > 0 && !GameManager.instance.UIControl)
         {
-            transform.Translate(Vector3.forward);
+
+            Vector2 touch = Input.GetTouch(0).position;
+            if (!onExecuted)
+            {
+                joystickPrefab.transform.position = touch;
+                JoystickSetActive(true);
+                onExecuted = true;
+            }
+            Vector3 movement = new Vector3(joystickOutput.x, -joystickOutput.y, joystickOutput.y) * moveSpeed * Time.deltaTime;
+            transform.Translate(movement);
         }
-        if (Input.GetKeyDown(KeyCode.S))
+        else
         {
-            transform.Translate(Vector3.back);
+            onExecuted = false;
+            joystickPrefab.transform.position = Vector2.zero;
+            JoystickSetActive(false);
         }
-        if (Input.GetKeyDown(KeyCode.A))
+    }
+    public void JoystickSetActive(bool active)
+    {
+        if (joystickPrefab != null)
         {
-            transform.Translate(Vector3.left);
+            joystickPrefab.SetActive(active);
         }
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            transform.Translate(Vector3.right);
-        }
+    }
+    private void OnJoystickOutput(Vector2 output)
+    {
+        joystickOutput = output;
+    }
+
+    void OnDestroy()
+    {
+        // Event dinlemeyi kaldýr
+        uIVirtualJoystick.joystickOutputEvent.RemoveListener(OnJoystickOutput);
     }
 }

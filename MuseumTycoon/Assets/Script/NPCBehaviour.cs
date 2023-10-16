@@ -9,9 +9,15 @@ public class NPCBehaviour : MonoBehaviour
     [SerializeField] private NPCState CurrentState;
     [SerializeField] private NavMeshAgent Agent;
 
+
     public float IdleLength;
     private float IdleTimer;
-    // Start is called before the first frame update
+
+    Animator anim;
+    private void Awake()
+    {
+        anim = GetComponent<Animator>();
+    }
     void Start()
     {
         IdleBack();
@@ -24,6 +30,7 @@ public class NPCBehaviour : MonoBehaviour
         {
             if (IdleTimer < Time.time)
                 CreateTarget();
+            anim.SetBool("Walk", false);
         }
         else if (CurrentState == NPCState.Move)
         {
@@ -41,6 +48,7 @@ public class NPCBehaviour : MonoBehaviour
         if (TargetPosition != null)
         {
             Agent.SetDestination(TargetPosition.position);
+            anim.SetBool("Walk", true);
         }
     }
 
@@ -60,13 +68,13 @@ public class NPCBehaviour : MonoBehaviour
         else
         {
             TargetPosition = NpcManager.instance.Locations[Random.Range(0, length)].transform;
-            CurrentState = NPCState.Move;
+            CurrentState = NPCState.Move;            
         }
     }
 
     public void IdleBack()
     {
-        CurrentState = NPCState.Idle;
+        CurrentState = NPCState.Idle;        
         IdleTimer = Time.time + IdleLength;
         TargetPosition = null;
     }

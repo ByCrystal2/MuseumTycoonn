@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance { get; private set; }
+
+    private bool uiControl;
+    public bool UIControl { get { return uiControl; } set { uiControl = value; } }
 
     private void Awake()
     {
@@ -20,11 +24,14 @@ public class GameManager : MonoBehaviour
 
     public void Start()
     {
-        Init();
+        Init();        
     }
 
     public void Init()
     {
         SceneManager.LoadScene("Menu");
+        Painter.instance.AddBasePainters();
     }
+
+    
 }

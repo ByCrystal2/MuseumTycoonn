@@ -11,18 +11,20 @@ public class PictureElement : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (isLocked)
+        if (isLocked && GameManager.instance.UIControl)
             return;
 
         if (!isActive)
         {
-            transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("Pictures/1");
+            //transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("Pictures/1");
+            UIController.instance.GetClickedPicture(true);
             transform.GetChild(1).GetComponent<LocationData>().SetVisittible(true);
             isActive = true;
         }
         else
         {
-            transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = MuseumManager.instance.EmptyPictureSprite;
+            //transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = MuseumManager.instance.EmptyPictureSprite;
+            UIController.instance.GetClickedPicture(false);
             transform.GetChild(1).GetComponent<LocationData>().SetVisittible(false);
             isActive = false;
         }
