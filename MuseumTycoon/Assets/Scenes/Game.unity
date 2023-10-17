@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028334, g: 0.2257134, b: 0.30692226, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1989,9 +1989,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pnlPicturesMenu: {fileID: 899221935}
-  OpenStars: []
-  CloseStars: []
-  txtPainterName: {fileID: 0}
+  OpenStars:
+  - {fileID: 1233884792}
+  - {fileID: 847380328}
+  - {fileID: 1467735929}
+  - {fileID: 1167429035}
+  - {fileID: 1619230286}
+  CloseStars:
+  - {fileID: 1143929506}
+  - {fileID: 1946622985}
+  - {fileID: 24743179}
+  - {fileID: 349499839}
+  - {fileID: 689123658}
+  txtPainterName: {fileID: 983066793}
+  imgPicture: {fileID: 1991494827}
 --- !u!4 &839918154
 Transform:
   m_ObjectHideFlags: 0
@@ -2210,7 +2221,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &899221936
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2281,32 +2292,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c4418cd599b2b346a9be3a42f243dc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Pictures:
-  - {fileID: 21300000, guid: cea3e4c13a60b154e9b6d53ee5e55b4c, type: 3}
-  - {fileID: 21300000, guid: a8bf251dbc571c34c8cd8bbbb1f79319, type: 3}
-  - {fileID: 21300000, guid: f587d53381a358f4593aaa9b7460690d, type: 3}
-  - {fileID: 21300000, guid: 2392831e299fefc49858d367655ed5b1, type: 3}
-  - {fileID: 21300000, guid: da4c50fc4d8dd264f88ae9268bce91eb, type: 3}
-  - {fileID: 21300000, guid: 35052439756e7d046b1fcf8361b2f54a, type: 3}
-  - {fileID: 21300000, guid: 033c1e65c2caa7d4ebe5fa01f9d995cf, type: 3}
-  - {fileID: 21300000, guid: 2f6ad78a3520da44d9d227b4518414f3, type: 3}
-  - {fileID: 21300000, guid: ee72c24f9706a0845a4e77272f7221cd, type: 3}
-  - {fileID: 21300000, guid: 7b399c4e528a06840b86eb87e42beacb, type: 3}
-  - {fileID: 21300000, guid: 4ea289e4a9a336e47b71173e1291dca6, type: 3}
-  - {fileID: 21300000, guid: 32cf8bcf58300fa45a3bb5ed0086b587, type: 3}
-  - {fileID: 21300000, guid: c6fea52dbe997324e9067c5b0bfb7c5d, type: 3}
-  - {fileID: 21300000, guid: 5b39eaa88afc8aa4da8e53f2656076d3, type: 3}
-  - {fileID: 21300000, guid: 3687a2513ff8ce24bbd49901f29b8227, type: 3}
-  - {fileID: 21300000, guid: 1f5c8f4757b60ca4e87891b7482e8d89, type: 3}
-  - {fileID: 21300000, guid: bde2c5e3962adb04f8bc7ab014b15513, type: 3}
-  - {fileID: 21300000, guid: 6ffa8ca51ad88354f98bac0198d82518, type: 3}
-  - {fileID: 21300000, guid: c211e8770f92e1e4a99bc889da50b3b8, type: 3}
-  - {fileID: 21300000, guid: 3c8fc8a35f5d96644ba5a51b48472be1, type: 3}
-  - {fileID: 21300000, guid: 49a4f04272065b544807679b3a2b9b98, type: 3}
-  - {fileID: 21300000, guid: 961f1b2ec3c714f40b454e46089db48b, type: 3}
-  - {fileID: 21300000, guid: 7a6b33ebf52827e4fbb7386cac2718bb, type: 3}
-  - {fileID: 21300000, guid: b9ddbb0b1f23a7a41aa69f9737c50926, type: 3}
-  - {fileID: 21300000, guid: 9b399a9c5816885419e6a0de7b39bf4b, type: 3}
+  Pictures: []
   pictureSlotPrefab: {fileID: 8199709173859453564, guid: 2a3d3cec9c996d3448ffbae842fb4c40,
     type: 3}
   pictureContent: {fileID: 441683143}

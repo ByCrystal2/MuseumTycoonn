@@ -11,12 +11,20 @@ public class PicturesMenuController : MonoBehaviour
     [SerializeField] Transform pictureContent;
     [SerializeField] GameObject ddPainter;
     public int pictureCount;
+
+    private void Awake()
+    {
+        //for (int i = 0; i < MuseumManager.instance.MyPictures.Count; i++)
+        //{
+        //    Pictures[i] = MuseumManager.instance.MyPictures[i].texture.;
+        //}
+    }
     void Start()
     {
         
     }
 
-    // Update is called once per frame
+   
     void Update()
     {
         

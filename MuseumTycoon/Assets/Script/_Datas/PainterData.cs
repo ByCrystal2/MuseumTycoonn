@@ -2,22 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class PainterData
 {
     public int ID;
     public string Name;
     public string Description;
-    public int StarCount;
+    public float StarCount;
     public List<NpcComment> npcComments;
-    public Sprite Pictures;
+    public Sprite Picture;
 
-    public PainterData(int iD, string name, string description, int starCount, Sprite pictures)
+    public PainterData(int iD, string name, string description, float starCount, Sprite picture)
     {
         this.ID = iD;
         this.Name = name;
         this.Description = description;
         this.StarCount = starCount;
-        this.Pictures = pictures;        
+        this.Picture = picture;        
     }
 
     public PainterData(PainterData painter)
@@ -26,7 +27,7 @@ public class PainterData
         this.Name = painter.Name;
         this.Description = painter.Description;
         this.StarCount = painter.StarCount;
-        this.Pictures = painter.Pictures;
+        this.Picture = painter.Picture;
         this.npcComments = painter.npcComments;
     }
 
@@ -45,7 +46,18 @@ public class PainterData
         {
             this.npcComments = new List<NpcComment>();
         }
+        this.AddStar(npcComment.NpcStarRating);
         this.npcComments.Add(npcComment);
+    }
+
+    public void AddStar(float starRating)
+    {       
+        float katsayi = 0.2f; // Örnek bir katsayý
+        float yeniSonuc = StarCount + (starRating * katsayi);
+
+        // Sonucu güncelle
+        StarCount = Mathf.Round(yeniSonuc);
+        
     }
 
 

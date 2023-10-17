@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class UIController : MonoBehaviour
     [SerializeField] GameObject[] OpenStars;
     [SerializeField] GameObject[] CloseStars;
     [SerializeField] TextMeshProUGUI txtPainterName;
+    [SerializeField] Image imgPicture;
     
     public static UIController instance { get; private set; }
     private void Awake()
@@ -53,6 +55,7 @@ public class UIController : MonoBehaviour
             return;
         }
         txtPainterName.text = newPainter.Name;
+        imgPicture.sprite = newPainter.Picture;
         for (int i = 0; i < newPainter.StarCount; i++)
         {
             OpenStars[i].gameObject.SetActive(true);

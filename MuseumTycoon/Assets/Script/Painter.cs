@@ -29,7 +29,7 @@ public class Painter : MonoBehaviour
         PainterData painter7 = new PainterData(7, "Vincent van Gogh", "Dutch painter", 0, CatchTheColors.instance.TextureToSprite(MuseumManager.instance.MyPictures[6].texture));
         PainterData painter8 = new PainterData(8, "Vincent van Gogh", "Dutch painter", 0, CatchTheColors.instance.TextureToSprite(MuseumManager.instance.MyPictures[7].texture));
         PainterData painter9 = new PainterData(9, "Vincent van Gogh", "Dutch painter", 0, CatchTheColors.instance.TextureToSprite(MuseumManager.instance.MyPictures[8].texture));
-        PainterData painter10 = new PainterData(10, "Vincent van Gogh", "Dutch painter", 0, CatchTheColors.instance.TextureToSprite(MuseumManager.instance.MyPictures[9].texture));
+        PainterData painter10 = new PainterData(10, "Test Vincent van Gogh", "Dutch painter", 0, CatchTheColors.instance.TextureToSprite(MuseumManager.instance.MyPictures[9].texture));
         PainterData painter11 = new PainterData(11, "Vincent van Gogh", "Dutch painter", 0, CatchTheColors.instance.TextureToSprite(MuseumManager.instance.MyPictures[10].texture));
         PainterData painter12 = new PainterData(12, "Vincent van Gogh", "Dutch painter", 0, CatchTheColors.instance.TextureToSprite(MuseumManager.instance.MyPictures[11].texture));
         PainterData painter13 = new PainterData(13, "Vincent van Gogh", "Dutch painter", 0, CatchTheColors.instance.TextureToSprite(MuseumManager.instance.MyPictures[12].texture));
@@ -55,22 +55,68 @@ public class Painter : MonoBehaviour
         
         PainterDatas.Add(painter1);
         PainterDatas.Add(painter2);
+        PainterDatas.Add(painter3);
+        PainterDatas.Add(painter4);
+        PainterDatas.Add(painter5);
+        PainterDatas.Add(painter6);
+        PainterDatas.Add(painter7);
+        PainterDatas.Add(painter8);
+        PainterDatas.Add(painter9);
+        PainterDatas.Add(painter10);
+        PainterDatas.Add(painter11);
+        PainterDatas.Add(painter12);
+        PainterDatas.Add(painter13);
+        PainterDatas.Add(painter14);
+        PainterDatas.Add(painter15);
+        PainterDatas.Add(painter16);
+        PainterDatas.Add(painter17);
+        PainterDatas.Add(painter18);
+        PainterDatas.Add(painter19);
+        PainterDatas.Add(painter20);
+        PainterDatas.Add(painter21);
+        PainterDatas.Add(painter22);
+        PainterDatas.Add(painter23);
+        PainterDatas.Add(painter24);
+        PainterDatas.Add(painter25);
+        PainterDatas.Add(painter26);
+        PainterDatas.Add(painter27);
+        PainterDatas.Add(painter28);
+        PainterDatas.Add(painter29);
+
+        AddNpcCommentToPainter("Ahmet", new List<string> { "a", "b", "b" }, 3, MuseumManager.instance.MyPictures[3], GetPainter(10));
+
     }
 
-    public void AddNpcCommentToPainter(string npcName, List<string> comments, float rating, PainterData painter)
+    public void AddNpcCommentToPainter(string npcName, List<string> comments, float rating, PictureElementData elemntData, PainterData painter)
     {
         NpcComment npcComment = new NpcComment
         {
             NpcName = npcName,
             NpcReviewComments = comments,
-            NpcStar = rating,
+            NpcStarRating = rating,
+            PictureElementDataID = elemntData.id,
+            MaxNpcStarRating = 5,            
         };
-        painter.AddPainterNPCComment(npcComment);           
+        
+        if (npcComment.NpcStarRating <= npcComment.MaxNpcStarRating && npcComment.NpcStarRating >= 0)
+        {
+            npcComment.NpcStarRating = Mathf.Round(npcComment.NpcStarRating);            
+            painter.AddPainterNPCComment(npcComment);
+        }
+        else
+        {
+            Debug.Log(string.Format("{0} Adlý NPC Geçersiz Yýldýz Sayýsý Girmiþtir. ({1})",npcComment.NpcName,npcComment.NpcStarRating));
+        }
     }
 
     public PainterData GetPainter(string painterName)
     {
         return PainterDatas.Find(x=> x.Name == painterName);
+    }
+
+    public PainterData GetPainter(int painterID)
+    {
+        return PainterDatas.Find(x => x.ID == painterID);
     }
 
     public List<NpcComment> GetPainterNPCComments(string painterName)
