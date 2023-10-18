@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.2257134, b: 0.30692226, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -337,51 +337,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1311408966
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1311408968}
-  - component: {fileID: 1311408967}
-  m_Layer: 0
-  m_Name: NpcManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1311408967
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1311408966}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4df41a1c36756224b8af56f7bb817340, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Locations: []
---- !u!4 &1311408968
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1311408966}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1626886294
 GameObject:
   m_ObjectHideFlags: 0
@@ -499,7 +454,11 @@ MonoBehaviour:
   - id: 0
     texture: {fileID: 2800000, guid: 37f1690278847d04a89eb509cd316b58, type: 3}
     MostCommonColors: 
+  CurrentNpcs: []
   EmptyPictureSprite: {fileID: 21300000, guid: 5cb427ca385cd1248bd3913dbcd3de5a, type: 3}
+  CultureLevel: 0000000064000000e1000000c201000058020000200300001a04000046050000a4060000340800005a0a0000800c0000a60e0000f8110000b4140000701700003f420f00
+  MaxVisitorPerCultureLevel: 0000000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f0000001000000011000000120000001300000014000000
+  TicketPricePerCultureLevel: 000000002c01000031010000360100003b01000040010000450100004a0100004f01000054010000590100005e010000660100006e010000760100007e01000086010000
 --- !u!4 &1626886296
 Transform:
   m_ObjectHideFlags: 0
@@ -704,7 +663,6 @@ SceneRoots:
   - {fileID: 1640862257}
   - {fileID: 67322027}
   - {fileID: 1202299727}
-  - {fileID: 1311408968}
   - {fileID: 1626886296}
   - {fileID: 1956357957}
   - {fileID: 765714396}

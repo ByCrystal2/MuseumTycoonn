@@ -31,14 +31,15 @@ public class NPCBehaviour : MonoBehaviour
     bool isGidis;
     private void Awake()
     {
-        anim = GetComponent<Animator>();
-        CurrentTarget = NpcTargets.Outside;
-        float x = (int)Random.Range(-100, 51)*0.01f;
-        Agent.speed = NpcSpeed + x;
-        OutsidePosition = Vector3.zero;
+        
     }
     void Start()
     {
+        anim = GetComponent<Animator>();
+        CurrentTarget = NpcTargets.Outside;
+        float s = (int)Random.Range(-100, 51) * 0.01f;
+        Agent.speed = NpcSpeed + s;
+        OutsidePosition = Vector3.zero;
         IdleBack();
 
         Vector3 spawnPoint = Vector3.zero;
