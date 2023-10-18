@@ -6,6 +6,13 @@ public class NpcManager : MonoBehaviour
 {
     public static NpcManager instance { get; private set; }
     public List<LocationData> Locations = new List<LocationData>();
+
+    public List<Transform> GidisListe = new List<Transform>();
+    public List<Transform> GelisListe = new List<Transform>();
+    public List<Transform> HorseCartList = new List<Transform>();
+
+    public Transform Enter1Point, Enter2Point;
+
     private void Awake()
     {
         if (instance)
