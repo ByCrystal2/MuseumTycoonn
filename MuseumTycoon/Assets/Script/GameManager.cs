@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     private bool uiControl;
     public bool UIControl { get { return uiControl; } set { uiControl = value; } }
 
+    
     private void Awake()
     {
         if (instance)
@@ -31,6 +32,7 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene("Menu");
         Painter.instance.AddBasePainters();
+        AudioMenuManager.instance.PlayMusicOfMenu();
     }
 
     
