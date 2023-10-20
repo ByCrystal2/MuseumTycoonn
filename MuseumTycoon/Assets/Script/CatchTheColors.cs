@@ -110,4 +110,5 @@ public enum MyColors
     Cyan,
     Yellow,
     Purple,
+    Length,
 }

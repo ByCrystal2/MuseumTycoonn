@@ -13,7 +13,12 @@ public class UIController : MonoBehaviour
     [SerializeField] GameObject[] CloseStars;
     [SerializeField] TextMeshProUGUI txtPainterName;
     [SerializeField] Image imgPicture;
-    
+
+    private PictureElement _LastSelectedPicture;
+
+    public Image CultureFillBar;
+    public Text CultureLevelText, GoldText, GemText;
+
     public static UIController instance { get; private set; }
     private void Awake()
     {
@@ -24,6 +29,7 @@ public class UIController : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(this);
+        GemText.text = "0";
     }
 
     // Update is called once per frame
@@ -32,9 +38,11 @@ public class UIController : MonoBehaviour
         
     }
 
-    public void GetClickedPicture(bool active) 
+    public void GetClickedPicture(bool active, PictureElement _lastSelectedPicture) 
     {
-        pnlPicturesMenu.SetActive(active);
+        _LastSelectedPicture = _lastSelectedPicture;
+        SetSelectedPicture(0);
+        //pnlPicturesMenu.SetActive(active);
     }
 
     public string GetDropDownSelectedPainter()
@@ -60,5 +68,11 @@ public class UIController : MonoBehaviour
         {
             OpenStars[i].gameObject.SetActive(true);
         }
+    }
+
+    public void SetSelectedPicture(int _id)
+    {
+        _LastSelectedPicture.data = MuseumManager.instance.MyPictures[Random.Range(0, MuseumManager.instance.MyPictures.Count)];
+        _LastSelectedPicture.UpdateVisual();
     }
 }

@@ -12,7 +12,7 @@ public class MuseumManager : MonoBehaviour
 
     protected float Gold, Culture, Gem;
     protected int CurrentCultureLevel;
-    protected float CurrentCultureExp;
+    protected float SmootherCultureExp;
 
     private void Awake()
     {
@@ -26,6 +26,36 @@ public class MuseumManager : MonoBehaviour
         CatchTheColorForAll();
 
         CurrentCultureLevel = 1;
+    }
+
+    private void FixedUpdate()
+    {
+        if (SmootherCultureExp < Culture)
+        {
+            SmoothTheExp(true);
+        }
+        else if (SmootherCultureExp > Culture)
+        {
+            SmoothTheExp(false);
+        }
+    }
+
+    void SmoothTheExp(bool _isIncrease)
+    {
+        if (_isIncrease)
+        {
+            SmootherCultureExp += Time.deltaTime * (0.05f * GetRequiredCultureExp());
+            if (SmootherCultureExp > Culture)
+                SmootherCultureExp = Culture;
+        }
+        else
+        {
+            SmootherCultureExp -= Time.deltaTime * (0.05f * GetRequiredCultureExp());
+            if (SmootherCultureExp < Culture)
+                SmootherCultureExp = Culture;
+        }
+
+        UIController.instance.CultureFillBar.fillAmount = SmootherCultureExp / GetRequiredCultureExp();
     }
 
     void CatchTheColorForAll()
@@ -43,12 +73,13 @@ public class MuseumManager : MonoBehaviour
         if(!CurrentNpcs.Contains(_newNpc))
             CurrentNpcs.Add(_newNpc);
 
-        
+        //Kac adet npc var buraya guncellenicek.
     }
 
     public void OnNpcPaid()
     {
         Gold += GetTicketPrice();
+        UIController.instance.GoldText.text = "" + Gold;
         Debug.Log("An npc entered Museum. New gold: " + Gold);
     }
 
@@ -63,6 +94,23 @@ public class MuseumManager : MonoBehaviour
     public bool IsMuseumFull()
     {
         return (CurrentNpcs.Count == GetMuseumCurrentCapacity());
+    }
+
+    public void AddCultureExp(float _xp)
+    {
+        Culture += _xp;
+        if (Culture > GetRequiredCultureExp())
+        {
+            Culture -= GetRequiredCultureExp();
+            CurrentCultureLevel++;
+            CultureLevelUP();
+        }
+    }
+
+    public void CultureLevelUP()
+    {
+        UIController.instance.CultureLevelText.text = "" + CurrentCultureLevel;
+        Debug.Log("Yeni levelde kazanilan bonuslari buraya islicez.");
     }
 
     public int GetRequiredCultureExp()

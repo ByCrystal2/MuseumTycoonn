@@ -20,17 +20,28 @@ public class PictureElement : MonoBehaviour
         if (!isActive)
         {
             //transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("Pictures/1");
-            UIController.instance.GetClickedPicture(true);
+            UIController.instance.GetClickedPicture(true,this);
             transform.GetChild(1).GetComponent<LocationData>().SetVisittible(true);
             isActive = true;
         }
         else
         {
             //transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = MuseumManager.instance.EmptyPictureSprite;
-            UIController.instance.GetClickedPicture(false);
+            //UIController.instance.GetClickedPicture(false,this);
+            data = null;
             transform.GetChild(1).GetComponent<LocationData>().SetVisittible(false);
             isActive = false;
+            UpdateVisual();
         }
+    }
+
+    public void UpdateVisual()
+    {
+        Image im = transform.GetChild(0).GetChild(0).GetComponent<Image>();
+        if (data != null)
+            im.sprite = CatchTheColors.instance.TextureToSprite(data.texture);
+        else
+            im.sprite = MuseumManager.instance.EmptyPictureSprite;
     }
 }
 

@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 1959083069761234178}
   - component: {fileID: 6176552707039683134}
   - component: {fileID: 151064894117626414}
-  - component: {fileID: 3076885181054961059}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -121,18 +120,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &3076885181054961059
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 727782777723967833}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c455df23635e694481f7da8a25ae1a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &5524077994058853981
 GameObject:
   m_ObjectHideFlags: 0
@@ -355,6 +342,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1445d0195b9bada4482571b549569f81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  data:
+    id: 0
+    texture: {fileID: 0}
+    MostCommonColors: 
+  painterData:
+    ID: 0
+    Name: 
+    Description: 
+    StarCount: 0
+    npcComments: []
+    Picture: {fileID: 0}
   id: 0
   isLocked: 0
   isActive: 0
@@ -369,7 +367,6 @@ GameObject:
   - component: {fileID: 5110256205529411218}
   - component: {fileID: 6184717795971656896}
   - component: {fileID: 6642095739728013195}
-  - component: {fileID: 4285802630642063882}
   - component: {fileID: 2843781914498923535}
   m_Layer: 0
   m_Name: PictureLookLocation
@@ -387,7 +384,7 @@ Transform:
   m_GameObject: {fileID: 7396138250747615801}
   serializedVersion: 2
   m_LocalRotation: {x: 0.70710707, y: -0, z: -0, w: 0.70710653}
-  m_LocalPosition: {x: -1.28, y: -0, z: -1.3}
+  m_LocalPosition: {x: -1.28, y: -0, z: -1.79}
   m_LocalScale: {x: 0.6666667, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -443,27 +440,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &4285802630642063882
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7396138250747615801}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &2843781914498923535
 MonoBehaviour:
   m_ObjectHideFlags: 0

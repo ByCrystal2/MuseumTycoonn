@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -25,6 +26,8 @@ public class NPCBehaviour : MonoBehaviour
     public float Stress; //0-100; Stressli npc daha az sanat gormek isteyecek. Ve npc hizini etkileyecek.
     public float Toilet; //100-0; Tuvaleti zaten biliyoruz.
     public float Education; //0-10; Egitimli insanlar daha cok kultur kazandirir.
+
+    public int NpcVisittingArtAmount;
 
     bool DecidedToEnter;
 
@@ -76,23 +79,52 @@ public class NPCBehaviour : MonoBehaviour
         if (CurrentState == NPCState.Idle)
         {
             if (IdleTimer < Time.time)
+            {
                 CreateTarget();
+            }
             anim.SetBool("Walk", false);
         }
         else if (CurrentState == NPCState.Move)
+        {
             Move();
+        }
+        else if (CurrentState == NPCState.Investigate)
+        {
+            Debug.Log("Farkli goruslu iki npc ayni tabloya investigate ediyorken kavga etme ihtimali burada islenicek.");
+            if (IdleTimer < Time.time)
+            {
+                if (OnNPCInvestigatedArt())
+                    CreateTarget();
+                else
+                    OnExitWayMuseum();
+            }
+            anim.SetBool("Walk", false);
+        }
     }
 
     public void MoveOpt(Vector3 target)
     {
         float distance = Vector3.Distance(transform.position, target);
         if (distance < 1f)
-            IdleBack();
+        {
+            Transform pic = TargetPosition.parent;
+            PictureElement PE;
+            if(pic.TryGetComponent(out PE))
+                InvestigateStart();
+            else
+                IdleBack();
+        }
         if (TargetPosition != null)
         {
             Agent.SetDestination(target);
             anim.SetBool("Walk", true);
         }
+    }
+
+    public void InvestigateStart()
+    {
+        CurrentState = NPCState.Investigate;
+        IdleTimer = Time.time + IdleLength;
     }
 
     public void Move()
@@ -196,6 +228,40 @@ public class NPCBehaviour : MonoBehaviour
         MuseumManager.instance.OnNpcEnteredMuseum(this);
     }
 
+    bool OnNPCInvestigatedArt()
+    {
+        Debug.Log("EndOf Investigate");
+        PictureElement PE = TargetPosition.GetComponentInParent<PictureElement>();
+
+        int NPCMaxScore = 10;
+        int NPCMinScore = 0;
+        int NPCCurrentScore = 5;
+        List<MyColors> ArtColors = PE.data.MostCommonColors;
+        int length = ArtColors.Count;
+        int length2 = LikedColors.Count;
+        for (int i = 0; i < length; i++)
+        {
+            for (int a = 0; a < length2; a++)
+            {
+                if (LikedColors[a] == ArtColors[i])
+                    NPCMinScore++;
+                if (ArtColors[i] == DislikedColor)
+                    NPCMaxScore -= Random.Range(1,4);
+            }
+        }
+
+        NPCCurrentScore = Random.Range(NPCMinScore, NPCMaxScore + 1);
+        MuseumManager.instance.AddCultureExp(NPCCurrentScore * 3);
+
+        NpcVisittingArtAmount--;
+        if (NpcVisittingArtAmount == 0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     public void IdleBack()
     {
         CurrentState = NPCState.Idle;        
@@ -204,11 +270,44 @@ public class NPCBehaviour : MonoBehaviour
 
     public void NpcArrivedTheEnterGate()
     {
+        NpcVisittingArtAmount = Random.Range(2, 5);
+        int LikedColorsAmount = Random.Range(2, 5);
+        LikedColors = new List<MyColors>();
+        MyColors[] enumDegerleri = (MyColors[])System.Enum.GetValues(typeof(MyColors));
+        for (int i = 0; i < LikedColorsAmount + 1; i++)
+        {
+            MyColors bulunanRenk = MyColors.Black;
+            do
+            {
+                int arananRenk = Random.Range(0, enumDegerleri.Length);
+                bulunanRenk = enumDegerleri.FirstOrDefault(r => (int)r == (int)arananRenk);
+            } while (LikedColors.Contains(bulunanRenk));
+            if (i == LikedColorsAmount)
+                DislikedColor = bulunanRenk;
+            else
+                LikedColors.Add(bulunanRenk);
+        }
+
         CurrentTarget = NpcTargets.Inside;
         CurrentState = NPCState.Move;
         CreateTarget();
 
         MuseumManager.instance.OnNpcPaid();
+    }
+
+    void OnExitWayMuseum()
+    {
+        CurrentTarget = NpcTargets.Outside;
+        CurrentState = NPCState.Move;
+        TargetPosition = NpcManager.instance.GidisListe[Random.Range(0, NpcManager.instance.GidisListe.Count)];
+
+        OutsidePosition = TargetPosition.position + new Vector3(Random.Range(-29, 30) * 0.1f, 0, Random.Range(-29, 30) * 0.1f);
+
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(OutsidePosition, out hit, 10, NavMesh.AllAreas))
+            OutsidePosition = hit.position;
+
+        MuseumManager.instance.OnNpcExitedMuseum(this);
     }
 
     public void OnFootstep()
