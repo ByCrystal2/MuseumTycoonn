@@ -241,6 +241,51 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1 &378612342
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 378612344}
+  - component: {fileID: 378612343}
+  m_Layer: 0
+  m_Name: TableCommentEvaluationManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &378612343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 378612342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9eb794f91d5e45b488d7d864c13713ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  datas: []
+--- !u!4 &378612344
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 378612342}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1055.7946, y: 547.3166, z: 0.5397949}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &765714395
 GameObject:
   m_ObjectHideFlags: 0
@@ -760,6 +805,10 @@ MonoBehaviour:
     MostCommonColors: 
   CurrentNpcs: []
   EmptyPictureSprite: {fileID: 21300000, guid: 5cb427ca385cd1248bd3913dbcd3de5a, type: 3}
+  InMuseumCurrentNPCCount: 0
+  TotalVisitorCommentCount: 0
+  TotalVisitorHappiness: 0
+  DailyEarning: 0
   CultureLevel: 0000000064000000e1000000c201000058020000200300001a04000046050000a4060000340800005a0a0000800c0000a60e0000f8110000b4140000701700003f420f00
   MaxVisitorPerCultureLevel: 0000000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f0000001000000011000000120000001300000014000000
   TicketPricePerCultureLevel: 000000002c01000031010000360100003b01000040010000450100004a0100004f01000054010000590100005e010000660100006e010000760100007e01000086010000
@@ -971,3 +1020,4 @@ SceneRoots:
   - {fileID: 1956357957}
   - {fileID: 765714396}
   - {fileID: 1276463174}
+  - {fileID: 378612344}

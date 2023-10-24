@@ -10,9 +10,13 @@ public class MuseumManager : MonoBehaviour
 
     public Sprite EmptyPictureSprite;
 
-    protected float Gold, Culture, Gem;
+    protected float Gold, Culture, Gem, currentGameTime;
     protected int CurrentCultureLevel;
     protected float SmootherCultureExp;
+    public int InMuseumCurrentNPCCount;
+    public int TotalVisitorCommentCount;
+    public float TotalVisitorHappiness;
+    public float DailyEarning;
 
     private void Awake()
     {
@@ -72,7 +76,7 @@ public class MuseumManager : MonoBehaviour
     {
         if(!CurrentNpcs.Contains(_newNpc))
             CurrentNpcs.Add(_newNpc);
-
+        UIController.instance.InMuseumCurrentNPCCountChanged(GetInMuseumVisitorCount());
         //Kac adet npc var buraya guncellenicek.
     }
 
@@ -81,16 +85,29 @@ public class MuseumManager : MonoBehaviour
         Gold += GetTicketPrice();
         UIController.instance.GoldText.text = "" + Gold;
         Debug.Log("An npc entered Museum. New gold: " + Gold);
+        DailyEarning = Gold;
+        UIController.instance.InMuseumDailyEarningChanged(DailyEarning);
     }
 
     public void OnNpcExitedMuseum(NPCBehaviour _oldNpc)
     {
         if (CurrentNpcs.Contains(_oldNpc))
             CurrentNpcs.Remove(_oldNpc);
-
+        UIController.instance.InMuseumCurrentNPCCountChanged(GetInMuseumVisitorCount());
         Debug.Log("An npc left Museum.");
+        
     }
-
+    public void OnNpcCommentedPicture(NPCBehaviour _npc, PictureElement _pictureElement, float starCount)
+    {
+        List<TableCommentEvaluationData> randomDatas = TableCommentEvaluationManager.instance.GetComment(starCount);
+        TableCommentEvaluationData randomData = randomDatas[Random.Range(0, randomDatas.Count)];
+        UIController.instance.AddCommentInGlobalTab(EmptyPictureSprite, _npc.name, randomData.Message, currentGameTime.ToString());
+    }
+    public void AddTotalVisitorCommentCount(int count)
+    {
+        TotalVisitorCommentCount += count;
+        UIController.instance.TotalVisitorsCommentCountChanged(TotalVisitorCommentCount);
+    }
     public bool IsMuseumFull()
     {
         return (CurrentNpcs.Count == GetMuseumCurrentCapacity());
@@ -106,10 +123,14 @@ public class MuseumManager : MonoBehaviour
             CultureLevelUP();
         }
     }
-
+    public int GetInMuseumVisitorCount()
+    {
+        return CurrentNpcs.Count;        
+    }
     public void CultureLevelUP()
     {
         UIController.instance.CultureLevelText.text = "" + CurrentCultureLevel;
+        UIController.instance.CultureLevelCountChanged(CurrentCultureLevel);
         Debug.Log("Yeni levelde kazanilan bonuslari buraya islicez.");
     }
 

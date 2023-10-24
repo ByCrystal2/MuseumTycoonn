@@ -252,6 +252,10 @@ public class NPCBehaviour : MonoBehaviour
 
         NPCCurrentScore = Random.Range(NPCMinScore, NPCMaxScore + 1);
         MuseumManager.instance.AddCultureExp(NPCCurrentScore * 3);
+        MuseumManager.instance.AddTotalVisitorCommentCount(1);
+        MuseumManager.instance.OnNpcCommentedPicture(this,PE, Mathf.Round(NPCCurrentScore)); // Þimdilik Current Score Göre Yýldýz Yorumu Yapýldý.
+
+        //NPC Happiness deðiþtirlecek ve MuseumManager.instance.TotalVisitorHappiness ile eþleþtirilecek.
 
         NpcVisittingArtAmount--;
         if (NpcVisittingArtAmount == 0)
@@ -293,6 +297,7 @@ public class NPCBehaviour : MonoBehaviour
         CreateTarget();
 
         MuseumManager.instance.OnNpcPaid();
+        
     }
 
     void OnExitWayMuseum()
