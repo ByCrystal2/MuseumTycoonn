@@ -10,13 +10,14 @@ public class MuseumManager : MonoBehaviour
 
     public Sprite EmptyPictureSprite;
 
-    protected float Gold, Culture, Gem, currentGameTime;
+    protected float Gold, Culture, Gem, CurrentGameTime, SkillPoint;
     protected int CurrentCultureLevel;
     protected float SmootherCultureExp;
-    public int InMuseumCurrentNPCCount;
-    public int TotalVisitorCommentCount;
-    public float TotalVisitorHappiness;
-    public float DailyEarning;
+    public int CurrentNPCCountInMuseum; // Müzede'ki mevcut NPC sayýsý.
+    public int DailyNPCCountInMuseum; // Müzede'ki günlük NPC sayýsý.
+    public int TotalVisitorCommentCount; // Toplam ziyaretçi yorum sayýsý.
+    public float TotalVisitorHappiness; // Toplam ziyaretçi mutluluðu.
+    public float DailyEarning; // Günlük kazanç.
 
     private void Awake()
     {
@@ -76,7 +77,7 @@ public class MuseumManager : MonoBehaviour
     {
         if(!CurrentNpcs.Contains(_newNpc))
             CurrentNpcs.Add(_newNpc);
-        UIController.instance.InMuseumCurrentNPCCountChanged(GetInMuseumVisitorCount());
+        
         //Kac adet npc var buraya guncellenicek.
     }
 
@@ -86,7 +87,9 @@ public class MuseumManager : MonoBehaviour
         UIController.instance.GoldText.text = "" + Gold;
         Debug.Log("An npc entered Museum. New gold: " + Gold);
         DailyEarning = Gold;
+        UIController.instance.InMuseumCurrentNPCCountChanged(GetInMuseumVisitorCount());
         UIController.instance.InMuseumDailyEarningChanged(DailyEarning);
+        UIController.instance.DailyVisitorCountChanged(AddAndGetDailyNPCCount());
     }
 
     public void OnNpcExitedMuseum(NPCBehaviour _oldNpc)
@@ -94,14 +97,26 @@ public class MuseumManager : MonoBehaviour
         if (CurrentNpcs.Contains(_oldNpc))
             CurrentNpcs.Remove(_oldNpc);
         UIController.instance.InMuseumCurrentNPCCountChanged(GetInMuseumVisitorCount());
+        CalculateTotalVisitorHappiness();
         Debug.Log("An npc left Museum.");
         
     }
     public void OnNpcCommentedPicture(NPCBehaviour _npc, PictureElement _pictureElement, float starCount)
     {
+        if (starCount > 5)
+        {
+            starCount = 5;
+        }
+        else if(starCount < 1)
+        {
+            starCount = 1;
+        }
+            
         List<TableCommentEvaluationData> randomDatas = TableCommentEvaluationManager.instance.GetComment(starCount);
         TableCommentEvaluationData randomData = randomDatas[Random.Range(0, randomDatas.Count)];
-        UIController.instance.AddCommentInGlobalTab(EmptyPictureSprite, _npc.name, randomData.Message, currentGameTime.ToString());
+        AddTotalVisitorCommentCount(1);
+        CalculateTotalVisitorHappiness();
+        UIController.instance.AddCommentInGlobalTab(EmptyPictureSprite, _npc.name, randomData.Message, CurrentGameTime.ToString());
     }
     public void AddTotalVisitorCommentCount(int count)
     {
@@ -122,17 +137,52 @@ public class MuseumManager : MonoBehaviour
             CurrentCultureLevel++;
             CultureLevelUP();
         }
+        UIController.instance.CultureLevelCountChanged(CurrentCultureLevel);
     }
     public int GetInMuseumVisitorCount()
     {
         return CurrentNpcs.Count;        
     }
+
+    public float GetCurrentGold()
+    {
+        return Gold;
+    }
+    public float GetCurrentSkillPoint()
+    {
+        return SkillPoint;
+    }
     public void CultureLevelUP()
     {
-        UIController.instance.CultureLevelText.text = "" + CurrentCultureLevel;
-        UIController.instance.CultureLevelCountChanged(CurrentCultureLevel);
+        UIController.instance.CultureLevelText.text = "" + CurrentCultureLevel;        
         Debug.Log("Yeni levelde kazanilan bonuslari buraya islicez.");
     }
+    public int AddAndGetDailyNPCCount()
+    {
+       return DailyNPCCountInMuseum++;
+    }
+    public void CalculateTotalVisitorHappiness()
+    {
+        float totalHappiness = 0;
+
+        foreach (NPCBehaviour npc in CurrentNpcs)
+        {
+            totalHappiness += npc.Happiness;
+        }
+
+        if (CurrentNpcs.Count > 0)
+        {
+            TotalVisitorHappiness = totalHappiness / CurrentNpcs.Count;
+        }
+        else
+        {
+            TotalVisitorHappiness = 0; // Eðer hiç NPC yoksa.
+        }
+
+        UIController.instance.CurrentTotalHappinessChanged(Mathf.Round(TotalVisitorHappiness));
+      
+    }
+
 
     public int GetRequiredCultureExp()
     {

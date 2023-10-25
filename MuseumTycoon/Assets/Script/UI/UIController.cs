@@ -41,15 +41,23 @@ public class UIController : MonoBehaviour
     //Right
     [SerializeField] Text TotalVisitorsCommentCount;
     [SerializeField] Text DailyVisitorCount;
+    [SerializeField] Text InMuseumCurrentNPCCount;
     [SerializeField] Text TotalHappinessScore;
     [SerializeField] Text DailyEarnings;
     [SerializeField] Text CultureLevelInGlobal;
 
+    [Header("Skill Tree")]
+    public GameObject skillInfoPanel;
+    public Text skillNameText;
+    public Text skillDescriptionText;
+    public Text skillEffectText;
+    public Text skillRequiredLevelText;
+    public Text skillRequiredMoneyText;
+    public Button unlockButton;
+
     [Header("General")]
     public Image CultureFillBar;
-    public Text CultureLevelText, GoldText, GemText;    
-    
-
+    public Text CultureLevelText, GoldText, GemText;
     public static UIController instance { get; private set; }
     private void Awake()
     {
@@ -194,10 +202,51 @@ public class UIController : MonoBehaviour
 
         currentTab = tabIndex;  // Þu anki sekme indeksi güncelle.
     }
-
-    public void InMuseumCurrentNPCCountChanged(int _visitorCount)
+    public void ShowSkillInfo(int _id)
     {
-        DailyVisitorCount.text = _visitorCount.ToString();
+        SkillNode selectedSkill = SkillTreeManager.instance.GetSelectedSkillNode(_id);
+
+        // Yetenek adý, açýklama ve etkiyi güncelle
+        skillNameText.text = selectedSkill.SkillName;
+        skillDescriptionText.text = selectedSkill.SkillDescription;
+        skillEffectText.text = selectedSkill.SkillEffect;
+        skillRequiredLevelText.text = "" + selectedSkill.SkillRequiredLevel;
+        skillRequiredMoneyText.text = "" + selectedSkill.SkillRequiredMoney;
+
+        if (selectedSkill.IsMoneyAndLevelEnough(MuseumManager.instance.GetCurrentGold(), MuseumManager.instance.GetCurrentSkillPoint()))
+        {
+            selectedSkill.Lock(false);
+        }
+        else { selectedSkill.Lock(true); }
+        // Kilidi açýlabilir veya açýlamazsa düðmeyi güncelle
+        if (!selectedSkill.IsLocked)
+        {
+            unlockButton.interactable = true;
+            unlockButton.GetComponentInChildren<Text>().text = "Satýn Al";
+        }
+        else
+        {
+            unlockButton.interactable = false;
+            unlockButton.GetComponentInChildren<Text>().text = "Kilidi Aç";
+        }        
+    }
+
+    public void StartShowSkillInfoPress()
+    {
+        skillInfoPanel.SetActive(true);
+    }
+    public void EndShowSkillInfoPress()
+    {
+        skillInfoPanel.SetActive(false);
+    }
+    public void InMuseumCurrentNPCCountChanged(int _currentVisitorCount)
+    {
+        InMuseumCurrentNPCCount.text = _currentVisitorCount.ToString();
+    }
+
+    public void DailyVisitorCountChanged(int _dailyVisitorCount)
+    {
+        DailyVisitorCount.text = _dailyVisitorCount.ToString();
     }
 
     public void InMuseumDailyEarningChanged(float _earning)
@@ -212,16 +261,20 @@ public class UIController : MonoBehaviour
 
     public void CultureLevelCountChanged(int _levelCount)
     {
-        CultureLevelText.text = _levelCount.ToString();
+        CultureLevelInGlobal.text = _levelCount.ToString();
     }
 
+    public void CurrentTotalHappinessChanged(float _happiness)
+    {
+        TotalHappinessScore.text = "%" + _happiness.ToString();
+    }
     public void AddCommentInGlobalTab(Sprite _profilPic, string _npcName, string _npcMessage, string _currentDate)
     {
         GameObject newComment = Instantiate(commentPrefab, commentParent);
         newComment.transform.GetChild(1).GetComponent<Image>().sprite = _profilPic;
         newComment.transform.GetChild(2).GetComponent<Text>().text = _npcName;
-        newComment.transform.GetChild(3).GetComponent<Text>().text = _npcMessage;
-        newComment.transform.GetChild(4).GetComponent<Text>().text = _currentDate;
+        newComment.transform.GetChild(3).GetComponent<Text>().text = _currentDate;
+        newComment.transform.GetChild(4).GetComponent<Text>().text = _npcMessage;
         Debug.Log("Global Stats'a Yorum Eklendi.");
     }
     private void ShowMuseumStatsPanel()
