@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
@@ -48,12 +49,23 @@ public class UIController : MonoBehaviour
 
     [Header("Skill Tree")]
     public GameObject skillInfoPanel;
-    public Text skillNameText;
-    public Text skillDescriptionText;
-    public Text skillEffectText;
-    public Text skillRequiredLevelText;
-    public Text skillRequiredMoneyText;
+    public TextMeshProUGUI SkillPointText;
+    public TextMeshProUGUI skillNameText;
+    public TextMeshProUGUI skillDescriptionText;
+    public TextMeshProUGUI skillEffectText;
+    public TextMeshProUGUI skillRequiredPointText;
+    public TextMeshProUGUI skillRequiredMoneyText;
     public Button unlockButton;
+
+    [Header("Skill Tree RequiredPanel")]
+    public GameObject SkillRequiredInfoPanel;
+    public GameObject RequiredPoint;
+    public GameObject RequiredMoney;
+    public GameObject YeterliPoint;
+    public GameObject YeterliMoney;
+
+    public TextMeshProUGUI RequiredPointText;
+    public TextMeshProUGUI RequiredMoneyText;
 
     [Header("General")]
     public Image CultureFillBar;
@@ -69,18 +81,15 @@ public class UIController : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(this);
         GemText.text = "0";
+        SkillRequiredInfoPanel.SetActive(false);
     }
     private void Start()
     {
         museumStatButton.onClick.AddListener(ShowMuseumStatsPanel);
-        
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+        unlockButton.onClick.AddListener(BuySkill);
+        MuseumManager.instance.CalculateAndAddTextAllInfos();
+    }   
+    
     public void GetClickedPicture(bool active, PictureElement _lastSelectedPicture) 
     {
         _LastSelectedPicture = _lastSelectedPicture;
@@ -121,6 +130,7 @@ public class UIController : MonoBehaviour
     bool shopCreated = false;
     public void ShowTab(int tabIndex)
     {
+        StopCoroutine("SetActiveFalseWaiter");
         // Belirtilen sekme içeriðini etkinleþtir.
         Debug.Log(tabIndex);
         tabContents[tabIndex].SetActive(true);
@@ -131,6 +141,12 @@ public class UIController : MonoBehaviour
             {
                 tabContents[i].SetActive(false);
             }
+        }
+
+        if (tabIndex == 1)
+        {
+            skillInfoPanel.SetActive(false);
+            SkillRequiredInfoPanel.SetActive(false);
         }
         
         if (tabIndex == 2)
@@ -202,43 +218,130 @@ public class UIController : MonoBehaviour
 
         currentTab = tabIndex;  // Þu anki sekme indeksi güncelle.
     }
-    public void ShowSkillInfo(int _id)
+    public void ShowSkillInfo(int _id) // Skill Buttons
     {
+        skillInfoPanel.SetActive(false);
+        
         SkillNode selectedSkill = SkillTreeManager.instance.GetSelectedSkillNode(_id);
+        
 
+        SkillTreeManager.instance.SelectedSkill = selectedSkill;
+        GameObject clickedButton = EventSystem.current.currentSelectedGameObject;
+        if (clickedButton != null)
+        {
+            skillInfoPanel.transform.position = clickedButton.transform.position;
+        }
         // Yetenek adý, açýklama ve etkiyi güncelle
         skillNameText.text = selectedSkill.SkillName;
         skillDescriptionText.text = selectedSkill.SkillDescription;
         skillEffectText.text = selectedSkill.SkillEffect;
-        skillRequiredLevelText.text = "" + selectedSkill.SkillRequiredLevel;
-        skillRequiredMoneyText.text = "" + selectedSkill.SkillRequiredMoney;
+        skillRequiredPointText.text = "Requires Point: " + selectedSkill.SkillRequiredPoint;
+        skillRequiredMoneyText.text = "$" + selectedSkill.SkillRequiredMoney;
 
-        if (selectedSkill.IsMoneyAndLevelEnough(MuseumManager.instance.GetCurrentGold(), MuseumManager.instance.GetCurrentSkillPoint()))
-        {
-            selectedSkill.Lock(false);
-        }
-        else { selectedSkill.Lock(true); }
+
+        SkillTreeManager.instance.CalculateForCurrentSkillEnoughLevelAndMoney(selectedSkill);
         // Kilidi açýlabilir veya açýlamazsa düðmeyi güncelle
-        if (!selectedSkill.IsLocked)
+        skillInfoPanel.SetActive(true);
+        if (selectedSkill.IsPurchased)
         {
-            unlockButton.interactable = true;
-            unlockButton.GetComponentInChildren<Text>().text = "Satýn Al";
+            ChangedUnlockButton(false, "Satýn Alýndý", Color.white);
+            SkillRequiredInfoPanel.SetActive(false);
+            return;
+        }
+        SkillUnLockButtonControl(selectedSkill);
+        UpdateSkillInfos(selectedSkill);
+    }
+
+    public void BuySkill() // SKILL SATIN ALMA BUTONU!
+    {
+        SkillNode currentSkill = SkillTreeManager.instance.SelectedSkill;
+        MuseumManager.instance.SpendingGold(currentSkill.SkillRequiredMoney);
+        SkillPointText.text = "" + (-(MuseumManager.instance.GetCurrentSkillPoint() - currentSkill.SkillRequiredPoint));
+        currentSkill.Purchased(true);
+        ChangedUnlockButton(false, "Satýn Alýndý", Color.white);
+    }
+    public void ChangedUnlockButton(bool _interactable, string _text, Color _color)
+    {
+        unlockButton.interactable = _interactable;
+        Text unlockBtnText = unlockButton.GetComponentInChildren<Text>();
+        unlockBtnText.text = _text;
+        unlockBtnText.color = _color;
+    }
+    public void UIChangesControl()
+    {
+        SkillNode currentSkill = SkillTreeManager.instance.SelectedSkill;
+        if (currentSkill.IsPurchased)
+        {
+            ChangedUnlockButton(false, "Satýn Alýndý", Color.white);
+            return;
+        }
+        SkillTreeManager.instance.CalculateForCurrentSkillEnoughLevelAndMoney(currentSkill);
+        SkillUnLockButtonControl(currentSkill);
+        UpdateSkillInfos(currentSkill);
+    }
+    public void SkillUnLockButtonControl(SkillNode _selectedSkill)
+    {
+        
+        if (!_selectedSkill.IsLocked)
+        {
+            ChangedUnlockButton(true, "Satýn Al", Color.green);
         }
         else
         {
-            unlockButton.interactable = false;
-            unlockButton.GetComponentInChildren<Text>().text = "Kilidi Aç";
-        }        
+            ChangedUnlockButton(false, "Kilitli", Color.red);
+        }
     }
 
-    public void StartShowSkillInfoPress()
+    public void UpdateSkillInfos(SkillNode _selectedSkill)
     {
-        skillInfoPanel.SetActive(true);
+        if (skillInfoPanel.activeInHierarchy)
+        {
+            if (_selectedSkill.SkillRequiredPoint > MuseumManager.instance.GetCurrentSkillPoint())
+            {
+                RequiredPointText.text = "+" + (-(MuseumManager.instance.GetCurrentSkillPoint() - _selectedSkill.SkillRequiredPoint));
+                RequiredPoint.SetActive(true);
+                YeterliPoint.SetActive(false);
+                SkillRequiredInfoPanel.SetActive(true);
+            }
+            else
+            {
+                RequiredPoint.SetActive(false);
+                YeterliPoint.SetActive(true);
+            }
+
+            if (_selectedSkill.SkillRequiredMoney > MuseumManager.instance.GetCurrentGold())
+            {
+                RequiredMoneyText.text = "$" + (-(MuseumManager.instance.GetCurrentGold() - _selectedSkill.SkillRequiredMoney));
+                RequiredMoney.SetActive(true);
+                YeterliMoney.SetActive(false);
+                SkillRequiredInfoPanel.SetActive(true);                
+            }
+            else
+            {
+                RequiredMoney.SetActive(false);
+                YeterliMoney.SetActive(true);
+            }
+
+            if ((_selectedSkill.SkillRequiredPoint <= MuseumManager.instance.GetCurrentSkillPoint() && _selectedSkill.SkillRequiredMoney <= MuseumManager.instance.GetCurrentGold()))
+            {
+                StartCoroutine(SetActiveFalseWaiter(1.5f, SkillRequiredInfoPanel));                
+            }
+        }
     }
-    public void EndShowSkillInfoPress()
-    {
-        skillInfoPanel.SetActive(false);
+
+    IEnumerator SetActiveFalseWaiter(float _duration, GameObject _go)
+    {        
+        yield return new WaitForSeconds(_duration);
+        _go.SetActive(false);
     }
+    //public void StartShowSkillInfoPress() // Event Trigger / Down
+    //{
+
+    //}
+    //public void EndShowSkillInfoPress() // Event Trigger / Up
+    //{
+
+    //}
     public void InMuseumCurrentNPCCountChanged(int _currentVisitorCount)
     {
         InMuseumCurrentNPCCount.text = _currentVisitorCount.ToString();
@@ -262,6 +365,10 @@ public class UIController : MonoBehaviour
     public void CultureLevelCountChanged(int _levelCount)
     {
         CultureLevelInGlobal.text = _levelCount.ToString();
+    }
+    public void SkillPointCountChanged(float _pointCount)
+    {
+        SkillPointText.text = _pointCount.ToString();
     }
 
     public void CurrentTotalHappinessChanged(float _happiness)

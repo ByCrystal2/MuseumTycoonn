@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("Menu");
         Painter.instance.AddBasePainters();
         TableCommentEvaluationManager.instance.AddAllNPCComments();
+        SkillTreeManager.instance.AddSkillsForSkillTree();
         AudioMenuManager.instance.PlayMusicOfMenu();
     }
 

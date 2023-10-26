@@ -90,8 +90,14 @@ public class MuseumManager : MonoBehaviour
         UIController.instance.InMuseumCurrentNPCCountChanged(GetInMuseumVisitorCount());
         UIController.instance.InMuseumDailyEarningChanged(DailyEarning);
         UIController.instance.DailyVisitorCountChanged(AddAndGetDailyNPCCount());
+        UIController.instance.UIChangesControl();
     }
-
+    public void SpendingGold(float _gold)
+    {
+        Gold -= -_gold;
+        UIController.instance.GoldText.text = "" + Gold;
+        Debug.Log("The skill was purchased. New gold: " + Gold);
+    }
     public void OnNpcExitedMuseum(NPCBehaviour _oldNpc)
     {
         if (CurrentNpcs.Contains(_oldNpc))
@@ -135,9 +141,14 @@ public class MuseumManager : MonoBehaviour
         {
             Culture -= GetRequiredCultureExp();
             CurrentCultureLevel++;
+            SkillPoint++;
             CultureLevelUP();
         }
         UIController.instance.CultureLevelCountChanged(CurrentCultureLevel);
+        UIController.instance.SkillPointCountChanged(SkillPoint);
+        UIController.instance.UIChangesControl();
+        
+        
     }
     public int GetInMuseumVisitorCount()
     {
@@ -182,6 +193,17 @@ public class MuseumManager : MonoBehaviour
         UIController.instance.CurrentTotalHappinessChanged(Mathf.Round(TotalVisitorHappiness));
       
     }
+    public void CalculateAndAddTextAllInfos()
+    {
+        UIController.instance.SkillPointCountChanged(SkillPoint);
+        UIController.instance.InMuseumCurrentNPCCountChanged(CurrentNPCCountInMuseum);
+        UIController.instance.DailyVisitorCountChanged(DailyNPCCountInMuseum);
+        UIController.instance.CultureLevelCountChanged(CurrentCultureLevel);
+        UIController.instance.InMuseumDailyEarningChanged(DailyEarning);
+        UIController.instance.TotalVisitorsCommentCountChanged(TotalVisitorCommentCount);
+        UIController.instance.CurrentTotalHappinessChanged(TotalVisitorHappiness);
+
+    }
 
 
     public int GetRequiredCultureExp()
@@ -199,6 +221,11 @@ public class MuseumManager : MonoBehaviour
         return TicketPricePerCultureLevel[CurrentCultureLevel];
     }
 
+    public int GetRequiredSkillPointExp()
+    {
+        return RequiredSkillPointExp[CurrentCultureLevel];
+    }
+
     public List<int> CultureLevel = new List<int>() 
     { 0, 100, 225, 450, 600, 800, 1050, 1350, 1700, 2100, 2650,
         3200, 3750, 4600, 5300, 6000, 999999
@@ -212,5 +239,10 @@ public class MuseumManager : MonoBehaviour
     public List<int> TicketPricePerCultureLevel = new List<int>()
     {
         0, 300,  305,  310,  315,  320,  325, 330, 335, 340, 345, 350, 358, 366, 374, 382, 390
+    };
+
+    public List<int> RequiredSkillPointExp = new List<int>()
+    {
+        0, 100,  150,  200,  250,  300,  350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850
     };
 }
