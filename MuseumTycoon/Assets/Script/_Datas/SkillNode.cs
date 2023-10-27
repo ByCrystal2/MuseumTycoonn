@@ -16,7 +16,10 @@ public class SkillNode
     public bool IsLocked = true;
     public bool IsPurchased = false;
 
-    public SkillNode(int _id, string _skillName, string _skillDescription, string _skillEffect, float _skillRquiredPoint, float skillRequiredMoney, float _skillMaxLevel)
+    public List<eStat> buffs = new List<eStat>();
+    public List<float> Amounts = new List<float>();
+
+    public SkillNode(int _id, string _skillName, string _skillDescription, string _skillEffect, float _skillRquiredPoint, float skillRequiredMoney, float _skillMaxLevel, List<eStat> _buffs, List<float> _amounts)
     {
         this.ID = _id;
         this.SkillName = _skillName;
@@ -25,6 +28,14 @@ public class SkillNode
         this.SkillRequiredPoint = _skillRquiredPoint;
         this.SkillRequiredMoney = skillRequiredMoney;
         this.SkillMaxLevel = _skillMaxLevel;
+        buffs.Clear();
+        Amounts.Clear();
+        int length = _buffs.Count;
+        for (int i = 0; i < length; i++)
+        {
+            buffs.Add(_buffs[i]);
+            Amounts.Add(_amounts[i]);
+        }
     }
 
     public SkillNode(SkillNode skillNode)
@@ -39,6 +50,14 @@ public class SkillNode
         this.SkillMaxLevel= skillNode.SkillMaxLevel;
         this.IsLocked = skillNode.IsLocked;
         this.IsPurchased = skillNode.IsPurchased;
+        buffs.Clear();
+        Amounts.Clear();
+        int length = skillNode.buffs.Count;
+        for (int i = 0; i < length; i++)
+        {
+            buffs.Add(skillNode.buffs[i]);
+            Amounts.Add(skillNode.Amounts[i]);
+        }
     }
 
     public bool IsMoneyAndLevelEnough(float _money, float _point)

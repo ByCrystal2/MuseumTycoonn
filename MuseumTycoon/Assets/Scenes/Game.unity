@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18169281, g: 0.22735187, b: 0.3074203, a: 1}
+  m_IndirectSpecularColor: {r: 0.18169338, g: 0.22735274, b: 0.30742157, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -273,7 +273,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (28)
+      value: Npc_12
       objectReference: {fileID: 0}
     - target: {fileID: 1726767983593854, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_IsActive
@@ -369,10 +369,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 19548279}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -394,7 +397,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 12
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -497,7 +500,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (16)
+      value: Npc_4
       objectReference: {fileID: 0}
     - target: {fileID: 4149680788991024, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -584,10 +587,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 24946122}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -609,7 +615,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 4
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -893,7 +899,7 @@ PrefabInstance:
     - target: {fileID: 2772234369951730136, guid: 5ec004a6223bdd347998bad5663df228,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.748
+      value: 1.75
       objectReference: {fileID: 0}
     - target: {fileID: 2772234369951730136, guid: 5ec004a6223bdd347998bad5663df228,
         type: 3}
@@ -2226,7 +2232,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (27)
+      value: Npc_6
       objectReference: {fileID: 0}
     - target: {fileID: 4149680788991024, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2318,10 +2324,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 121430549}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -2343,7 +2352,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 6
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -4024,7 +4033,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (18)
+      value: Npc_16
       objectReference: {fileID: 0}
     - target: {fileID: 4149680788991024, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4111,10 +4120,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 208544739}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -4136,7 +4148,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 16
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -7529,7 +7541,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (23)
+      value: Npc_17
       objectReference: {fileID: 0}
     - target: {fileID: 4149680788991024, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7621,10 +7633,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 411085512}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -7646,7 +7661,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 17
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -9249,7 +9264,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (26)
+      value: Npc_24
       objectReference: {fileID: 0}
     - target: {fileID: 4149680788991024, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9341,10 +9356,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 474343714}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -9366,7 +9384,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 24
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -9986,7 +10004,7 @@ PrefabInstance:
     - target: {fileID: 2772234369951730136, guid: 5ec004a6223bdd347998bad5663df228,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.75
+      value: 1.75
       objectReference: {fileID: 0}
     - target: {fileID: 2772234369951730136, guid: 5ec004a6223bdd347998bad5663df228,
         type: 3}
@@ -10639,7 +10657,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (12)
+      value: Npc_27
       objectReference: {fileID: 0}
     - target: {fileID: 1810381527935246, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_IsActive
@@ -10735,10 +10753,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 539135978}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -10760,7 +10781,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 27
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -12876,7 +12897,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (24)
+      value: Npc_23
       objectReference: {fileID: 0}
     - target: {fileID: 4149680788991024, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -12963,10 +12984,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 673978579}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -12988,7 +13012,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 23
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -13569,7 +13593,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (10)
+      value: Npc_3
       objectReference: {fileID: 0}
     - target: {fileID: 4149680788991024, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -13661,10 +13685,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 715312346}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -13686,7 +13713,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 3
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -15134,7 +15161,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (1)
+      value: Npc_7
       objectReference: {fileID: 0}
     - target: {fileID: 1654446690333346, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_IsActive
@@ -15225,10 +15252,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 802194599}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -15250,7 +15280,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 7
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -15687,7 +15717,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (13)
+      value: Npc_9
       objectReference: {fileID: 0}
     - target: {fileID: 1654446690333346, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_IsActive
@@ -15783,10 +15813,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 825816499}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -15808,7 +15841,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 9
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -16847,7 +16880,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (3)
+      value: Npc_19
       objectReference: {fileID: 0}
     - target: {fileID: 4149680788991024, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -16934,10 +16967,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 891268599}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -16959,7 +16995,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 19
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -18329,7 +18365,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (30)
+      value: Npc_31
       objectReference: {fileID: 0}
     - target: {fileID: 1624474170144434, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_IsActive
@@ -18425,10 +18461,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 987195124}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -18450,7 +18489,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 30
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -19521,7 +19560,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (9)
+      value: Npc_26
       objectReference: {fileID: 0}
     - target: {fileID: 1810381527935246, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_IsActive
@@ -19612,10 +19651,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 1058946032}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -19637,7 +19679,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 26
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -21903,7 +21945,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (11)
+      value: Npc_15
       objectReference: {fileID: 0}
     - target: {fileID: 1581329308482476, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_IsActive
@@ -21999,10 +22041,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 1146517400}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -22024,7 +22069,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 15
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -23811,7 +23856,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (7)
+      value: Npc_2
       objectReference: {fileID: 0}
     - target: {fileID: 4149680788991024, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -23903,10 +23948,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 1257148413}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -23928,7 +23976,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 2
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -24446,7 +24494,7 @@ PrefabInstance:
     - target: {fileID: 2772234369951730136, guid: 5ec004a6223bdd347998bad5663df228,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.75
+      value: 1.75
       objectReference: {fileID: 0}
     - target: {fileID: 2772234369951730136, guid: 5ec004a6223bdd347998bad5663df228,
         type: 3}
@@ -25412,7 +25460,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (14)
+      value: Npc_21
       objectReference: {fileID: 0}
     - target: {fileID: 4149680788991024, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -25504,10 +25552,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 1317217584}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -25529,7 +25580,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 21
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -25921,7 +25972,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (25)
+      value: Npc_18
       objectReference: {fileID: 0}
     - target: {fileID: 4149680788991024, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -26013,10 +26064,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 1342004310}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -26038,7 +26092,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 18
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -26445,7 +26499,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (19)
+      value: Npc_28
       objectReference: {fileID: 0}
     - target: {fileID: 1810381527935246, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_IsActive
@@ -26541,10 +26595,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 1387621920}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -26566,7 +26623,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 27
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -26815,6 +26872,7 @@ GameObject:
   - component: {fileID: 1396600026}
   - component: {fileID: 1396600027}
   - component: {fileID: 1396600028}
+  - component: {fileID: 1396600029}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -26947,7 +27005,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1396600022}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e103da1b57bd8104e95d88035a27a69d, type: 3}
   m_Name: 
@@ -26981,6 +27039,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 004f4c3512b08a84bace2fea5c89a263, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1396600029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1396600022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 436275a13d4459746955fc6db5953473, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _active: 1
+  _enableRotation: 1
+  _mouseSense: 1.8
+  _enableTranslation: 1
+  _translationSpeed: 55
+  _enableMovement: 1
+  _movementSpeed: 10
+  _boostedSpeed: 50
+  _boostSpeed: 304
+  _moveUp: 101
+  _moveDown: 113
+  _enableSpeedAcceleration: 1
+  _speedAccelerationFactor: 1.5
+  _initPositonButton: 114
 --- !u!1001 &1402131820
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30909,7 +30993,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (20)
+      value: Npc_29
       objectReference: {fileID: 0}
     - target: {fileID: 1624474170144434, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_IsActive
@@ -31000,10 +31084,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 1468118919}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -31025,7 +31112,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 28
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -32800,7 +32887,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (8)
+      value: Npc_14
       objectReference: {fileID: 0}
     - target: {fileID: 1581329308482476, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_IsActive
@@ -32896,10 +32983,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 1634516100}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -32921,7 +33011,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 14
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -33166,7 +33256,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (6)
+      value: Npc_8
       objectReference: {fileID: 0}
     - target: {fileID: 1654446690333346, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_IsActive
@@ -33262,10 +33352,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 1644317231}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -33287,7 +33380,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 8
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -33454,7 +33547,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale
+      value: Npc_1
       objectReference: {fileID: 0}
     - target: {fileID: 4149680788991024, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -33532,7 +33625,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 1
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -33557,10 +33650,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 1656784174}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -34309,7 +34405,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (29)
+      value: Npc_30
       objectReference: {fileID: 0}
     - target: {fileID: 1624474170144434, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_IsActive
@@ -34405,10 +34501,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 1694464929}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -34430,7 +34529,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 29
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -34604,7 +34703,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (4)
+      value: Npc_25
       objectReference: {fileID: 0}
     - target: {fileID: 4149680788991024, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -34696,10 +34795,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 1702473255}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -34721,7 +34823,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 25
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -34974,7 +35076,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (15)
+      value: Npc_22
       objectReference: {fileID: 0}
     - target: {fileID: 4149680788991024, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -35066,10 +35168,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 1713608577}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -35091,7 +35196,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 22
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -42398,7 +42503,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (21)
+      value: Npc_5
       objectReference: {fileID: 0}
     - target: {fileID: 4149680788991024, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -42490,10 +42595,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 1902111448}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -42515,7 +42623,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 5
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -43635,7 +43743,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (17)
+      value: Npc_10
       objectReference: {fileID: 0}
     - target: {fileID: 1726767983593854, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_IsActive
@@ -43726,10 +43834,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 1924878339}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -43751,7 +43862,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 10
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -45131,7 +45242,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (22)
+      value: Npc_11
       objectReference: {fileID: 0}
     - target: {fileID: 1726767983593854, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_IsActive
@@ -45227,10 +45338,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 1991734553}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -45252,7 +45366,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 11
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -47821,7 +47935,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (2)
+      value: Npc_13
       objectReference: {fileID: 0}
     - target: {fileID: 1581329308482476, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_IsActive
@@ -47912,10 +48026,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 2091384039}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -47937,7 +48054,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 13
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -48275,7 +48392,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1559750931334462, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_Name
-      value: Character_Female_Gypsy_FixedScale (5)
+      value: Npc_20
       objectReference: {fileID: 0}
     - target: {fileID: 4149680788991024, guid: 3ca965f160a201a43b9bed2c8721563b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -48362,10 +48479,13 @@ MonoBehaviour:
   TargetPosition: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
+  CurrentInvestigate: 0
   Agent: {fileID: 2101160191}
   NpcSpeed: 3
+  NpcRotationSpeed: 0
   OutsidePosition: {x: 0, y: 0, z: 0}
   IdleLength: 1.5
+  NpcWalkType: 1
   VisitableArtAmount: 0
   LikedColors: 
   DislikedColor: 0
@@ -48387,7 +48507,7 @@ NavMeshAgent:
   m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 999
-  avoidancePriority: 50
+  avoidancePriority: 20
   m_AngularSpeed: 999
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1

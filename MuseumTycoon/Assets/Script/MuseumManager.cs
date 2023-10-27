@@ -6,6 +6,7 @@ public class MuseumManager : MonoBehaviour
 {
     public static MuseumManager instance { get; private set; }
     public List<PictureElementData> MyPictures = new List<PictureElementData>();
+    public List<PictureElement> MyPictureObjects = new List<PictureElement>();
     public List<NPCBehaviour> CurrentNpcs = new List<NPCBehaviour>();
 
     public Sprite EmptyPictureSprite;

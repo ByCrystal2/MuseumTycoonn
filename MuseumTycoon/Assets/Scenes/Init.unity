@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.2257134, b: 0.30692226, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -715,6 +715,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 922daa84eba4e804681fa5452d4403b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skillNodes: []
+  SelectedSkill:
+    ID: 0
+    SkillName: 
+    SkillDescription: 
+    SkillEffect: 
+    SkillRequiredPoint: 0
+    SkillRequiredMoney: 0
+    SkillCurrentLevel: 0
+    SkillMaxLevel: 0
+    IsLocked: 0
+    IsPurchased: 0
+  DefaultMaxSkillLevel: 10
 --- !u!4 &1475525476
 Transform:
   m_ObjectHideFlags: 0
@@ -847,6 +860,7 @@ MonoBehaviour:
   - id: 0
     texture: {fileID: 2800000, guid: 37f1690278847d04a89eb509cd316b58, type: 3}
     MostCommonColors: 
+  MyPictureObjects: []
   CurrentNpcs: []
   EmptyPictureSprite: {fileID: 21300000, guid: 5cb427ca385cd1248bd3913dbcd3de5a, type: 3}
   CurrentNPCCountInMuseum: 0
@@ -857,6 +871,7 @@ MonoBehaviour:
   CultureLevel: 0000000064000000e1000000c201000058020000200300001a04000046050000a4060000340800005a0a0000800c0000a60e0000f8110000b4140000701700003f420f00
   MaxVisitorPerCultureLevel: 0000000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f0000001000000011000000120000001300000014000000
   TicketPricePerCultureLevel: 000000002c01000031010000360100003b01000040010000450100004a0100004f01000054010000590100005e010000660100006e010000760100007e01000086010000
+  RequiredSkillPointExp: 000000006400000096000000c8000000fa0000002c0100005e01000090010000c2010000f401000026020000580200008a020000bc020000ee0200002003000052030000
 --- !u!4 &1626886296
 Transform:
   m_ObjectHideFlags: 0

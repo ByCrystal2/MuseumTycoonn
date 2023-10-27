@@ -10,7 +10,8 @@ public class LocationData : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (name == "PictureLookLocation")
+        PictureElement PE;
+        if (transform.parent.TryGetComponent(out PE))
             return;
 
         NpcManager.instance.Locations.Add(this);

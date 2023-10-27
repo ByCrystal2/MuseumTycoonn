@@ -9,11 +9,18 @@ public class NPCBehaviour : MonoBehaviour
     [SerializeField] private Transform TargetPosition;
     [SerializeField] private NPCState CurrentState;
     [SerializeField] private NpcTargets CurrentTarget;
+    [SerializeField] private InvestigateState CurrentInvestigate;
     [SerializeField] private NavMeshAgent Agent;
     [SerializeField] private float NpcSpeed;
+    [SerializeField] private float NpcCurrentSpeed;
+    [SerializeField] private float NpcRotationSpeed;
     [SerializeField] private Vector3 OutsidePosition;
+    [SerializeField] private NPCBehaviour DialogTarget;
+
     public float IdleLength;
     private float IdleTimer;
+
+    public WalkEnum NpcWalkType;
 
     Animator anim;
 
@@ -26,22 +33,27 @@ public class NPCBehaviour : MonoBehaviour
     public float Stress; //0-100; Stressli npc daha az sanat gormek isteyecek. Ve npc hizini etkileyecek.
     public float Toilet; //100-0; Tuvaleti zaten biliyoruz.
     public float Education; //0-10; Egitimli insanlar daha cok kultur kazandirir.
+    public float AdditionalLuck; //sans oranini buradan arttirabiliriz.
 
     public int NpcVisittingArtAmount;
 
     bool DecidedToEnter;
 
     bool isGidis;
+    public bool IsBusy;
     private void Awake()
     {
         
     }
     void Start()
     {
+        AdditionalLuck = 1000;
+        NpcCurrentSpeed = NpcSpeed;
+        NpcRotationSpeed = 5;
         anim = GetComponent<Animator>();
         CurrentTarget = NpcTargets.Outside;
         float s = (int)Random.Range(-100, 51) * 0.01f;
-        Agent.speed = NpcSpeed + s;
+        Agent.speed = NpcCurrentSpeed + s;
         OutsidePosition = Vector3.zero;
         IdleBack();
 
@@ -82,23 +94,30 @@ public class NPCBehaviour : MonoBehaviour
             {
                 CreateTarget();
             }
-            anim.SetBool("Walk", false);
+            SetCurrentAnimationState("Walk", 0);
         }
         else if (CurrentState == NPCState.Move)
         {
+            if (IdleTimer > Time.time)
+                return;
             Move();
         }
         else if (CurrentState == NPCState.Investigate)
         {
-            Debug.Log("Farkli goruslu iki npc ayni tabloya investigate ediyorken kavga etme ihtimali burada islenicek.");
-            if (IdleTimer < Time.time)
+            SetCurrentAnimationState("Walk", 0);
+            if (CurrentInvestigate == InvestigateState.Dialog)
             {
-                if (OnNPCInvestigatedArt())
-                    CreateTarget();
-                else
-                    OnExitWayMuseum();
+                if (IdleTimer < Time.time)
+                {
+                    Debug.Log("Dialog end with npc: " + name + " /dialogTarget: " + DialogTarget.name);
+                    OnDialogEnd();
+                    return;
+                }
+                if(DialogTarget != null)
+                    LookAtOptimal(DialogTarget.transform);
+                return;
             }
-            anim.SetBool("Walk", false);
+            LookAtOptimal(TargetPosition.parent);
         }
     }
 
@@ -116,15 +135,31 @@ public class NPCBehaviour : MonoBehaviour
         }
         if (TargetPosition != null)
         {
+            if(DialogTarget != null)
+                Debug.Log("dialog targeti olmasina ragmen Move a gecti.");
             Agent.SetDestination(target);
-            anim.SetBool("Walk", true);
+            SetCurrentAnimationState("Walk", (int)NpcWalkType, "Dialog", 0);
         }
     }
 
     public void InvestigateStart()
     {
+        PictureElement PE = TargetPosition.GetComponentInParent<PictureElement>();
+
+        if (PE.data == null)
+        {
+            CurrentState = NPCState.Move;
+            CreateTarget();
+            return;
+        }
+        Debug.Log("Investigate Start");
+        Agent.isStopped = true;
+        Agent.enabled = false;
         CurrentState = NPCState.Investigate;
-        IdleTimer = Time.time + IdleLength;
+
+        CurrentInvestigate = InvestigateState.Look;
+        SetCurrentAnimationState("Look", 1);
+        //IdleTimer = Time.time + IdleLength;
     }
 
     public void Move()
@@ -196,12 +231,22 @@ public class NPCBehaviour : MonoBehaviour
             List<LocationData> possible = new List<LocationData>();
 
             for (int i = 0; i < length; i++)
-                if (!NpcManager.instance.Locations[i].GetComponent<LocationData>().isLocked && NpcManager.instance.Locations[i] != TargetPosition)
-                    possible.Add(NpcManager.instance.Locations[i]);
+            {
+                int length2 = MuseumManager.instance.CurrentNpcs.Count;
+                for (int u = 0; u < length2; u++)
+                {
+                    if (!NpcManager.instance.Locations[i].GetComponent<LocationData>().isLocked && NpcManager.instance.Locations[i] != TargetPosition &&
+                        MuseumManager.instance.CurrentNpcs[u].TargetPosition != NpcManager.instance.Locations[i].transform)
+                        possible.Add(NpcManager.instance.Locations[i]);
+                }
+            }
 
             if (possible.Count == 0)
             {
                 Debug.LogError("Gidilecek hic bir yer yok!.");
+                Happiness -= Time.deltaTime * (Stress * 0.1f);
+                Stress += Time.deltaTime * 2;
+                CheckStats();
             }
             else
             {
@@ -213,6 +258,63 @@ public class NPCBehaviour : MonoBehaviour
         {
             NpcArrivedTheEnterGate();
         }
+    }
+
+    void CheckStats()
+    {
+        OnHappinessChange();
+
+        if (Stress > 100)
+        {
+            Stress = 100;
+            OnStressFull();
+        }
+        if (Stress < 0)
+        {
+            Stress = 0;
+        }
+    }
+
+    void OnHappinessChange()
+    {
+        if (Happiness <= 25)
+        {
+            NpcWalkType = WalkEnum.SadWalk;
+            NpcCurrentSpeed = NpcSpeed * 0.35f;
+            Agent.speed = NpcCurrentSpeed;
+            if (Happiness < 0)
+            {
+                Happiness = 0;
+                OnHappinessEnd();
+            }
+        }
+        else if (Happiness > 25 && Happiness < 75)
+        {
+            NpcWalkType = WalkEnum.NormalWalk;
+            NpcCurrentSpeed = NpcSpeed;
+            Agent.speed = NpcCurrentSpeed;
+        }
+        else
+        {
+            NpcWalkType = WalkEnum.HappyWalk;
+            NpcCurrentSpeed = NpcSpeed * 1.25f;
+            Agent.speed = NpcCurrentSpeed;
+            if (Happiness > 100)
+            {
+                Happiness = 100;
+            }
+        }
+    }
+
+    void OnStressFull()
+    {
+        Debug.Log("Npc Cok Stressli;");
+    }
+
+    void OnHappinessEnd()
+    {
+        Debug.Log("Npc Cok Mutsuz;");
+        
     }
 
     public void OnDecidedEnterMuseum()
@@ -233,6 +335,24 @@ public class NPCBehaviour : MonoBehaviour
         Debug.Log("EndOf Investigate");
         PictureElement PE = TargetPosition.GetComponentInParent<PictureElement>();
 
+        if (PE == null)
+        {
+            if (NpcVisittingArtAmount == 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+        if (PE.data == null)
+        {
+            if (NpcVisittingArtAmount == 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
         int NPCMaxScore = 10;
         int NPCMinScore = 0;
         int NPCCurrentScore = 5;
@@ -255,10 +375,20 @@ public class NPCBehaviour : MonoBehaviour
         // MuseumManager.instance.AddTotalVisitorCommentCount(1);
         MuseumManager.instance.OnNpcCommentedPicture(this,PE, Mathf.Round(NPCCurrentScore)); // Þimdilik Current Score Göre Yýldýz Yorumu Yapýldý.
 
-        Stress += NPCCurrentScore * 5;
-        Happiness += Mathf.Round((Stress * 0.5f) - (NPCCurrentScore * 0.5f)); //NPC Happiness deðiþtirlecek ve MuseumManager.instance.TotalVisitorHappiness ile eþleþtirilecek.
-        if (Happiness < 0)  Happiness = 0;
-        
+        int center = 5;
+        if (NPCCurrentScore < center)
+        {
+            Stress += (5 - NPCCurrentScore) * 2;
+            Happiness -= Mathf.Round(Stress * 0.2f);
+        }
+        else
+        {
+            Stress -= (NPCCurrentScore - 5) * 2;
+            Happiness += Mathf.Round((100 - Stress) * 0.05f); //stress 50 ise 1; 100 ise 5;
+        }
+
+        CheckStats();
+
         NpcVisittingArtAmount--;
         if (NpcVisittingArtAmount == 0)
         {
@@ -306,6 +436,11 @@ public class NPCBehaviour : MonoBehaviour
     {
         CurrentTarget = NpcTargets.Outside;
         CurrentState = NPCState.Move;
+        Happiness = 100;
+        Stress = 20;
+        NpcWalkType = WalkEnum.NormalWalk;
+        NpcCurrentSpeed = NpcSpeed;
+        Agent.speed = NpcCurrentSpeed;
         TargetPosition = NpcManager.instance.GidisListe[Random.Range(0, NpcManager.instance.GidisListe.Count)];
 
         OutsidePosition = TargetPosition.position + new Vector3(Random.Range(-29, 30) * 0.1f, 0, Random.Range(-29, 30) * 0.1f);
@@ -314,12 +449,145 @@ public class NPCBehaviour : MonoBehaviour
         if (NavMesh.SamplePosition(OutsidePosition, out hit, 10, NavMesh.AllAreas))
             OutsidePosition = hit.position;
 
+        SetCurrentAnimationState("Walk", (int)NpcWalkType, "Dialog", 0);
         MuseumManager.instance.OnNpcExitedMuseum(this);
     }
 
-    public void OnFootstep()
+    public void SetCurrentAnimationState(string firstState, int firstInt, string secondState = "", int secondInt = 0, string thirdState = "", int thirdInt = 0)
     {
+        //anim.SetInteger("Liked", 0);
+        //anim.SetInteger("NoLiked", 0);
+        //anim.SetInteger("Dialog", 0);
+        //anim.SetInteger("Walk", 0);
+        //anim.SetInteger("Hit", 0);
+        //anim.SetInteger("GetHit", 0);
+        //anim.SetInteger("Fall", 0);
+        //anim.SetInteger("inFight", 0);
+        //anim.SetInteger("Look", 0);
 
+        anim.SetInteger(firstState, firstInt);
+        if (secondState != "")
+            anim.SetInteger(secondState , secondInt);
+        if (thirdState != "")
+            anim.SetInteger(thirdState, thirdInt);
+    }
+
+    public void OnEndInvestigatePicture()
+    {
+        Debug.Log("Looking end.");
+        SetCurrentAnimationState("Look", 0);
+        if (DialogTarget != null)
+            return;
+        
+        IdleTimer = Time.time + 2;
+
+        var dialogTarget = CheckTheCurrentLookingNpcs();
+        float delay = dialogTarget._delayTime;
+        NPCBehaviour npcTarget = dialogTarget._dialogTarget;
+        if (npcTarget != null)
+        {
+            IdleTimer = delay;
+            CurrentInvestigate = InvestigateState.Dialog;
+            DialogTarget = npcTarget;
+            IsBusy = true;
+            Debug.Log("IdleTimer: " + IdleTimer + " /Dialog end with npc: " + name + " /dialogTarget: " + DialogTarget.name);
+            SetCurrentAnimationState("Dialog", Random.Range(1, 4));
+            return;
+        }
+
+        Agent.isStopped = false;
+        Agent.enabled = true;
+        if (OnNPCInvestigatedArt())
+            CreateTarget();
+        else
+            OnExitWayMuseum();
+    }
+
+    (float _delayTime, NPCBehaviour _dialogTarget)  CheckTheCurrentLookingNpcs()
+    {
+        NPCBehaviour theDialogPartner = null;
+
+        int length = MuseumManager.instance.CurrentNpcs.Count;
+        for (int i = 0; i < length; i++)
+        {
+            NPCBehaviour currentNpc = MuseumManager.instance.CurrentNpcs[i];
+            if (currentNpc.TargetPosition.parent == TargetPosition.parent && currentNpc.CurrentState == NPCState.Investigate &&
+                currentNpc.DialogTarget == null && currentNpc != this && !currentNpc.IsBusy)
+            {
+                float luck = Random.Range(0, 101);
+                luck += (Happiness * 0.2f);
+                luck += (AdditionalLuck * luck * 0.01f);
+                if (luck > 70)
+                {
+                    theDialogPartner = MuseumManager.instance.CurrentNpcs[i];
+                    break;
+                }
+            }
+        }
+
+        float timer = 0;
+        if (theDialogPartner != null)
+        {
+            theDialogPartner.DialogTarget = this;
+            theDialogPartner.CurrentInvestigate = InvestigateState.Dialog;
+            theDialogPartner.CurrentState = NPCState.Investigate;
+            theDialogPartner.IsBusy = true;
+            theDialogPartner.SetCurrentAnimationState("Dialog", Random.Range(1, 4), "Look", 0);
+
+            timer = Time.time + Random.Range(5,15);
+            theDialogPartner.IdleTimer = timer;
+            Debug.Log("theDialogPartner.IdleTimer: " + theDialogPartner.IdleTimer + " /Dialog end with npc: " + theDialogPartner.name + " /dialogTarget: " + theDialogPartner.DialogTarget.name);
+        }
+
+        return (timer, theDialogPartner);
+    }
+
+    public void OnDialogEnd()
+    {
+        IdleTimer = Time.time + 1;
+        Debug.Log("Dialog end.");
+        SetCurrentAnimationState("Dialog",-1);
+        StopCoroutine(FarewellDelay());
+        StartCoroutine(FarewellDelay());
+    }
+
+    IEnumerator FarewellDelay()
+    {
+        while (anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "Farewell")
+            yield return new WaitForEndOfFrame();
+
+        float timer = anim.GetCurrentAnimatorClipInfo(0)[0].clip.length;
+        while (timer > 0)
+        {
+            if (DialogTarget != null)
+                LookAtOptimal(DialogTarget.transform);
+            timer -= Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        Agent.isStopped = false;
+        Agent.enabled = true;
+        DialogTarget = null;
+        CurrentInvestigate = InvestigateState.Look;
+        SetCurrentAnimationState("Dialog", 0);
+        IsBusy = false;
+        if (OnNPCInvestigatedArt())
+            CreateTarget();
+        else
+            OnExitWayMuseum();
+    }
+
+    void LookAtOptimal(Transform target)
+    {
+        Vector3 directionToTarget = target.position - transform.position;
+
+        // Calculate the angle in degrees to rotate towards the target
+        float angle = Mathf.Atan2(directionToTarget.x, directionToTarget.z) * Mathf.Rad2Deg;
+
+        // Create a rotation that only affects the Y axis
+        Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
+
+        // Apply the rotation to the NPC's transform
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, NpcRotationSpeed * Time.deltaTime);
     }
 }
 
@@ -332,9 +600,27 @@ public enum NPCState
     Escape,
 }
 
+public enum InvestigateState
+{
+    Look,
+    Dialog,
+    Fight
+}
+
 public enum NpcTargets
 {
     Outside,
     EnterWay,
     Inside,
+}
+
+public enum WalkEnum
+{
+    Idle,
+    NormalWalk,
+    HappyWalk,
+    SadWalk,
+    DrunkWalk,
+    QueenWalk,
+    KingWalk,
 }

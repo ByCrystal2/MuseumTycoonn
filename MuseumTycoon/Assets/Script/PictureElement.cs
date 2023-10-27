@@ -21,7 +21,9 @@ public class PictureElement : MonoBehaviour
         {
             //transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("Pictures/1");
             UIController.instance.GetClickedPicture(true,this);
-            transform.GetChild(1).GetComponent<LocationData>().SetVisittible(true);
+            for (int i = 1; i < 6; i++)
+                transform.GetChild(i).GetComponent<LocationData>().SetVisittible(true);
+
             isActive = true;
         }
         else
@@ -29,7 +31,9 @@ public class PictureElement : MonoBehaviour
             //transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = MuseumManager.instance.EmptyPictureSprite;
             //UIController.instance.GetClickedPicture(false,this);
             data = null;
-            transform.GetChild(1).GetComponent<LocationData>().SetVisittible(false);
+            for (int i = 1; i < 6; i++)
+                transform.GetChild(i).GetComponent<LocationData>().SetVisittible(false);
+
             isActive = false;
             UpdateVisual();
         }
@@ -39,9 +43,17 @@ public class PictureElement : MonoBehaviour
     {
         Image im = transform.GetChild(0).GetChild(0).GetComponent<Image>();
         if (data != null)
+        {
+            if(!MuseumManager.instance.MyPictureObjects.Contains(this))
+                MuseumManager.instance.MyPictureObjects.Add(this);
             im.sprite = CatchTheColors.instance.TextureToSprite(data.texture);
+        }
         else
+        {
+            if (MuseumManager.instance.MyPictureObjects.Contains(this))
+                MuseumManager.instance.MyPictureObjects.Remove(this);
             im.sprite = MuseumManager.instance.EmptyPictureSprite;
+        }
     }
 }
 
