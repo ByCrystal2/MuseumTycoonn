@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance { get; private set; }
 
+    public List<AudioSource> allAudioSources = new List<AudioSource>();
     private bool uiControl;
     public bool UIControl { get { return uiControl; } set { uiControl = value; } }
 
@@ -34,7 +35,8 @@ public class GameManager : MonoBehaviour
         Painter.instance.AddBasePainters();
         TableCommentEvaluationManager.instance.AddAllNPCComments();
         SkillTreeManager.instance.AddSkillsForSkillTree();
-        AudioMenuManager.instance.PlayMusicOfMenu();
+        AudioManager.instance.AllAudioSourcesOptions();
+        AudioManager.instance.PlayMusicOfMenu();        
     }
 
     

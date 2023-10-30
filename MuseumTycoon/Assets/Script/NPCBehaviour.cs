@@ -7,6 +7,8 @@ using UnityEngine.AI;
 public class NPCBehaviour : MonoBehaviour
 {
     [SerializeField] private Transform TargetPosition;
+    [SerializeField] public List<DialogData> MySources;
+    [SerializeField] private AudioSource CurrentAudioSource;
     [SerializeField] private NPCState CurrentState;
     [SerializeField] private NpcTargets CurrentTarget;
     [SerializeField] private InvestigateState CurrentInvestigate;
@@ -40,13 +42,18 @@ public class NPCBehaviour : MonoBehaviour
     bool DecidedToEnter;
 
     bool isGidis;
-    public bool IsBusy;
+    public bool IsBusy; //Mesgul mu?
+    public bool IsMale; //Erkek mi?
+
+    
     private void Awake()
     {
         
     }
     void Start()
     {
+        MySources = AudioManager.instance.GetDialogs(IsMale);
+        CurrentAudioSource = transform.GetChild(0).GetComponent<AudioSource>();
         AdditionalLuck = 1000;
         NpcCurrentSpeed = NpcSpeed;
         NpcRotationSpeed = 5;
@@ -111,6 +118,8 @@ public class NPCBehaviour : MonoBehaviour
                 {
                     Debug.Log("Dialog end with npc: " + name + " /dialogTarget: " + DialogTarget.name);
                     OnDialogEnd();
+                    CurrentAudioSource.Stop();
+                    //AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcByeBye, CurrentAudioSource);
                     return;
                 }
                 if(DialogTarget != null)
@@ -282,6 +291,7 @@ public class NPCBehaviour : MonoBehaviour
             NpcWalkType = WalkEnum.SadWalk;
             NpcCurrentSpeed = NpcSpeed * 0.35f;
             Agent.speed = NpcCurrentSpeed;
+            AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcSad, CurrentAudioSource);
             if (Happiness < 0)
             {
                 Happiness = 0;
@@ -299,6 +309,7 @@ public class NPCBehaviour : MonoBehaviour
             NpcWalkType = WalkEnum.HappyWalk;
             NpcCurrentSpeed = NpcSpeed * 1.25f;
             Agent.speed = NpcCurrentSpeed;
+            AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcHappiness, CurrentAudioSource);
             if (Happiness > 100)
             {
                 Happiness = 100;
@@ -378,11 +389,13 @@ public class NPCBehaviour : MonoBehaviour
         int center = 5;
         if (NPCCurrentScore < center)
         {
+            AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcDisLike, CurrentAudioSource);
             Stress += (5 - NPCCurrentScore) * 2;
             Happiness -= Mathf.Round(Stress * 0.2f);
         }
         else
         {
+            AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcLike, CurrentAudioSource);
             Stress -= (NPCCurrentScore - 5) * 2;
             Happiness += Mathf.Round((100 - Stress) * 0.05f); //stress 50 ise 1; 100 ise 5;
         }
@@ -491,7 +504,8 @@ public class NPCBehaviour : MonoBehaviour
             DialogTarget = npcTarget;
             IsBusy = true;
             Debug.Log("IdleTimer: " + IdleTimer + " /Dialog end with npc: " + name + " /dialogTarget: " + DialogTarget.name);
-            SetCurrentAnimationState("Dialog", Random.Range(1, 4));
+            SetCurrentAnimationState("Dialog", Random.Range(1, 4));            
+            AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcTalking,CurrentAudioSource);            
             return;
         }
 
@@ -547,7 +561,7 @@ public class NPCBehaviour : MonoBehaviour
         IdleTimer = Time.time + 1;
         Debug.Log("Dialog end.");
         SetCurrentAnimationState("Dialog",-1);
-        StopCoroutine(FarewellDelay());
+        StopCoroutine(FarewellDelay());        
         StartCoroutine(FarewellDelay());
     }
 
@@ -557,6 +571,7 @@ public class NPCBehaviour : MonoBehaviour
             yield return new WaitForEndOfFrame();
 
         float timer = anim.GetCurrentAnimatorClipInfo(0)[0].clip.length;
+        AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcByeBye, CurrentAudioSource);
         while (timer > 0)
         {
             if (DialogTarget != null)

@@ -16,6 +16,6 @@ public class MainMenu : MonoBehaviour
     void OnStartButtonClick()
     {
         SceneManager.LoadScene("Game");
-        AudioMenuManager.instance.PlayMusicOfGame();
+        AudioManager.instance.PlayMusicOfGame();
     }
 }

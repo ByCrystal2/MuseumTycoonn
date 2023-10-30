@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MuseumManager : MonoBehaviour
@@ -92,6 +93,8 @@ public class MuseumManager : MonoBehaviour
         UIController.instance.InMuseumDailyEarningChanged(DailyEarning);
         UIController.instance.DailyVisitorCountChanged(AddAndGetDailyNPCCount());
         UIController.instance.UIChangesControl();
+        List<AudioSource> Sources = AudioManager.instance.GetSoundEffects(SoundEffectType.EarnGold).Select(x=> x.AudioSource).ToList();
+        Sources[Random.Range(0, Sources.Count)].Play();
     }
     public void SpendingGold(float _gold)
     {
