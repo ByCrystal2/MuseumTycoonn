@@ -8,14 +8,7 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
-    [SerializeField] GameObject pnlPicturesMenu;
-
-    [Header("PictureInfos")]    
     
-    [SerializeField] GameObject[] OpenStars;
-    [SerializeField] GameObject[] CloseStars;
-    [SerializeField] TextMeshProUGUI txtPainterName;
-    [SerializeField] Image imgPicture;
 
     private PictureElement _LastSelectedPicture;
 
@@ -88,8 +81,27 @@ public class UIController : MonoBehaviour
         museumStatButton.onClick.AddListener(ShowMuseumStatsPanel);
         unlockButton.onClick.AddListener(BuySkill);
         MuseumManager.instance.CalculateAndAddTextAllInfos();
-    }   
-    
+    }
+    private void Update()
+    {
+        /* if (Input.GetMouseButtonDown(0) || Input.touchCount > 0)
+        {
+            // Fare týklanýrsa panelin etrafýna týklanýp týklanmadýðýný kontrol et.
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.collider.gameObject != pnlPicturesMenu)
+                {
+                    // Panel dýþýna týklanýrsa paneli kapat.
+                    pnlPicturesMenu.SetActive(false);
+                }
+            }
+        }
+        */
+    }
+
     public void GetClickedPicture(bool active, PictureElement _lastSelectedPicture) 
     {
         _LastSelectedPicture = _lastSelectedPicture;
@@ -108,18 +120,30 @@ public class UIController : MonoBehaviour
 
     public void DropDownValueChanged() // Dropdown*
     {
-        PainterData newPainter = Painter.instance.GetPainter(GetDropDownSelectedPainter());
-        if (newPainter == null)
+        //PainterData newPainter = Painter.instance.GetPainter(GetDropDownSelectedPainter());
+        //if (newPainter == null)
+        //{
+        //    Debug.Log("Null Painter");
+        //    return;
+        //}
+        //txtPainterName.text = newPainter.Name;
+        //imgPicture.sprite = newPainter.Picture;
+        //for (int i = 0; i < newPainter.StarCount; i++)
+        //{
+        //    OpenStars[i].gameObject.SetActive(true);
+        //}
+    }
+
+    public void GetClickedImage(int _id) // btn* /pnlPicturesMenu / ItemContent / InventorySlot
+    {
+        Texture2D newTexture = MuseumManager.instance.GetTextureInMyPictures(_id);        
+        if (newTexture == null)
         {
-            Debug.Log("Null Painter");
+            Debug.Log("Null Texture");
             return;
         }
-        txtPainterName.text = newPainter.Name;
-        imgPicture.sprite = newPainter.Picture;
-        for (int i = 0; i < newPainter.StarCount; i++)
-        {
-            OpenStars[i].gameObject.SetActive(true);
-        }
+        PicturesMenuController.instance.SetPicture(newTexture);
+        //imgPicture.sprite = CatchTheColors.instance.TextureToSprite(newTexture);
     }
 
     public void SetSelectedPicture(int _id)

@@ -30,8 +30,7 @@ public class MuseumManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(this);
-        CatchTheColorForAll();
-
+        CatchTheColorForAll();        
         CurrentCultureLevel = 1;
     }
 
@@ -93,12 +92,17 @@ public class MuseumManager : MonoBehaviour
         UIController.instance.InMuseumDailyEarningChanged(DailyEarning);
         UIController.instance.DailyVisitorCountChanged(AddAndGetDailyNPCCount());
         UIController.instance.UIChangesControl();
+        if (PicturesMenuController.instance.CurrentPicture != null)
+        {
+            Debug.Log("Picture Control: " + PicturesMenuController.instance.CurrentPicture.name);
+            PicturesMenuController.instance.SetCurrentPicture(PicturesMenuController.instance.CurrentPicture);
+        }
         List<AudioSource> Sources = AudioManager.instance.GetSoundEffects(SoundEffectType.EarnGold).Select(x=> x.AudioSource).ToList();
         Sources[Random.Range(0, Sources.Count)].Play();
     }
     public void SpendingGold(float _gold)
     {
-        Gold -= -_gold;
+        Gold -= _gold;
         UIController.instance.GoldText.text = "" + Gold;
         Debug.Log("The skill was purchased. New gold: " + Gold);
     }
@@ -228,6 +232,23 @@ public class MuseumManager : MonoBehaviour
     public int GetRequiredSkillPointExp()
     {
         return RequiredSkillPointExp[CurrentCultureLevel];
+    }
+
+    public List<Texture2D> GetPicturesTexture()
+    {
+        return MyPictures.Select(x=> x.texture).ToList();
+    }
+    public PictureElement GetPictureElement(int _id)
+    {
+        Debug.Log(_id);
+        PictureElement[] pictureElements = FindObjectsOfType<PictureElement>();
+        MyPictureObjects = pictureElements.Where(x=> x.isLocked == false).ToList();
+        return MyPictureObjects.Find(x => x.id == _id);
+    }
+
+    public Texture2D GetTextureInMyPictures(int _id)
+    {
+        return MyPictures.Where(x => x.id == _id).Select(x=> x.texture).FirstOrDefault();
     }
 
     public List<int> CultureLevel = new List<int>() 

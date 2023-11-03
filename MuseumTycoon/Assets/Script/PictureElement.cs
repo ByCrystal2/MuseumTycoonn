@@ -11,31 +11,34 @@ public class PictureElement : MonoBehaviour
     public int id;
     public bool isLocked;
     public bool isActive;
-
+    public bool isFirst = true;
+    public int RequiredGold;
     private void OnMouseDown()
     {
         if (isLocked && GameManager.instance.UIControl)
             return;
 
-        if (!isActive)
+        if (!isActive) 
         {
-            //transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("Pictures/1");
-            UIController.instance.GetClickedPicture(true,this);
+            
+            //UIController.instance.GetClickedPicture(true,this);
             for (int i = 1; i < 6; i++)
                 transform.GetChild(i).GetComponent<LocationData>().SetVisittible(true);
-
+            PicturesMenuController.instance.AddPicture(this);
+            
+            
             isActive = true;
         }
         else
         {
-            //transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = MuseumManager.instance.EmptyPictureSprite;
-            //UIController.instance.GetClickedPicture(false,this);
-            data = null;
-            for (int i = 1; i < 6; i++)
-                transform.GetChild(i).GetComponent<LocationData>().SetVisittible(false);
+            PicturesMenuController.instance.AddPicture(this);
+            //PicturesMenuController.instance.CurrentPicture = null;
+            //data = null;
+            //for (int i = 1; i < 6; i++)
+            //    transform.GetChild(i).GetComponent<LocationData>().SetVisittible(false);
 
-            isActive = false;
-            UpdateVisual();
+            //isActive = false;
+            //UpdateVisual();
         }
     }
 
