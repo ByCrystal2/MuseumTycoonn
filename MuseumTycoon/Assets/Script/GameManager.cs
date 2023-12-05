@@ -35,8 +35,9 @@ public class GameManager : MonoBehaviour
         Painter.instance.AddBasePainters();
         TableCommentEvaluationManager.instance.AddAllNPCComments();
         SkillTreeManager.instance.AddSkillsForSkillTree();
+        ItemManager.instance.AddItems();
         AudioManager.instance.AllAudioSourcesOptions();
-        AudioManager.instance.PlayMusicOfMenu();        
+        AudioManager.instance.PlayMusicOfMenu();
     }
 
     

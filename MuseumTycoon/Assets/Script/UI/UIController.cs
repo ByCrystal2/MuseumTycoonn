@@ -57,6 +57,8 @@ public class UIController : MonoBehaviour
     public GameObject YeterliPoint;
     public GameObject YeterliMoney;
 
+    
+
     public TextMeshProUGUI RequiredPointText;
     public TextMeshProUGUI RequiredMoneyText;
 
@@ -151,6 +153,7 @@ public class UIController : MonoBehaviour
         _LastSelectedPicture.data = MuseumManager.instance.MyPictures[Random.Range(0, MuseumManager.instance.MyPictures.Count)];
         _LastSelectedPicture.UpdateVisual();
     }
+    
     bool shopCreated = false;
     public void ShowTab(int tabIndex)
     {
@@ -174,15 +177,27 @@ public class UIController : MonoBehaviour
         }
         
         if (tabIndex == 2)
-        {
+        {            
             if (!shopCreated)
             {
+                Button allButton, gemButton, goldButton, tableButton;
                 newShop = SetCreateGameobject(ShopPrefab, shopParent);
-                spiderParent = newShop.transform.GetChild(0).transform;
+                allButton = newShop.transform.GetChild(0).transform.GetChild(0).GetComponent<Button>();
+                gemButton = newShop.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>();
+                goldButton = newShop.transform.GetChild(0).transform.GetChild(2).GetComponent<Button>();
+                tableButton = newShop.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>();
+                allButton.onClick.AddListener(ShopController.instance.GetAllItems);
+                gemButton.onClick.AddListener(ShopController.instance.GetGemItems);
+                goldButton.onClick.AddListener(ShopController.instance.GetGoldItems);
+                tableButton.onClick.AddListener(ShopController.instance.GetTableItems);
+                
+                spiderParent = newShop.transform.GetChild(1).transform;
                 shopCreated = true;
                 newSpider = SetCreateGameobject(SpiderPrefab, spiderParent);
                 spiderOffset = newSpider.transform.position;
-            }            
+
+                ShopController.instance.GetAllItems();
+            }
             
             SpiderMove(newSpider);
         }
@@ -418,6 +433,8 @@ public class UIController : MonoBehaviour
         else
             pnlMuseumStats.SetActive(false);
     }
+
+
 
     [SerializeField] GameObject SpiderPrefab;
     [SerializeField] Transform spiderParent;

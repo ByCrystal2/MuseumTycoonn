@@ -5,6 +5,7 @@ using UnityEngine;
 public class ShopItemActivation : MonoBehaviour
 {
     [SerializeField] GameObject[] SpiderWebs;
+    
 
     private void Awake()
     {
@@ -15,4 +16,7 @@ public class ShopItemActivation : MonoBehaviour
     {
         return SpiderWebs[Random.Range(0, SpiderWebs.Length)];
     }
+
+
 }
+

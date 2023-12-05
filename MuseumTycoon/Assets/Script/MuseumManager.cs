@@ -8,6 +8,7 @@ public class MuseumManager : MonoBehaviour
     public static MuseumManager instance { get; private set; }
     public List<PictureElementData> MyPictures = new List<PictureElementData>();
     public List<PictureElement> MyPictureObjects = new List<PictureElement>();
+    public List<PictureElement> CurrentPictureObject = new List<PictureElement>();
     public List<NPCBehaviour> CurrentNpcs = new List<NPCBehaviour>();
 
     public Sprite EmptyPictureSprite;
@@ -32,6 +33,24 @@ public class MuseumManager : MonoBehaviour
         DontDestroyOnLoad(this);
         CatchTheColorForAll();        
         CurrentCultureLevel = 1;
+        CurrentPictureObject.Add(new PictureElement() 
+        { 
+            data = new PictureElementData()
+            {
+                id = 1,
+                MostCommonColors = CatchTheColors.instance.FindMostUsedColors(MyPictures[0].texture),
+                texture = MyPictures[0].texture // NULL REFERANCE ALIYORUZ.
+            },
+            
+            id = 1,
+            isActive = true,
+            isLocked = false,
+            isFirst = true,
+            RequiredGold = 300,
+            painterData = new PainterData(1,"Leonardo Da Vinci", "1755'te resmedilen ünlü tablo.",1,CatchTheColors.instance.TextureToSprite(MyPictures[0].texture))    
+            
+        
+        });
     }
 
     private void FixedUpdate()
@@ -100,11 +119,32 @@ public class MuseumManager : MonoBehaviour
         List<AudioSource> Sources = AudioManager.instance.GetSoundEffects(SoundEffectType.EarnGold).Select(x=> x.AudioSource).ToList();
         Sources[Random.Range(0, Sources.Count)].Play();
     }
+    public void AddGold(float _gold)
+    {
+        Gold += _gold;
+        UIController.instance.GoldText.text = "" + Gold;
+        Debug.Log(" New gold: " + Gold);
+        DailyEarning += Gold;
+        UIController.instance.InMuseumDailyEarningChanged(DailyEarning);
+    }
+    public void AddGem(float _gem)
+    {
+        Gem += _gem;
+        UIController.instance.GemText.text = "" + Gem;
+        Debug.Log("New gold: " + Gem);
+    }
     public void SpendingGold(float _gold)
     {
         Gold -= _gold;
         UIController.instance.GoldText.text = "" + Gold;
         Debug.Log("The skill was purchased. New gold: " + Gold);
+    }
+
+    public void SpendingGem(float _gem)
+    {
+        Gem -= _gem;
+        UIController.instance.GemText.text = "" + Gem;
+        Debug.Log("New gem: " + Gem);
     }
     public void OnNpcExitedMuseum(NPCBehaviour _oldNpc)
     {
@@ -154,10 +194,14 @@ public class MuseumManager : MonoBehaviour
         }
         UIController.instance.CultureLevelCountChanged(CurrentCultureLevel);
         UIController.instance.SkillPointCountChanged(SkillPoint);
-        UIController.instance.UIChangesControl();
-        
-        
+        UIController.instance.UIChangesControl();      
     }
+
+    public void AddPictureTable(PictureElement PE)
+    {
+        CurrentPictureObject.Add(PE);
+    }
+
     public int GetInMuseumVisitorCount()
     {
         return CurrentNpcs.Count;        
@@ -166,6 +210,10 @@ public class MuseumManager : MonoBehaviour
     public float GetCurrentGold()
     {
         return Gold;
+    }
+    public float GetCurrentGem()
+    {
+        return Gem;
     }
     public float GetCurrentSkillPoint()
     {
