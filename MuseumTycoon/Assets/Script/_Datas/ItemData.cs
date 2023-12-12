@@ -16,18 +16,24 @@ public class ItemData
     public ItemType CurrentItemType;
     public ShoppingType CurrentShoppingType;
     public byte StarCount;
+    public int textureID;
 
-    public ItemData(int _id, string _name, string _description, float _amount, float _requiredMoney, Texture2D _imageSprite, ItemType _itemType, ShoppingType _shoppingType, byte _starCount)
+    public ItemData(int _id, string _name, string _description, float _amount, float _requiredMoney, Texture2D _imageSprite, ItemType _itemType, ShoppingType _shoppingType, byte _starCount, int _textureID = 0)
     {
         ID = _id;
         Name = _name;
         Description = _description;
         RequiredMoney = _requiredMoney;
         Amount = _amount;
-        ImageSprite = CatchTheColors.instance.TextureToSprite(_imageSprite);
+        Debug.Log("texture id for item creating: " + _textureID);
+        if (_itemType == ItemType.Table)
+            ImageSprite = CatchTheColors.instance.TextureToSprite(MuseumManager.instance.GetPictureElementData(_textureID).texture);
+        else
+            ImageSprite = CatchTheColors.instance.TextureToSprite(_imageSprite);
         CurrentItemType = _itemType;
         CurrentShoppingType = _shoppingType;
         StarCount = _starCount;
+        textureID = _textureID;
     }
 
     public ItemData(ItemData _item)
@@ -41,6 +47,7 @@ public class ItemData
         CurrentItemType = _item.CurrentItemType;
         CurrentShoppingType = _item.CurrentShoppingType;
         StarCount = _item.StarCount;
+        textureID = _item.textureID;
     }
    
 }

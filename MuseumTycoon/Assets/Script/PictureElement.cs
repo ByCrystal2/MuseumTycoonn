@@ -6,28 +6,21 @@ using UnityEngine.UI;
 
 public class PictureElement : MonoBehaviour
 {
-    public PictureElementData data;
-    public PainterData painterData;
-    public int id;
-    public bool isLocked;
-    public bool isActive;
-    public bool isFirst = true;
-    public int RequiredGold;
+    public PictureData _pictureData;
     private void OnMouseDown()
     {
-        if (isLocked && GameManager.instance.UIControl)
+        if (_pictureData.isLocked && GameManager.instance.UIControl)
             return;
 
-        if (!isActive) 
+        if (!_pictureData.isActive) 
         {
             
             //UIController.instance.GetClickedPicture(true,this);
             for (int i = 1; i < 6; i++)
                 transform.GetChild(i).GetComponent<LocationData>().SetVisittible(true);
             PicturesMenuController.instance.AddPicture(this);
-            
-            
-            isActive = true;
+
+            _pictureData.isActive = true;
         }
         else
         {
@@ -45,25 +38,48 @@ public class PictureElement : MonoBehaviour
     public void UpdateVisual()
     {
         Image im = transform.GetChild(0).GetChild(0).GetComponent<Image>();
-        if (data != null)
+        PictureElementData ped = MuseumManager.instance.GetPictureElementData(_pictureData.TextureID);
+        if (ped != null)
         {
-            if(!MuseumManager.instance.MyPictureObjects.Contains(this))
-                MuseumManager.instance.MyPictureObjects.Add(this);
-            im.sprite = CatchTheColors.instance.TextureToSprite(data.texture);
+            if(!MuseumManager.instance.CurrentActivePictures.Contains(this))
+                MuseumManager.instance.CurrentActivePictures.Add(this);
+
+            im.sprite = CatchTheColors.instance.TextureToSprite(ped.texture);
         }
         else
         {
-            if (MuseumManager.instance.MyPictureObjects.Contains(this))
-                MuseumManager.instance.MyPictureObjects.Remove(this);
+            if (MuseumManager.instance.CurrentActivePictures.Contains(this))
+                MuseumManager.instance.CurrentActivePictures.Remove(this);
             im.sprite = MuseumManager.instance.EmptyPictureSprite;
         }
+
+        GameManager.instance.Save();
+    }
+
+    void SaveThisPicture()
+    {
+
     }
 }
 
 [System.Serializable]
 public class PictureElementData
 {
-    [HideInInspector] public int id;
+    public int id;
     public Texture2D texture;
     public List<MyColors> MostCommonColors = new List<MyColors>();
+}
+
+[System.Serializable]
+public class PictureData
+{
+    //public PictureElementData data;
+    public PainterData painterData;
+    public int id;
+    public int TextureID;
+    public int RoomID;
+    public bool isLocked;
+    public bool isActive;
+    public bool isFirst = true;
+    public int RequiredGold;
 }

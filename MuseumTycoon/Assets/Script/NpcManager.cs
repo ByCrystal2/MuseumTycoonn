@@ -13,6 +13,8 @@ public class NpcManager : MonoBehaviour
 
     public Transform Enter1Point, Enter2Point;
 
+    public Transform RoomsParent;
+
     private void Awake()
     {
         if (instance)
@@ -22,5 +24,6 @@ public class NpcManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(this);
+        GameManager.instance.LoadPictures(RoomsParent);
     }
 }

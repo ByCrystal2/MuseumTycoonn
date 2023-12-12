@@ -6,14 +6,14 @@ using UnityEngine;
 public class MuseumManager : MonoBehaviour
 {
     public static MuseumManager instance { get; private set; }
-    public List<PictureElementData> MyPictures = new List<PictureElementData>();
-    public List<PictureElement> MyPictureObjects = new List<PictureElement>();
-    public List<PictureElement> CurrentPictureObject = new List<PictureElement>();
+    public List<PictureElementData> PictureDatabase = new List<PictureElementData>();
+    public List<PictureElement> CurrentActivePictures = new List<PictureElement>();
+    public List<PictureData> InventoryPictures = new List<PictureData>();
     public List<NPCBehaviour> CurrentNpcs = new List<NPCBehaviour>();
 
     public Sprite EmptyPictureSprite;
 
-    protected float Gold, Culture, Gem, CurrentGameTime, SkillPoint;
+    protected float Gold, Culture, Gem, SkillPoint;
     protected int CurrentCultureLevel;
     protected float SmootherCultureExp;
     public int CurrentNPCCountInMuseum; // Müzede'ki mevcut NPC sayýsý.
@@ -33,24 +33,50 @@ public class MuseumManager : MonoBehaviour
         DontDestroyOnLoad(this);
         CatchTheColorForAll();        
         CurrentCultureLevel = 1;
-        CurrentPictureObject.Add(new PictureElement() 
-        { 
-            data = new PictureElementData()
-            {
-                id = 1,
-                MostCommonColors = CatchTheColors.instance.FindMostUsedColors(MyPictures[0].texture),
-                texture = MyPictures[0].texture // NULL REFERANCE ALIYORUZ.
-            },
+        //InventoryPictures.Add(new PictureElement() 
+        //{ 
+        //    data = new PictureData()
+        //    {
+        //        id = 1,
+        //        MostCommonColors = CatchTheColors.instance.FindMostUsedColors(MyPictures[0].texture),
+        //        texture = MyPictures[0].texture // NULL REFERANCE ALIYORUZ.
+        //    },
             
-            id = 1,
-            isActive = true,
-            isLocked = false,
-            isFirst = true,
-            RequiredGold = 300,
-            painterData = new PainterData(1,"Leonardo Da Vinci", "1755'te resmedilen ünlü tablo.",1,CatchTheColors.instance.TextureToSprite(MyPictures[0].texture))    
+        //    id = 1,
+        //    isActive = true,
+        //    isLocked = false,
+        //    isFirst = true,
+        //    RequiredGold = 300,
+        //    painterData = new PainterData(1,"Leonardo Da Vinci", "1755'te resmedilen ünlü tablo.",1,CatchTheColors.instance.TextureToSprite(MyPictures[0].texture))    
             
         
-        });
+        //});
+    }
+
+    public void AddNewItemToInventory(PictureData _newPicture)
+    {
+        InventoryPictures.Add(_newPicture);
+        PicturesMenuController.instance.UpdatePicture();
+    }
+
+    public (float _gold, float _Culture, float _Gem, float _SkillPoint, int _CurrentCultureLevel) GetSaveData()
+    {
+
+        return (Gold, Culture, Gem, SkillPoint, CurrentCultureLevel);
+    }
+
+    public PictureElementData GetPictureElementData(int _id)
+    {
+        return PictureDatabase.Where(x => x.id == _id).SingleOrDefault();
+    }
+
+    public void SetSaveData(float _gold, float _Culture, float _Gem, float _SkillPoint, int _CurrentCultureLevel)
+    {
+        Gold = _gold;
+        Culture = _Culture;
+        Gem = _Gem;
+        SkillPoint = _SkillPoint;
+        CurrentCultureLevel = _CurrentCultureLevel;
     }
 
     private void FixedUpdate()
@@ -80,16 +106,17 @@ public class MuseumManager : MonoBehaviour
                 SmootherCultureExp = Culture;
         }
 
-        UIController.instance.CultureFillBar.fillAmount = SmootherCultureExp / GetRequiredCultureExp();
+        if(UIController.instance != null)
+            UIController.instance.CultureFillBar.fillAmount = SmootherCultureExp / GetRequiredCultureExp();
     }
 
     void CatchTheColorForAll()
     {
-        int length = MyPictures.Count;
+        int length = PictureDatabase.Count;
         for (int i = 0; i < length; i++)
         {
-            MyPictures[i].id = (i + 1);
-            MyPictures[i].MostCommonColors = CatchTheColors.instance.FindMostUsedColors(MyPictures[i].texture);
+            PictureDatabase[i].id = (i + 1);
+            PictureDatabase[i].MostCommonColors = CatchTheColors.instance.FindMostUsedColors(PictureDatabase[i].texture);
         }
     }
 
@@ -170,7 +197,7 @@ public class MuseumManager : MonoBehaviour
         TableCommentEvaluationData randomData = randomDatas[Random.Range(0, randomDatas.Count)];
         AddTotalVisitorCommentCount(1);
         CalculateTotalVisitorHappiness();
-        UIController.instance.AddCommentInGlobalTab(EmptyPictureSprite, _npc.name, randomData.Message, CurrentGameTime.ToString());
+        UIController.instance.AddCommentInGlobalTab(EmptyPictureSprite, _npc.name, randomData.Message, System.DateTime.Now.Hour + ":" + System.DateTime.Now.Minute + ":" + System.DateTime.Now.Second);
     }
     public void AddTotalVisitorCommentCount(int count)
     {
@@ -199,7 +226,7 @@ public class MuseumManager : MonoBehaviour
 
     public void AddPictureTable(PictureElement PE)
     {
-        CurrentPictureObject.Add(PE);
+        InventoryPictures.Add(PE._pictureData);
     }
 
     public int GetInMuseumVisitorCount()
@@ -214,6 +241,10 @@ public class MuseumManager : MonoBehaviour
     public float GetCurrentGem()
     {
         return Gem;
+    }
+    public int GetCurrentCultureLevel()
+    {
+        return CurrentCultureLevel;
     }
     public float GetCurrentSkillPoint()
     {
@@ -284,19 +315,14 @@ public class MuseumManager : MonoBehaviour
 
     public List<Texture2D> GetPicturesTexture()
     {
-        return MyPictures.Select(x=> x.texture).ToList();
+        return PictureDatabase.Select(x=> x.texture).ToList();
     }
     public PictureElement GetPictureElement(int _id)
     {
-        Debug.Log(_id);
+        Debug.Log("get itemid: " + _id);
         PictureElement[] pictureElements = FindObjectsOfType<PictureElement>();
-        MyPictureObjects = pictureElements.Where(x=> x.isLocked == false).ToList();
-        return MyPictureObjects.Find(x => x.id == _id);
-    }
-
-    public Texture2D GetTextureInMyPictures(int _id)
-    {
-        return MyPictures.Where(x => x.id == _id).Select(x=> x.texture).FirstOrDefault();
+        CurrentActivePictures = pictureElements.Where(x=> x._pictureData.isLocked == false).ToList();
+        return CurrentActivePictures.Find(x => x._pictureData.id == _id);
     }
 
     public List<int> CultureLevel = new List<int>() 

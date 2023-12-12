@@ -21,7 +21,6 @@ public class ShopController : MonoBehaviour
     public float ClikedShopTabAlpha = 0.2f;
     public float DefaultShopTabAlpha = 1f;
 
-
     public static ShopController instance { get; set; }
     
     private void Awake()
@@ -38,7 +37,6 @@ public class ShopController : MonoBehaviour
     {
         itemContent = GameObject.FindWithTag("ShopPanelItems").transform;
         
-       
         ClearAllItemsInShop();
         List<ItemData> items = new List<ItemData>();
         items=ItemManager.instance.GetAllItemDatas();
@@ -196,8 +194,8 @@ public class ShopController : MonoBehaviour
     }
     public void BuyItem(ItemData _item)
     {
-        MuseumManager.instance.AddGold(500000); // KRÝTÝK KOD TESTTEN SONRA SÝLÝNMELÝ!
-        MuseumManager.instance.AddGem(500000); // KRÝTÝK KOD TESTTEN SONRA SÝLÝNMELÝ!
+        MuseumManager.instance.AddGold(5000); // KRÝTÝK KOD TESTTEN SONRA SÝLÝNMELÝ!
+        MuseumManager.instance.AddGem(5000); // KRÝTÝK KOD TESTTEN SONRA SÝLÝNMELÝ!
         Debug.Log(_item.CurrentItemType + " Item tipinde ki " + _item.Amount + " miktarda " + _item.Name + " adlý ürün " + _item.RequiredMoney + " " + _item.CurrentShoppingType + " karþýlýðýnda satýlmak istendi.");
         if (_item.CurrentShoppingType == ShoppingType.Gem)
         {
@@ -212,18 +210,11 @@ public class ShopController : MonoBehaviour
                 {
                     // Gemle satýn alýnan tablo
                     //Tablo satýlýnca marketten kaldýrýlmayacak fakat satýn alýndý yazýsý çýkacak.
-                    PictureElement newPE = new PictureElement()
-                    {
-                        id = MuseumManager.instance.CurrentPictureObject.Last().id + 1,
-                        data = new PictureElementData()
-                        {
-                            id = MuseumManager.instance.CurrentPictureObject.Last().data.id + 1,
-                            texture = _item.ImageSprite.texture,                            
-                        },
-                        painterData = new PainterData(_item.ID,_item.Name,_item.Description,_item.StarCount, null)                        
-                    };
-                    newPE.data.MostCommonColors = CatchTheColors.instance.FindMostUsedColors(newPE.data.texture);
-
+                    PictureData newInventoryItem = new PictureData();
+                    newInventoryItem.TextureID = _item.textureID;
+                    newInventoryItem.RequiredGold = PicturesMenuController.instance.PictureChangeRequiredAmount;
+                    newInventoryItem.painterData = new PainterData(_item.ID, _item.Description, _item.Name, _item.StarCount);
+                    MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
                 }
             }
             else
@@ -242,8 +233,11 @@ public class ShopController : MonoBehaviour
                 }
                 else if (_item.CurrentItemType == ItemType.Table)
                 {
-                    // Golda satýn alýnan tablo
-                    //Tablo satýlýnca marketten kaldýrýlmayacak fakat satýn alýndý yazýsý çýkacak.
+                    PictureData newInventoryItem = new PictureData();
+                    newInventoryItem.TextureID = _item.textureID;
+                    newInventoryItem.RequiredGold = PicturesMenuController.instance.PictureChangeRequiredAmount;
+                    newInventoryItem.painterData = new PainterData(_item.ID,_item.Description,_item.Name, _item.StarCount);
+                    MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
                 }
             }
             else

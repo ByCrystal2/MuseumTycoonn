@@ -12,7 +12,7 @@ using UnityEngine.UI;
 
 public class PicturesMenuController : MonoBehaviour
 {
-    [SerializeField] List<Sprite> Pictures;
+    [SerializeField] public List<int> TextureIds = new List<int>();
     [SerializeField] GameObject pictureSlotPrefab;
     [SerializeField] Transform pictureContent;
     [SerializeField] GameObject ddPainter;
@@ -23,16 +23,18 @@ public class PicturesMenuController : MonoBehaviour
 
     [SerializeField] GameObject[] OpenStars;
     [SerializeField] GameObject[] CloseStars;
-    [SerializeField] TextMeshProUGUI txtPainterName;
-    [SerializeField] TextMeshProUGUI txtRequiredGold;
+    [SerializeField] public TextMeshProUGUI txtPainterName;
+    [SerializeField] public TextMeshProUGUI txtRequiredGold;
     [SerializeField] Image imgPicture;
     [SerializeField] Button PictureUpdateButton;
     [SerializeField] Button ExitPanelButton;
 
-    public Texture2D CurrentTexture;
     public PictureElement CurrentPicture;
 
     public int pictureCount;
+    public int PictureChangeRequiredAmount = 250;
+
+    public int lastClickedIndex = -1;
 
     public static PicturesMenuController instance { get; set; }
     private void Awake()
@@ -51,21 +53,76 @@ public class PicturesMenuController : MonoBehaviour
         ExitPanelButton.onClick.AddListener(ExitPicturePanel);
     }
 
-    public void AddPicture(PictureElement PE)
+    public void UpdatePicture()
     {
-        CurrentPicture = PE;
-        SetCurrentPicture(PE);
+        int length = pictureContent.childCount;
+        for (int i = length - 1; i >= 0; i--)
+            Destroy(pictureContent.GetChild(i).gameObject);
+
+        TextureIds.Clear();
+
+        foreach (var item in MuseumManager.instance.InventoryPictures)
+            TextureIds.Add(item.TextureID);
         
+        for (int i = 0; i < TextureIds.Count; i++)
+        {
+            GameObject newPicture = Instantiate(pictureSlotPrefab, pictureContent);
+            int index = i + 1;
+            if (index == TextureIds.Count - 1)
+            {
+                index = i;
+            }
+
+            //if (index == 0)
+            //{
+            //    index = 1;
+            //}
+            Debug.Log("Picture Index: " + index);
+            PictureElementData ped = MuseumManager.instance.GetPictureElementData(TextureIds[i]);
+            int u = i;
+            newPicture.GetComponent<Button>().onClick.AddListener(() => GetClickedImage(u, ped));
+            newPicture.GetComponent<Image>().sprite = CatchTheColors.instance.TextureToSprite(ped.texture);
+            newPicture.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = i.ToString();
+            pictureCount++;
+        }
+    }
+
+    public void GetClickedImage(int _index, PictureElementData _ped)
+    {
+        SetPicture(_ped.texture);
+
         for (int i = 0; i < CloseStars.Length; i++)
         {
             CloseStars[i].SetActive(true);
             OpenStars[i].SetActive(false);
         }
 
-        txtPainterName.text = PE.painterData.Name;
-        txtRequiredGold.text = "Gerekli Altýn: " + PE.RequiredGold;
-        
-        for (int i = 0; i < PE.painterData.StarCount; i++)
+        lastClickedIndex = _index;
+        txtPainterName.text = MuseumManager.instance.InventoryPictures[_index].painterData.Name;
+        txtRequiredGold.text = "Gerekli Altýn: " + PictureChangeRequiredAmount;
+
+        for (int i = 0; i < MuseumManager.instance.InventoryPictures[_index].painterData.StarCount; i++)
+        {
+            OpenStars[i].SetActive(true);
+        }
+    }
+
+    public void AddPicture(PictureElement PE)
+    {
+        UpdatePicture();
+        CurrentPicture = PE;
+        SetCurrentPicture(PE);
+
+        for (int i = 0; i < CloseStars.Length; i++)
+        {
+            CloseStars[i].SetActive(true);
+            OpenStars[i].SetActive(false);
+        }
+
+        txtPainterName.text = PE._pictureData.painterData.Name;
+        txtRequiredGold.text = "Gerekli Altýn: " + PictureChangeRequiredAmount;
+
+        for (int i = 0; i < PE._pictureData.painterData.StarCount; i++)
         {
             OpenStars[i].SetActive(true);
         }
@@ -77,35 +134,10 @@ public class PicturesMenuController : MonoBehaviour
         {
             textures.Add(picture);
         }
-        foreach (var texture in textures)
-        {
-            Pictures.Add(CatchTheColors.instance.TextureToSprite(texture));
-        }
-
 
         GameManager.instance.UIControl = true;
-        for (int i = 0; i < Pictures.Count; i++)
-        {
-            GameObject newPicture = Instantiate(pictureSlotPrefab, pictureContent);
-            int index = i + 1;
-            if (index == Pictures.Count-1)
-            {
-                index = i;
-            }
-            
-            //if (index == 0)
-            //{
-            //    index = 1;
-            //}
-            Debug.Log("Picture Index: " + index);
-            newPicture.GetComponent<Button>().onClick.AddListener(() => UIController.instance.GetClickedImage(index));
-            newPicture.GetComponent<Image>().sprite = Pictures[i];
-            newPicture.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = i.ToString();
-            pictureCount++;
-        }
         pictureCount = 0;
         pnlPicturesMenu.SetActive(true);
-        Pictures = new List<Sprite>();
     }
 
     public void SetPictureUpdateButton(bool _interactable, string _name, Color _color)
@@ -116,46 +148,61 @@ public class PicturesMenuController : MonoBehaviour
     }
     public void UpdateTable()
     {
-        if (CurrentPicture != null && CurrentTexture != null && CurrentPicture.RequiredGold <= MuseumManager.instance.GetCurrentGold())
+        Debug.Log("Update Table CurrentPicture is null:" + (CurrentPicture == null));
+        bool isFirst = true;
+        if (CurrentPicture != null && PictureChangeRequiredAmount <= MuseumManager.instance.GetCurrentGold())
         {
-            MuseumManager.instance.SpendingGold(CurrentPicture.RequiredGold);
-            CurrentPicture.data.texture = CurrentTexture;
-            if (CurrentPicture.isFirst)
+            MuseumManager.instance.SpendingGold(PictureChangeRequiredAmount);
+            if (CurrentPicture._pictureData.isFirst)
             {
                 SetPictureUpdateButton(false, "Eklendi", Color.white);                
-                MuseumManager.instance.GetPictureElement(CurrentPicture.id).RequiredGold = Mathf.RoundToInt(CurrentPicture.RequiredGold * 0.5f);
-                txtRequiredGold.text = "Gerekli Altýn: " + CurrentPicture.RequiredGold;
+                //MuseumManager.instance.GetPictureElement(PictureChangeRequiredAmount = Mathf.RoundToInt(CurrentPicture._pictureData.RequiredGold * 0.5f);
+                txtRequiredGold.text = "Gerekli Altýn: " + PictureChangeRequiredAmount;
             }
             else
             {
+                isFirst = false;
                 SetPictureUpdateButton(false, "Deðiþtirildi", Color.white);
             }
-            MuseumManager.instance.GetPictureElement(CurrentPicture.id).UpdateVisual();
 
-            CurrentPicture.isFirst = false;
-            
+            PictureData _currentData = new PictureData();
+            _currentData.TextureID = CurrentPicture._pictureData.TextureID;
+            _currentData.painterData = new PainterData(CurrentPicture._pictureData.painterData);
+
+            CurrentPicture._pictureData.TextureID = MuseumManager.instance.InventoryPictures[lastClickedIndex].TextureID;
+            MuseumManager.instance.GetPictureElement(CurrentPicture._pictureData.id).UpdateVisual();
+
+            CurrentPicture._pictureData.isFirst = false;
+
+            MuseumManager.instance.InventoryPictures.RemoveAt(lastClickedIndex);
+            if(!isFirst)
+                MuseumManager.instance.InventoryPictures.Add(_currentData);
+            UpdatePicture();
         }
     }
 
     public void SetCurrentPicture(PictureElement PE)
     {
+        Debug.Log("Set current picture!");
         if (PE == null) { return; }
-        if (!PE.isFirst)
+        if (!PE._pictureData.isFirst)
         {
-            imgPicture.sprite = CatchTheColors.instance.TextureToSprite(PE.data.texture);
+            Debug.Log("ID: " + PE._pictureData.TextureID);
+            PictureElementData ped = MuseumManager.instance.GetPictureElementData(PE._pictureData.TextureID);
+            imgPicture.sprite = CatchTheColors.instance.TextureToSprite(ped.texture);
         }
-        if (PE.RequiredGold <= MuseumManager.instance.GetCurrentGold())
+        if (PictureChangeRequiredAmount <= MuseumManager.instance.GetCurrentGold())
         {
             
             if (imgPicture.sprite == null)
             {
                 SetPictureUpdateButton(false, "Yeterli", Color.white);
             }
-            else if ( imgPicture.sprite != null && CurrentTexture != null && PE.isFirst)
+            else if ( imgPicture.sprite != null && PE._pictureData.isFirst)
             {            
                 SetPictureUpdateButton(true, "Ekle", Color.green);
             }
-            else if (imgPicture.sprite != null && CurrentTexture != null && !PE.isFirst)
+            else if (imgPicture.sprite != null && !PE._pictureData.isFirst)
             {
                 SetPictureUpdateButton(true, "Deðiþtir", Color.Lerp(Color.green, new Color(1, 1, 0, 0.5f), 0.5f));
             }
@@ -163,20 +210,21 @@ public class PicturesMenuController : MonoBehaviour
         else
         {
             Debug.Log("Picture Ýçin para Yetersiz.");
-            Debug.Log(PE.RequiredGold);
+            Debug.Log(PictureChangeRequiredAmount);
             SetPictureUpdateButton(false, "Yetersiz", Color.red);
         }
 
     }
     public void SetPicture(Texture2D texture2D)
     {
+        Debug.Log("SetPicture");
         imgPicture.sprite = CatchTheColors.instance.TextureToSprite(texture2D);
-        if (CurrentPicture.RequiredGold <= MuseumManager.instance.GetCurrentGold())
+        if (PictureChangeRequiredAmount <= MuseumManager.instance.GetCurrentGold())
         {
             Debug.Log("Picture Ýçin para Yeterli.");
-            Debug.Log(CurrentPicture.RequiredGold);
+            Debug.Log(PictureChangeRequiredAmount);
 
-            if (CurrentPicture.isFirst)
+            if (CurrentPicture._pictureData.isFirst)
             {
                 SetPictureUpdateButton(true, "Ekle", Color.green);
             }
@@ -189,20 +237,12 @@ public class PicturesMenuController : MonoBehaviour
         else
         {
             SetPictureUpdateButton(false, "Yetersiz", Color.red);
-        }
-        CurrentTexture = texture2D;        
+        }     
     }
 
     public void ExitPicturePanel()
     {        
         pnlPicturesMenu.SetActive(false);
         CurrentPicture = null;
-        CurrentTexture = null;
     }
-    public Sprite GetRandomPicture()
-    {        
-        return Pictures[Random.Range(0, Pictures.Count)];
-    }
-
-    
 }

@@ -154,8 +154,8 @@ public class NPCBehaviour : MonoBehaviour
     public void InvestigateStart()
     {
         PictureElement PE = TargetPosition.GetComponentInParent<PictureElement>();
-
-        if (PE.data == null)
+         
+        if (PE._pictureData.TextureID == 0)
         {
             CurrentState = NPCState.Move;
             CreateTarget();
@@ -355,7 +355,7 @@ public class NPCBehaviour : MonoBehaviour
 
             return true;
         }
-        if (PE.data == null)
+        if (PE._pictureData.TextureID == 0)
         {
             if (NpcVisittingArtAmount == 0)
             {
@@ -367,7 +367,8 @@ public class NPCBehaviour : MonoBehaviour
         int NPCMaxScore = 10;
         int NPCMinScore = 0;
         int NPCCurrentScore = 5;
-        List<MyColors> ArtColors = PE.data.MostCommonColors;
+        PictureElementData ped = MuseumManager.instance.GetPictureElementData(PE._pictureData.TextureID);
+        List<MyColors> ArtColors = ped.MostCommonColors;
         int length = ArtColors.Count;
         int length2 = LikedColors.Count;
         for (int i = 0; i < length; i++)

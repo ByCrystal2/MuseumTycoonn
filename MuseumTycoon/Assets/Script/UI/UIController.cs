@@ -77,6 +77,9 @@ public class UIController : MonoBehaviour
         DontDestroyOnLoad(this);
         GemText.text = "0";
         SkillRequiredInfoPanel.SetActive(false);
+        GoldText.text = "" + MuseumManager.instance.GetCurrentGold();
+        GemText.text = "" + MuseumManager.instance.GetCurrentGem();
+        CultureLevelText.text = "" + MuseumManager.instance.GetCurrentCultureLevel();
     }
     private void Start()
     {
@@ -136,21 +139,9 @@ public class UIController : MonoBehaviour
         //}
     }
 
-    public void GetClickedImage(int _id) // btn* /pnlPicturesMenu / ItemContent / InventorySlot
-    {
-        Texture2D newTexture = MuseumManager.instance.GetTextureInMyPictures(_id);        
-        if (newTexture == null)
-        {
-            Debug.Log("Null Texture");
-            return;
-        }
-        PicturesMenuController.instance.SetPicture(newTexture);
-        //imgPicture.sprite = CatchTheColors.instance.TextureToSprite(newTexture);
-    }
-
     public void SetSelectedPicture(int _id)
     {
-        _LastSelectedPicture.data = MuseumManager.instance.MyPictures[Random.Range(0, MuseumManager.instance.MyPictures.Count)];
+        _LastSelectedPicture._pictureData.TextureID = _id;
         _LastSelectedPicture.UpdateVisual();
     }
     

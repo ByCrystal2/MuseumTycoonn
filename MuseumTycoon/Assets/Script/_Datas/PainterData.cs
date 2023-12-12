@@ -10,15 +10,13 @@ public class PainterData
     public string Description;
     public float StarCount;
     public List<NpcComment> npcComments;
-    public Sprite Picture;
 
-    public PainterData(int iD, string name, string description, float starCount, Sprite picture)
+    public PainterData(int iD, string name, string description, float starCount)
     {
         this.ID = iD;
         this.Name = name;
         this.Description = description;
-        this.StarCount = starCount;
-        this.Picture = picture;        
+        this.StarCount = starCount;     
     }
 
     public PainterData(PainterData painter)
@@ -27,7 +25,6 @@ public class PainterData
         this.Name = painter.Name;
         this.Description = painter.Description;
         this.StarCount = painter.StarCount;
-        this.Picture = painter.Picture;
         this.npcComments = painter.npcComments;
     }
 

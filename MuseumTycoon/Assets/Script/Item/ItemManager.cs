@@ -25,10 +25,12 @@ public class ItemManager : MonoBehaviour
         // ADD Items
         List<Texture2D> TableTextures = MuseumManager.instance.GetPicturesTexture();
         ItemData item1 = new ItemData(1000, "Gold", "", 10000, 5, Resources.Load<Texture2D>("ItemPictures/ItemGold10000x"), ItemType.Gold, ShoppingType.Gem,0);
-        ItemData item2 = new ItemData(1001, "Leonardo Da Vinci", "Þaþalý bir tablo", 0, 50, TableTextures[Random.Range(0, TableTextures.Count)], ItemType.Table, ShoppingType.RealMoney, 5);
-        ItemData item3 = new ItemData(1002, "Vincent Van Gogh", "1784'de resmedilen ünlü eser.", 0, 150, TableTextures[Random.Range(0, TableTextures.Count)], ItemType.Table, ShoppingType.Gem,4);
+        ItemData item2 = new ItemData(1001, "Leonardo Da Vinci", "Þaþalý bir tablo", 0, 50, null, ItemType.Table, ShoppingType.Gold, 5, 5);
+        ItemData item3 = new ItemData(1002, "Vincent Van Gogh", "1784'de resmedilen ünlü eser.", 0, 150, null, ItemType.Table, ShoppingType.Gem,4, 1);
         ItemData item4 = new ItemData(1003, "Gem", "", 100, 15.99f, Resources.Load<Sprite>("ItemPictures/ItemGem100x").texture, ItemType.Gem, ShoppingType.RealMoney,0);
         ItemData item5 = new ItemData(1004, "Gem", "", 75, 75000, Resources.Load<Sprite>("ItemPictures/ItemGold50000x").texture, ItemType.Gem, ShoppingType.Gold,0);
+        ItemData item6 = new ItemData(1005, "Leonardo Da Vinci", "Þaþalý bir tablo", 0, 50, null, ItemType.Table, ShoppingType.Gem, 5, 4);
+        ItemData item7 = new ItemData(1006, "Leonardo Da Vinci", "Þaþalý bir tablo", 0, 50, null, ItemType.Table, ShoppingType.Gem, 5, 3);
         //ItemData item5 = new ItemData(1004, "Gem", "Þok Fiyata!", 200, 29.99f, "", ItemType.Gem, ShoppingType.RealMoney);
         //ItemData item6 = new ItemData(1005, "Gem", "Al-Ver", 5, 25000, "", ItemType.Gem, ShoppingType.Gold);
 
@@ -38,6 +40,8 @@ public class ItemManager : MonoBehaviour
         ItemDatas.Add(item3);
         ItemDatas.Add(item4);
         ItemDatas.Add(item5);
+        ItemDatas.Add(item6);
+        ItemDatas.Add(item7);
         //ItemDatas.Add(item5);
         //ItemDatas.Add(item6);
     }
