@@ -22557,7 +22557,7 @@ PrefabInstance:
     - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
         type: 3}
       propertyPath: isActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
         type: 3}
@@ -22568,6 +22568,11 @@ PrefabInstance:
         type: 3}
       propertyPath: Directions.Array.data[1]
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
+        type: 3}
+      propertyPath: availableRoomCell.CellLetter
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -26232,6 +26237,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
         type: 3}
+      propertyPath: availableRoomCell.CellLetter
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
+        type: 3}
       propertyPath: availableRoomCell.CellNumber
       value: 1
       objectReference: {fileID: 0}
@@ -27940,6 +27950,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
         type: 3}
+      propertyPath: isActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
+        type: 3}
       propertyPath: RequiredMoney
       value: 1000
       objectReference: {fileID: 0}
@@ -27947,6 +27962,11 @@ PrefabInstance:
         type: 3}
       propertyPath: Directions.Array.data[1]
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
+        type: 3}
+      propertyPath: availableRoomCell.CellLetter
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
         type: 3}
@@ -31296,6 +31316,11 @@ PrefabInstance:
         type: 3}
       propertyPath: Directions.Array.data[1]
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
+        type: 3}
+      propertyPath: availableRoomCell.CellLetter
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
         type: 3}
@@ -38700,6 +38725,11 @@ PrefabInstance:
         type: 3}
       propertyPath: Directions.Array.data[1]
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
+        type: 3}
+      propertyPath: availableRoomCell.CellLetter
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
         type: 3}
@@ -47185,9 +47215,8 @@ MonoBehaviour:
   CurrentShoppingType: 2
   Directions: 0000000003000000
   isLock: 1
-  isActive: 1
   availableRoomCell:
-    currentCellLetter: 1
+    CellLetter: 0
     CellNumber: 1
 --- !u!1001 &1004013184
 PrefabInstance:
@@ -61351,6 +61380,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
         type: 3}
+      propertyPath: availableRoomCell.CellLetter
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
+        type: 3}
       propertyPath: availableRoomCell.CellNumber
       value: 3
       objectReference: {fileID: 0}
@@ -62232,6 +62266,11 @@ PrefabInstance:
     - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
         type: 3}
       propertyPath: Directions.Array.data[1]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
+        type: 3}
+      propertyPath: availableRoomCell.CellLetter
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
@@ -72523,9 +72562,8 @@ MonoBehaviour:
   CurrentShoppingType: 2
   Directions: 0000000002000000
   isLock: 1
-  isActive: 0
   availableRoomCell:
-    currentCellLetter: 2
+    CellLetter: 0
     CellNumber: 2
 --- !u!1001 &1479938081
 PrefabInstance:
@@ -90065,9 +90103,8 @@ MonoBehaviour:
   CurrentShoppingType: 2
   Directions: 0200000003000000
   isLock: 1
-  isActive: 0
   availableRoomCell:
-    currentCellLetter: 2
+    CellLetter: 0
     CellNumber: 1
 --- !u!1001 &1861137112
 PrefabInstance:
@@ -104328,6 +104365,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 177116582}
+    - target: {fileID: 4773885688443312080, guid: 72fa88990f1d85b49909650d17249cbf,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5271124373097156617, guid: 72fa88990f1d85b49909650d17249cbf,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -104370,6 +104412,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
         type: 3}
+      propertyPath: isActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
+        type: 3}
       propertyPath: RequiredMoney
       value: 1000
       objectReference: {fileID: 0}
@@ -104382,6 +104429,11 @@ PrefabInstance:
         type: 3}
       propertyPath: Directions.Array.data[1]
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
+        type: 3}
+      propertyPath: availableRoomCell.CellLetter
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9094033809029360758, guid: 72fa88990f1d85b49909650d17249cbf,
         type: 3}

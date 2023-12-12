@@ -15,7 +15,6 @@ public class RoomManager : MonoBehaviour
     public Sprite GemSprite;
     public Sprite GoldSprite;
     public Sprite RealMoneySprite;
-    
     int currentRoomID;
 
     public static RoomManager instance { get; set; }
@@ -26,14 +25,14 @@ public class RoomManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        instance = this;        
+        instance = this;
     }
-        public void BuyTheRoom(RoomData currentRoom)
+    public void BuyTheRoom(RoomData currentRoom)
     {
         Debug.Log("Kapý kilidine týklandý/dokunuldu.");
         MuseumManager.instance.AddGold(100000); // KRÝTÝK KOD TEST EDÝLDÝKTEN SONRA KALDIRILMALI!!        
         currentRoomID = currentRoom.ID;
-       
+
         PnlBuyRoom.SetActive(false);
         txtRequiredMoney.text = currentRoom.RequiredMoney.ToString();
         Money.sprite = SetAndControlItemIcon(currentRoom.CurrentShoppingType);
@@ -55,76 +54,126 @@ public class RoomManager : MonoBehaviour
     public void CancelButton()
     {
         PnlBuyRoom.SetActive(false);
+
     }
 
     public void AcceptButton()
     {
         PnlBuyRoom.SetActive(false);
         List<RoomData> roomDatas = GameObject.FindObjectsOfType<RoomData>().ToList();
-        RoomData purchasedRoom = roomDatas.Where(x=> x.ID == currentRoomID).FirstOrDefault();
-        Debug.Log(purchasedRoom.name + " Adlý, " + purchasedRoom.availableRoomCell.currentCellLetter + purchasedRoom.availableRoomCell.CellNumber + " Kodlu oda için " + "Satýn alma iþlevi sorgulanýyor...");
+
+        //RoomData purchasedRoom = roomDatas.Where(x=> x.ID == currentRoomID).SingleOrDefault();
+        RoomData purchasedRoom;
+        string exMessage;
+        if (TryGetRoomData(currentRoomID, out purchasedRoom, roomDatas, out exMessage))
+            Debug.Log(exMessage);
+        else
+        {
+            Debug.Log(exMessage);
+            return;
+        }
         if (purchasedRoom.CurrentShoppingType == ShoppingType.Gem)
         {
             if (purchasedRoom.RequiredMoney <= MuseumManager.instance.GetCurrentGem())
             {
-                purchasedRoom.isLock = false;
-                purchasedRoom.isActive = true;
-
-                List<RoomData> _CellLetterRooms = roomDatas.Where(x=> x.availableRoomCell.currentCellLetter == purchasedRoom.availableRoomCell.currentCellLetter).ToList();
-                foreach (var room in _CellLetterRooms)
-                {
-                    if ((room.availableRoomCell.CellNumber == purchasedRoom.availableRoomCell.CellNumber - 1 || room.availableRoomCell.CellNumber == purchasedRoom.availableRoomCell.CellNumber + 1) && room.isLock && room.isActive )
-                    {
-                        room.RequiredMoney += (purchasedRoom.RequiredMoney * 2) + 500;
-                        break;
-                    }
-                }
-
+                RoomsActivationAndPurchasedControl(purchasedRoom, roomDatas);
             }
             else
             {
-                Debug.Log(purchasedRoom.availableRoomCell.currentCellLetter + purchasedRoom.availableRoomCell.CellNumber + "  Numaralý Odayý Satýn Almaya Paran Yetmedi.");
+                Debug.Log(purchasedRoom.availableRoomCell.CellLetter + purchasedRoom.availableRoomCell.CellNumber + "  Numaralý Odayý Satýn Almaya Paran Yetmedi.");
             }
         }
         else if (purchasedRoom.CurrentShoppingType == ShoppingType.Gold)
         {
             if (purchasedRoom.RequiredMoney <= MuseumManager.instance.GetCurrentGold())
             {
-                purchasedRoom.isLock = false;
-                purchasedRoom.isActive = true;
-                // B4
-                List<RoomData> _CellCodeRooms = roomDatas.Where(x => x.availableRoomCell.currentCellLetter == purchasedRoom.availableRoomCell.currentCellLetter || ((int)x.availableRoomCell.currentCellLetter) == ((int)purchasedRoom.availableRoomCell.currentCellLetter) + 1 || ((int)x.availableRoomCell.currentCellLetter) == ((int)purchasedRoom.availableRoomCell.currentCellLetter) - 1).ToList();
-                // A odalarý B Odalarý ve C Odalarý
-                foreach (var currentRoom in _CellCodeRooms) //A1
-                {
-                    int currentRoomCellNumber = currentRoom.availableRoomCell.CellNumber;
-                    int purchasedRoomCellNumber = purchasedRoom.availableRoomCell.CellNumber;
-
-                    int currentRoomCellLetter = ((int)currentRoom.availableRoomCell.currentCellLetter);
-                    int purchasedRoomCellLetter = ((int)purchasedRoom.availableRoomCell.currentCellLetter);
-                    //Mevcut odamýz B3 diye düþünelim.
-                    if (!currentRoom.isActive && currentRoom.isLock)
-                    {
-                        if ((currentRoomCellLetter == purchasedRoomCellLetter && currentRoomCellNumber == purchasedRoomCellNumber - 1) /* Mevcut Oda B3 ise */ || (currentRoomCellLetter == purchasedRoomCellLetter && currentRoomCellNumber == purchasedRoomCellNumber + 1) /* Mevcut Oda B5 ise */  || (currentRoomCellLetter == purchasedRoomCellLetter - 1 && currentRoomCellNumber == purchasedRoomCellNumber) /* Mevcut Oda A4 ise */  || (currentRoomCellLetter == purchasedRoomCellLetter + 1 && currentRoomCellNumber == purchasedRoomCellNumber) /* Mevcut Oda C4 ise */)
-                        {
-                            Debug.Log(currentRoom.name + "ODA ÝSTENEN KLASSMANA UYGUN.");
-                            currentRoom.isActive = true;                            
-                            currentRoom.RequiredMoney = (purchasedRoom.RequiredMoney * 2) + 500;
-
-                            roomDatas.Where(x => x.isActive && x.isLock).Select(x=> x.RequiredMoney = currentRoom.RequiredMoney); // en son burda kaldýk. mevcut odanýn para gereksinimi tüm aktif ve kilitli odalara yansýmýyor.
-                        }
-                        // B3 - B5 - A4 - C4 => 2500                       
-                    }
-                }
+                RoomsActivationAndPurchasedControl(purchasedRoom, roomDatas);
             }
             else
             {
-                Debug.Log(purchasedRoom.availableRoomCell.currentCellLetter + purchasedRoom.availableRoomCell.CellNumber + "  Numaralý Odayý Satýn Almaya Paran Yetmedi.");
+                Debug.Log(purchasedRoom.availableRoomCell.CellLetter + purchasedRoom.availableRoomCell.CellNumber + "  Numaralý Odayý Satýn Almaya Paran Yetmedi.");
             }
         }
         else if (purchasedRoom.CurrentShoppingType == ShoppingType.RealMoney)
         {
+            // Gerçek Parayla satýn alýnan oda iþlemleri...
+        }
+    }
 
+    public void RoomsActivationAndPurchasedControl(RoomData purchasedRoom, List<RoomData> roomDatas)
+    {
+        purchasedRoom.isLock = false;
+        purchasedRoom.isActive = true;
+        // B4
+        List<RoomData> _CellCodeRooms = roomDatas.Where(x => x.availableRoomCell.CellLetter == purchasedRoom.availableRoomCell.CellLetter || ((int)x.availableRoomCell.CellLetter) == ((int)purchasedRoom.availableRoomCell.CellLetter) + 1 || ((int)x.availableRoomCell.CellLetter) == ((int)purchasedRoom.availableRoomCell.CellLetter) - 1).ToList();
+        // A odalarý B Odalarý ve C Odalarý
+        foreach (var currentRoom in _CellCodeRooms) //A1
+        {
+            int currentRoomCellNumber = currentRoom.availableRoomCell.CellNumber;
+            int purchasedRoomCellNumber = purchasedRoom.availableRoomCell.CellNumber;
+
+            int currentRoomCellLetter = ((int)currentRoom.availableRoomCell.CellLetter);
+            int purchasedRoomCellLetter = ((int)purchasedRoom.availableRoomCell.CellLetter);
+            //Mevcut odamýz B3 diye düþünelim.
+            if (!currentRoom.isActive && currentRoom.isLock)
+            {
+                if ((currentRoomCellLetter == purchasedRoomCellLetter && currentRoomCellNumber == purchasedRoomCellNumber - 1) /* Mevcut Oda B3 ise */ || (currentRoomCellLetter == purchasedRoomCellLetter && currentRoomCellNumber == purchasedRoomCellNumber + 1) /* Mevcut Oda B5 ise */  || (currentRoomCellLetter == purchasedRoomCellLetter - 1 && currentRoomCellNumber == purchasedRoomCellNumber) /* Mevcut Oda A4 ise */  || (currentRoomCellLetter == purchasedRoomCellLetter + 1 && currentRoomCellNumber == purchasedRoomCellNumber) /* Mevcut Oda C4 ise */)
+                {
+                    Debug.Log(currentRoom.name + "ODA ÝSTENEN KLASSMANA UYGUN.");
+                    currentRoom.isActive = true;
+                    currentRoom.GetComponentInChildren<RoomCloudActivation>().CloudActivationChange(false);
+                    foreach (GameObject door in currentRoom.Doors)
+                    {
+                        door.SetActive(false);
+                    }
+                    currentRoom.RequiredMoney = (purchasedRoom.RequiredMoney * 2) + 500;
+
+
+                    roomDatas.Where(x => x.isActive && x.isLock).Select(x => x.RequiredMoney = currentRoom.RequiredMoney); // en son burda kaldýk. mevcut odanýn para gereksinimi tüm aktif ve kilitli odalara yansýmýyor.
+                }
+                // B3 - B5 - A4 - C4 => 2500                       
+            }
+        }
+    }
+
+    
+    private bool TryGetRoomData(int roomId, out RoomData room, List<RoomData> _roomDatas, out string _exMessage)
+    {
+        room = _roomDatas.FirstOrDefault(x => x.ID == roomId);
+
+        if (room != null)
+        {
+            // Belirtilen ID'ye sahip oda bulundu
+            bool multipleRooms = _roomDatas.Count(x => x.ID == roomId) > 1;
+            if (multipleRooms)
+            {
+                // Birden fazla oda var
+                _exMessage =  room.ID + " Bu ID'den Birden fazla oda mevcut. Bu odalar þunlardýr: ";
+                RoomData currentRoom = room;//A2
+                List<RoomCell> roomCodes = _roomDatas.Where(x => x.ID == roomId).Select(x=> x.availableRoomCell).ToList(); // RoomCell listesi at.
+                // Bütün odalarýmýzýn bulunduðu roomdatas listesinde, mevcut odamýzýn id'si ile eþleþen odalarýn RoomCell'ini listeledik ve RoomCell tipinde ki roomCodes adlý Listeye aktardýk.          
+                
+                
+                foreach (RoomCell roomCode in roomCodes) // örn: 3 adet roomCode var.
+                {
+                    
+                    _exMessage += (" " + roomCode.CellLetter + roomCode.CellNumber + " Kodlu Oda.").ToString(); //  room.ID + " Bu ID'den Birden fazla oda mevcut. Bu odalar þunlardýr: A1 Kodlu Oda. A2 Kodlu Oda. A3 Kodlu Oda."
+                }
+                
+                return false;
+            }
+            else
+            {
+                // Tek oda bulundu
+                _exMessage = room.ID + " ID olan " + room.availableRoomCell.CellLetter + room.availableRoomCell.CellNumber + " Kodlu Oda Bulundu.";
+                return true;
+            }
+        }
+        else
+        {
+            // Belirtilen ID'ye sahip oda bulunamadý
+            _exMessage = "Belirtilen ID'ye sahip oda bulunamadý";
+            return false;
         }
     }
 }

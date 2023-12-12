@@ -31,8 +31,7 @@ public class GameManager : MonoBehaviour
 
     public void Init()
     {
-        SceneManager.LoadScene("Menu");
-        Painter.instance.AddBasePainters();
+        SceneManager.LoadScene("Menu");        
         TableCommentEvaluationManager.instance.AddAllNPCComments();
         SkillTreeManager.instance.AddSkillsForSkillTree();
         ItemManager.instance.AddItems();

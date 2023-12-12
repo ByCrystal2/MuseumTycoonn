@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class RoomData : MonoBehaviour
@@ -10,15 +12,18 @@ public class RoomData : MonoBehaviour
     public ShoppingType CurrentShoppingType;
     public List<DoorDirection> Directions = new List<DoorDirection>();
     public bool isLock = true;
+
+    
     public bool isActive = false;
+    
     [SerializeField] public RoomCell availableRoomCell = new RoomCell();
 
-    private List<GameObject> Doors = new List<GameObject>();
+    public List<GameObject> Doors = new List<GameObject>();
     private GameObject RoomBlok;
     private void Awake()
     {
         
-        RoomBlok = gameObject.transform.GetChild(5).GetChild(1).gameObject;
+        RoomBlok = gameObject.GetComponentInChildren<RoomBlokClickHandler>().gameObject;
         if (isLock)
         {
             int childCount = gameObject.transform.GetChild(4).childCount;
@@ -95,6 +100,6 @@ public enum CellLetter
 [System.Serializable]
 public struct RoomCell
 {
-    public CellLetter currentCellLetter;
+    public CellLetter CellLetter;
     public int CellNumber;
 }
