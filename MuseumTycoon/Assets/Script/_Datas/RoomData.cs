@@ -12,8 +12,6 @@ public class RoomData : MonoBehaviour
     public ShoppingType CurrentShoppingType;
     public List<DoorDirection> Directions = new List<DoorDirection>();
     public bool isLock = true;
-
-    
     public bool isActive = false;
     
     [SerializeField] public RoomCell availableRoomCell = new RoomCell();
@@ -21,7 +19,7 @@ public class RoomData : MonoBehaviour
     public List<GameObject> Doors = new List<GameObject>();
     private GameObject RoomBlok;
     private GameObject RoofLock;
-    private void Awake()
+    private void Start()
     {
         
         RoomBlok = gameObject.GetComponentInChildren<RoomBlokClickHandler>().gameObject;
@@ -131,6 +129,16 @@ public enum CellLetter
     Z,
 
 }
+
+[System.Serializable]
+public class RoomSaveData 
+{
+    public string availableRoomCell;
+    public bool isLock = true;
+    public bool isActive = false;
+    public float RequiredMoney;
+}
+
 [System.Serializable]
 public struct RoomCell
 {

@@ -11,12 +11,19 @@ public class PainterData
     public float StarCount;
     public List<NpcComment> npcComments;
 
-    public PainterData(int iD, string name, string description, float starCount)
+    public PainterData(int iD, string name, string description, float starCount, List<NpcComment> _comments = null)
     {
         this.ID = iD;
         this.Name = name;
         this.Description = description;
-        this.StarCount = starCount;     
+        this.StarCount = starCount;
+        if (_comments != null)
+        {
+            List<NpcComment> npcNew = new List<NpcComment>();
+            foreach (var item in _comments)
+                npcNew.Add(item);
+            this.npcComments = npcNew;
+        }
     }
 
     public PainterData(PainterData painter)
@@ -25,7 +32,17 @@ public class PainterData
         this.Name = painter.Name;
         this.Description = painter.Description;
         this.StarCount = painter.StarCount;
-        this.npcComments = painter.npcComments;
+
+        if (painter !=null)
+        {
+            if (painter.npcComments != null)
+            {
+                List<NpcComment> npcNew = new List<NpcComment>();
+                foreach (var item in painter.npcComments)
+                    npcNew.Add(item);
+                this.npcComments = npcNew;
+            }
+        }
     }
 
     public void AddPainterNPCComments(List<NpcComment> npcCommentsList)
@@ -53,10 +70,6 @@ public class PainterData
         float yeniSonuc = StarCount + (starRating * katsayi);
 
         // Sonucu güncelle
-        StarCount = Mathf.Round(yeniSonuc);
-        
+        StarCount = Mathf.Round(yeniSonuc); 
     }
-
-
-
 }

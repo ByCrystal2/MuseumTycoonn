@@ -30,7 +30,7 @@ public class RoomManager : MonoBehaviour
     public void BuyTheRoom(RoomData currentRoom)
     {
         Debug.Log("Kapý kilidine týklandý/dokunuldu.");
-        MuseumManager.instance.AddGold(100000); // KRÝTÝK KOD TEST EDÝLDÝKTEN SONRA KALDIRILMALI!!        
+        MuseumManager.instance.AddGold(10000); // KRÝTÝK KOD TEST EDÝLDÝKTEN SONRA KALDIRILMALI!!        
         currentRoomID = currentRoom.ID;
 
         PnlBuyRoom.SetActive(false);

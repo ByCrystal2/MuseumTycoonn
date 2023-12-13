@@ -57,7 +57,7 @@ public class PicturesMenuController : MonoBehaviour
 
     private void Start()
     {
-        PictureUpdateButton.onClick.AddListener(UpdateTable);
+        PictureUpdateButton.onClick.AddListener(UpdateTablo);
         ExitPanelButton.onClick.AddListener(ExitPicturePanel);
         AdsPanelActivationButton.onClick.AddListener(TestingAdsPanelActivation);
         LoadRewardVideoButton.onClick.AddListener(TestingLoadRewardVideo);
@@ -161,7 +161,7 @@ public class PicturesMenuController : MonoBehaviour
         PictureUpdateButton.transform.GetChild(0).GetComponent<Text>().text = _name;
         PictureUpdateButton.transform.GetChild(0).GetComponent<Text>().color = _color;
     }
-    public void UpdateTable()
+    public void UpdateTablo()
     {
         Debug.Log("Update Table CurrentPicture is null:" + (CurrentPicture == null));
         bool isFirst = true;
@@ -179,19 +179,40 @@ public class PicturesMenuController : MonoBehaviour
                 isFirst = false;
                 SetPictureUpdateButton(false, "Deðiþtirildi", Color.white);
             }
+            //CurrentPicture._pictureData.isFirst = false;
 
-            PictureData _currentData = new PictureData();
-            _currentData.TextureID = CurrentPicture._pictureData.TextureID;
-            _currentData.painterData = new PainterData(CurrentPicture._pictureData.painterData);
+            Debug.Log("lastClickedIndex: " + lastClickedIndex);
 
-            CurrentPicture._pictureData.TextureID = MuseumManager.instance.InventoryPictures[lastClickedIndex].TextureID;
-            MuseumManager.instance.GetPictureElement(CurrentPicture._pictureData.id).UpdateVisual();
+            int keepID = CurrentPicture._pictureData.id;
+            bool keepisActive = CurrentPicture._pictureData.isActive;
+            bool keepisLocked = CurrentPicture._pictureData.isLocked;
 
-            CurrentPicture._pictureData.isFirst = false;
+            PictureData inventoryData = new PictureData();
+            inventoryData.painterData = new PainterData(CurrentPicture._pictureData.painterData);
+            inventoryData.TextureID = CurrentPicture._pictureData.TextureID;
+            inventoryData.id = CurrentPicture._pictureData.id;
+            inventoryData.isFirst = false;
+            inventoryData.isActive = CurrentPicture._pictureData.isActive;
+            inventoryData.isLocked = CurrentPicture._pictureData.isLocked;
+            inventoryData.RequiredGold = CurrentPicture._pictureData.RequiredGold;
+
+            PictureData currentInventory = MuseumManager.instance.InventoryPictures[lastClickedIndex];
+            PictureData wallData = new PictureData();
+            wallData.painterData = new PainterData(currentInventory.painterData);
+            wallData.TextureID = currentInventory.TextureID;
+            wallData.id = keepID;
+            wallData.isFirst = false;
+            wallData.isActive = keepisActive;
+            wallData.isLocked = keepisLocked;
+            wallData.RequiredGold = currentInventory.RequiredGold;
+
+            CurrentPicture._pictureData = wallData;
+            //-----------
 
             MuseumManager.instance.InventoryPictures.RemoveAt(lastClickedIndex);
             if(!isFirst)
-                MuseumManager.instance.InventoryPictures.Add(_currentData);
+                MuseumManager.instance.InventoryPictures.Add(inventoryData);
+            MuseumManager.instance.GetPictureElement(CurrentPicture._pictureData.id).UpdateVisual();
             UpdatePicture();
         }
     }

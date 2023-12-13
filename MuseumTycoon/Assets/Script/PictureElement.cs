@@ -35,7 +35,7 @@ public class PictureElement : MonoBehaviour
         }
     }
 
-    public void UpdateVisual()
+    public void UpdateVisual(bool _isLoadGame = false)
     {
         Image im = transform.GetChild(0).GetChild(0).GetComponent<Image>();
         PictureElementData ped = MuseumManager.instance.GetPictureElementData(_pictureData.TextureID);
@@ -53,7 +53,8 @@ public class PictureElement : MonoBehaviour
             im.sprite = MuseumManager.instance.EmptyPictureSprite;
         }
 
-        GameManager.instance.Save();
+        if(!_isLoadGame)
+            GameManager.instance.Save();
     }
 
     void SaveThisPicture()
