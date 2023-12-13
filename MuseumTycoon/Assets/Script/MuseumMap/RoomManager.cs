@@ -77,6 +77,7 @@ public class RoomManager : MonoBehaviour
             if (purchasedRoom.RequiredMoney <= MuseumManager.instance.GetCurrentGem())
             {
                 RoomsActivationAndPurchasedControl(purchasedRoom, roomDatas);
+                MuseumManager.instance.SpendingGem(purchasedRoom.RequiredMoney);
             }
             else
             {
@@ -88,6 +89,7 @@ public class RoomManager : MonoBehaviour
             if (purchasedRoom.RequiredMoney <= MuseumManager.instance.GetCurrentGold())
             {
                 RoomsActivationAndPurchasedControl(purchasedRoom, roomDatas);
+                MuseumManager.instance.SpendingGold(purchasedRoom.RequiredMoney);
             }
             else
             {
@@ -104,16 +106,19 @@ public class RoomManager : MonoBehaviour
     {
         purchasedRoom.isLock = false;
         purchasedRoom.isActive = true;
+        purchasedRoom.IsPurchased(true);
+        int purchasedRoomCellNumber = purchasedRoom.availableRoomCell.CellNumber;
+        int purchasedRoomCellLetter = ((int)purchasedRoom.availableRoomCell.CellLetter);
         // B4
         List<RoomData> _CellCodeRooms = roomDatas.Where(x => x.availableRoomCell.CellLetter == purchasedRoom.availableRoomCell.CellLetter || ((int)x.availableRoomCell.CellLetter) == ((int)purchasedRoom.availableRoomCell.CellLetter) + 1 || ((int)x.availableRoomCell.CellLetter) == ((int)purchasedRoom.availableRoomCell.CellLetter) - 1).ToList();
+
+        float activeRoomRequiredMoney = 0;
         // A odalarý B Odalarý ve C Odalarý
         foreach (var currentRoom in _CellCodeRooms) //A1
         {
             int currentRoomCellNumber = currentRoom.availableRoomCell.CellNumber;
-            int purchasedRoomCellNumber = purchasedRoom.availableRoomCell.CellNumber;
-
             int currentRoomCellLetter = ((int)currentRoom.availableRoomCell.CellLetter);
-            int purchasedRoomCellLetter = ((int)purchasedRoom.availableRoomCell.CellLetter);
+            
             //Mevcut odamýz B3 diye düþünelim.
             if (!currentRoom.isActive && currentRoom.isLock)
             {
@@ -121,18 +126,18 @@ public class RoomManager : MonoBehaviour
                 {
                     Debug.Log(currentRoom.name + "ODA ÝSTENEN KLASSMANA UYGUN.");
                     currentRoom.isActive = true;
-                    currentRoom.GetComponentInChildren<RoomCloudActivation>().CloudActivationChange(false);
-                    foreach (GameObject door in currentRoom.Doors)
-                    {
-                        door.SetActive(false);
-                    }
+                    currentRoom.GetComponentInChildren<RoomCloudActivation>().CloudActivationChange(false);                    
                     currentRoom.RequiredMoney = (purchasedRoom.RequiredMoney * 2) + 500;
-
-
-                    roomDatas.Where(x => x.isActive && x.isLock).Select(x => x.RequiredMoney = currentRoom.RequiredMoney); // en son burda kaldýk. mevcut odanýn para gereksinimi tüm aktif ve kilitli odalara yansýmýyor.
-                }
+                    activeRoomRequiredMoney = currentRoom.RequiredMoney;
+                                      
+                }                
                 // B3 - B5 - A4 - C4 => 2500                       
             }
+        }
+        List<RoomData> activeRoomDatas = roomDatas.Where(x => x.isActive && x.isLock).ToList();
+        foreach (var _activeRoom in activeRoomDatas)
+        {
+            _activeRoom.RequiredMoney = activeRoomRequiredMoney;
         }
     }
 

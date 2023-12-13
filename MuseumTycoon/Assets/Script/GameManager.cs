@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
         ItemManager.instance.AddItems();
         AudioManager.instance.AllAudioSourcesOptions();
         AudioManager.instance.PlayMusicOfMenu();
+        UnityAdsManager.instance.Initialize();
     }
 
     private void FixedUpdate()

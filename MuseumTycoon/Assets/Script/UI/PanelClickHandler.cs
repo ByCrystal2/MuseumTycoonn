@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PanelClickHandler : MonoBehaviour, IPointerClickHandler
+public class PanelClickHandler : MonoBehaviour
 {
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        Debug.Log("Panel týklandý!");
-        // Panel týklandýðýnda yapýlacak iþlemleri buraya ekle
-    }
+    //Bu Scriptin tek amacý RoomData'da RoofLock Canvasýna ulaþmaktýr. Lütfen silmeyiniz.
 }

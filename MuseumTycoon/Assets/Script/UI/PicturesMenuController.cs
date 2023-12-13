@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using UnityEditorInternal.VersionControl;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
@@ -20,7 +19,6 @@ public class PicturesMenuController : MonoBehaviour
     [SerializeField] GameObject pnlPicturesMenu;
 
     [Header("PictureInfos")]
-
     [SerializeField] GameObject[] OpenStars;
     [SerializeField] GameObject[] CloseStars;
     [SerializeField] public TextMeshProUGUI txtPainterName;
@@ -28,6 +26,16 @@ public class PicturesMenuController : MonoBehaviour
     [SerializeField] Image imgPicture;
     [SerializeField] Button PictureUpdateButton;
     [SerializeField] Button ExitPanelButton;
+
+    [Header("Testing Ads Panel")]
+    [SerializeField] GameObject TestingAdsPanel;
+    [SerializeField] Button AdsPanelActivationButton;
+    [SerializeField] Button LoadRewardVideoButton;
+    [SerializeField] Button LoadNormalVideoButton;
+
+    [SerializeField] Button RewardVideoButton;
+    [SerializeField] Button NormalVideoButton;
+    [SerializeField] Button RemoveAdsButton;
 
     public PictureElement CurrentPicture;
 
@@ -51,6 +59,13 @@ public class PicturesMenuController : MonoBehaviour
     {
         PictureUpdateButton.onClick.AddListener(UpdateTable);
         ExitPanelButton.onClick.AddListener(ExitPicturePanel);
+        AdsPanelActivationButton.onClick.AddListener(TestingAdsPanelActivation);
+        LoadRewardVideoButton.onClick.AddListener(TestingLoadRewardVideo);
+        LoadNormalVideoButton.onClick.AddListener(TestingLoadNormalVideo);
+
+        RewardVideoButton.onClick.AddListener(TestingShowRewardVideo);
+        NormalVideoButton.onClick.AddListener(TestingShowNormalVideo);
+        RemoveAdsButton.onClick.AddListener(RemoveAllAds);
     }
 
     public void UpdatePicture()
@@ -240,9 +255,46 @@ public class PicturesMenuController : MonoBehaviour
         }     
     }
 
+    public void TestingLoadRewardVideo() //Button
+    {
+        UnityAdsManager.instance.LoadRewardedAd();
+
+        Debug.Log("Test Load Reward Video Ýþlemi Tamamlandý.");
+    }
+    public void TestingLoadNormalVideo() //Button
+    {
+        UnityAdsManager.instance.LoadNonRewardedAd();
+        UnityAdsManager.instance.ShowNonRewardedAd();
+        Debug.Log("Test Load Normal Video Ýþlemi Tamamlandý.");
+    }
+    public void TestingShowRewardVideo() //Button
+    {        
+        UnityAdsManager.instance.LoadRewardedAd();
+        UnityAdsManager.instance.ShowRewardedAd();
+        Debug.Log("Test Show Reward Video Ýþlemi Tamamlandý.");
+    }
+    public void TestingShowNormalVideo() //Button
+    {
+        UnityAdsManager.instance.LoadNonRewardedAd();
+        UnityAdsManager.instance.ShowNonRewardedAd();
+        Debug.Log("Test Show Normal Video Ýþlemi Tamamlandý.");
+    }
+    public void RemoveAllAds()
+    {
+        UnityAdsManager.instance.adsData.RemovedAllAds = true;
+    }
     public void ExitPicturePanel()
     {        
         pnlPicturesMenu.SetActive(false);
         CurrentPicture = null;
     }
+
+    public void TestingAdsPanelActivation()
+    {
+        if (!TestingAdsPanel.activeInHierarchy)        
+            TestingAdsPanel.SetActive(true);        
+        else
+            TestingAdsPanel.SetActive(false);
+    }
 }
+

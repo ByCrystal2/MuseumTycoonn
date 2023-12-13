@@ -16,6 +16,7 @@ public class MainMenu : MonoBehaviour
     void OnStartButtonClick()
     {
         SceneManager.LoadScene("Game");
+        UnityAdsManager.instance.ToggleBanner();
         AudioManager.instance.PlayMusicOfGame();
     }
 }

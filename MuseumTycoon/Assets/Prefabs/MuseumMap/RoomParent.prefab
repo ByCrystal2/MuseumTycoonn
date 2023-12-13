@@ -86,7 +86,6 @@ GameObject:
   - component: {fileID: 2147271345191743110}
   - component: {fileID: 6567109012161614288}
   - component: {fileID: 5153224319071767327}
-  - component: {fileID: 6465976501205741544}
   m_Layer: 0
   m_Name: pnlRoomLock
   m_TagString: Untagged
@@ -152,18 +151,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6465976501205741544
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 645912475009876805}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b22cd62738a40dd42ad05b65aee959f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &671529838011468811
 GameObject:
   m_ObjectHideFlags: 0
@@ -322,7 +309,6 @@ GameObject:
   - component: {fileID: 8418620633145033909}
   - component: {fileID: 3627746408124353074}
   - component: {fileID: 7269614719588527063}
-  - component: {fileID: 3994616264925811857}
   m_Layer: 0
   m_Name: pnlRoomLock
   m_TagString: Untagged
@@ -388,18 +374,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3994616264925811857
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 892270220943293088}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b22cd62738a40dd42ad05b65aee959f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1066185324819807925
 GameObject:
   m_ObjectHideFlags: 0
@@ -1995,6 +1969,7 @@ MonoBehaviour:
   availableRoomCell:
     CellLetter: 0
     CellNumber: 2
+  Doors: []
 --- !u!1 &3715017637170094355
 GameObject:
   m_ObjectHideFlags: 0
@@ -2892,7 +2867,6 @@ GameObject:
   - component: {fileID: 6084605409692772243}
   - component: {fileID: 341205392438749717}
   - component: {fileID: 8179427357421984900}
-  - component: {fileID: 4378910681809240927}
   m_Layer: 0
   m_Name: pnlRoomLock
   m_TagString: Untagged
@@ -2958,18 +2932,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4378910681809240927
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6473596518122575866}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b22cd62738a40dd42ad05b65aee959f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &6492008790659478968
 GameObject:
   m_ObjectHideFlags: 0
@@ -3826,7 +3788,6 @@ GameObject:
   - component: {fileID: 8639901914961434056}
   - component: {fileID: 8617572208135838435}
   - component: {fileID: 4311961791140915392}
-  - component: {fileID: 8610467558188022417}
   m_Layer: 0
   m_Name: pnlRoomLock
   m_TagString: Untagged
@@ -3892,18 +3853,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8610467558188022417
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8060869948232104865}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b22cd62738a40dd42ad05b65aee959f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &8288162530405542290
 GameObject:
   m_ObjectHideFlags: 0

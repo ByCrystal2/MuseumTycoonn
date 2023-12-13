@@ -20,10 +20,12 @@ public class RoomData : MonoBehaviour
 
     public List<GameObject> Doors = new List<GameObject>();
     private GameObject RoomBlok;
+    private GameObject RoofLock;
     private void Awake()
     {
         
         RoomBlok = gameObject.GetComponentInChildren<RoomBlokClickHandler>().gameObject;
+        RoofLock = gameObject.GetComponentInChildren<PanelClickHandler>().gameObject.GetComponentInParent<Canvas>().gameObject;
         if (isLock)
         {
             int childCount = gameObject.transform.GetChild(4).childCount;
@@ -40,6 +42,7 @@ public class RoomData : MonoBehaviour
                 Doors[(int)Directions[i]].SetActive(true);
             }
             RoomBlok.SetActive(true);
+            RoofLock.SetActive(true);
         }
         else
         {
@@ -47,10 +50,41 @@ public class RoomData : MonoBehaviour
             {
                 door.SetActive(false);
             }
-            RoomBlok.SetActive(true);
+            RoomBlok.SetActive(false);
+            RoofLock.SetActive(false);
         }
     }
     
+    public void IsPurchased(bool _isPurchased)
+    {
+        if (_isPurchased)
+        {
+            foreach (var door in Doors)
+            {
+                door.SetActive(false);
+            }
+            RoomBlok.SetActive(false);
+            RoofLock.SetActive(false);
+        }
+        else
+        {
+            int childCount = gameObject.transform.GetChild(4).childCount;
+            for (int i = 0; i < childCount; i++)
+            {
+                Doors.Add(gameObject.transform.GetChild(4).gameObject.transform.GetChild(i).gameObject);
+            }
+            foreach (var door in Doors)
+            {
+                door.SetActive(false);
+            }
+            for (int i = 0; i < Directions.Count; i++)
+            {
+                Doors[(int)Directions[i]].SetActive(true);
+            }
+            RoomBlok.SetActive(true);
+            RoofLock.SetActive(true);
+        }
+    }
 }
 public enum RoomType
 {
