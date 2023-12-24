@@ -2,8 +2,11 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
+using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class ShopController : MonoBehaviour
 {
@@ -19,6 +22,7 @@ public class ShopController : MonoBehaviour
     public float ClikedShopTabAlpha = 0.2f;
     public float DefaultShopTabAlpha = 1f;
 
+    public ShopUIType currentShopUIType;
     public static ShopController instance { get; set; }
     
     private void Awake()
@@ -29,10 +33,35 @@ public class ShopController : MonoBehaviour
             return;
         }
         instance = this;
-        DontDestroyOnLoad(this);        
+        DontDestroyOnLoad(this);
     }
-    public void GetAllItems()
+
+    public void GetCurrentShoppingTypeItems()
     {
+        switch (currentShopUIType)
+        {
+            case ShopUIType.None:
+                Debug.Log("Shop UI Turu Bulunamadi.");
+                break;
+            case ShopUIType.All:
+                GetAllItemsUpdate();
+                break;
+            case ShopUIType.Gem:
+                GetGemItems();
+                break;
+            case ShopUIType.Gold:
+                GetGoldItems();
+                break;
+            case ShopUIType.Table:
+                GetTableItems();
+                break;
+            default:
+                break;
+        }
+    }
+    public void GetAllItemsUpdate()
+    {
+        currentShopUIType = ShopUIType.All;
         itemContent = GameObject.FindWithTag("ShopPanelItems").transform;
         
         ClearAllItemsInShop();
@@ -40,8 +69,7 @@ public class ShopController : MonoBehaviour
         items=ItemManager.instance.GetAllItemDatas();
         foreach (ItemData item in items)
         {
-            if (item != null)
-            {
+            
                 GameObject newItem;
                 if (item.CurrentItemType == ItemType.Gold || item.CurrentItemType == ItemType.Gem)
                 {
@@ -53,28 +81,29 @@ public class ShopController : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("Mevcut itemin türü yoktur.!");
+                    Debug.Log("Mevcut itemin turu yoktur.!");
                     return;
                 }
                 switch (item.CurrentItemType)
                 {
                     case ItemType.None: // Tür yoksa.
-                        Debug.Log("Itemin türü bulunmamaktadýr.");
+                        Debug.Log("Itemin turu bulunmamaktadir.");
                         break;
                     case ItemType.Gem:
+                        newItem.transform.GetChild(5).GetComponent<Button>().onClick.AddListener(() => BuyItem(item));
                         SetNewItemProparties(newItem, item, ItemType.Gem);
                         break;
                     case ItemType.Gold:
+                        newItem.transform.GetChild(5).GetComponent<Button>().onClick.AddListener(() => BuyItem(item));
                         SetNewItemProparties(newItem, item, ItemType.Gold);
                         break;
                     case ItemType.Table:
+                        newItem.transform.GetChild(5).GetComponent<Button>().onClick.AddListener(() => BuyItem(item));
                         SetNewItemProparties(newItem, item, ItemType.Table);
                         break;                   
                     default:
                         break;
                 }
-            }
-            ItemManager.instance.CurrentItemDatas = items;
         }
     }
     public void ClearAllItemsInShop()
@@ -84,10 +113,12 @@ public class ShopController : MonoBehaviour
             // Her bir çocuk nesneyi sil
             Destroy(child.gameObject);
         }
-        //ItemManager.instance.CurrentItemDatas.Clear();
+        Debug.Log("Magaza Temizlendi.");
     }
+    
     public void GetGemItems()//Gem button click e baðlýdýr.
     {
+        currentShopUIType = ShopUIType.Gem;
         SetButtonsAlphaValue();
 
         Debug.Log("Gem Butonuna tiklandi.");
@@ -100,10 +131,10 @@ public class ShopController : MonoBehaviour
             _newGem.transform.GetChild(5).GetComponent<Button>().onClick.AddListener(() => BuyItem(gemItem));
             SetNewItemProparties(_newGem, gemItem, ItemType.Gem);
         }
-        ItemManager.instance.CurrentItemDatas = gemItems;
     }
     public void GetGoldItems()//Gold button click e baðlýdýr.
     {
+        currentShopUIType = ShopUIType.Gold;
         SetButtonsAlphaValue();
 
         Debug.Log("Gold Butonuna tiklandi.");
@@ -116,12 +147,11 @@ public class ShopController : MonoBehaviour
             _newGold.transform.GetChild(5).GetComponent<Button>().onClick.AddListener(() => BuyItem(goldItem));
             SetNewItemProparties(_newGold, goldItem, ItemType.Gold);
         }
-        ItemManager.instance.CurrentItemDatas = goldItems;
     }
 
     public void GetTableItems()//Table button click e baðlýdýr.
     {
-
+        currentShopUIType = ShopUIType.Table;
         SetButtonsAlphaValue();
         
         Debug.Log("Table Butonuna tiklandi.");
@@ -134,13 +164,15 @@ public class ShopController : MonoBehaviour
             _newTable.transform.GetChild(5).GetComponent<Button>().onClick.AddListener(() => BuyItem(tableItem));
             SetNewItemProparties(_newTable, tableItem, ItemType.Table);
         }
-        ItemManager.instance.CurrentItemDatas = tableItems;
     }
     public void SetButtonsAlphaValue()
     {
         Button clickedButton = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
         Debug.Log("mevcut button namesi " + clickedButton.name);
-        clickedButton.transform.GetChild(0).GetComponent<CanvasGroup>().alpha = ClikedShopTabAlpha;
+        if (clickedButton.transform.GetChild(0).TryGetComponent(out CanvasGroup currentButtonCGroup))
+        {
+            currentButtonCGroup.alpha = ClikedShopTabAlpha;
+        }
         //for (int i = 0; i < clickedButton.gameObject.transform.parent.childCount; i++)
         //{
         //    if (clickedButton.gameObject.transform.parent.GetChild(i).gameObject.name != clickedButton.gameObject.name)
@@ -153,21 +185,12 @@ public class ShopController : MonoBehaviour
     {
         if (_itemType == ItemType.Gold || _itemType == ItemType.Gem)
         {
-            _newItem.transform.GetChild(3).GetComponent<Text>().text = _currentItem.Name;
-            _newItem.transform.GetChild(4).GetComponent<Text>().text = _currentItem.Amount.ToString();
-            _newItem.transform.GetChild(5).transform.GetChild(1).GetComponent<Image>().sprite = SetAndControlItemIcon(_currentItem.CurrentShoppingType);
-            _newItem.transform.GetChild(5).transform.GetChild(2).GetComponent<Text>().text = _currentItem.RequiredMoney.ToString();
-            _newItem.transform.GetChild(0).GetComponent<Image>().sprite = _currentItem.ImageSprite;
-            _newItem.transform.GetChild(2).GetComponent<Image>().sprite = _currentItem.ImageSprite;            
+            AssignmentToItemChildren(_newItem, _currentItem, _currentItem.Amount.ToString());
         }
         else if (_itemType == ItemType.Table)
         {
-            _newItem.transform.GetChild(3).GetComponent<Text>().text = _currentItem.Name;
-            _newItem.transform.GetChild(4).GetComponent<Text>().text = _currentItem.Description;
-            _newItem.transform.GetChild(5).transform.GetChild(1).GetComponent<Image>().sprite = SetAndControlItemIcon(_currentItem.CurrentShoppingType);
-            _newItem.transform.GetChild(5).transform.GetChild(2).GetComponent<Text>().text = _currentItem.RequiredMoney.ToString();
-            _newItem.transform.GetChild(0).GetComponent<Image>().sprite = _currentItem.ImageSprite;
-            _newItem.transform.GetChild(2).GetComponent<Image>().sprite = _currentItem.ImageSprite;
+            AssignmentToItemChildren(_newItem, _currentItem, _currentItem.Description);
+
             List<GameObject> OpenStars = new List<GameObject>();
             List<GameObject> CloseStars = new List<GameObject>();
             Transform parentObject1 = _newItem.transform.GetChild(6).transform.GetChild(0);
@@ -190,11 +213,20 @@ public class ShopController : MonoBehaviour
             }
         }
     }
+    public void AssignmentToItemChildren(GameObject _newItem, ItemData _currentItem, string childFourValue)
+    {
+        _newItem.transform.GetChild(3).GetComponent<Text>().text = _currentItem.Name;
+        _newItem.transform.GetChild(4).GetComponent<Text>().text = childFourValue;
+        _newItem.transform.GetChild(5).transform.GetChild(1).GetComponent<Image>().sprite = SetAndControlItemIcon(_currentItem.CurrentShoppingType);
+        _newItem.transform.GetChild(5).transform.GetChild(2).GetComponent<Text>().text = _currentItem.RequiredMoney.ToString();
+        _newItem.transform.GetChild(0).GetComponent<Image>().sprite = _currentItem.ImageSprite;
+        _newItem.transform.GetChild(2).GetComponent<Image>().sprite = _currentItem.ImageSprite;
+    }
     public void BuyItem(ItemData _item)
     {
-        MuseumManager.instance.AddGold(5000); // KRÝTÝK KOD TESTTEN SONRA SÝLÝNMELÝ!
-        MuseumManager.instance.AddGem(5000); // KRÝTÝK KOD TESTTEN SONRA SÝLÝNMELÝ!
-        Debug.Log(_item.CurrentItemType + " Item tipinde ki " + _item.Amount + " miktarda " + _item.Name + " adlý ürün " + _item.RequiredMoney + " " + _item.CurrentShoppingType + " karþýlýðýnda satýlmak istendi.");
+        MuseumManager.instance.AddGold(1000); // KRÝTÝK KOD TESTTEN SONRA SÝLÝNMELÝ!
+        MuseumManager.instance.AddGem(1000); // KRÝTÝK KOD TESTTEN SONRA SÝLÝNMELÝ!
+        Debug.Log(_item.CurrentItemType + " Item tipinde ki " + _item.Amount + " miktarda  ürün " + _item.RequiredMoney + " " + _item.CurrentShoppingType + " karþýlýðýnda satýlmak istendi.");
         if (_item.CurrentShoppingType == ShoppingType.Gem)
         {
             if (MuseumManager.instance.GetCurrentGem() >= _item.RequiredMoney)
@@ -213,6 +245,7 @@ public class ShopController : MonoBehaviour
                     newInventoryItem.RequiredGold = PicturesMenuController.instance.PictureChangeRequiredAmount;
                     newInventoryItem.painterData = new PainterData(_item.ID, _item.Description, _item.Name, _item.StarCount);
                     MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
+                    ItemsBuyingUpdate(_item);
                 }
             }
             else
@@ -236,6 +269,7 @@ public class ShopController : MonoBehaviour
                     newInventoryItem.RequiredGold = PicturesMenuController.instance.PictureChangeRequiredAmount;
                     newInventoryItem.painterData = new PainterData(_item.ID,_item.Description,_item.Name, _item.StarCount);
                     MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
+                    ItemsBuyingUpdate(_item);
                 }
             }
             else
@@ -246,9 +280,25 @@ public class ShopController : MonoBehaviour
         }
         else if (_item.CurrentShoppingType == ShoppingType.RealMoney)
         {
-            // Gerçek para ile satýn alýnma durumu
+            _item.IsPurchased = true;
+            BuyingConsumables.instance.BuyItemFromStore(_item);
+            if (_item.CurrentItemType == ItemType.Table)
+            {
+                ItemManager.instance.ShopItemDatas.Remove(_item);
+                MuseumManager.instance.PurchasedItems.Add(_item);
+                ItemManager.instance.AddItemInShop(ItemManager.instance.RItems[Random.Range(0, ItemManager.instance.RItems.Count)]);
+            }
+            GameManager.instance.Save();
         }
 
+    }
+    public void ItemsBuyingUpdate(ItemData _item)
+    {
+        ItemManager.instance.ShopItemDatas.Remove(_item);
+        MuseumManager.instance.PurchasedItems.Add(_item);
+        ItemManager.instance.AddItemInShop(ItemManager.instance.RItems[Random.Range(0, ItemManager.instance.RItems.Count)]);
+        GameManager.instance.Save();
+        GetCurrentShoppingTypeItems();
     }
     public Sprite SetAndControlItemIcon(ShoppingType _shoppingType)
     {
@@ -262,4 +312,12 @@ public class ShopController : MonoBehaviour
 
         return _currentIcon;
     }
+}
+public enum ShopUIType
+{
+    None,
+    All,
+    Gem,
+    Gold,
+    Table
 }

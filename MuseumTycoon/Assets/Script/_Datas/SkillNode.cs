@@ -11,15 +11,14 @@ public class SkillNode
     public string SkillEffect;
     public float SkillRequiredPoint;
     public float SkillRequiredMoney;
-    public float SkillCurrentLevel = 0;
-    public float SkillMaxLevel;
+    public int SkillCurrentLevel = 0;
+    public int SkillMaxLevel;
     public bool IsLocked = true;
     public bool IsPurchased = false;
 
     public List<eStat> buffs = new List<eStat>();
-    public List<float> Amounts = new List<float>();
-
-    public SkillNode(int _id, string _skillName, string _skillDescription, string _skillEffect, float _skillRquiredPoint, float skillRequiredMoney, float _skillMaxLevel, List<eStat> _buffs, List<float> _amounts)
+    public List<int> Amounts = new List<int>();
+    public SkillNode(int _id, string _skillName, string _skillDescription, string _skillEffect, float _skillRquiredPoint, float skillRequiredMoney, int _skillMaxLevel, List<eStat> _buffs, List<int> _amounts)
     {
         this.ID = _id;
         this.SkillName = _skillName;
@@ -34,6 +33,10 @@ public class SkillNode
         for (int i = 0; i < length; i++)
         {
             buffs.Add(_buffs[i]);
+        }
+        int length2 = _amounts.Count;
+        for (int i = 0; i < length2; i++)
+        {
             Amounts.Add(_amounts[i]);
         }
     }

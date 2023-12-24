@@ -37,22 +37,30 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.useGravity = false;
             GetComponent<CapsuleCollider>().enabled = false;
-            Move();
+            if (Cursor.lockState == CursorLockMode.Locked)
+                Move();
+            else
+            rb.velocity = Vector3.zero;
             // Yükselme ve alçalma iþlevselliði
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                transform.position += transform.up * ascendDescendSpeed * Time.deltaTime;
+               Vector3 up = transform.position;
+                up += Vector3.up * ascendDescendSpeed * Time.deltaTime;
+                transform.position = up;
             }
             else if (Input.GetKey(KeyCode.LeftControl))
             {
-                transform.position -= transform.up * ascendDescendSpeed * Time.deltaTime;
+                Vector3 up = transform.position;
+                up -= Vector3.up * ascendDescendSpeed * Time.deltaTime;
+                transform.position = up;
             }
         }
         else 
         {
             rb.useGravity = true;
             GetComponent<CapsuleCollider>().enabled = true;
-            Move();
+            if (Cursor.lockState == CursorLockMode.Locked)
+             Move();           
         }
 
     }

@@ -55,7 +55,7 @@ public class NPCBehaviour : MonoBehaviour
         MySources = AudioManager.instance.GetDialogs(IsMale);
         CurrentAudioSource = transform.GetChild(0).GetComponent<AudioSource>();
         AdditionalLuck = 1000;
-        NpcCurrentSpeed = NpcSpeed;
+        NpcCurrentSpeed = NpcSpeed + NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f); ;
         NpcRotationSpeed = 5;
         anim = GetComponent<Animator>();
         CurrentTarget = NpcTargets.Outside;
@@ -192,7 +192,8 @@ public class NPCBehaviour : MonoBehaviour
                 if (NpcManager.instance.GidisListe.Count == index)
                 {
                     int x = Random.Range(0, 101);
-                    if (x <= 20)
+                    x = (int)(x + (float)x * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.WantVisittingRatio] / 100f));
+                    if (x >= 80)
                     {
                         if (!MuseumManager.instance.IsMuseumFull())
                         {
@@ -212,7 +213,8 @@ public class NPCBehaviour : MonoBehaviour
                 if (NpcManager.instance.GelisListe.Count == index)
                 {
                     int x = Random.Range(0, 101);
-                    if (x <= 20)
+                    x = (int) (x + (float)x * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.WantVisittingRatio] / 100f));
+                    if (x >= 80)
                     {
                         if (!MuseumManager.instance.IsMuseumFull())
                         {
@@ -289,7 +291,8 @@ public class NPCBehaviour : MonoBehaviour
         if (Happiness <= 25)
         {
             NpcWalkType = WalkEnum.SadWalk;
-            NpcCurrentSpeed = NpcSpeed * 0.35f;
+            float sadSpeed = NpcSpeed * 0.35f;
+            NpcCurrentSpeed = sadSpeed + sadSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f);
             Agent.speed = NpcCurrentSpeed;
             AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcSad, CurrentAudioSource);
             if (Happiness < 0)
@@ -301,13 +304,14 @@ public class NPCBehaviour : MonoBehaviour
         else if (Happiness > 25 && Happiness < 75)
         {
             NpcWalkType = WalkEnum.NormalWalk;
-            NpcCurrentSpeed = NpcSpeed;
+            NpcCurrentSpeed = NpcSpeed + NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f); ;
             Agent.speed = NpcCurrentSpeed;
         }
         else
         {
             NpcWalkType = WalkEnum.HappyWalk;
-            NpcCurrentSpeed = NpcSpeed * 1.25f;
+            float happySpeed = NpcSpeed * 1.25f;
+            NpcCurrentSpeed = happySpeed + happySpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f);
             Agent.speed = NpcCurrentSpeed;
             AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcHappiness, CurrentAudioSource);
             if (Happiness > 100)
@@ -398,7 +402,9 @@ public class NPCBehaviour : MonoBehaviour
         {
             AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcLike, CurrentAudioSource);
             Stress -= (NPCCurrentScore - 5) * 2;
-            Happiness += Mathf.Round((100 - Stress) * 0.05f); //stress 50 ise 1; 100 ise 5;
+            int _happiness = (int)Mathf.Round((100 - Stress) * 0.05f);
+            _happiness = (int)(_happiness + (float)_happiness * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.HappinessIncreaseRatio] / 100f));
+            Happiness += _happiness;
         }
 
         CheckStats();
@@ -453,7 +459,7 @@ public class NPCBehaviour : MonoBehaviour
         Happiness = 100;
         Stress = 20;
         NpcWalkType = WalkEnum.NormalWalk;
-        NpcCurrentSpeed = NpcSpeed;
+        NpcCurrentSpeed = NpcSpeed + NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f); //3.3
         Agent.speed = NpcCurrentSpeed;
         TargetPosition = NpcManager.instance.GidisListe[Random.Range(0, NpcManager.instance.GidisListe.Count)];
 

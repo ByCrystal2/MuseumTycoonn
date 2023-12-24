@@ -7,6 +7,7 @@ using UnityEngine;
 public class RoomData : MonoBehaviour
 {
     public int ID;
+    public string IAP_ID;
     public float RequiredMoney;    
     public RoomType CurrentRoomType = RoomType.Normal;
     public ShoppingType CurrentShoppingType;
@@ -21,9 +22,11 @@ public class RoomData : MonoBehaviour
     private GameObject RoofLock;
     private void Start()
     {
-        
+        if (CurrentShoppingType == ShoppingType.RealMoney)
+            IAP_ID = Constant.instance.IAPIDCompany + Constant.instance.IAPIDGame + CurrentRoomType.ToString().ToLower() + "x" + 1 + "_" + CurrentShoppingType.ToString().ToLower() + "_" + RequiredMoney.ToString(); //com_kosippysudio_museumtycoon_gold5000x_realmoney_10
         RoomBlok = gameObject.GetComponentInChildren<RoomBlokClickHandler>().gameObject;
         RoofLock = gameObject.GetComponentInChildren<PanelClickHandler>().gameObject.GetComponentInParent<Canvas>().gameObject;
+
         if (isLock)
         {
             int childCount = gameObject.transform.GetChild(4).childCount;

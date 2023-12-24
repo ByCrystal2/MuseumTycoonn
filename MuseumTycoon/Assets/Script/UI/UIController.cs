@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -177,7 +178,7 @@ public class UIController : MonoBehaviour
                 gemButton = newShop.transform.GetChild(0).transform.GetChild(1).GetComponent<Button>();
                 goldButton = newShop.transform.GetChild(0).transform.GetChild(2).GetComponent<Button>();
                 tableButton = newShop.transform.GetChild(0).transform.GetChild(3).GetComponent<Button>();
-                allButton.onClick.AddListener(ShopController.instance.GetAllItems);
+                allButton.onClick.AddListener(ShopController.instance.GetAllItemsUpdate);
                 gemButton.onClick.AddListener(ShopController.instance.GetGemItems);
                 goldButton.onClick.AddListener(ShopController.instance.GetGoldItems);
                 tableButton.onClick.AddListener(ShopController.instance.GetTableItems);
@@ -187,7 +188,7 @@ public class UIController : MonoBehaviour
                 newSpider = SetCreateGameobject(SpiderPrefab, spiderParent);
                 spiderOffset = newSpider.transform.position;
 
-                ShopController.instance.GetAllItems();
+                ShopController.instance.GetAllItemsUpdate();
             }
             
             SpiderMove(newSpider);
@@ -256,10 +257,11 @@ public class UIController : MonoBehaviour
         
 
         SkillTreeManager.instance.SelectedSkill = selectedSkill;
-        GameObject clickedButton = EventSystem.current.currentSelectedGameObject;
-        if (clickedButton != null)
+        SkillTreeManager.instance.SelectedSkillGameObject = EventSystem.current.currentSelectedGameObject;
+        Debug.Log("Selected Skill Gameobject => " + SkillTreeManager.instance.SelectedSkillGameObject.gameObject);
+        if (SkillTreeManager.instance.SelectedSkillGameObject != null)
         {
-            skillInfoPanel.transform.position = clickedButton.transform.position;
+            skillInfoPanel.transform.position = SkillTreeManager.instance.SelectedSkillGameObject.transform.position;
         }
         // Yetenek adý, açýklama ve etkiyi güncelle
         skillNameText.text = selectedSkill.SkillName;
@@ -272,9 +274,9 @@ public class UIController : MonoBehaviour
         SkillTreeManager.instance.CalculateForCurrentSkillEnoughLevelAndMoney(selectedSkill);
         // Kilidi açýlabilir veya açýlamazsa düðmeyi güncelle
         skillInfoPanel.SetActive(true);
-        if (selectedSkill.IsPurchased)
+        if (selectedSkill.IsPurchased && selectedSkill.SkillCurrentLevel == selectedSkill.SkillMaxLevel)
         {
-            ChangedUnlockButton(false, "Satýn Alýndý", Color.white);
+            ChangedUnlockButton(false, "Max Seviye", Color.white);
             SkillRequiredInfoPanel.SetActive(false);
             return;
         }
@@ -285,10 +287,36 @@ public class UIController : MonoBehaviour
     public void BuySkill() // SKILL SATIN ALMA BUTONU!
     {
         SkillNode currentSkill = SkillTreeManager.instance.SelectedSkill;
-        MuseumManager.instance.SpendingGold(currentSkill.SkillRequiredMoney);
-        SkillPointText.text = "" + (-(MuseumManager.instance.GetCurrentSkillPoint() - currentSkill.SkillRequiredPoint));
-        currentSkill.Purchased(true);
-        ChangedUnlockButton(false, "Satýn Alýndý", Color.white);
+        if (MuseumManager.instance.GetCurrentGold() >= currentSkill.SkillRequiredMoney && MuseumManager.instance.GetCurrentSkillPoint() >= currentSkill.SkillRequiredPoint)
+        {
+            MuseumManager.instance.SpendingGold(currentSkill.SkillRequiredMoney);
+            MuseumManager.instance.SpendingSkillPoint(currentSkill.SkillRequiredPoint);
+            SkillTreeManager.instance.SelectedSkillGameObject.GetComponentInChildren<SkillAbilityAmountController>().IncreasingAbilityAmount(); //Skill Ability Amount Arttirma.
+            SkillPointText.text = "" + (-(MuseumManager.instance.GetCurrentSkillPoint() - currentSkill.SkillRequiredPoint));
+            currentSkill.Purchased(true);
+            UIChangesControl();
+            if (currentSkill.SkillCurrentLevel > currentSkill.SkillMaxLevel)
+            {
+                currentSkill.SkillCurrentLevel = currentSkill.SkillMaxLevel;
+
+            }
+            if (currentSkill.SkillCurrentLevel == currentSkill.SkillMaxLevel)
+            {
+                ChangedUnlockButton(false, "Max Seviye", Color.white);
+            }
+            
+            // skill satýn alýndýktan sonra fiyatý güncellenmeli.
+            SkillTreeManager.instance.RefreshSkillBonuses();
+            skillNameText.text = currentSkill.SkillName;
+            skillDescriptionText.text = currentSkill.SkillDescription;
+            skillEffectText.text = currentSkill.SkillEffect;
+            skillRequiredPointText.text = "Requires Point: " + currentSkill.SkillRequiredPoint;
+            skillRequiredMoneyText.text = "$" + currentSkill.SkillRequiredMoney;
+        }
+        else
+        {
+            Debug.Log("Skill satin almak icin gerekli; paraniz ve/veya yetenek puaniniz mevcut degildir.");
+        }
     }
     public void ChangedUnlockButton(bool _interactable, string _text, Color _color)
     {
@@ -300,9 +328,19 @@ public class UIController : MonoBehaviour
     public void UIChangesControl()
     {
         SkillNode currentSkill = SkillTreeManager.instance.SelectedSkill;
-        if (currentSkill.IsPurchased)
+        if (currentSkill.IsPurchased && currentSkill.SkillCurrentLevel == currentSkill.SkillMaxLevel)
         {
-            ChangedUnlockButton(false, "Satýn Alýndý", Color.white);
+            ChangedUnlockButton(false, "Max Seviye", Color.white);
+            return;
+        }
+        else if (currentSkill.IsPurchased && currentSkill.SkillCurrentLevel != currentSkill.SkillMaxLevel && currentSkill.SkillRequiredPoint >= MuseumManager.instance.GetCurrentSkillPoint())
+        {
+            ChangedUnlockButton(true, "Seviye Arttýr", Color.green);
+            return;
+        }
+        else if (currentSkill.IsPurchased && currentSkill.SkillCurrentLevel != currentSkill.SkillMaxLevel && currentSkill.SkillRequiredPoint < MuseumManager.instance.GetCurrentSkillPoint())
+        {
+            ChangedUnlockButton(false, "Kilitli", Color.red);
             return;
         }
         SkillTreeManager.instance.CalculateForCurrentSkillEnoughLevelAndMoney(currentSkill);
@@ -312,9 +350,9 @@ public class UIController : MonoBehaviour
     public void SkillUnLockButtonControl(SkillNode _selectedSkill)
     {
         
-        if (!_selectedSkill.IsLocked)
+        if (!_selectedSkill.IsLocked &&_selectedSkill.SkillCurrentLevel != _selectedSkill.SkillMaxLevel)
         {
-            ChangedUnlockButton(true, "Satýn Al", Color.green);
+            ChangedUnlockButton(true, "Seviye Arttýr", Color.green);
         }
         else
         {

@@ -104,6 +104,7 @@ public class PicturesMenuController : MonoBehaviour
 
     public void GetClickedImage(int _index, PictureElementData _ped)
     {
+        tableClicked = true;
         SetPicture(_ped.texture);
 
         for (int i = 0; i < CloseStars.Length; i++)
@@ -120,10 +121,16 @@ public class PicturesMenuController : MonoBehaviour
         {
             OpenStars[i].SetActive(true);
         }
+        GoldControledButtonShape();
     }
 
     public void AddPicture(PictureElement PE)
     {
+        if (!PE._pictureData.isActive)
+        {
+            Debug.Log("Tiklanan Tablo aktif degil.");
+            return;
+        }
         UpdatePicture();
         CurrentPicture = PE;
         SetCurrentPicture(PE);
@@ -227,29 +234,37 @@ public class PicturesMenuController : MonoBehaviour
             PictureElementData ped = MuseumManager.instance.GetPictureElementData(PE._pictureData.TextureID);
             imgPicture.sprite = CatchTheColors.instance.TextureToSprite(ped.texture);
         }
-        if (PictureChangeRequiredAmount <= MuseumManager.instance.GetCurrentGold())
+        SetPictureUpdateButton(false, "Tablo Seçin", Color.white);
+
+    }
+    private bool tableClicked = false;
+    public void GoldControledButtonShape()
+    {
+        if (PictureChangeRequiredAmount <= MuseumManager.instance.GetCurrentGold() && tableClicked)
         {
-            
+
             if (imgPicture.sprite == null)
             {
                 SetPictureUpdateButton(false, "Yeterli", Color.white);
             }
-            else if ( imgPicture.sprite != null && PE._pictureData.isFirst)
-            {            
+            else if (imgPicture.sprite != null && CurrentPicture._pictureData.isFirst && pictureContent.childCount >= 0)
+            {
                 SetPictureUpdateButton(true, "Ekle", Color.green);
             }
-            else if (imgPicture.sprite != null && !PE._pictureData.isFirst)
+            else if (imgPicture.sprite != null && !CurrentPicture._pictureData.isFirst)
             {
                 SetPictureUpdateButton(true, "Deðiþtir", Color.Lerp(Color.green, new Color(1, 1, 0, 0.5f), 0.5f));
             }
         }
+        else if (PictureChangeRequiredAmount <= MuseumManager.instance.GetCurrentGold() && !tableClicked)
+        {
+            SetPictureUpdateButton(false, "Tablo Seçin", Color.white);
+        }
         else
         {
             Debug.Log("Picture Ýçin para Yetersiz.");
-            Debug.Log(PictureChangeRequiredAmount);
             SetPictureUpdateButton(false, "Yetersiz", Color.red);
         }
-
     }
     public void SetPicture(Texture2D texture2D)
     {
@@ -307,6 +322,7 @@ public class PicturesMenuController : MonoBehaviour
     public void ExitPicturePanel()
     {        
         pnlPicturesMenu.SetActive(false);
+        tableClicked = false;
         CurrentPicture = null;
     }
 

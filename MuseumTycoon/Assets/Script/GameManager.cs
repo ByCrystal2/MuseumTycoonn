@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -43,8 +44,7 @@ public class GameManager : MonoBehaviour
         SkillTreeManager.instance.AddSkillsForSkillTree();
         ItemManager.instance.AddItems();
         AudioManager.instance.AllAudioSourcesOptions();
-        AudioManager.instance.PlayMusicOfMenu();
-        UnityAdsManager.instance.Initialize();
+        AudioManager.instance.PlayMusicOfMenu();        
     }
 
     private void FixedUpdate()
@@ -76,8 +76,18 @@ public class GameManager : MonoBehaviour
         foreach (var item in MuseumManager.instance.InventoryPictures)
             inventoryPictures.Add(item);
         Debug.Log("inventoryPictures.count: " + inventoryPictures.Count);
+
+        List<ItemData> inventoryItems = new List<ItemData>();
+        foreach (var item in MuseumManager.instance.PurchasedItems)
+        {
+            inventoryItems.Add(item);
+        }
+        Debug.Log("inventoryItems.count: " + inventoryItems.Count);
+
         CurrentSaveData.CurrentPictures = currentActivePictures;
         CurrentSaveData.InventoryPictures = inventoryPictures;
+        CurrentSaveData.PurchasedItems = inventoryItems;
+
 
         CurrentSaveData.Rooms = new List<RoomSaveData>();
         if (RoomManager.instance != null)
@@ -156,7 +166,40 @@ public class GameManager : MonoBehaviour
             Save();
         }
     }
+    public void LoadPurchasedItems()
+    {
+        MuseumManager.instance.PurchasedItems = CurrentSaveData.PurchasedItems;
 
+        //for (int i = 0; i < MuseumManager.instance.PurchasedItems.Count; i++) => Fatmagul'un kodu
+        //{
+        //    for (int k = 0; i < ItemManager.instance.GetAllItemDatas().Count; k++)
+        //    {
+        //        Debug.Log($"Silinecek Item: {MuseumManager.instance.PurchasedItems[i].ID}:{MuseumManager.instance.PurchasedItems[i].Name}");
+        //        if (ItemManager.instance.GetAllItemDatas()[k].ID == MuseumManager.instance.PurchasedItems[i].ID)
+        //        {
+        //            if (ItemManager.instance.GetAllItemDatas()[k].CurrentItemType == ItemType.Table)
+        //            {
+        //                ItemManager.instance.GetAllItemDatas().Remove(ItemManager.instance.GetAllItemDatas()[k]);
+        //                break;
+        //            }
+        //        }
+        //    }
+        //}
+        foreach (ItemData item in MuseumManager.instance.PurchasedItems)
+        {
+            ItemData removeItem = ItemManager.instance.GetAllItemDatas().Where(x => x.ID == item.ID).SingleOrDefault();
+            Debug.Log($"Silinecek Item: {removeItem.ID}:{removeItem.Name}");
+            ItemManager.instance.ShopItemDatas.Remove(removeItem);
+        }
+
+        foreach (ItemData item in MuseumManager.instance.PurchasedItems)
+        {
+            ItemData removeItem = ItemManager.instance.RItems.Where(x => x.ID == item.ID).SingleOrDefault();
+            Debug.Log($"Silinecek Item: {removeItem.ID}:{removeItem.Name}");
+            ItemManager.instance.RItems.Remove(removeItem);
+        }
+
+    }
     public void LoadPictures(Transform _roomsParent, bool _firstload)
     {
         foreach (var item in CurrentSaveData.CurrentPictures)
@@ -185,6 +228,7 @@ public class GameManager : MonoBehaviour
         public List<PictureData> CurrentPictures = new List<PictureData>();
         public List<PictureData> InventoryPictures = new List<PictureData>();
         public List<RoomSaveData> Rooms = new List<RoomSaveData>();
+        public List<ItemData> PurchasedItems = new List<ItemData>();
 
         public AdverstingData adData;
     }

@@ -6,9 +6,9 @@ using UnityEngine;
 public class UnityAdsManager : MonoBehaviour, IUnityAdsInitializationListener, IUnityAdsLoadListener, IUnityAdsShowListener
 {
     public AdverstingData adsData;
-    protected const string BANNER_PLACEMENT = "Banner_Andorid";
-    protected const string VIDEO_PLACEMENT = "Interstitial_Android";
-    protected const string REWARDED_VIDEO_PLACEMENT = "Rewarded_Android";
+    //protected const string BANNER_PLACEMENT = "Banner_Andorid";
+    //protected const string VIDEO_PLACEMENT = "Interstitial_Android";
+    //protected const string REWARDED_VIDEO_PLACEMENT = "Rewarded_Android";
 #if UNITY_ANDROID
     protected string GAME_ID = "5499008"; //replace with your gameID from dashboard. note: will be different for each platform.
 

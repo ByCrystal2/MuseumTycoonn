@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class RoomManager : MonoBehaviour
 {
     // Buy Room Panel Elements
+    
     public GameObject PnlBuyRoom;
     public TextMeshProUGUI txtBuyQuestion;
     public TextMeshProUGUI txtRequiredMoney;
@@ -17,6 +18,7 @@ public class RoomManager : MonoBehaviour
     public Sprite RealMoneySprite;
     int currentRoomID;
 
+    public List<RoomData> RoomDatas;
     public static RoomManager instance { get; set; }
     private void Awake()
     {
@@ -26,6 +28,10 @@ public class RoomManager : MonoBehaviour
             return;
         }
         instance = this;
+    }
+    public void AddRooms()
+    {
+        RoomDatas = GameObject.FindObjectsOfType<RoomData>().ToList();
     }
     public void BuyTheRoom(RoomData currentRoom)
     {
@@ -78,6 +84,7 @@ public class RoomManager : MonoBehaviour
             {
                 RoomsActivationAndPurchasedControl(purchasedRoom, roomDatas);
                 MuseumManager.instance.SpendingGem(purchasedRoom.RequiredMoney);
+                GameManager.instance.Save();
             }
             else
             {
@@ -90,6 +97,7 @@ public class RoomManager : MonoBehaviour
             {
                 RoomsActivationAndPurchasedControl(purchasedRoom, roomDatas);
                 MuseumManager.instance.SpendingGold(purchasedRoom.RequiredMoney);
+                GameManager.instance.Save();
             }
             else
             {
@@ -98,7 +106,8 @@ public class RoomManager : MonoBehaviour
         }
         else if (purchasedRoom.CurrentShoppingType == ShoppingType.RealMoney)
         {
-            // Gerçek Parayla satýn alýnan oda iþlemleri...
+            // Gercek Parayla satin alinan oda islemleri...
+            BuyingConsumables.instance.BuyItemFromStore(purchasedRoom);
         }
     }
 
@@ -124,20 +133,29 @@ public class RoomManager : MonoBehaviour
             {
                 if ((currentRoomCellLetter == purchasedRoomCellLetter && currentRoomCellNumber == purchasedRoomCellNumber - 1) /* Mevcut Oda B3 ise */ || (currentRoomCellLetter == purchasedRoomCellLetter && currentRoomCellNumber == purchasedRoomCellNumber + 1) /* Mevcut Oda B5 ise */  || (currentRoomCellLetter == purchasedRoomCellLetter - 1 && currentRoomCellNumber == purchasedRoomCellNumber) /* Mevcut Oda A4 ise */  || (currentRoomCellLetter == purchasedRoomCellLetter + 1 && currentRoomCellNumber == purchasedRoomCellNumber) /* Mevcut Oda C4 ise */)
                 {
-                    Debug.Log(currentRoom.name + "ODA ÝSTENEN KLASSMANA UYGUN.");
                     currentRoom.isActive = true;
-                    currentRoom.GetComponentInChildren<RoomCloudActivation>().CloudActivationChange(false);                    
-                    currentRoom.RequiredMoney = (purchasedRoom.RequiredMoney * 2) + 500;
-                    activeRoomRequiredMoney = currentRoom.RequiredMoney;
-                                      
-                }                
-                // B3 - B5 - A4 - C4 => 2500                       
+                    Debug.Log(currentRoom.availableRoomCell.CellLetter + " " + currentRoom.availableRoomCell.CellNumber + " Kodlu Oda Aktif Edildi.");                    
+                    currentRoom.GetComponentInChildren<RoomCloudActivation>().CloudActivationChange(false);
+
+                    if (currentRoom.CurrentShoppingType == ShoppingType.RealMoney)
+                    {
+                        //currentRoom shopppingtype relamoney ise yapilacak islemler
+                    }
+                    else
+                    {
+                        //currentRoom shopppingtype relamoney degilse yapilacak islemler
+                        currentRoom.RequiredMoney = (purchasedRoom.RequiredMoney * 2) + 500;
+                        activeRoomRequiredMoney = currentRoom.RequiredMoney;
+                    }
+                }
+                // B3 - B5 - A4 - C4 => 2500
             }
         }
         List<RoomData> activeRoomDatas = roomDatas.Where(x => x.isActive && x.isLock).ToList();
         foreach (var _activeRoom in activeRoomDatas)
         {
-            _activeRoom.RequiredMoney = activeRoomRequiredMoney;
+            if (!(_activeRoom.CurrentShoppingType == ShoppingType.RealMoney))            
+                _activeRoom.RequiredMoney = activeRoomRequiredMoney;            
         }
     }
 

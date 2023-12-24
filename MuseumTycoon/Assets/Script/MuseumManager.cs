@@ -9,6 +9,7 @@ public class MuseumManager : MonoBehaviour
     public List<PictureElementData> PictureDatabase = new List<PictureElementData>();
     public List<PictureElement> CurrentActivePictures = new List<PictureElement>();
     public List<PictureData> InventoryPictures = new List<PictureData>();
+    public List<ItemData> PurchasedItems = new List<ItemData>();
     public List<NPCBehaviour> CurrentNpcs = new List<NPCBehaviour>();
 
     public Sprite EmptyPictureSprite;
@@ -76,7 +77,7 @@ public class MuseumManager : MonoBehaviour
         Culture = _Culture;
         Gem = _Gem;
         SkillPoint = _SkillPoint;
-        CurrentCultureLevel = _CurrentCultureLevel;
+        CurrentCultureLevel = _CurrentCultureLevel;        
     }
 
     private void FixedUpdate()
@@ -141,11 +142,12 @@ public class MuseumManager : MonoBehaviour
         if (PicturesMenuController.instance.CurrentPicture != null)
         {
             Debug.Log("Picture Control: " + PicturesMenuController.instance.CurrentPicture.name);
-            PicturesMenuController.instance.SetCurrentPicture(PicturesMenuController.instance.CurrentPicture);
+            PicturesMenuController.instance.GoldControledButtonShape();
         }
         List<AudioSource> Sources = AudioManager.instance.GetSoundEffects(SoundEffectType.EarnGold).Select(x=> x.AudioSource).ToList();
         Sources[Random.Range(0, Sources.Count)].Play();
     }
+    
     public void AddGold(float _gold)
     {
         Gold += _gold;
@@ -160,18 +162,24 @@ public class MuseumManager : MonoBehaviour
         UIController.instance.GemText.text = "" + Gem;
         Debug.Log("New gold: " + Gem);
     }
+    public void SpendingSkillPoint(float _point)
+    {
+        SkillPoint -= _point;
+        UIController.instance.SkillPointCountChanged(SkillPoint);
+        Debug.Log("Spending Successful. New Point: " + SkillPoint);
+    }
     public void SpendingGold(float _gold)
     {
         Gold -= _gold;
         UIController.instance.GoldText.text = "" + Gold;
-        Debug.Log("The skill was purchased. New gold: " + Gold);
+        Debug.Log("Spending Successful. New gold: " + Gold);
     }
 
     public void SpendingGem(float _gem)
     {
         Gem -= _gem;
         UIController.instance.GemText.text = "" + Gem;
-        Debug.Log("New gem: " + Gem);
+        Debug.Log("Spending Successful. New gem: " + Gem);
     }
     public void OnNpcExitedMuseum(NPCBehaviour _oldNpc)
     {
@@ -211,7 +219,8 @@ public class MuseumManager : MonoBehaviour
 
     public void AddCultureExp(float _xp)
     {
-        Culture += _xp;
+        int newXP = (int)((float)_xp + (float)_xp * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.CultureExp] / 100f));
+        Culture += newXP;
         if (Culture > GetRequiredCultureExp())
         {
             Culture -= GetRequiredCultureExp();
@@ -267,7 +276,7 @@ public class MuseumManager : MonoBehaviour
         {
             totalHappiness += npc.Happiness;
         }
-
+        
         if (CurrentNpcs.Count > 0)
         {
             TotalVisitorHappiness = totalHappiness / CurrentNpcs.Count;
@@ -276,8 +285,8 @@ public class MuseumManager : MonoBehaviour
         {
             TotalVisitorHappiness = 0; // Eðer hiç NPC yoksa.
         }
-
-        UIController.instance.CurrentTotalHappinessChanged(Mathf.Round(TotalVisitorHappiness));
+        
+        UIController.instance.CurrentTotalHappinessChanged(Mathf.Round(GetFinalVisitorHappiness()));
       
     }
     public void CalculateAndAddTextAllInfos()
@@ -291,6 +300,18 @@ public class MuseumManager : MonoBehaviour
         UIController.instance.CurrentTotalHappinessChanged(TotalVisitorHappiness);
 
     }
+    public float GetFinalVisitorHappiness()
+    {
+        float value = TotalVisitorHappiness + SkillTreeManager.instance.CurrentBuffs[(int)eStat.BaseHappiness];
+        if (value <= 100)
+        {
+             return value;
+        }
+        else
+        {
+            return 100;
+        }
+    }
 
 
     public int GetRequiredCultureExp()
@@ -298,14 +319,14 @@ public class MuseumManager : MonoBehaviour
         return CultureLevel[CurrentCultureLevel];
     }
 
-    public int GetMuseumCurrentCapacity()
+    public float GetMuseumCurrentCapacity()
     {
-        return MaxVisitorPerCultureLevel[CurrentCultureLevel];
+        return SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorCapacity] + MaxVisitorPerCultureLevel[CurrentCultureLevel];
     }
 
-    public int GetTicketPrice()
+    public float GetTicketPrice()
     {
-        return TicketPricePerCultureLevel[CurrentCultureLevel];
+        return SkillTreeManager.instance.CurrentBuffs[(int)eStat.MuseumEnterPrice] + TicketPricePerCultureLevel[CurrentCultureLevel];
     }
 
     public int GetRequiredSkillPointExp()

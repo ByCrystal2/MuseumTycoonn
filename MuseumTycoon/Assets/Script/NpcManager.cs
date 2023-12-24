@@ -26,5 +26,11 @@ public class NpcManager : MonoBehaviour
         DontDestroyOnLoad(this);
         GameManager.instance.LoadPictures(RoomsParent, true);
         GameManager.instance.LoadRooms();
+        GameManager.instance.LoadPurchasedItems();
+
+        //Gaming Services Activation
+        RoomManager.instance.AddRooms(); // in app baglantisi kurulmadan once odalar yuklendi.
+        BuyingConsumables.instance.InitializePurchasing();
+        UnityAdsManager.instance.Initialize();
     }
 }
