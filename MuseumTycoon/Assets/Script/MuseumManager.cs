@@ -162,14 +162,28 @@ public class MuseumManager : MonoBehaviour
         UIController.instance.GemText.text = "" + Gem;
         Debug.Log("New gold: " + Gem);
     }
+    public void AddSkillPoint(int _point) // TEHLIKELI KOD! TESTTEN SONRA SILINMELIDIR!
+    {
+        SkillPoint += _point;
+    }
     public void SpendingSkillPoint(float _point)
     {
+        if (SkillPoint - _point < 0)
+        {
+            Debug.LogWarning("Skill Point miktari 0'dan kucuk olamaz!");
+            return;
+        }
         SkillPoint -= _point;
         UIController.instance.SkillPointCountChanged(SkillPoint);
         Debug.Log("Spending Successful. New Point: " + SkillPoint);
     }
     public void SpendingGold(float _gold)
     {
+        if (Gold - _gold < 0)
+        {
+            Debug.LogWarning("Para miktari 0'dan kucuk olamaz!");
+            return;
+        }
         Gold -= _gold;
         UIController.instance.GoldText.text = "" + Gold;
         Debug.Log("Spending Successful. New gold: " + Gold);
@@ -177,6 +191,11 @@ public class MuseumManager : MonoBehaviour
 
     public void SpendingGem(float _gem)
     {
+        if (Gem - _gem < 0)
+        {
+            Debug.LogWarning("Gem miktari 0'dan kucuk olamaz!");
+            return;
+        }
         Gem -= _gem;
         UIController.instance.GemText.text = "" + Gem;
         Debug.Log("Spending Successful. New gem: " + Gem);

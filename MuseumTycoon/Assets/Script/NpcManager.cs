@@ -26,11 +26,28 @@ public class NpcManager : MonoBehaviour
         DontDestroyOnLoad(this);
         GameManager.instance.LoadPictures(RoomsParent, true);
         GameManager.instance.LoadRooms();
-        GameManager.instance.LoadPurchasedItems();
+        GameManager.instance.LoadPurchasedItems();     
 
         //Gaming Services Activation
         RoomManager.instance.AddRooms(); // in app baglantisi kurulmadan once odalar yuklendi.
         BuyingConsumables.instance.InitializePurchasing();
         UnityAdsManager.instance.Initialize();
+        UnityAdsManager.instance.CreateBannerView();
+        UnityAdsManager.instance.LoadBannerAd();
+        UnityAdsManager.instance.ShowBannerAd();
+    }
+    private void Start()
+    {
+        AudioManager.instance.PlayMusicOfGame();
+        Transform skillsContentTransform = UIController.instance.skillsContent.transform;
+        int length = skillsContentTransform.childCount;
+        for (int i = 0; i < length; i++)
+        {
+            if (skillsContentTransform.GetChild(i).TryGetComponent(out BaseSkillOptions component))
+            {
+                SkillTreeManager.instance.AddSkillObject(skillsContentTransform.GetChild(i).gameObject);
+            }            
+        }        
+        GameManager.instance.LoadSkills();
     }
 }
