@@ -36,7 +36,7 @@ public class RoomManager : MonoBehaviour
     public void BuyTheRoom(RoomData currentRoom)
     {
         Debug.Log("Kapý kilidine týklandý/dokunuldu.");
-        MuseumManager.instance.AddGold(500); // KRÝTÝK KOD TEST EDÝLDÝKTEN SONRA KALDIRILMALI!!        
+        MuseumManager.instance.AddGold(10000); // KRÝTÝK KOD TEST EDÝLDÝKTEN SONRA KALDIRILMALI!!        
         currentRoomID = currentRoom.ID;
 
         PnlBuyRoom.SetActive(false);
@@ -137,31 +137,25 @@ public class RoomManager : MonoBehaviour
                     Debug.Log(currentRoom.availableRoomCell.CellLetter + " " + currentRoom.availableRoomCell.CellNumber + " Kodlu Oda Aktif Edildi.");                    
                     currentRoom.GetComponentInChildren<RoomCloudActivation>().CloudActivationChange(false);
 
-                    if (purchasedRoom.CurrentShoppingType != ShoppingType.RealMoney) // Satin alinan oda, Gercek para ile satin alinmamissa islemleri uygula.
+                    if (currentRoom.CurrentShoppingType == ShoppingType.RealMoney)
                     {
-                        if (currentRoom.CurrentShoppingType == ShoppingType.RealMoney)
-                        {
-                            //currentRoom shopppingtype relamoney ise yapilacak islemler
-                        }
-                        else
-                        {
-                            //currentRoom shopppingtype relamoney degilse yapilacak islemler
-                            currentRoom.RequiredMoney = (purchasedRoom.RequiredMoney * 2) + 500;
-                            activeRoomRequiredMoney = currentRoom.RequiredMoney;
-                        }
+                        //currentRoom shopppingtype relamoney ise yapilacak islemler
+                    }
+                    else
+                    {
+                        //currentRoom shopppingtype relamoney degilse yapilacak islemler
+                        currentRoom.RequiredMoney = (purchasedRoom.RequiredMoney * 2) + 500;
+                        activeRoomRequiredMoney = currentRoom.RequiredMoney;
                     }
                 }
                 // B3 - B5 - A4 - C4 => 2500
             }
         }
-        if (purchasedRoom.CurrentShoppingType != ShoppingType.RealMoney)
+        List<RoomData> activeRoomDatas = roomDatas.Where(x => x.isActive && x.isLock).ToList();
+        foreach (var _activeRoom in activeRoomDatas)
         {
-            List<RoomData> activeRoomDatas = roomDatas.Where(x => x.isActive && x.isLock).ToList();
-            foreach (var _activeRoom in activeRoomDatas)
-            {
-                if (!(_activeRoom.CurrentShoppingType == ShoppingType.RealMoney))            
-                    _activeRoom.RequiredMoney = activeRoomRequiredMoney;            
-            }
+            if (!(_activeRoom.CurrentShoppingType == ShoppingType.RealMoney))            
+                _activeRoom.RequiredMoney = activeRoomRequiredMoney;            
         }
     }
 

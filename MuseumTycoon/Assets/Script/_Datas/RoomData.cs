@@ -23,7 +23,7 @@ public class RoomData : MonoBehaviour
     private void Start()
     {
         if (CurrentShoppingType == ShoppingType.RealMoney)
-            IAP_ID = Constant.instance.IAPIDCompany + Constant.instance.IAPIDGame + CurrentRoomType.ToString().ToLower() + "x" + 1 + "_" + CurrentShoppingType.ToString().ToLower() + "_" + ((int)RequiredMoney).ToString(); //com_kosippysudio_museumtycoon_gold5000x_realmoney_10
+            IAP_ID = Constant.instance.IAPIDCompany + Constant.instance.IAPIDGame + CurrentRoomType.ToString().ToLower() + "x" + 1 + "_" + CurrentShoppingType.ToString().ToLower() + "_" + RequiredMoney.ToString(); //com_kosippysudio_museumtycoon_gold5000x_realmoney_10
         RoomBlok = gameObject.GetComponentInChildren<RoomBlokClickHandler>().gameObject;
         RoofLock = gameObject.GetComponentInChildren<PanelClickHandler>().gameObject.GetComponentInParent<Canvas>().gameObject;
 

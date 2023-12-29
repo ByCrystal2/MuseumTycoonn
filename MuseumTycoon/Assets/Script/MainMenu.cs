@@ -10,12 +10,13 @@ public class MainMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        AudioManager.instance.PlayMusicOfMenu();
         StartGameButton.onClick.AddListener(OnStartButtonClick);
     }
 
     void OnStartButtonClick()
     {
-        SceneManager.LoadScene("Game");        
+        SceneManager.LoadScene("Game");
+        UnityAdsManager.instance.ToggleBanner();
+        AudioManager.instance.PlayMusicOfGame();
     }
 }

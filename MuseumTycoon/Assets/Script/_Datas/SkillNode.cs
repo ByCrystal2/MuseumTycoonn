@@ -12,12 +12,7 @@ public class SkillNode
     public float SkillRequiredPoint;
     public float SkillRequiredMoney;
     public int SkillCurrentLevel = 0;
-    private int skillMaxLevel;
-    public int SkillMaxLevel
-    {
-        get { return skillMaxLevel; }
-        private set {  skillMaxLevel = value; }
-    }   
+    public int SkillMaxLevel;
     public bool IsLocked = true;
     public bool IsPurchased = false;
 
@@ -55,7 +50,7 @@ public class SkillNode
         this.SkillRequiredPoint = skillNode.SkillRequiredPoint;
         this.SkillRequiredMoney= skillNode.SkillRequiredMoney;
         this.SkillCurrentLevel = skillNode.SkillCurrentLevel;
-        this.SkillMaxLevel = skillNode.SkillMaxLevel;
+        this.SkillMaxLevel= skillNode.SkillMaxLevel;
         this.IsLocked = skillNode.IsLocked;
         this.IsPurchased = skillNode.IsPurchased;
         buffs.Clear();

@@ -166,7 +166,7 @@ public class FortuneWheelManager : MonoBehaviour
 	public void TurnWheelButtonClick ()
 	{
 		if (_isFreeTurnAvailable) {
-            UnityAdsManager.instance.LoadInterstitialAd();
+            UnityAdsManager.instance.LoadNonRewardedAd();
             TurnWheelForFree ();
 		} else {
 			// If we have enabled paid turns

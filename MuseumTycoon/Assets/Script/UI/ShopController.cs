@@ -2,8 +2,11 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
+using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class ShopController : MonoBehaviour
 {
@@ -30,6 +33,7 @@ public class ShopController : MonoBehaviour
             return;
         }
         instance = this;
+        DontDestroyOnLoad(this);
     }
 
     public void GetCurrentShoppingTypeItems()
