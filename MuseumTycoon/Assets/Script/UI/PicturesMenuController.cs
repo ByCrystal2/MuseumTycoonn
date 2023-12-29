@@ -294,24 +294,20 @@ public class PicturesMenuController : MonoBehaviour
     public void TestingLoadRewardVideo() //Button
     {
         UnityAdsManager.instance.LoadRewardedAd();
-
         Debug.Log("Test Load Reward Video Ýþlemi Tamamlandý.");
     }
     public void TestingLoadNormalVideo() //Button
     {
-        UnityAdsManager.instance.LoadNonRewardedAd();
-        UnityAdsManager.instance.ShowNonRewardedAd();
+        UnityAdsManager.instance.LoadInterstitialAd();
         Debug.Log("Test Load Normal Video Ýþlemi Tamamlandý.");
     }
     public void TestingShowRewardVideo() //Button
     {        
-        UnityAdsManager.instance.LoadRewardedAd();
         UnityAdsManager.instance.ShowRewardedAd();
         Debug.Log("Test Show Reward Video Ýþlemi Tamamlandý.");
     }
     public void TestingShowNormalVideo() //Button
     {
-        UnityAdsManager.instance.LoadNonRewardedAd();
         UnityAdsManager.instance.ShowNonRewardedAd();
         Debug.Log("Test Show Normal Video Ýþlemi Tamamlandý.");
     }

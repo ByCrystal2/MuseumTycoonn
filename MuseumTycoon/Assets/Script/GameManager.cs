@@ -43,8 +43,7 @@ public class GameManager : MonoBehaviour
         TableCommentEvaluationManager.instance.AddAllNPCComments();
         SkillTreeManager.instance.AddSkillsForSkillTree();
         ItemManager.instance.AddItems();
-        AudioManager.instance.AllAudioSourcesOptions();
-        AudioManager.instance.PlayMusicOfMenu();        
+        AudioManager.instance.AllAudioSourcesOptions();    
     }
 
     private void FixedUpdate()
@@ -55,7 +54,7 @@ public class GameManager : MonoBehaviour
             AutoSaveTimer = Time.time + 300;
         }
     }
-
+    
     public void Save()
     {
         if (CurrentSaveData.SaveName == "")
@@ -84,9 +83,17 @@ public class GameManager : MonoBehaviour
         }
         Debug.Log("inventoryItems.count: " + inventoryItems.Count);
 
+        List<SkillNode> skillNodes = new List<SkillNode>();
+        foreach (var skill in SkillTreeManager.instance.skillNodes)
+        {
+            skillNodes.Add(skill);
+        }
+        Debug.Log("skillNodes.count: " + skillNodes.Count);
+
         CurrentSaveData.CurrentPictures = currentActivePictures;
         CurrentSaveData.InventoryPictures = inventoryPictures;
         CurrentSaveData.PurchasedItems = inventoryItems;
+        CurrentSaveData.SkillNodes = skillNodes;
 
 
         CurrentSaveData.Rooms = new List<RoomSaveData>();
@@ -213,6 +220,33 @@ public class GameManager : MonoBehaviour
 
         MuseumManager.instance.InventoryPictures = CurrentSaveData.InventoryPictures;
     }
+    public void LoadSkills()
+    {
+        SkillTreeManager.instance.skillNodes = CurrentSaveData.SkillNodes;
+        foreach (SkillNode skill in SkillTreeManager.instance.skillNodes)
+        {
+            GameObject baseSkiilObj = SkillTreeManager.instance.skillObjects.Where(x=> x.GetComponent<BaseSkillOptions>().SkillID == skill.ID).SingleOrDefault();
+            if (baseSkiilObj != null)
+            {
+                int lenght = baseSkiilObj.transform.childCount;
+                for (int i = 0; i < lenght; i++)
+                {
+                    Debug.Log(baseSkiilObj.transform.GetChild(i).gameObject.name);
+                    Transform childTransform = baseSkiilObj.transform.GetChild(i);
+                    if (childTransform.TryGetComponent(out SkillAbilityAmountController skillAmountController))
+                    {
+                        Debug.Log(skill.SkillCurrentLevel);
+                        Debug.Log(skill.SkillMaxLevel);                        
+                        skillAmountController.SetSkillCurrentLevelUI(skill.SkillCurrentLevel);
+                    }
+                    else if (childTransform.TryGetComponent(out SkillAbilityMaxAmountController skillMaxController))
+                    {
+                        skillMaxController.SetSkillMaxLevelUI(skill.SkillMaxLevel);
+                    }
+                }
+            }
+        }
+    }
 
     [System.Serializable]
     public class PlayerSaveData
@@ -229,7 +263,8 @@ public class GameManager : MonoBehaviour
         public List<PictureData> InventoryPictures = new List<PictureData>();
         public List<RoomSaveData> Rooms = new List<RoomSaveData>();
         public List<ItemData> PurchasedItems = new List<ItemData>();
+        public List<SkillNode> SkillNodes = new List<SkillNode>();
 
-        public AdverstingData adData;
+        public AdverstingData adData; //ADS SISTEMI KURULDUKTAN SONRA EKLENECEK.
     }
 }

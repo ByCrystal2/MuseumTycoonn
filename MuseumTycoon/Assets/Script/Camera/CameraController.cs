@@ -2,48 +2,50 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraController : MonoBehaviour
+namespace Assets.Script.Camera
 {
-    public float rotationSpeed = 2.0f;
-
-    private Vector2 touchStartPos;
-    private Vector2 touchEndPos;
-    private Vector2 touchDelta;
-
-    private Vector3 initialRotation;
-
-    private void Start()
+    public class CameraController1 : MonoBehaviour
     {
-        initialRotation = transform.rotation.eulerAngles;
-    }
+        public float rotationSpeed = 2.0f;
 
-    private void Update()
-    {
-        if (Input.touchCount == 1)
+        private Vector2 touchStartPos;
+        private Vector2 touchEndPos;
+        private Vector2 touchDelta;
+
+        private Vector3 initialRotation;
+
+        private void Awake()
         {
-            Touch touch = Input.GetTouch(0);
+            initialRotation = transform.rotation.eulerAngles;
+        }
 
-            if (touch.phase == TouchPhase.Began)
+        private void Update()
+        {
+            if (Input.touchCount == 1)
             {
-                touchStartPos = touch.position;
-            }
-            else if (touch.phase == TouchPhase.Moved)
-            {
-                touchEndPos = touch.position;
-                touchDelta = touchEndPos - touchStartPos;
+                Touch touch = Input.GetTouch(0);
 
-                float rotationX = -touchDelta.y * rotationSpeed * Time.deltaTime;
-                float rotationY = touchDelta.x * rotationSpeed * Time.deltaTime;
+                if (touch.phase == TouchPhase.Began)
+                {
+                    touchStartPos = touch.position;
+                }
+                else if (touch.phase == TouchPhase.Moved)
+                {
+                    touchEndPos = touch.position;
+                    touchDelta = touchEndPos - touchStartPos;
 
-                Vector3 newRotation = initialRotation + new Vector3(rotationX, rotationY, 0f);
-                newRotation.x = Mathf.Clamp(newRotation.x, -80f, 80f);
+                    float rotationX = -touchDelta.y * rotationSpeed * Time.deltaTime;
+                    float rotationY = touchDelta.x * rotationSpeed * Time.deltaTime;
 
-                transform.rotation = Quaternion.Euler(newRotation);
+                    Vector3 newRotation = initialRotation + new Vector3(rotationX, rotationY, 0f);
+                    newRotation.x = Mathf.Clamp(newRotation.x, -80f, 80f);
 
-                touchStartPos = touch.position;
-                initialRotation = newRotation;
+                    transform.rotation = Quaternion.Euler(newRotation);
+
+                    touchStartPos = touch.position;
+                    initialRotation = newRotation;
+                }
             }
         }
     }
 }
-

@@ -30,6 +30,7 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
                 builder.AddProduct(item.IAP_ID, ProductType.NonConsumable);
         }
         List<RoomData> IAPRooms = RoomManager.instance.RoomDatas.Where(x => x.CurrentShoppingType == ShoppingType.RealMoney).ToList();
+        Debug.Log("IAP Rooms 0 index: " + IAPRooms[0].availableRoomCell.CellLetter + IAPRooms[0].availableRoomCell.CellNumber);
         foreach (var room in IAPRooms)
         {
             if (room.CurrentRoomType == RoomType.Normal) // item turu normal ise yapýlacak islemler...

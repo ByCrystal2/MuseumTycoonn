@@ -7,7 +7,8 @@ public class SkillTreeManager : MonoBehaviour
 {
 
     public List<SkillNode> skillNodes = new List<SkillNode>();
-
+    public List<GameObject> skillObjects = new List<GameObject>();
+    
     public SkillNode SelectedSkill; // Tiklanan yetenek
     public GameObject SelectedSkillGameObject; // Tiklanan yetenegin gameobject'i
     public List<int> CurrentBuffs;
@@ -25,20 +26,19 @@ public class SkillTreeManager : MonoBehaviour
         DontDestroyOnLoad(this);
         RefreshSkillBonuses();
     }
-    public void AddSkillsForSkillTree()
+    public void AddSkillsForSkillTree() // 3 5 7 10 12 15
     {
-        SkillNode sn1 = new SkillNode(0, "Ziyaretçi Rehberi", "Oyuncuyu bilgilendirecek rehber.", "+5 Mutluluk", 0, 0, DefaultMaxSkillLevel,
+        SkillNode sn1 = new SkillNode(0, "Ziyaretçi Rehberi", "Oyuncuyu bilgilendirecek rehber.", "+5 Mutluluk", 0, 0, 1,
             new List<eStat> { eStat.BaseHappiness }, new List<int> { 1,2,3,4,5,6,7,8,9,10 });
-        SkillNode sn2 = new SkillNode(1, "Reklam Kampanyalarý", "Müzenizin tanýtýmýný yapmak için reklam kampanyalarý oluþturun.", "+5 Ziyaretçi Kapasitesi", 0, 0, DefaultMaxSkillLevel,
+        SkillNode sn2 = new SkillNode(1, "Reklam Kampanyalarý", "Müzenizin tanýtýmýný yapmak için reklam kampanyalarý oluþturun.", "+5 Ziyaretçi Kapasitesi", 0, 0, 1,
             new List<eStat> { eStat.VisitorCapacity }, new List<int> { 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 });
-        SkillNode sn3 = new SkillNode(2, "Test", "Müzenizin tanýtýmýný", "+5 Ziyaretçi Kapasitesi", 2, 3000, DefaultMaxSkillLevel, new List<eStat> { eStat.VisitorCapacity }, new List<int> { 5 });
+        SkillNode sn3 = new SkillNode(2, "Test", "Müzenizin tanýtýmýný", "+5 Ziyaretçi Kapasitesi", 2, 3000, DefaultMaxSkillLevel, new List<eStat> { eStat.VisitorCapacity }, new List<int> { 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 });
         SkillNode sn4 = new SkillNode(3, "Sanat Okulu Ýþbirliði", "Yerel sanat okullarýyla iþbirliði yaparak öðrencileri müzenize çekin.", "+5 Mutluluk, +5 Ziyaretçi Kapasitesi", 10, 5000,
-            DefaultMaxSkillLevel, new List<eStat> { eStat.VisitorCapacity }, new List<int> { 5 });
-        SkillNode sn5 = new SkillNode(4, "Özel Sergiler", "Özel sergiler düzenleyerek daha fazla ziyaretçi çekin.", "+10 Ziyaretçi Kapasitesi", 20, 10000, DefaultMaxSkillLevel, new List<eStat> { eStat.VisitorCapacity }, new List<int> { 5 }
-        );
-        SkillNode sn6 = new SkillNode(5, "Etkileþimli Eðitim", "Ziyaretçilere interaktif eðitim deneyimleri sunarak kültür kazançlarýný artýrýn.", "+10 Kültür Exp Kazanýmý", 30, 15000, DefaultMaxSkillLevel, new List<eStat> { eStat.VisitorCapacity }, new List<int> { 5 });
-        SkillNode sn7 = new SkillNode(6, "Sanatçý Konuklar", "Ünlü sanatçýlarý müzenize davet edin ve ziyaretçi çekmeyi artýrýn.", "+15 Ziyaretçi Kapasitesi, +5 Mutluluk", 40, 20000, DefaultMaxSkillLevel, new List<eStat> { eStat.VisitorCapacity }, new List<int> { 5 });
-        SkillNode sn8 = new SkillNode(7, "Müze Restorasyonu", "Müzenizin fiziksel durumunu iyileþtirerek ziyaretçi memnuniyetini artýrýn.", "+10 Mutluluk, +10 Ziyaretçi Kapasitesi", 50, 25000, DefaultMaxSkillLevel, new List<eStat> { eStat.VisitorCapacity }, new List<int> { 5 });
+            DefaultMaxSkillLevel, new List<eStat> { eStat.VisitorCapacity, eStat.BaseHappiness }, new List<int> { 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,/* Ayrac */ 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 });
+        SkillNode sn5 = new SkillNode(4, "Özel Sergiler", "Özel sergiler düzenleyerek daha fazla ziyaretçi çekin.", "+10 Ziyaretçi Kapasitesi", 20, 10000, DefaultMaxSkillLevel, new List<eStat> { eStat.VisitorCapacity }, new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+        SkillNode sn6 = new SkillNode(5, "Etkileþimli Eðitim", "Ziyaretçilere interaktif eðitim deneyimleri sunarak kültür kazançlarýný artýrýn.", "+10 Kültür Exp Kazanýmý", 30, 15000, DefaultMaxSkillLevel, new List<eStat> { eStat.VisitorCapacity }, new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+        SkillNode sn7 = new SkillNode(6, "Sanatçý Konuklar", "Ünlü sanatçýlarý müzenize davet edin ve ziyaretçi çekmeyi artýrýn.", "+15 Ziyaretçi Kapasitesi, +5 Mutluluk", 40, 20000, DefaultMaxSkillLevel, new List<eStat> { eStat.VisitorCapacity }, new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+        SkillNode sn8 = new SkillNode(7, "Müze Restorasyonu", "Müzenizin fiziksel durumunu iyileþtirerek ziyaretçi memnuniyetini artýrýn.", "+10 Mutluluk, +10 Ziyaretçi Kapasitesi", 50, 25000, DefaultMaxSkillLevel, new List<eStat> { eStat.VisitorCapacity }, new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
         SkillNode sn9 = new SkillNode(8, "Gece Açýlýþlar", "Gece açýlýþlarý düzenleyerek daha fazla ziyaretçiye ulaþýn.", "+15 Ziyaretçi Kapasitesi", 60, 30000, DefaultMaxSkillLevel, new List<eStat> { eStat.VisitorCapacity }, new List<int> { 5 }
         );
         SkillNode sn10 = new SkillNode(9, "VIP Rehberler", "VIP rehberlerle iþbirliði yaparak premium turlar sunun.", "+10 Mutluluk, +15 Ziyaretçi Kapasitesi", 70, 35000, DefaultMaxSkillLevel,
@@ -79,8 +79,7 @@ public class SkillTreeManager : MonoBehaviour
         skillNodes.Add(sn16);
         skillNodes.Add(sn17);
         skillNodes.Add(sn18);
-        skillNodes.Add(sn19);
-
+        skillNodes.Add(sn19);        
     }
 
     public SkillNode GetSelectedSkillNode(int _id)
@@ -103,11 +102,15 @@ public class SkillTreeManager : MonoBehaviour
     {
         return GetSelectedSkillNode(_selectedSkill.ID).IsPurchased;
     }
-
    
     public List<SkillNode> GetActiveSkillNodes()
     {
         return skillNodes.Where(x => x.IsPurchased).ToList();
+    }
+
+    public void AddSkillObject(GameObject _skillObject)
+    {
+        skillObjects.Add(_skillObject);
     }
 
     public void RefreshSkillBonuses()
@@ -127,7 +130,7 @@ public class SkillTreeManager : MonoBehaviour
                 CurrentBuffs[(int)skill.buffs[i]] += _currentAmount;
                 if ( skill.buffs[i] == eStat.VisitorCapacity)
                 {
-                    skill.SkillRequiredPoint = _currentAmount;
+                    //skill.SkillRequiredPoint = _currentAmount;
                 }
             }
         }
