@@ -62,6 +62,9 @@ public class UIController : MonoBehaviour
 
     public TextMeshProUGUI RequiredPointText;
     public TextMeshProUGUI RequiredMoneyText;
+    [Header("NPC InformationPanel")]
+    public GameObject NpcInformationPanel;
+    [SerializeField] private Button NpcInfoPanelExitButton;
 
     [Header("General")]
     public Image CultureFillBar;
@@ -86,6 +89,7 @@ public class UIController : MonoBehaviour
     {
         museumStatButton.onClick.AddListener(ShowMuseumStatsPanel);
         unlockButton.onClick.AddListener(BuySkill);
+        NpcInfoPanelExitButton.onClick.AddListener(CloseNPCInformationPanel);
         MuseumManager.instance.CalculateAndAddTextAllInfos();
     }
     private void Update()
@@ -267,9 +271,16 @@ public class UIController : MonoBehaviour
         skillNameText.text = selectedSkill.SkillName;
         skillDescriptionText.text = selectedSkill.SkillDescription;
         skillEffectText.text = selectedSkill.SkillEffect;
-        skillRequiredPointText.text = "Requires Point: " + selectedSkill.SkillRequiredPoint;
-        skillRequiredMoneyText.text = "$" + selectedSkill.SkillRequiredMoney;
-
+        if (selectedSkill.SkillCurrentLevel < selectedSkill.SkillMaxLevel)
+        {
+            skillRequiredPointText.text = "Requires Point: " + selectedSkill.SkillRequiredPoint;
+            skillRequiredMoneyText.text = "$" + selectedSkill.SkillRequiredMoney;
+        }
+        else
+        {
+            skillRequiredPointText.text = "";
+            skillRequiredMoneyText.text = "";
+        }
 
         SkillTreeManager.instance.CalculateForCurrentSkillEnoughLevelAndMoney(selectedSkill);
         // Kilidi açýlabilir veya açýlamazsa düðmeyi güncelle
@@ -531,7 +542,11 @@ public class UIController : MonoBehaviour
         else
             pnlMuseumStats.SetActive(false);
     }
-
+    
+    public void CloseNPCInformationPanel() //Button!
+    {
+        NpcInformationPanel.SetActive(false);
+    }
 
 
     [SerializeField] GameObject SpiderPrefab;

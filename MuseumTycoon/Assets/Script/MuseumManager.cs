@@ -215,16 +215,25 @@ public class MuseumManager : MonoBehaviour
         {
             starCount = 5;
         }
-        else if(starCount < 1)
+        else if (starCount < 1)
         {
             starCount = 1;
         }
-            
+
         List<TableCommentEvaluationData> randomDatas = TableCommentEvaluationManager.instance.GetComment(starCount);
         TableCommentEvaluationData randomData = randomDatas[Random.Range(0, randomDatas.Count)];
         AddTotalVisitorCommentCount(1);
         CalculateTotalVisitorHappiness();
-        UIController.instance.AddCommentInGlobalTab(EmptyPictureSprite, _npc.name, randomData.Message, System.DateTime.Now.Hour + ":" + System.DateTime.Now.Minute + ":" + System.DateTime.Now.Second);
+        string likedArtist = "";
+        foreach (var artist in _npc.LikedArtist)
+        {
+            if (artist == _pictureElement._pictureData.painterData.Description)
+            {
+                likedArtist = artist.Split(" ")[0] + " Bu Ressama bayýlýyorum!";
+                break;
+            }
+        }
+        UIController.instance.AddCommentInGlobalTab(EmptyPictureSprite, _npc.name, $"{randomData.Message} {likedArtist}", System.DateTime.Now.Hour + ":" + System.DateTime.Now.Minute + ":" + System.DateTime.Now.Second);
     }
     public void AddTotalVisitorCommentCount(int count)
     {

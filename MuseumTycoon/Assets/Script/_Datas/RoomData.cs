@@ -47,6 +47,11 @@ public class RoomData : MonoBehaviour
         }
         else
         {
+            int childCount = gameObject.transform.GetChild(4).childCount;
+            for (int i = 0; i < childCount; i++)
+            {
+                Doors.Add(gameObject.transform.GetChild(4).gameObject.transform.GetChild(i).gameObject);
+            }
             foreach (var door in Doors)
             {
                 door.SetActive(false);
@@ -54,6 +59,7 @@ public class RoomData : MonoBehaviour
             RoomBlok.SetActive(false);
             RoofLock.SetActive(false);
         }
+        Debug.Log("Oda start tamamlandi.");
     }
     
     public void IsPurchased(bool _isPurchased)

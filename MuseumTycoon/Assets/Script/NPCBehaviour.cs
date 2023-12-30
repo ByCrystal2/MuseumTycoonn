@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class NPCBehaviour : MonoBehaviour
 {
@@ -18,6 +19,12 @@ public class NPCBehaviour : MonoBehaviour
     [SerializeField] private float NpcRotationSpeed;
     [SerializeField] private Vector3 OutsidePosition;
     [SerializeField] private NPCBehaviour DialogTarget;
+
+    //UI
+    [SerializeField] string MyName = "Ahmet Burak"; // Default olarak Ahmet Burak atýldý. Deðiþtirilecek.
+    private RawImage myRawImage;
+    private Camera myDefaultCamera;
+    private Camera myWorkCamera;
 
     public float IdleLength;
     private float IdleTimer;
@@ -48,7 +55,14 @@ public class NPCBehaviour : MonoBehaviour
     
     private void Awake()
     {
-        
+        int length = transform.childCount;
+        for (int i = 0; i < length; i++)
+        {
+            if (transform.GetChild(i).CompareTag("NPCDefaultCamera"))            
+                myDefaultCamera = transform.GetChild(i).GetComponent<Camera>();
+            else if(transform.GetChild(i).CompareTag("NPCWorkCamera"))
+                myWorkCamera = transform.GetChild(i).GetComponent<Camera>();
+        }
     }
     void Start()
     {
@@ -610,6 +624,22 @@ public class NPCBehaviour : MonoBehaviour
 
         // Apply the rotation to the NPC's transform
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, NpcRotationSpeed * Time.deltaTime);
+    }
+
+    private void OnMouseDown()
+    {
+        Debug.Log("NPC'ye tiklandi/dokunuldu.");
+        UIController.instance.NpcInformationPanel.SetActive(true);
+        if (!(CurrentInvestigate == InvestigateState.Fight || CurrentInvestigate == InvestigateState.Dialog || CurrentInvestigate == InvestigateState.Look)) // InvestiagetState sistemi yanlis calisiyor. Bundan dolayi if icerisinde donen bool degerin tersi alindi (Orn: npc tabloya bakmamasina ragmen, InvestiagetState Look oluyor.)
+        {
+            myWorkCamera.gameObject.SetActive(true);
+            myDefaultCamera.gameObject.SetActive(false);
+        }
+        else
+        {
+            myWorkCamera.gameObject.SetActive(false);
+            myDefaultCamera.gameObject.SetActive(true);
+        }
     }
 }
 

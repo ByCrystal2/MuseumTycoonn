@@ -46,6 +46,7 @@ public class NpcManager : MonoBehaviour
             if (skillsContentTransform.GetChild(i).TryGetComponent(out BaseSkillOptions component))
             {
                 SkillTreeManager.instance.AddSkillObject(skillsContentTransform.GetChild(i).gameObject);
+
             }            
         }        
         GameManager.instance.LoadSkills();

@@ -12,12 +12,7 @@ public class SkillNode
     public float SkillRequiredPoint;
     public float SkillRequiredMoney;
     public int SkillCurrentLevel = 0;
-    private int skillMaxLevel;
-    public int SkillMaxLevel
-    {
-        get { return skillMaxLevel; }
-        private set {  skillMaxLevel = value; }
-    }   
+    public int SkillMaxLevel;    
     public bool IsLocked = true;
     public bool IsPurchased = false;
 
@@ -86,4 +81,5 @@ public class SkillNode
     {
         this.IsPurchased = _isPurchased;
     }
+    
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -145,6 +146,7 @@ public class GameManager : MonoBehaviour
                         currentRoom.isActive = currentRoomSave.isActive;
                         currentRoom.isLock = currentRoomSave.isLock;
                         currentRoom.RequiredMoney = currentRoomSave.RequiredMoney;
+                        
                         Debug.Log("kac adet oda bulundu: " + adet);
                         adet++;
                         break;
@@ -162,7 +164,7 @@ public class GameManager : MonoBehaviour
         if (File.Exists(Application.persistentDataPath + "/" + CurrentSaveData.SaveName + ".json"))
         {
             string jsonString = File.ReadAllText(Application.persistentDataPath + "/" + CurrentSaveData.SaveName + ".json"); // read the json file from the file system
-            CurrentSaveData = JsonUtility.FromJson<PlayerSaveData>(jsonString); // de-serialize the data to your myData object
+            CurrentSaveData = JsonUtility.FromJson<PlayerSaveData>(jsonString); // de-serialize the data to your myData object            
             UnityAdsManager.instance.adsData = CurrentSaveData.adData;
             //MuseumManager.instance.CurrentActivePictures = CurrentSaveData.CurrentPictures;
             //MuseumManager.instance.InventoryPictures = CurrentSaveData.InventoryPictures;
@@ -170,6 +172,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            Debug.Log("Save dosyasi yok..");
             Save();
         }
     }
@@ -239,9 +242,10 @@ public class GameManager : MonoBehaviour
                         Debug.Log(skill.SkillMaxLevel);                        
                         skillAmountController.SetSkillCurrentLevelUI(skill.SkillCurrentLevel);
                     }
-                    else if (childTransform.TryGetComponent(out SkillAbilityMaxAmountController skillMaxController))
+                    if (childTransform.TryGetComponent(out SkillAbilityMaxAmountController skillMaxController))
                     {
                         skillMaxController.SetSkillMaxLevelUI(skill.SkillMaxLevel);
+                        Debug.Log("Mevcut Skill'in Max Leveli => " + skill.SkillMaxLevel);
                     }
                 }
             }
