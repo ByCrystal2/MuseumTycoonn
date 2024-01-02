@@ -65,7 +65,43 @@ public class CatchTheColors : MonoBehaviour
 
         return MostCommonColors;
     }
-
+    public List<Color> MyColorsControl(List<MyColors> _MyColors)
+    {
+        List<Color> colors = new List<Color>();
+        foreach (var MyColor in _MyColors)
+        {
+            switch (MyColor)
+            {
+                case MyColors.Black:
+                    colors.Add(Color.black);
+                    break;
+                case MyColors.White:
+                    colors.Add(Color.white);
+                    break;
+                case MyColors.Red:
+                    colors.Add(Color.red);
+                    break;
+                case MyColors.Green:
+                    colors.Add(Color.green);
+                    break;
+                case MyColors.Blue:
+                    colors.Add(Color.blue);
+                    break;
+                case MyColors.Cyan:
+                    colors.Add(Color.cyan);
+                    break;
+                case MyColors.Yellow:
+                    colors.Add(Color.yellow);
+                    break;
+                case MyColors.Purple:
+                    colors.Add(Color.magenta);
+                    break;               
+                default:
+                    break;
+            }
+        }
+        return colors;
+    }
     Color FindClosestPredefinedColor(List<Color> colors, Color target)
     {
         Color closestColor = Color.clear;

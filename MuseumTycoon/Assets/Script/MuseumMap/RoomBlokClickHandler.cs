@@ -9,9 +9,17 @@ public class RoomBlokClickHandler : MonoBehaviour
     {
         RoomData ClickedRoom = this.GetComponentInParent<RoomData>();
 
-        if (!EventSystem.current.IsPointerOverGameObject() && ClickedRoom.isActive && ClickedRoom.isLock)
+        Debug.Log("Odaya Tiklandi!");
+        if (ClickedRoom.isActive && ClickedRoom.isLock)
         {
-            RoomManager.instance.BuyTheRoom(ClickedRoom);
+            Debug.Log("Oda Aktif Ve Kilitli!");
+            Debug.Log("Tiklanan Obje => " + EventSystem.current.currentSelectedGameObject);
+            
+            if (!EventSystem.current.IsPointerOverGameObject() )
+            {
+                RoomManager.instance.BuyTheRoom(ClickedRoom);
+            }
+
         }
     }
 }

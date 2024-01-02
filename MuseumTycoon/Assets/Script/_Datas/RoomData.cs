@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class RoomData : MonoBehaviour
@@ -17,9 +18,11 @@ public class RoomData : MonoBehaviour
     
     [SerializeField] public RoomCell availableRoomCell = new RoomCell();
 
+    //UI
     public List<GameObject> Doors = new List<GameObject>();
     private GameObject RoomBlok;
     private GameObject RoofLock;
+    public List<TextMeshProUGUI> MyRequiredMoneyTexts;
     private void Start()
     {
         if (CurrentShoppingType == ShoppingType.RealMoney)
@@ -44,6 +47,16 @@ public class RoomData : MonoBehaviour
             }
             RoomBlok.SetActive(true);
             RoofLock.SetActive(true);
+            if (CurrentShoppingType != ShoppingType.RealMoney && isActive && RoomManager.instance.activeRoomsRequiredMoney > 0)
+            {
+                SetMyRequiredTexts(RoomManager.instance.activeRoomsRequiredMoney);
+                Debug.Log("Oda Aktif Ve activeRoomsRequiredMoney 0'dan buyuk" + RoomManager.instance.activeRoomsRequiredMoney);
+            }
+            else
+            {
+                SetMyRequiredTexts(RequiredMoney);
+                Debug.Log("Oda Aktif deðil Ve activeRoomsRequiredMoney 0'dan kucuk => " + RoomManager.instance.activeRoomsRequiredMoney + "|| My Required Money => " + RequiredMoney);
+            }
         }
         else
         {
@@ -59,9 +72,16 @@ public class RoomData : MonoBehaviour
             RoomBlok.SetActive(false);
             RoofLock.SetActive(false);
         }
+        
         Debug.Log("Oda start tamamlandi.");
     }
-    
+    public void SetMyRequiredTexts(float _RequiredMoney)
+    {
+        foreach (var requiredText in MyRequiredMoneyTexts)
+        {
+            requiredText.text = _RequiredMoney.ToString();
+        }
+    }
     public void IsPurchased(bool _isPurchased)
     {
         if (_isPurchased)
@@ -136,11 +156,10 @@ public enum CellLetter
     X,    
     Y,
     Z,
-
 }
 
 [System.Serializable]
-public class RoomSaveData 
+public class RoomSaveData
 {
     public string availableRoomCell;
     public bool isLock = true;

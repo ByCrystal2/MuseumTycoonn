@@ -65,6 +65,14 @@ public class UIController : MonoBehaviour
     [Header("NPC InformationPanel")]
     public GameObject NpcInformationPanel;
     [SerializeField] private Button NpcInfoPanelExitButton;
+    //UI
+    [SerializeField] private TextMeshProUGUI txtFullName;
+    [SerializeField] private TextMeshProUGUI txtHappiness;
+    [SerializeField] private TextMeshProUGUI txtStress;
+    [SerializeField] private TextMeshProUGUI txtToilet;
+    [SerializeField] private TextMeshProUGUI txtEducation;
+    [SerializeField] private List<Image> LikedColorImages;
+    [SerializeField] private List<TextMeshProUGUI> ArtistTexts;
 
     [Header("General")]
     public Image CultureFillBar;
@@ -94,22 +102,6 @@ public class UIController : MonoBehaviour
     }
     private void Update()
     {
-        /* if (Input.GetMouseButtonDown(0) || Input.touchCount > 0)
-        {
-            // Fare týklanýrsa panelin etrafýna týklanýp týklanmadýðýný kontrol et.
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out hit))
-            {
-                if (hit.collider.gameObject != pnlPicturesMenu)
-                {
-                    // Panel dýþýna týklanýrsa paneli kapat.
-                    pnlPicturesMenu.SetActive(false);
-                }
-            }
-        }
-        */
     }
 
     public void GetClickedPicture(bool active, PictureElement _lastSelectedPicture) 
@@ -126,23 +118,7 @@ public class UIController : MonoBehaviour
         string selectedOptionText = dropdown.options[selectedOptionIndex].text;
 
         return selectedOptionText;
-    }
-
-    public void DropDownValueChanged() // Dropdown*
-    {
-        //PainterData newPainter = Painter.instance.GetPainter(GetDropDownSelectedPainter());
-        //if (newPainter == null)
-        //{
-        //    Debug.Log("Null Painter");
-        //    return;
-        //}
-        //txtPainterName.text = newPainter.Name;
-        //imgPicture.sprite = newPainter.Picture;
-        //for (int i = 0; i < newPainter.StarCount; i++)
-        //{
-        //    OpenStars[i].gameObject.SetActive(true);
-        //}
-    }
+    }    
 
     public void SetSelectedPicture(int _id)
     {
@@ -482,14 +458,7 @@ public class UIController : MonoBehaviour
         yield return new WaitForSeconds(_duration);
         _go.SetActive(false);
     }
-    //public void StartShowSkillInfoPress() // Event Trigger / Down
-    //{
-
-    //}
-    //public void EndShowSkillInfoPress() // Event Trigger / Up
-    //{
-
-    //}
+    
     public void InMuseumCurrentNPCCountChanged(int _currentVisitorCount)
     {
         InMuseumCurrentNPCCount.text = _currentVisitorCount.ToString();
@@ -542,10 +511,47 @@ public class UIController : MonoBehaviour
         else
             pnlMuseumStats.SetActive(false);
     }
-    
+    public void SetNPCInfoPanelUIs(string _Fullname, float _Happiness, float _Stress, float _Toilet, float _Education, List<MyColors> _LikedColors, List<string> _LikedArtist)
+    {
+        txtFullName.text = _Fullname;
+        txtHappiness.text = "%" + _Happiness.ToString();
+        txtStress.text = "%" + _Stress.ToString();
+        txtToilet.text = "%" + _Toilet.ToString();
+        txtEducation.text = _Education.ToString();
+        List<Color> likedColors = CatchTheColors.instance.MyColorsControl(_LikedColors);
+        int length = LikedColorImages.Count;
+        if (_LikedColors != null)
+        {
+            for (int i = 0; i < length; i++)
+            {
+                if (likedColors[i] != null)
+                {
+                    LikedColorImages[i].color = likedColors[i];
+                }
+            }
+        }
+        else
+            Debug.Log("NPC'nin Color Listesi Bos!");
+
+        
+        int length1 = ArtistTexts.Count;
+        if (_LikedArtist != null)
+        {
+            for (int i = 0; i < length1; i++)
+            {
+                if (_LikedArtist[i] != null)
+                {
+                    ArtistTexts[i].text = _LikedArtist[i];
+                }
+            }
+        }
+        else
+            Debug.Log("NPC'nin Artist Listesi Bos!");
+    }
     public void CloseNPCInformationPanel() //Button!
     {
         NpcInformationPanel.SetActive(false);
+        NpcManager.instance.CurrentNPC.SetMyCamerasActivation(false, false);
     }
 
 

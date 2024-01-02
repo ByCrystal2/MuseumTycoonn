@@ -625,20 +625,33 @@ public class NPCBehaviour : MonoBehaviour
         // Apply the rotation to the NPC's transform
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, NpcRotationSpeed * Time.deltaTime);
     }
+    
+    public void SetMyCamerasActivation(bool _DefaultCameraActivation, bool _WorkCameraActivation)
+    {
+        if (_DefaultCameraActivation)
+            myDefaultCamera.gameObject.SetActive(true);
+        else
+            myDefaultCamera.gameObject.SetActive(false);
+
+        if (_WorkCameraActivation)
+            myWorkCamera.gameObject.SetActive(true);
+        else 
+            myWorkCamera.gameObject.SetActive(false);
+    }
 
     private void OnMouseDown()
     {
         Debug.Log("NPC'ye tiklandi/dokunuldu.");
+        NpcManager.instance.CurrentNPC = this;
         UIController.instance.NpcInformationPanel.SetActive(true);
+        UIController.instance.SetNPCInfoPanelUIs(MyName, Happiness, Stress, Toilet, Education, LikedColors, LikedArtist);
         if (!(CurrentInvestigate == InvestigateState.Fight || CurrentInvestigate == InvestigateState.Dialog || CurrentInvestigate == InvestigateState.Look)) // InvestiagetState sistemi yanlis calisiyor. Bundan dolayi if icerisinde donen bool degerin tersi alindi (Orn: npc tabloya bakmamasina ragmen, InvestiagetState Look oluyor.)
         {
-            myWorkCamera.gameObject.SetActive(true);
-            myDefaultCamera.gameObject.SetActive(false);
+            SetMyCamerasActivation(false, true);
         }
         else
         {
-            myWorkCamera.gameObject.SetActive(false);
-            myDefaultCamera.gameObject.SetActive(true);
+            SetMyCamerasActivation(true, false);
         }
     }
 }

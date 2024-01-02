@@ -5,6 +5,7 @@ using UnityEngine;
 public class NpcManager : MonoBehaviour
 {
     public static NpcManager instance { get; private set; }
+    public NPCBehaviour CurrentNPC; // npc information panelde gorunen npc! (uzerine tiklanan npc)
     public List<LocationData> Locations = new List<LocationData>();
 
     public List<Transform> GidisListe = new List<Transform>();

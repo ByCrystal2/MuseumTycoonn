@@ -120,6 +120,9 @@ public class GameManager : MonoBehaviour
         if(UnityAdsManager.instance != null)
             CurrentSaveData.adData = UnityAdsManager.instance.adsData;
 
+        if (RoomManager.instance != null)
+            CurrentSaveData.ActiveRoomsRequiredMoney = RoomManager.instance.activeRoomsRequiredMoney;
+
         string jsonString = JsonUtility.ToJson(CurrentSaveData);
         File.WriteAllText(Application.persistentDataPath + "/" + CurrentSaveData.SaveName + ".json", jsonString); // this will write the json to the specified path
 
@@ -128,6 +131,7 @@ public class GameManager : MonoBehaviour
 
     public void LoadRooms()
     {
+        RoomManager.instance.activeRoomsRequiredMoney = CurrentSaveData.ActiveRoomsRequiredMoney;
         int adet = 0;
         int length = RoomManager.instance.transform.childCount;
         int length2 = CurrentSaveData.Rooms.Count;
@@ -262,6 +266,9 @@ public class GameManager : MonoBehaviour
         public float Gem;
         public float SkillPoint;
         public int CurrentCultureLevel;
+
+        //RoomManager
+        public float ActiveRoomsRequiredMoney;
 
         public List<PictureData> CurrentPictures = new List<PictureData>();
         public List<PictureData> InventoryPictures = new List<PictureData>();
