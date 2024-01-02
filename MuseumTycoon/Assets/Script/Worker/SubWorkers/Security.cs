@@ -6,7 +6,7 @@ using UnityEngine;
 [System.Serializable]
 public class Security : Worker, ISleepable, IMoveable
 {
-    public Security(float _speed, float _energy) : base(_speed, _energy)
+    public Security(int _id,float _speed, float _energy) : base(_id,_speed, _energy)
     {
 
     }
@@ -60,5 +60,5 @@ public class Security : Worker, ISleepable, IMoveable
     public override void CompleteTask(Task task)
     {
         throw new System.NotImplementedException();
-    }
+    }    
 }

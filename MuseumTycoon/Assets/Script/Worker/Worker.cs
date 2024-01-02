@@ -5,14 +5,21 @@ using UnityEngine;
 [System.Serializable]
 public abstract class Worker: ITaskAssignable
 {
+    public int ID;
+    public string Name;
     public float Speed;
     public float Energy;
-    public int IWorkRoomID;
+    public int Age;
+    public float Height;
+    public bool isMale;
+    public List<int> IWorkRoomsID = new List<int>();
     public List<Task> MyTasks = new List<Task>();
-    public Worker(float _speed, float _energy)
+    public Worker(int _id,float _speed, float _energy)
     {
+        this.ID = _id;
         this.Speed = _speed;
         this.Energy = _energy;
+        this.Name = "Kosippy Worker";
     }
 
     public abstract void AssignTask(Task task);

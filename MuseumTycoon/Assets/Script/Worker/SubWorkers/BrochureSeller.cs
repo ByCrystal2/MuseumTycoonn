@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class BrochureSeller : Worker, ISleepable
 {
-    public BrochureSeller(float _speed, float _energy) : base(_speed, _energy)
+    public BrochureSeller(int _id, float _speed, float _energy) : base(_id, _speed, _energy)
     {
     }
 

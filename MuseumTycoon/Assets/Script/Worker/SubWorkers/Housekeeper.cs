@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class Housekeeper : Worker, ISleepable, IMoveable
 {
-    public Housekeeper(float _speed, float _energy) : base(_speed, _energy)
+    public Housekeeper(int _id, float _speed, float _energy) : base(_id, _speed, _energy)
     {
 
     }

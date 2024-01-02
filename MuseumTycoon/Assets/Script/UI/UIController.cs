@@ -1,17 +1,14 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 public class UIController : MonoBehaviour
 {
-    
-
     private PictureElement _LastSelectedPicture;
-
 
     [Header("MuseumInfos")]
     [SerializeField] GameObject pnlMuseumStats;
@@ -74,6 +71,19 @@ public class UIController : MonoBehaviour
     [SerializeField] private List<Image> LikedColorImages;
     [SerializeField] private List<TextMeshProUGUI> ArtistTexts;
 
+    [Header("Worker Market Panel")]
+    public Transform WorkerContent; 
+    public GameObject WorkerPrefabV2_V1;
+    //UI
+    public GameObject WorkerPanel;
+    private Vector3 WorkerPanelDefaultPos;
+    public Button WorkerPanelOnButton;
+    public Button btnSecurityTab;
+    public Button btnHouseKeeperTab;
+    public Button btnMusicianTab;
+    public Button btnReceptionistTab;
+    public Button btnBrochureSellerTab;
+
     [Header("General")]
     public Image CultureFillBar;
     public Text CultureLevelText, GoldText, GemText;
@@ -92,18 +102,23 @@ public class UIController : MonoBehaviour
         GoldText.text = "" + MuseumManager.instance.GetCurrentGold();
         GemText.text = "" + MuseumManager.instance.GetCurrentGem();
         CultureLevelText.text = "" + MuseumManager.instance.GetCurrentCultureLevel();
+        WorkerPanelDefaultPos = WorkerContent.position;
     }
     private void Start()
     {
         museumStatButton.onClick.AddListener(ShowMuseumStatsPanel);
         unlockButton.onClick.AddListener(BuySkill);
         NpcInfoPanelExitButton.onClick.AddListener(CloseNPCInformationPanel);
+
+        WorkerPanelOnButton.onClick.AddListener(AddWorkersInContent);
+        btnSecurityTab.onClick.AddListener(() => GetDesiredWorkersInContent(WorkerType.Security,btnSecurityTab));
+        btnHouseKeeperTab.onClick.AddListener(() => GetDesiredWorkersInContent(WorkerType.Housekeeper, btnHouseKeeperTab));
+        btnReceptionistTab.onClick.AddListener(() => GetDesiredWorkersInContent(WorkerType.Receptionist, btnReceptionistTab));
+        btnMusicianTab.onClick.AddListener(() => GetDesiredWorkersInContent(WorkerType.Musician, btnMusicianTab));
+        btnBrochureSellerTab.onClick.AddListener(() => GetDesiredWorkersInContent(WorkerType.BrochureSeller, btnBrochureSellerTab));
+
         MuseumManager.instance.CalculateAndAddTextAllInfos();
     }
-    private void Update()
-    {
-    }
-
     public void GetClickedPicture(bool active, PictureElement _lastSelectedPicture) 
     {
         _LastSelectedPicture = _lastSelectedPicture;
@@ -554,6 +569,49 @@ public class UIController : MonoBehaviour
         NpcManager.instance.CurrentNPC.SetMyCamerasActivation(false, false);
     }
 
+    public void AddWorkersInContent()
+    {
+        GetDesiredWorkersInContent(WorkerType.Security, btnSecurityTab);
+        WorkerPanel.SetActive(true);
+
+    }
+
+    public void GetDesiredWorkersInContent(WorkerType _wType, Button _clikedButton = null)
+    {        
+        if (_clikedButton != null)
+        {
+            WorkerTabButtonsOn();
+            _clikedButton.interactable = false;
+            WorkerContent.position = WorkerPanelDefaultPos;
+        }
+        Debug.Log($"Worker Turu => {_wType} olan Isciler Listelendi.");
+        
+        ClearWorkerContent();
+        List<WorkerBehaviour> workers = WorkerManager.instance.GetWorkersInMarket().Where(x=> x.workerType == _wType).ToList();
+        foreach (WorkerBehaviour worker in workers)
+        {
+            GameObject newSecurityObj = Instantiate(WorkerPrefabV2_V1, WorkerContent);
+            newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(worker.ID,worker.MyScript.Name, worker.MyScript.Age, worker.MyScript.Height);
+        }
+    }
+    public void WorkerTabButtonsOn()
+    {
+        btnSecurityTab.interactable = true;
+        btnHouseKeeperTab.interactable = true;
+        btnMusicianTab.interactable = true;
+        btnReceptionistTab.interactable = true;
+        btnBrochureSellerTab.interactable = true;
+    }
+    public void ClearWorkerContent()
+    {
+        Debug.Log("Worker Content Temizledi.");
+        int length = WorkerContent.childCount;
+        for (int i = 0; i < length; i++)
+        {
+            GameObject destroyObj = WorkerContent.GetChild(i).gameObject;
+            Destroy(destroyObj);
+        }
+    }
 
     [SerializeField] GameObject SpiderPrefab;
     [SerializeField] Transform spiderParent;
