@@ -79,19 +79,19 @@ public class WorkerManager : MonoBehaviour
             switch (worker.workerType)
             {
                 case WorkerType.Security:
-                    worker.MyScript = new Security(worker.ID, worker.NpcCurrentSpeed, 100);
+                    worker.MyScript = new Security(worker.ID, worker.NpcCurrentSpeed, 100,worker.workerType);
                     break;
                 case WorkerType.Housekeeper:
-                    worker.MyScript = new Housekeeper(worker.ID,worker.NpcCurrentSpeed, 100);
+                    worker.MyScript = new Housekeeper(worker.ID,worker.NpcCurrentSpeed, 100, worker.workerType);
                     break;
                 case WorkerType.Musician:
-                    worker.MyScript = new Musician(worker.ID, worker.NpcCurrentSpeed, 100);
+                    worker.MyScript = new Musician(worker.ID, worker.NpcCurrentSpeed, 100, worker.workerType);
                     break;
                 case WorkerType.Receptionist:
-                    worker.MyScript = new Receptionist(worker.ID, worker.NpcCurrentSpeed, 100);
+                    worker.MyScript = new Receptionist(worker.ID, worker.NpcCurrentSpeed, 100, worker.workerType);
                     break;
                 case WorkerType.BrochureSeller:
-                    worker.MyScript = new BrochureSeller(worker.ID, worker.NpcCurrentSpeed, 100);
+                    worker.MyScript = new BrochureSeller(worker.ID, worker.NpcCurrentSpeed, 100, worker.workerType);
                     break;
                 default:
                     break;
@@ -119,6 +119,7 @@ public class WorkerManager : MonoBehaviour
     public List<WorkerBehaviour> GetAllWorkers(){ return AllWorkers; }
     public List<WorkerBehaviour> GetWorkersInMarket() {  return WorkersInMarket; }
     public List<WorkerBehaviour> GetWorkersInInventory() { return WorkersInInventory; }
+    public List<WorkerBehaviour> GetCurrentWorkers() { return CurrentActiveWorkers; }
     public List<WorkerAndTasks> GetWorkersAndWorkersTasksy() { return WorkersAndTasks; }
 
     public void AddWorkerToInventory(WorkerBehaviour _newWorker)

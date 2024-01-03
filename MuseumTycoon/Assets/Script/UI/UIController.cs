@@ -84,6 +84,23 @@ public class UIController : MonoBehaviour
     public Button btnReceptionistTab;
     public Button btnBrochureSellerTab;
 
+    [Header("Worker Assignment Panel")]    
+    //UI
+    [SerializeField] private GameObject WorkerAssignmentPanel;
+    [SerializeField] private Button WorkerAssignmentPanelOnButton;
+    // => AssignmentRooms
+    [SerializeField] private Transform WorkerAssignContent;
+    [SerializeField] private GameObject AssignmentRoomPrefab_V1;
+
+    // => WorkerInventory
+    [SerializeField] private Transform WorkerInventoryContent;
+    [SerializeField] private GameObject InventoryWorkerPrefab_V1;
+
+    [SerializeField] private Button W_InventoryTabSecurity;
+    [SerializeField] private Button W_InventoryTabHouseKeeper;
+    [SerializeField] private Button W_InventoryTabMusician;
+    [SerializeField] private Button W_InventoryTabReceptionist;
+    [SerializeField] private Button W_InventoryTabBrochureSeller;
     [Header("General")]
     public Image CultureFillBar;
     public Text CultureLevelText, GoldText, GemText;
@@ -110,13 +127,21 @@ public class UIController : MonoBehaviour
         unlockButton.onClick.AddListener(BuySkill);
         NpcInfoPanelExitButton.onClick.AddListener(CloseNPCInformationPanel);
 
+        // WorkerMarket
         WorkerPanelOnButton.onClick.AddListener(AddWorkersInContent);
         btnSecurityTab.onClick.AddListener(() => GetDesiredWorkersInContent(WorkerType.Security,btnSecurityTab));
         btnHouseKeeperTab.onClick.AddListener(() => GetDesiredWorkersInContent(WorkerType.Housekeeper, btnHouseKeeperTab));
-        btnReceptionistTab.onClick.AddListener(() => GetDesiredWorkersInContent(WorkerType.Receptionist, btnReceptionistTab));
         btnMusicianTab.onClick.AddListener(() => GetDesiredWorkersInContent(WorkerType.Musician, btnMusicianTab));
+        btnReceptionistTab.onClick.AddListener(() => GetDesiredWorkersInContent(WorkerType.Receptionist, btnReceptionistTab));
         btnBrochureSellerTab.onClick.AddListener(() => GetDesiredWorkersInContent(WorkerType.BrochureSeller, btnBrochureSellerTab));
 
+        // WorkerMarket
+        WorkerAssignmentPanelOnButton.onClick.AddListener(AddInventoryWorkersInContent);
+        W_InventoryTabSecurity.onClick.AddListener(() => GetDesiredInventoryWorkersInContent(WorkerType.Security, W_InventoryTabSecurity));
+        W_InventoryTabHouseKeeper.onClick.AddListener(() => GetDesiredInventoryWorkersInContent(WorkerType.Housekeeper, W_InventoryTabHouseKeeper));
+        W_InventoryTabMusician.onClick.AddListener(() => GetDesiredInventoryWorkersInContent(WorkerType.Musician, W_InventoryTabMusician));
+        W_InventoryTabReceptionist.onClick.AddListener(() => GetDesiredInventoryWorkersInContent(WorkerType.Receptionist, W_InventoryTabReceptionist));
+        W_InventoryTabBrochureSeller.onClick.AddListener(() => GetDesiredInventoryWorkersInContent(WorkerType.BrochureSeller, W_InventoryTabBrochureSeller));
         MuseumManager.instance.CalculateAndAddTextAllInfos();
     }
     public void GetClickedPicture(bool active, PictureElement _lastSelectedPicture) 
@@ -573,8 +598,8 @@ public class UIController : MonoBehaviour
     {
         GetDesiredWorkersInContent(WorkerType.Security, btnSecurityTab);
         WorkerPanel.SetActive(true);
-
     }
+   
 
     public void GetDesiredWorkersInContent(WorkerType _wType, Button _clikedButton = null)
     {        
@@ -584,15 +609,15 @@ public class UIController : MonoBehaviour
             _clikedButton.interactable = false;
             WorkerContent.position = WorkerPanelDefaultPos;
         }
-        Debug.Log($"Worker Turu => {_wType} olan Isciler Listelendi.");
+        ClearWorkerContent(WorkerContent);
         
-        ClearWorkerContent();
-        List<WorkerBehaviour> workers = WorkerManager.instance.GetWorkersInMarket().Where(x=> x.workerType == _wType).ToList();
+        List<WorkerBehaviour> workers = WorkerManager.instance.GetWorkersInMarket().Where(x=> x.workerType == _wType).OrderBy(x => x.MyScript.Level).ToList();
         foreach (WorkerBehaviour worker in workers)
         {
             GameObject newSecurityObj = Instantiate(WorkerPrefabV2_V1, WorkerContent);
             newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(worker.ID,worker.MyScript.Name, worker.MyScript.Age, worker.MyScript.Height);
         }
+        Debug.Log($"Worker Turu => {_wType} olan Isciler Listelendi.");
     }
     public void WorkerTabButtonsOn()
     {
@@ -602,15 +627,63 @@ public class UIController : MonoBehaviour
         btnReceptionistTab.interactable = true;
         btnBrochureSellerTab.interactable = true;
     }
-    public void ClearWorkerContent()
+    public void InventoryWorkerTabButtonsOn()
+    {
+        W_InventoryTabSecurity.interactable = true;
+        W_InventoryTabHouseKeeper.interactable = true;
+        W_InventoryTabMusician.interactable = true;
+        W_InventoryTabReceptionist.interactable = true;
+        W_InventoryTabBrochureSeller.interactable = true;
+    }
+    public void ClearWorkerContent(Transform _Content)
     {
         Debug.Log("Worker Content Temizledi.");
-        int length = WorkerContent.childCount;
+        int length = _Content.childCount;
         for (int i = 0; i < length; i++)
         {
-            GameObject destroyObj = WorkerContent.GetChild(i).gameObject;
+            GameObject destroyObj = _Content.GetChild(i).gameObject;
             Destroy(destroyObj);
         }
+    }
+
+    public void AddInventoryWorkersInContent()
+    {
+        ClearWorkerContent(WorkerAssignContent);
+        GetDesiredInventoryWorkersInContent(WorkerType.Security, W_InventoryTabSecurity);
+        WorkerAssignmentPanel.SetActive(true);
+    }
+    public void ClearAssignmentRoomsButtonContent()
+    {
+        int length = WorkerAssignContent.childCount;
+        for (int i = 0; i < length; i++)
+        {
+            Destroy(WorkerAssignContent.GetChild(i).gameObject);
+        }
+        Debug.Log("Isci atama oda butonlari temizlendi.");
+    }
+    public void GetDesiredInventoryWorkersInContent(WorkerType _wType, Button _clikedButton = null)
+    {
+        if (_clikedButton != null)
+        {
+            InventoryWorkerTabButtonsOn();
+            _clikedButton.interactable = false;
+        }
+        ClearWorkerContent(WorkerInventoryContent);
+
+        List<WorkerBehaviour> workers = WorkerManager.instance.GetWorkersInInventory().Where(x => x.workerType == _wType).OrderBy(x=> x.MyScript.Level).ToList();
+        foreach (WorkerBehaviour worker in workers)
+        {
+            GameObject newSecurityObj = Instantiate(InventoryWorkerPrefab_V1, WorkerInventoryContent);
+            newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(worker.ID, worker.MyScript.Name, worker.MyScript.Age, worker.MyScript.Height,worker.MyScript.Level);
+        }
+        Debug.Log($"Worker Turu => {_wType} olan Isciler Envantere Listelendi.");
+    }
+
+    public void AddDesiredChooseRoomsInContent(int _workerID, Color _color, string _cellNumber, bool _interectable)
+    {
+        GameObject newAssignmentRoom = Instantiate(AssignmentRoomPrefab_V1, WorkerAssignContent);
+        WorkerAssignmentRoomButton _newAssing = newAssignmentRoom.GetComponent<WorkerAssignmentRoomButton>();
+        _newAssing.AssignmentRoomButton(_workerID,_color, _cellNumber, _interectable);
     }
 
     [SerializeField] GameObject SpiderPrefab;

@@ -6,9 +6,8 @@ using UnityEngine;
 [System.Serializable]
 public class Security : Worker, ISleepable, IMoveable
 {
-    public Security(int _id,float _speed, float _energy) : base(_id,_speed, _energy)
+    public Security(int _id, float _speed, float _energy, WorkerType workerType) : base(_id, _speed, _energy, workerType)
     {
-
     }
 
     public bool CanSleep()

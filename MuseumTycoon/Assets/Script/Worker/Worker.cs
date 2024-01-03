@@ -7,19 +7,28 @@ public abstract class Worker: ITaskAssignable
 {
     public int ID;
     public string Name;
+    public int Level;
+    public const int MaxLevel = 5;
     public float Speed;
     public float Energy;
     public int Age;
     public float Height;
     public bool isMale;
-    public List<int> IWorkRoomsID = new List<int>();
+    public List<int> IWorkRoomsIDs = new List<int>();
     public List<Task> MyTasks = new List<Task>();
-    public Worker(int _id,float _speed, float _energy)
+    public WorkerType WorkerType;
+    public Worker(int _id,float _speed, float _energy, WorkerType workerType)
     {
         this.ID = _id;
         this.Speed = _speed;
         this.Energy = _energy;
-        this.Name = "Kosippy Worker";
+        this.Energy = Random.Range(1, 101); // Gecici Kod.
+        this.Age = Random.Range(20, 500); // Gecici Kod.
+        this.Height = Random.Range(_energy, 250); // Gecici Kod.
+        this.isMale = Random.Range(0, 2) == 1 ? true : false; // Gecici Kod.
+        this.Name = "Kosippy Worker"; // Gecici Kod.
+        this.Level = Random.Range(1, MaxLevel + 1); // Gecici Kod.
+        this.WorkerType = workerType;
     }
 
     public abstract void AssignTask(Task task);

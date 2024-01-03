@@ -15,7 +15,9 @@ public class RoomData : MonoBehaviour
     public List<DoorDirection> Directions = new List<DoorDirection>();
     public bool isLock = true;
     public bool isActive = false;
-    
+
+    public List<int> MyRoomWorkersIDs = new List<int>();
+
     [SerializeField] public RoomCell availableRoomCell = new RoomCell();
 
     //UI
@@ -165,6 +167,7 @@ public class RoomSaveData
     public bool isLock = true;
     public bool isActive = false;
     public float RequiredMoney;
+    public List<int> MyRoomWorkersIDs = new List<int>();
 }
 
 [System.Serializable]

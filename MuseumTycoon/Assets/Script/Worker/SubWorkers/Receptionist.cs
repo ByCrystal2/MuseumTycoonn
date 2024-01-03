@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class Receptionist : Worker, ISleepable
 {
-    public Receptionist(int _id, float _speed, float _energy) : base(_id, _speed, _energy)
+    public Receptionist(int _id, float _speed, float _energy, WorkerType workerType) : base(_id, _speed, _energy, workerType)
     {
     }
 

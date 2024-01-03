@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class Musician : Worker, ISleepable, IMoveable
 {
-    public Musician(int _id, float _speed, float _energy) : base(_id, _speed, _energy)
+    public Musician(int _id, float _speed, float _energy, WorkerType workerType) : base(_id, _speed, _energy, workerType)
     {
 
     }
