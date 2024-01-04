@@ -104,6 +104,11 @@ public class UIController : MonoBehaviour
     [Header("General")]
     public Image CultureFillBar;
     public Text CultureLevelText, GoldText, GemText;
+    //UI
+    [SerializeField] private Transform ActivePnlBtnBookDefaultPos;
+    [SerializeField] private Transform ActivePnlBtnWorkerMarketDefaultPos;
+    [SerializeField] private Transform ActivePnlBtnWorkerAssignmentDefaultPos;
+    private Vector3 defaultBtnBookPos, defaultBtnWorkerMarketPos, defaultBtnWorkerAssignmentPos;
     public static UIController instance { get; private set; }
     private void Awake()
     {
@@ -123,6 +128,9 @@ public class UIController : MonoBehaviour
     }
     private void Start()
     {
+        defaultBtnBookPos = museumStatButton.transform.position;
+        defaultBtnWorkerMarketPos = WorkerPanelOnButton.transform.position;
+        defaultBtnWorkerAssignmentPos = WorkerAssignmentPanelOnButton.transform.position;
         museumStatButton.onClick.AddListener(ShowMuseumStatsPanel);
         unlockButton.onClick.AddListener(BuySkill);
         NpcInfoPanelExitButton.onClick.AddListener(CloseNPCInformationPanel);
@@ -136,7 +144,7 @@ public class UIController : MonoBehaviour
         btnBrochureSellerTab.onClick.AddListener(() => GetDesiredWorkersInContent(WorkerType.BrochureSeller, btnBrochureSellerTab));
 
         // WorkerMarket
-        WorkerAssignmentPanelOnButton.onClick.AddListener(AddInventoryWorkersInContent);
+        WorkerAssignmentPanelOnButton.onClick.AddListener(AddInventoryWorkersInAssignmentPanelContent);
         W_InventoryTabSecurity.onClick.AddListener(() => GetDesiredInventoryWorkersInContent(WorkerType.Security, W_InventoryTabSecurity));
         W_InventoryTabHouseKeeper.onClick.AddListener(() => GetDesiredInventoryWorkersInContent(WorkerType.Housekeeper, W_InventoryTabHouseKeeper));
         W_InventoryTabMusician.onClick.AddListener(() => GetDesiredInventoryWorkersInContent(WorkerType.Musician, W_InventoryTabMusician));
@@ -545,11 +553,15 @@ public class UIController : MonoBehaviour
     {
         if (!pnlMuseumStats.activeInHierarchy)
         {
-            pnlMuseumStats.SetActive(true);        
+            GeneralButtonActivation(true,museumStatButton);
             ShowTab(currentTab);
+            pnlMuseumStats.SetActive(true);
         }
         else
+        {
             pnlMuseumStats.SetActive(false);
+            GeneralButtonActivation(false);
+        }
     }
     public void SetNPCInfoPanelUIs(string _Fullname, float _Happiness, float _Stress, float _Toilet, float _Education, List<MyColors> _LikedColors, List<string> _LikedArtist)
     {
@@ -560,29 +572,37 @@ public class UIController : MonoBehaviour
         txtEducation.text = _Education.ToString();
         List<Color> likedColors = CatchTheColors.instance.MyColorsControl(_LikedColors);
         int length = LikedColorImages.Count;
-        if (_LikedColors != null)
+        if (_LikedColors != null && _LikedColors.Count > 0)
         {
             for (int i = 0; i < length; i++)
             {
-                if (likedColors[i] != null)
+                if (i < _LikedColors.Count)
                 {
-                    LikedColorImages[i].color = likedColors[i];
+                    if (likedColors[i] != null)
+                    {
+                        LikedColorImages[i].color = likedColors[i];
+                    }
                 }
+                else break;
             }
         }
         else
             Debug.Log("NPC'nin Color Listesi Bos!");
 
         
-        int length1 = ArtistTexts.Count;
-        if (_LikedArtist != null)
+        int length1 = ArtistTexts.Count;        
+        if (_LikedArtist != null && _LikedArtist.Count > 0)
         {
             for (int i = 0; i < length1; i++)
             {
-                if (_LikedArtist[i] != null)
+                if (i < _LikedArtist.Count)
                 {
-                    ArtistTexts[i].text = _LikedArtist[i];
+                    if (_LikedArtist[i] != null)
+                    {
+                        ArtistTexts[i].text = _LikedArtist[i];
+                    }
                 }
+                else break;
             }
         }
         else
@@ -596,8 +616,17 @@ public class UIController : MonoBehaviour
 
     public void AddWorkersInContent()
     {
-        GetDesiredWorkersInContent(WorkerType.Security, btnSecurityTab);
-        WorkerPanel.SetActive(true);
+        if (!WorkerPanel.activeInHierarchy)
+        {
+            GeneralButtonActivation(true,WorkerPanelOnButton);
+            GetDesiredWorkersInContent(WorkerType.Security, btnSecurityTab);
+            WorkerPanel.SetActive(true);
+        }
+        else
+        {
+            WorkerPanel.SetActive(false);
+            GeneralButtonActivation(false);
+        }
     }
    
 
@@ -618,6 +647,44 @@ public class UIController : MonoBehaviour
             newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(worker.ID,worker.MyScript.Name, worker.MyScript.Age, worker.MyScript.Height);
         }
         Debug.Log($"Worker Turu => {_wType} olan Isciler Listelendi.");
+    }
+    public void GeneralButtonActivation(bool _buttonActive, Button _activePnlButton = null)
+    {
+        if (_buttonActive)
+        {
+            museumStatButton.gameObject.SetActive(!_buttonActive);
+            WorkerPanelOnButton.gameObject.SetActive(!_buttonActive);
+            WorkerAssignmentPanelOnButton.gameObject.SetActive(!_buttonActive);
+
+            GameObject _activeGO = _activePnlButton.gameObject;
+            if (_activeGO == museumStatButton.gameObject)
+            {
+                _activePnlButton.gameObject.transform.position = ActivePnlBtnBookDefaultPos.position;
+                _activePnlButton.gameObject.SetActive(_buttonActive);
+            }
+            else if (_activeGO == WorkerPanelOnButton.gameObject)
+            {
+                _activePnlButton.gameObject.transform.position = ActivePnlBtnWorkerMarketDefaultPos.position;
+                _activePnlButton.gameObject.SetActive(_buttonActive);
+            }
+            else if (_activeGO == WorkerAssignmentPanelOnButton.gameObject)
+            {
+                _activePnlButton.gameObject.transform.position = ActivePnlBtnWorkerAssignmentDefaultPos.position;
+                _activePnlButton.gameObject.SetActive(_buttonActive);
+            }
+
+        }
+        else
+        {
+            museumStatButton.transform.position = defaultBtnBookPos;
+            WorkerPanelOnButton.transform.position = defaultBtnWorkerMarketPos;
+            WorkerAssignmentPanelOnButton.transform.position = defaultBtnWorkerAssignmentPos;
+            museumStatButton.gameObject.SetActive(true);
+            WorkerPanelOnButton.gameObject.SetActive(true);
+            WorkerAssignmentPanelOnButton.gameObject.SetActive(true);
+
+        }
+
     }
     public void WorkerTabButtonsOn()
     {
@@ -646,11 +713,24 @@ public class UIController : MonoBehaviour
         }
     }
 
-    public void AddInventoryWorkersInContent()
+    public void AddInventoryWorkersInAssignmentPanelContent()
     {
-        ClearWorkerContent(WorkerAssignContent);
-        GetDesiredInventoryWorkersInContent(WorkerType.Security, W_InventoryTabSecurity);
-        WorkerAssignmentPanel.SetActive(true);
+        if (!WorkerAssignmentPanel.activeInHierarchy)
+        {
+            GeneralButtonActivation(true,WorkerAssignmentPanelOnButton);
+
+            ClearAssignmentRoomsButtonContent();
+            ClearWorkerContent(WorkerAssignContent);
+            GetDesiredInventoryWorkersInContent(WorkerType.Security, W_InventoryTabSecurity);
+            WorkerAssignmentPanel.SetActive(true);
+        }
+        else
+        {
+            WorkerAssignmentPanel.SetActive(false);
+            GeneralButtonActivation(false);
+        }
+
+
     }
     public void ClearAssignmentRoomsButtonContent()
     {

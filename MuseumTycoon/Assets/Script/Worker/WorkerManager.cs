@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEditor.VersionControl.Message;
 
 public class WorkerManager : MonoBehaviour
 {
@@ -26,6 +27,9 @@ public class WorkerManager : MonoBehaviour
     }
     private void Start()
     {
+    }
+    public void BaseAllWorkerOptions()
+    {
         int length = WorkersContent.childCount;
         for (int i = 0; i < length; i++)
         {
@@ -36,11 +40,17 @@ public class WorkerManager : MonoBehaviour
             WorkersContent.GetChild(i).gameObject.SetActive(false);
         }
         AddAllWorkersSubWork();
-        int length2 = WorkersInInventory.Count;
+       
+    }
+    public void CreateWorkersToMarket()
+    {
+        int length = WorkersInInventory.Count;
+        int length1 = CurrentActiveWorkers.Count;
         foreach (var worker in AllWorkers)
         {
             bool isInventory = false;
-            for (int j = 0; j < length2; j++)
+            bool isActiveWorker = false;
+            for (int j = 0; j < length; j++)
             {
                 if (worker.ID == WorkersInInventory[j].ID)
                 {
@@ -48,24 +58,17 @@ public class WorkerManager : MonoBehaviour
                     break;
                 }
             }
-            if (!isInventory)
+            for (int k = 0; k < length1; k++)
+            {
+                if (worker.ID == CurrentActiveWorkers[k].ID)
+                {
+                    isActiveWorker = true;
+                    break;
+                }
+            }
+            if (!isInventory && !isActiveWorker)
             {
                 WorkersInMarket.Add(worker);
-            }
-        }
-        
-        Task task1 = new Task("Hirsizi Yakala");
-        foreach (var worker in AllWorkers)
-        {
-            if (worker.workerType == WorkerType.Security)
-            {
-                if (worker.MyScript is Security security)
-                {
-                    //if (security.CanPerformTask(task1))
-                    //{
-                    //    security.AssignTask(task1);                    
-                    //}
-                }
             }
         }
     }
@@ -80,18 +83,23 @@ public class WorkerManager : MonoBehaviour
             {
                 case WorkerType.Security:
                     worker.MyScript = new Security(worker.ID, worker.NpcCurrentSpeed, 100,worker.workerType);
+                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Level, worker.MyScript.IWorkRoomsIDs,worker.workerType);
                     break;
                 case WorkerType.Housekeeper:
                     worker.MyScript = new Housekeeper(worker.ID,worker.NpcCurrentSpeed, 100, worker.workerType);
+                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Level, worker.MyScript.IWorkRoomsIDs, worker.workerType);
                     break;
                 case WorkerType.Musician:
                     worker.MyScript = new Musician(worker.ID, worker.NpcCurrentSpeed, 100, worker.workerType);
+                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Level, worker.MyScript.IWorkRoomsIDs, worker.workerType);
                     break;
                 case WorkerType.Receptionist:
                     worker.MyScript = new Receptionist(worker.ID, worker.NpcCurrentSpeed, 100, worker.workerType);
+                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Level, worker.MyScript.IWorkRoomsIDs, worker.workerType);
                     break;
                 case WorkerType.BrochureSeller:
                     worker.MyScript = new BrochureSeller(worker.ID, worker.NpcCurrentSpeed, 100, worker.workerType);
+                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Level, worker.MyScript.IWorkRoomsIDs, worker.workerType);
                     break;
                 default:
                     break;
@@ -108,6 +116,61 @@ public class WorkerManager : MonoBehaviour
 
         Debug.Log($"Security Sayisi => {securityCount} || Housekeeper Sayisi => {housekeeperCount} || Musician Sayisi => {musicianCount} || Receptionist Sayisi => {receptionistCount} || BrochureSeller Sayisi => {brochureSellerCount}");
 
+    }
+    public Worker GetWorkerToWorkerType(WorkerData _workerData)
+    {
+        switch (_workerData.WorkerType)
+        {
+            case WorkerType.None:
+                break;
+            case WorkerType.Security:
+                if (GetAllWorkers().Where(x => x.ID == _workerData.ID).SingleOrDefault().MyScript is Security security )
+                {
+                    WorkerDataTransferToWorkerOptions(security,_workerData);
+                    return security;
+                }
+                break;
+            case WorkerType.Housekeeper:
+                if (GetAllWorkers().Where(x => x.ID == _workerData.ID).SingleOrDefault().MyScript is Housekeeper houseKeeper)
+                {
+                    WorkerDataTransferToWorkerOptions(houseKeeper, _workerData);
+                    return houseKeeper;
+                }
+                break;
+            case WorkerType.Musician:
+                if (GetAllWorkers().Where(x => x.ID == _workerData.ID).SingleOrDefault().MyScript is Musician musician)
+                {
+                    WorkerDataTransferToWorkerOptions(musician, _workerData);
+                    return musician;
+                }
+                break;
+            case WorkerType.Receptionist:
+                if (GetAllWorkers().Where(x => x.ID == _workerData.ID).SingleOrDefault().MyScript is Receptionist receptionist)
+                {
+                    WorkerDataTransferToWorkerOptions(receptionist, _workerData);
+                    return receptionist;
+                }
+                break;
+            case WorkerType.BrochureSeller:
+                if (GetAllWorkers().Where(x => x.ID == _workerData.ID).SingleOrDefault().MyScript is BrochureSeller brochureSeller)
+                {
+                    WorkerDataTransferToWorkerOptions(brochureSeller, _workerData);
+                    return brochureSeller;
+                }
+                break;
+            default:
+                break;            
+        }
+        return default;
+    }
+    public void WorkerDataTransferToWorkerOptions(Worker worker, WorkerData workerData)
+    {
+        worker.Level = workerData.Level;
+        worker.IWorkRoomsIDs.Clear();
+        foreach (int roomID in workerData.WorkRoomsIDs)
+        {
+            worker.IWorkRoomsIDs.Add(roomID);
+        }
     }
     public void AddWorkersTasks()
     {

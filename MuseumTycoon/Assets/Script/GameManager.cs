@@ -89,13 +89,31 @@ public class GameManager : MonoBehaviour
         {
             skillNodes.Add(skill);
         }
+        List<WorkerData> currentWorkerDatas = new List<WorkerData>();
+        List<WorkerData> inventoryWorkerDatas = new List<WorkerData>();
         Debug.Log("skillNodes.count: " + skillNodes.Count);
+        if (WorkerManager.instance != null)
+        {
+            
+            foreach (var currentWorker in WorkerManager.instance.GetCurrentWorkers())
+            {
+                currentWorkerDatas.Add(currentWorker.MyDatas);
+            }
+            Debug.Log("currentWorkerDatas.count: " + currentWorkerDatas.Count);
+            
+            foreach (var inventoryWorker in WorkerManager.instance.GetWorkersInInventory())
+            {
+                inventoryWorkerDatas.Add(inventoryWorker.MyDatas);
+            }
+            Debug.Log("inventoryWorkerDatas.count: " + inventoryWorkerDatas.Count);
+        }
 
         CurrentSaveData.CurrentPictures = currentActivePictures;
         CurrentSaveData.InventoryPictures = inventoryPictures;
         CurrentSaveData.PurchasedItems = inventoryItems;
         CurrentSaveData.SkillNodes = skillNodes;
-
+        CurrentSaveData.CurrentWorkerDatas = currentWorkerDatas;
+        CurrentSaveData.InventoryWorkerDatas = inventoryWorkerDatas;
 
         CurrentSaveData.Rooms = new List<RoomSaveData>();
         if (RoomManager.instance != null)
@@ -256,6 +274,20 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void LoadWorkers()
+    {
+        foreach (WorkerData worker in CurrentSaveData.CurrentWorkerDatas)
+        {
+           Worker w = WorkerManager.instance.GetWorkerToWorkerType(worker);
+           WorkerManager.instance.GetCurrentWorkers().Add(WorkerManager.instance.GetAllWorkers().Where(x=> x.ID == w.ID).SingleOrDefault());
+        }
+        foreach (WorkerData worker in CurrentSaveData.InventoryWorkerDatas)
+        {
+            Worker w = WorkerManager.instance.GetWorkerToWorkerType(worker);
+            WorkerManager.instance.GetWorkersInInventory().Add(WorkerManager.instance.GetAllWorkers().Where(x => x.ID == w.ID).SingleOrDefault());
+        }
+    }
+
     [System.Serializable]
     public class PlayerSaveData
     {
@@ -275,7 +307,8 @@ public class GameManager : MonoBehaviour
         public List<RoomSaveData> Rooms = new List<RoomSaveData>();
         public List<ItemData> PurchasedItems = new List<ItemData>();
         public List<SkillNode> SkillNodes = new List<SkillNode>();
-
+        public List<WorkerData> CurrentWorkerDatas = new List<WorkerData>();
+        public List<WorkerData> InventoryWorkerDatas = new List<WorkerData>();
         public AdverstingData adData; //ADS SISTEMI KURULDUKTAN SONRA EKLENECEK.
     }
 }

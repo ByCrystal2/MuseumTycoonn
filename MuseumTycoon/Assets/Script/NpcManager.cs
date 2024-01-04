@@ -27,6 +27,9 @@ public class NpcManager : MonoBehaviour
         DontDestroyOnLoad(this);
         GameManager.instance.LoadPictures(RoomsParent, true);
         GameManager.instance.LoadRooms();
+        WorkerManager.instance.BaseAllWorkerOptions();
+        GameManager.instance.LoadWorkers();
+        WorkerManager.instance.CreateWorkersToMarket();
         GameManager.instance.LoadPurchasedItems();     
 
         //Gaming Services Activation

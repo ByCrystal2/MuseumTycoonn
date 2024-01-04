@@ -28,7 +28,20 @@ public class WorkerBehaviour : MonoBehaviour
         return workerType;
     }
 }
-public class WorkerData
+[System.Serializable]
+public sealed class WorkerData
 {
-    // Isci datalari burda tutulacak.
+    public int ID;
+    public int Level;
+    public List<int> WorkRoomsIDs = new List<int>();
+    [HideInInspector]public WorkerType WorkerType;
+    public WorkerData(int _id, int level, List<int> _workRoomsIDs, WorkerType workerType)
+    {
+        this.ID = _id;
+        this.Level = level;
+        WorkRoomsIDs.Clear();
+        foreach (int i in _workRoomsIDs) { WorkRoomsIDs.Add(i); }
+        this.WorkerType = workerType;
+
+    }
 }

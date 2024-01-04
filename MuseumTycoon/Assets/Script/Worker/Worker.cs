@@ -54,6 +54,7 @@ public class Task
 }
 public enum WorkerType
 {
+    None,
     Security,
     Housekeeper,
     Musician,

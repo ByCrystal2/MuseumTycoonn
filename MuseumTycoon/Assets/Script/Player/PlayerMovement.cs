@@ -16,11 +16,11 @@ public class PlayerMovement : MonoBehaviour
     public float ascendDescendSpeed = 5.0f;
     private Rigidbody rb;
     private float verticalRotation = 0.0f;
-
+    private CapsuleCollider myCollider;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        
+        myCollider = GetComponent<CapsuleCollider>();
         
     }
 
@@ -36,7 +36,7 @@ public class PlayerMovement : MonoBehaviour
         if (isGhostMode)
         {
             rb.useGravity = false;
-            GetComponent<CapsuleCollider>().enabled = false;
+            myCollider.enabled = false;
             if (Cursor.lockState == CursorLockMode.Locked)
                 Move();
             else
@@ -58,11 +58,10 @@ public class PlayerMovement : MonoBehaviour
         else 
         {
             rb.useGravity = true;
-            GetComponent<CapsuleCollider>().enabled = true;
+            myCollider.enabled = true;
             if (Cursor.lockState == CursorLockMode.Locked)
              Move();           
         }
-
     }
       
     public void Move()
