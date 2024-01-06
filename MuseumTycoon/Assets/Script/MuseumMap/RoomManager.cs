@@ -155,10 +155,10 @@ public class RoomManager : MonoBehaviour
                 // B3 - B5 - A4 - C4 => 2500
             }
         }
-        activeRoomsRequiredMoney = (purchasedRoom.RequiredMoney * 2) + 500;
         if (purchasedRoom.CurrentShoppingType != ShoppingType.RealMoney)
         {
             List<RoomData> activeRoomDatas = roomDatas.Where(x => x.isActive && x.isLock).ToList();
+        activeRoomsRequiredMoney = purchasedRoom.RequiredMoney + (activeRoomDatas.Count * 500);
             foreach (var _activeRoom in activeRoomDatas)
             {
                 if (!(_activeRoom.CurrentShoppingType == ShoppingType.RealMoney))

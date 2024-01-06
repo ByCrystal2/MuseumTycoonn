@@ -37,7 +37,8 @@ public class RoomData : MonoBehaviour
             int childCount = gameObject.transform.GetChild(4).childCount;
             for (int i = 0; i < childCount; i++)
             {
-                Doors.Add(gameObject.transform.GetChild(4).gameObject.transform.GetChild(i).gameObject);
+                GameObject DoorObj = gameObject.transform.GetChild(4).gameObject.transform.GetChild(i).gameObject;
+                Doors.Add(DoorObj);
             }
             foreach (var door in Doors)
             {
@@ -65,7 +66,8 @@ public class RoomData : MonoBehaviour
             int childCount = gameObject.transform.GetChild(4).childCount;
             for (int i = 0; i < childCount; i++)
             {
-                Doors.Add(gameObject.transform.GetChild(4).gameObject.transform.GetChild(i).gameObject);
+                GameObject DoorObj = gameObject.transform.GetChild(4).gameObject.transform.GetChild(i).gameObject;
+                Doors.Add(DoorObj);
             }
             foreach (var door in Doors)
             {

@@ -39,6 +39,7 @@ public class UIController : MonoBehaviour
 
     [Header("Skill Tree")]
     public GameObject skillsContent;
+    //skill info
     public GameObject skillInfoPanel;
     public TextMeshProUGUI SkillPointText;
     public TextMeshProUGUI skillNameText;
@@ -47,6 +48,8 @@ public class UIController : MonoBehaviour
     public TextMeshProUGUI skillRequiredPointText;
     public TextMeshProUGUI skillRequiredMoneyText;
     public Button unlockButton;
+    [SerializeField] private GameObject[] InfoPointerUIs;
+    [SerializeField] private Transform[] InfoPointers;
 
     [Header("Skill Tree RequiredPanel")]
     public GameObject SkillRequiredInfoPanel;
@@ -288,10 +291,17 @@ public class UIController : MonoBehaviour
         SkillTreeManager.instance.SelectedSkillGameObject = EventSystem.current.currentSelectedGameObject;
         Debug.Log("Selected Skill Gameobject => " + SkillTreeManager.instance.SelectedSkillGameObject.gameObject);
         if (SkillTreeManager.instance.SelectedSkillGameObject != null)
-        {
-            skillInfoPanel.transform.position = SkillTreeManager.instance.SelectedSkillGameObject.transform.position;
+        {            
+            int point = (int)SkillTreeManager.instance.SelectedSkillGameObject.GetComponent<BaseSkillOptions>().MyPoint;
+            foreach (GameObject pointUI in InfoPointerUIs)
+            {
+                pointUI.SetActive(false);
+            }
+            InfoPointerUIs[point].SetActive(true);
+            // InfoPointers[point].position;
+            skillInfoPanel.transform.position = SkillTreeManager.instance.SelectedSkillGameObject.GetComponent<BaseSkillOptions>().GetMyCurrentPointTransform().position;
         }
-        // Yetenek adý, açýklama ve etkiyi güncelle
+        // Yetenek adi, aciklama ve etkiyi guncelle
         skillNameText.text = selectedSkill.SkillName;
         skillDescriptionText.text = selectedSkill.SkillDescription;
         skillEffectText.text = selectedSkill.SkillEffect;
@@ -318,6 +328,10 @@ public class UIController : MonoBehaviour
         SkillUnLockButtonControl(selectedSkill);
         UpdateSkillInfos(selectedSkill);
     }
+    public void SkillInfoPanelActivation(bool _active)
+    {
+        skillInfoPanel.SetActive(_active);
+    }
 
     public void BuySkill() // SKILL SATIN ALMA BUTONU!
     {
@@ -334,7 +348,7 @@ public class UIController : MonoBehaviour
                 
                 SkillPointText.text = "" + (MuseumManager.instance.GetCurrentSkillPoint() - currentSkill.SkillRequiredPoint);
                 MuseumManager.instance.SpendingSkillPoint(currentSkill.SkillRequiredPoint);
-                SkillRequiredPointController(currentSkill);
+                SkillRequiredPointAndMoneyController(currentSkill);
                 currentSkill.SkillCurrentLevel++;
                 if (currentSkill.SkillCurrentLevel < currentSkill.SkillMaxLevel)
                 {
@@ -381,44 +395,45 @@ public class UIController : MonoBehaviour
         UIChangesControl();
     }
     
-    private void SkillRequiredPointController(SkillNode _skill)
+    private void SkillRequiredPointAndMoneyController(SkillNode _skill)
     {
-        _skill.SkillRequiredPoint += SkillCurrentLevelControl(_skill.SkillCurrentLevel); // Base Value => 1
+        _skill.SkillRequiredPoint += SkillCurrentLevelControl(_skill.SkillCurrentLevel).skillPoint; // Base Value => 1
+        _skill.SkillRequiredMoney = _skill.SkillRequiredMoney + (_skill.SkillRequiredMoney * SkillCurrentLevelControl(_skill.SkillCurrentLevel).skillMoney);
     }
 
-    private int SkillCurrentLevelControl(int _skillLevel)
+    private (int skillPoint, float skillMoney) SkillCurrentLevelControl(int _skillLevel)
     {
         if (_skillLevel == 1)
         {
-            return 1;
+            return (1, 0.5f);
         }
         else if (_skillLevel == 2)
         {
-            return 2;
+            return (2, 0.6f);
         }        
         else if (_skillLevel == 4)
         {
-            return 3;
+            return (3, 0.7f);
         }
         else if (_skillLevel == 6)
         {
-            return 4;
+            return (4, 0.8f);
         }
         else if (_skillLevel == 9)
         {
-            return 5;
+            return (5, 0.9f);
         }
         else if (_skillLevel == 11)
         {
-            return 6;
+            return (6, 1f);
         }
         else if (_skillLevel == 14)
         {
-            return 7;
+            return (7, 1.1f);
         }
         else
         {
-            return 0;
+            return (0, 1.2f);
         }
 
     }

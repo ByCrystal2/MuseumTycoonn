@@ -30,20 +30,27 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
                 builder.AddProduct(item.IAP_ID, ProductType.NonConsumable);
         }
         List<RoomData> IAPRooms = RoomManager.instance.RoomDatas.Where(x => x.CurrentShoppingType == ShoppingType.RealMoney).ToList();
-        Debug.Log("IAP Rooms 0 index: " + IAPRooms[0].availableRoomCell.CellLetter + IAPRooms[0].availableRoomCell.CellNumber);
-        foreach (var room in IAPRooms)
+        if (IAPRooms != null && IAPRooms.Count > 0)
         {
-            if (room.CurrentRoomType == RoomType.Normal) // item turu normal ise yapýlacak islemler...
+            Debug.Log("IAP Rooms 0 index: " + IAPRooms[0].availableRoomCell.CellLetter + IAPRooms[0].availableRoomCell.CellNumber);
+            foreach (var room in IAPRooms)
             {
-                builder.AddProduct(room.IAP_ID, ProductType.NonConsumable);
-                Debug.Log("Oda Buildere Eklendi: " + room.ID + " " + room.IAP_ID + " " + room.availableRoomCell.CellLetter + room.availableRoomCell.CellNumber);
+                if (room.CurrentRoomType == RoomType.Normal) // item turu normal ise yapýlacak islemler...
+                {
+                    builder.AddProduct(room.IAP_ID, ProductType.NonConsumable);
+                    Debug.Log("Oda Buildere Eklendi: " + room.ID + " " + room.IAP_ID + " " + room.availableRoomCell.CellLetter + room.availableRoomCell.CellNumber);
+                }
+                else if (room.CurrentRoomType == RoomType.Special) // item turu special ise yapýlacak islemler...
+                {
+                    builder.AddProduct(room.IAP_ID, ProductType.NonConsumable);
+                    Debug.Log("Oda Buildere Eklendi: " + room.ID + " " + room.IAP_ID + " " + room.availableRoomCell.CellLetter + room.availableRoomCell.CellNumber);
+                }
+
             }
-            else if (room.CurrentRoomType == RoomType.Special) // item turu special ise yapýlacak islemler...
-            {
-                builder.AddProduct(room.IAP_ID, ProductType.NonConsumable);
-                Debug.Log("Oda Buildere Eklendi: " + room.ID + " " + room.IAP_ID + " " + room.availableRoomCell.CellLetter + room.availableRoomCell.CellNumber);
-            }
-            
+        }
+        else
+        {
+            Debug.Log("Para ile satilan oda bulunamadi.");
         }
         UnityPurchasing.Initialize(this, builder);
     }
