@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44402188, g: 0.4931649, b: 0.57223135, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -994,6 +994,51 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1055.7946, y: 547.3166, z: 0.5397949}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &418285124
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 418285126}
+  - component: {fileID: 418285125}
+  m_Layer: 0
+  m_Name: LanguageDatabase
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &418285125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 418285124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8e3935811f988e49bcdd33baec81758, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentActiveLanguage: 1
+--- !u!4 &418285126
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 418285124}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.9467337, y: 39.985374, z: 38.251858}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2938,6 +2983,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 743f6bdb77f3a9e4fb53764ad8857100, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timeData:
+    datetime: 
+    WhatDay: 0
 --- !u!4 &930688040
 Transform:
   m_ObjectHideFlags: 0
@@ -3682,6 +3730,8 @@ MonoBehaviour:
   ShopItemDatas: []
   IAPItems: []
   RItems: []
+  DailyRewardItems: []
+  CurrentDailyRewardItems: []
 --- !u!4 &1474189936
 Transform:
   m_ObjectHideFlags: 0
@@ -5083,3 +5133,4 @@ SceneRoots:
   - {fileID: 1076460883}
   - {fileID: 1905612499}
   - {fileID: 930688040}
+  - {fileID: 418285126}
