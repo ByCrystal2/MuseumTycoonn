@@ -99,11 +99,21 @@ public class UIController : MonoBehaviour
     [SerializeField] private Transform WorkerInventoryContent;
     [SerializeField] private GameObject InventoryWorkerPrefab_V1;
 
+    [SerializeField] private GameObject WorkerInventoryTabPanel;
+    [SerializeField] private Button W_WorkerTypesButton;
+
     [SerializeField] private Button W_InventoryTabSecurity;
     [SerializeField] private Button W_InventoryTabHouseKeeper;
     [SerializeField] private Button W_InventoryTabMusician;
     [SerializeField] private Button W_InventoryTabReceptionist;
     [SerializeField] private Button W_InventoryTabBrochureSeller;
+    [Header("Daily Reward Panel")]
+    [SerializeField] GameObject DailyRewardPanel;
+    [SerializeField] Transform[] DailyRewardContents;
+    [SerializeField] GameObject DailyRewardGemPrefab;
+    [SerializeField] GameObject DailyRewardGoldPrefab;
+    [SerializeField] GameObject DailyRewardTablePrefab;
+
     [Header("General")]
     public Image CultureFillBar;
     public Text CultureLevelText, GoldText, GemText;
@@ -146,13 +156,17 @@ public class UIController : MonoBehaviour
         btnReceptionistTab.onClick.AddListener(() => GetDesiredWorkersInContent(WorkerType.Receptionist, btnReceptionistTab));
         btnBrochureSellerTab.onClick.AddListener(() => GetDesiredWorkersInContent(WorkerType.BrochureSeller, btnBrochureSellerTab));
 
-        // WorkerMarket
+        // WorkerAssignment
         WorkerAssignmentPanelOnButton.onClick.AddListener(AddInventoryWorkersInAssignmentPanelContent);
         W_InventoryTabSecurity.onClick.AddListener(() => GetDesiredInventoryWorkersInContent(WorkerType.Security, W_InventoryTabSecurity));
         W_InventoryTabHouseKeeper.onClick.AddListener(() => GetDesiredInventoryWorkersInContent(WorkerType.Housekeeper, W_InventoryTabHouseKeeper));
         W_InventoryTabMusician.onClick.AddListener(() => GetDesiredInventoryWorkersInContent(WorkerType.Musician, W_InventoryTabMusician));
         W_InventoryTabReceptionist.onClick.AddListener(() => GetDesiredInventoryWorkersInContent(WorkerType.Receptionist, W_InventoryTabReceptionist));
         W_InventoryTabBrochureSeller.onClick.AddListener(() => GetDesiredInventoryWorkersInContent(WorkerType.BrochureSeller, W_InventoryTabBrochureSeller));
+        WorkerInventoryTabPanel.SetActive(false);
+        W_WorkerTypesButton.gameObject.SetActive(true);
+        W_WorkerTypesButton.onClick.AddListener(W_WorkerTypesButtonControl);
+
         MuseumManager.instance.CalculateAndAddTextAllInfos();
     }
     public void GetClickedPicture(bool active, PictureElement _lastSelectedPicture) 
@@ -736,7 +750,9 @@ public class UIController : MonoBehaviour
 
             ClearAssignmentRoomsButtonContent();
             ClearWorkerContent(WorkerAssignContent);
-            GetDesiredInventoryWorkersInContent(WorkerType.Security, W_InventoryTabSecurity);
+            WorkerInventoryTabPanel.SetActive(true);
+            W_WorkerTypesButton.gameObject.SetActive(false);
+            InventoryWorkerTabButtonsOn();
             WorkerAssignmentPanel.SetActive(true);
         }
         else
@@ -744,8 +760,6 @@ public class UIController : MonoBehaviour
             WorkerAssignmentPanel.SetActive(false);
             GeneralButtonActivation(false);
         }
-
-
     }
     public void ClearAssignmentRoomsButtonContent()
     {
@@ -758,6 +772,8 @@ public class UIController : MonoBehaviour
     }
     public void GetDesiredInventoryWorkersInContent(WorkerType _wType, Button _clikedButton = null)
     {
+        WorkerInventoryTabPanel.SetActive(false);
+        W_WorkerTypesButton.gameObject.SetActive(true);
         if (_clikedButton != null)
         {
             InventoryWorkerTabButtonsOn();
@@ -779,6 +795,50 @@ public class UIController : MonoBehaviour
         GameObject newAssignmentRoom = Instantiate(AssignmentRoomPrefab_V1, WorkerAssignContent);
         WorkerAssignmentRoomButton _newAssing = newAssignmentRoom.GetComponent<WorkerAssignmentRoomButton>();
         _newAssing.AssignmentRoomButton(_workerID,_color, _cellNumber, _interectable);
+    }
+
+    public void W_WorkerTypesButtonControl()
+    {
+        W_WorkerTypesButton.gameObject.SetActive(false);
+        ClearAssignmentRoomsButtonContent();
+        ClearWorkerContent(WorkerInventoryContent);
+        WorkerInventoryTabPanel.gameObject.SetActive(true);
+        InventoryWorkerTabButtonsOn();
+    }
+
+    public void SetNewWeeklyRewards()
+    {
+        List<ItemData> currentItems = new List<ItemData>();
+        for (int i = 0; i < ItemManager.instance.CurrentDailyRewardItems.Count; i++)
+        {
+            currentItems.Add(ItemManager.instance.CurrentDailyRewardItems[i]);
+        }
+        int length = currentItems.Count;
+        for (int i = 0; i < length; i++)
+        {
+            switch (currentItems[i].CurrentItemType)
+            {
+                case ItemType.None:
+                    break;
+                case ItemType.Gem:
+                    GameObject _newDailyRewardGem = Instantiate(DailyRewardGemPrefab, DailyRewardContents[i]);
+                    _newDailyRewardGem.GetComponent<DailyRewardItemOptions>().SetMyOptions(currentItems[i].ID, currentItems[i].Name, currentItems[i].Amount, true);
+                    break;
+                case ItemType.Gold:
+                    GameObject _newDailyRewardGold = Instantiate(DailyRewardGoldPrefab, DailyRewardContents[i]);
+                    _newDailyRewardGold.GetComponent<DailyRewardItemOptions>().SetMyOptions(currentItems[i].ID, currentItems[i].Name, currentItems[i].Amount, true);
+                    break;
+                case ItemType.Table:
+                    GameObject _newDailyRewardTable = Instantiate(DailyRewardTablePrefab, DailyRewardContents[i]);
+                    _newDailyRewardTable.GetComponent<DailyRewardItemOptions>().SetMyOptions(currentItems[i].ID, currentItems[i].Name, currentItems[i].Amount, true, currentItems[i].StarCount);
+                    break;
+                case ItemType.All:
+                    break;
+                default:
+                    break;
+            }
+            
+        }
     }
 
     [SerializeField] GameObject SpiderPrefab;

@@ -54,5 +54,7 @@ public class NpcManager : MonoBehaviour
             }            
         }        
         GameManager.instance.LoadSkills();
+        ItemManager.instance.SetCalculatedDailyRewardItems();        
+        RewardManager.instance.CheckRewards();// Burada gecen sureleri kontrol et ve odul verme durumunu degerlendir.
     }
 }

@@ -12,14 +12,14 @@ public class RoomData : MonoBehaviour
     public float RequiredMoney;    
     public RoomType CurrentRoomType = RoomType.Normal;
     public ShoppingType CurrentShoppingType;
-    public List<DoorDirection> Directions = new List<DoorDirection>();
+    public List<DoorDirection> Directions = new List<DoorDirection>(); // Max 4!
     public bool isLock = true;
     public bool isActive = false;
+    [SerializeField] private GameObject[] DirectionWalls; // West-North-East-South Walls
 
     public List<int> MyRoomWorkersIDs = new List<int>();
 
     [SerializeField] public RoomCell availableRoomCell = new RoomCell();
-
     //UI
     public List<GameObject> Doors = new List<GameObject>();
     private GameObject RoomBlok;
@@ -44,9 +44,14 @@ public class RoomData : MonoBehaviour
             {
                 door.SetActive(false);
             }
+            foreach(var directionWall in DirectionWalls)
+            {
+                directionWall.SetActive(true);
+            }
             for (int i = 0; i < Directions.Count; i++)
             {
                 Doors[(int)Directions[i]].SetActive(true);
+                DirectionWalls[(int)Directions[i]].SetActive(false);
             }
             RoomBlok.SetActive(true);
             RoofLock.SetActive(true);
@@ -69,9 +74,18 @@ public class RoomData : MonoBehaviour
                 GameObject DoorObj = gameObject.transform.GetChild(4).gameObject.transform.GetChild(i).gameObject;
                 Doors.Add(DoorObj);
             }
+            foreach (var directionWall in DirectionWalls)
+            {
+                directionWall.SetActive(true);
+            }
+
             foreach (var door in Doors)
             {
                 door.SetActive(false);
+            }
+            for (int i = 0; i < Directions.Count; i++)
+            {
+                DirectionWalls[(int)Directions[i]].SetActive(false);
             }
             RoomBlok.SetActive(false);
             RoofLock.SetActive(false);

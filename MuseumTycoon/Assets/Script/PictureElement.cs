@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
@@ -9,7 +10,7 @@ public class PictureElement : MonoBehaviour
     public PictureData _pictureData;
     private void OnMouseDown()
     {
-        if (_pictureData.isLocked && GameManager.instance.UIControl)
+        if (_pictureData.isLocked || EventSystem.current.IsPointerOverGameObject()) // Kilitliyse veya UI objesi arkasindan tiklaniyorsa islem yapma.
             return;
 
         if (!_pictureData.isActive) 
@@ -78,7 +79,7 @@ public class PictureData
     public int id;
     public int TextureID;
     public int RoomID;
-    public bool isLocked;
+    public bool isLocked = true;
     public bool isActive;
     public bool isFirst = true;
     public int RequiredGold;

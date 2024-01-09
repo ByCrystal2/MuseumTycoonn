@@ -19,10 +19,11 @@ public struct ItemData
     public byte StarCount;
     public int textureID;
     public bool IsPurchased;
+    public int FocusedLevel; // for Dailty Reward Item
     //Ýndirim eklenebilir.
 
     // Orn: ItemType Gold,5000 adet, ShoppingType RealMoney, RequiredMoney 10TL
-    public ItemData(int _id, string _name, string _description, float _amount, float _requiredMoney, Texture2D _imageSprite, ItemType _itemType, ShoppingType _shoppingType, byte _starCount, int _textureID = 0, string _iAPId = "IAP Urunu Degil.", bool _isPurchased = false)
+    public ItemData(int _id, string _name, string _description, float _amount, float _requiredMoney, Texture2D _imageSprite, ItemType _itemType, ShoppingType _shoppingType, byte _starCount, int _textureID = 0, string _iAPId = "IAP Urunu Degil.", bool _isPurchased = false, int _focusedLevel = 0)
     {
         ID = _id;
         Name = _name;
@@ -42,8 +43,8 @@ public struct ItemData
         StarCount = _starCount;
         textureID = _textureID;
         IsPurchased = _isPurchased;
-
-    }
+        FocusedLevel = _focusedLevel;
+    }    
 
     public ItemData(ItemData _item)
     {
@@ -59,6 +60,7 @@ public struct ItemData
         StarCount = _item.StarCount;
         textureID = _item.textureID;
         IsPurchased = _item.IsPurchased;
+        FocusedLevel = _item.FocusedLevel;
     }
    
 }

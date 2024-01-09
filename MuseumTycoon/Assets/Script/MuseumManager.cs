@@ -22,7 +22,6 @@ public class MuseumManager : MonoBehaviour
     public int TotalVisitorCommentCount; // Toplam ziyaretçi yorum sayýsý.
     public float TotalVisitorHappiness; // Toplam ziyaretçi mutluluðu.
     public float DailyEarning; // Günlük kazanç.
-
     private void Awake()
     {
         if (instance)

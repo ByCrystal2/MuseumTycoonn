@@ -103,7 +103,7 @@ public class RoomManager : MonoBehaviour
             }
             else
             {
-                Debug.Log(purchasedRoom.availableRoomCell.CellLetter + purchasedRoom.availableRoomCell.CellNumber + "  Numaralý Odayý Satýn Almaya Paran Yetmedi.");
+                Debug.Log(purchasedRoom.availableRoomCell.CellLetter +""+ purchasedRoom.availableRoomCell.CellNumber + "  Numaralý Odayý Satýn Almaya Paran Yetmedi.");
             }
         }
         else if (purchasedRoom.CurrentShoppingType == ShoppingType.RealMoney)
