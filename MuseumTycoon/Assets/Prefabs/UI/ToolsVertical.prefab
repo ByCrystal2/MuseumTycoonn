@@ -1531,6 +1531,7 @@ GameObject:
   - component: {fileID: 5933898808429985277}
   - component: {fileID: 4137627309367092473}
   - component: {fileID: 4218575729428384831}
+  - component: {fileID: 326961336894519648}
   m_Layer: 5
   m_Name: Caption (1)
   m_TagString: Untagged
@@ -1598,7 +1599,46 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Graphic
+  m_Text: Grafik
+--- !u!114 &326961336894519648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4372593958818712530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 344445a89b4f74a0e9a0a766903df87e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mTerm: SettingsGraphic_Text
+  mTermSecondary: 
+  PrimaryTermModifier: 0
+  SecondaryTermModifier: 0
+  TermPrefix: 
+  TermSuffix: 
+  LocalizeOnAwake: 1
+  IgnoreRTL: 0
+  MaxCharactersInRTL: 0
+  IgnoreNumbersInRTL: 1
+  CorrectAlignmentForRTL: 1
+  AddSpacesToJoinedLanguages: 0
+  AllowLocalizedParameters: 1
+  AllowParameters: 1
+  TranslatedObjects: []
+  LocalizeEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  AlwaysForceLocalize: 0
+  LocalizeCallBack:
+    Target: {fileID: 0}
+    MethodName: 
+  mGUI_ShowReferences: 0
+  mGUI_ShowTems: 1
+  mGUI_ShowCallback: 0
+  mLocalizeTarget: {fileID: 0}
+  mLocalizeTargetName: I2.Loc.LocalizeTarget_UnityUI_Text
 --- !u!1 &4575075191052892397
 GameObject:
   m_ObjectHideFlags: 0
@@ -4000,7 +4040,7 @@ PrefabInstance:
     - target: {fileID: 6203119005252996337, guid: 561a15c3a5e748a4e92147002b9131e3,
         type: 3}
       propertyPath: m_Text
-      value: Effect Quality
+      value: Efekt Kalitesi
       objectReference: {fileID: 0}
     - target: {fileID: 6203119006479438658, guid: 561a15c3a5e748a4e92147002b9131e3,
         type: 3}
@@ -4115,7 +4155,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6203119005252996343, guid: 561a15c3a5e748a4e92147002b9131e3,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7806230951624779361}
   m_SourcePrefab: {fileID: 100100000, guid: 561a15c3a5e748a4e92147002b9131e3, type: 3}
 --- !u!224 &5997027777754969285 stripped
 RectTransform:
@@ -4123,6 +4167,51 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 372777474998822790}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5997027779177491313 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6203119005252996343, guid: 561a15c3a5e748a4e92147002b9131e3,
+    type: 3}
+  m_PrefabInstance: {fileID: 372777474998822790}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7806230951624779361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5997027779177491313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 344445a89b4f74a0e9a0a766903df87e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mTerm: SettingsEffectQuality_Text
+  mTermSecondary: 
+  PrimaryTermModifier: 0
+  SecondaryTermModifier: 0
+  TermPrefix: 
+  TermSuffix: 
+  LocalizeOnAwake: 1
+  IgnoreRTL: 0
+  MaxCharactersInRTL: 0
+  IgnoreNumbersInRTL: 1
+  CorrectAlignmentForRTL: 1
+  AddSpacesToJoinedLanguages: 0
+  AllowLocalizedParameters: 1
+  AllowParameters: 1
+  TranslatedObjects: []
+  LocalizeEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  AlwaysForceLocalize: 0
+  LocalizeCallBack:
+    Target: {fileID: 0}
+    MethodName: 
+  mGUI_ShowReferences: 0
+  mGUI_ShowTems: 1
+  mGUI_ShowCallback: 0
+  mLocalizeTarget: {fileID: 0}
+  mLocalizeTargetName: I2.Loc.LocalizeTarget_UnityUI_Text
 --- !u!1001 &458822203347567189
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4459,6 +4548,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 28
       objectReference: {fileID: 0}
+    - target: {fileID: 6203119005252996337, guid: 561a15c3a5e748a4e92147002b9131e3,
+        type: 3}
+      propertyPath: m_Text
+      value: Doku Kalitesi
+      objectReference: {fileID: 0}
     - target: {fileID: 6203119006479438658, guid: 561a15c3a5e748a4e92147002b9131e3,
         type: 3}
       propertyPath: m_Name
@@ -4572,7 +4666,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6203119005252996343, guid: 561a15c3a5e748a4e92147002b9131e3,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9011775793918852636}
   m_SourcePrefab: {fileID: 100100000, guid: 561a15c3a5e748a4e92147002b9131e3, type: 3}
 --- !u!224 &4944591847863826443 stripped
 RectTransform:
@@ -4580,6 +4678,51 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1336267029117233992}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4944591849220024255 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6203119005252996343, guid: 561a15c3a5e748a4e92147002b9131e3,
+    type: 3}
+  m_PrefabInstance: {fileID: 1336267029117233992}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &9011775793918852636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4944591849220024255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 344445a89b4f74a0e9a0a766903df87e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mTerm: SettingsTextureQuality_Text
+  mTermSecondary: 
+  PrimaryTermModifier: 0
+  SecondaryTermModifier: 0
+  TermPrefix: 
+  TermSuffix: 
+  LocalizeOnAwake: 1
+  IgnoreRTL: 0
+  MaxCharactersInRTL: 0
+  IgnoreNumbersInRTL: 1
+  CorrectAlignmentForRTL: 1
+  AddSpacesToJoinedLanguages: 0
+  AllowLocalizedParameters: 1
+  AllowParameters: 1
+  TranslatedObjects: []
+  LocalizeEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  AlwaysForceLocalize: 0
+  LocalizeCallBack:
+    Target: {fileID: 0}
+    MethodName: 
+  mGUI_ShowReferences: 0
+  mGUI_ShowTems: 1
+  mGUI_ShowCallback: 0
+  mLocalizeTarget: {fileID: 0}
+  mLocalizeTargetName: I2.Loc.LocalizeTarget_UnityUI_Text
 --- !u!1001 &1372419653200321618
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8504,8 +8647,57 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6203119005252996343, guid: 561a15c3a5e748a4e92147002b9131e3,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3999499934522201045}
   m_SourcePrefab: {fileID: 100100000, guid: 561a15c3a5e748a4e92147002b9131e3, type: 3}
+--- !u!1 &1300416197002593448 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6203119005252996343, guid: 561a15c3a5e748a4e92147002b9131e3,
+    type: 3}
+  m_PrefabInstance: {fileID: 4907206683024246879}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3999499934522201045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1300416197002593448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 344445a89b4f74a0e9a0a766903df87e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mTerm: SettingsShadowQuality_Text
+  mTermSecondary: 
+  PrimaryTermModifier: 0
+  SecondaryTermModifier: 0
+  TermPrefix: 
+  TermSuffix: 
+  LocalizeOnAwake: 1
+  IgnoreRTL: 0
+  MaxCharactersInRTL: 0
+  IgnoreNumbersInRTL: 1
+  CorrectAlignmentForRTL: 1
+  AddSpacesToJoinedLanguages: 0
+  AllowLocalizedParameters: 1
+  AllowParameters: 1
+  TranslatedObjects: []
+  LocalizeEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  AlwaysForceLocalize: 0
+  LocalizeCallBack:
+    Target: {fileID: 0}
+    MethodName: 
+  mGUI_ShowReferences: 0
+  mGUI_ShowTems: 1
+  mGUI_ShowCallback: 0
+  mLocalizeTarget: {fileID: 0}
+  mLocalizeTargetName: I2.Loc.LocalizeTarget_UnityUI_Text
 --- !u!224 &1300416198398909212 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6203119006479438659, guid: 561a15c3a5e748a4e92147002b9131e3,
@@ -10908,6 +11100,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3467522689696424899}
     m_Modifications:
+    - target: {fileID: 45923927742622281, guid: bf0d365ca9b2ddb42832fbb487360344,
+        type: 3}
+      propertyPath: m_Text
+      value: "M\xFCzik"
+      objectReference: {fileID: 0}
     - target: {fileID: 363962887446772313, guid: bf0d365ca9b2ddb42832fbb487360344,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -11003,6 +11200,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -9.6327
       objectReference: {fileID: 0}
+    - target: {fileID: 1726608712284500496, guid: bf0d365ca9b2ddb42832fbb487360344,
+        type: 3}
+      propertyPath: m_Text
+      value: Ses efektleri
+      objectReference: {fileID: 0}
     - target: {fileID: 1966762184264415820, guid: bf0d365ca9b2ddb42832fbb487360344,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -11041,22 +11243,22 @@ PrefabInstance:
     - target: {fileID: 2007014384141959901, guid: bf0d365ca9b2ddb42832fbb487360344,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.65
       objectReference: {fileID: 0}
     - target: {fileID: 2007014384141959901, guid: bf0d365ca9b2ddb42832fbb487360344,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2007014384141959901, guid: bf0d365ca9b2ddb42832fbb487360344,
         type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0
+      value: 0.65
       objectReference: {fileID: 0}
     - target: {fileID: 2007014384141959901, guid: bf0d365ca9b2ddb42832fbb487360344,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 24.955282
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2202548131330428959, guid: bf0d365ca9b2ddb42832fbb487360344,
         type: 3}
@@ -11082,6 +11284,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2668625880180411710, guid: bf0d365ca9b2ddb42832fbb487360344,
+        type: 3}
+      propertyPath: m_Text
+      value: Diyaloglar
       objectReference: {fileID: 0}
     - target: {fileID: 2905119751853332475, guid: bf0d365ca9b2ddb42832fbb487360344,
         type: 3}
@@ -11146,22 +11353,22 @@ PrefabInstance:
     - target: {fileID: 4083194124711943977, guid: bf0d365ca9b2ddb42832fbb487360344,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.47
       objectReference: {fileID: 0}
     - target: {fileID: 4083194124711943977, guid: bf0d365ca9b2ddb42832fbb487360344,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4083194124711943977, guid: bf0d365ca9b2ddb42832fbb487360344,
         type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0
+      value: 0.47
       objectReference: {fileID: 0}
     - target: {fileID: 4083194124711943977, guid: bf0d365ca9b2ddb42832fbb487360344,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 24.955282
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4205182475837656404, guid: bf0d365ca9b2ddb42832fbb487360344,
         type: 3}
@@ -11177,6 +11384,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_FontData.m_RichText
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4349680749730610060, guid: bf0d365ca9b2ddb42832fbb487360344,
+        type: 3}
+      propertyPath: m_Text
+      value: "M\xFCzik"
       objectReference: {fileID: 0}
     - target: {fileID: 4614121889640122517, guid: bf0d365ca9b2ddb42832fbb487360344,
         type: 3}
@@ -11351,22 +11563,22 @@ PrefabInstance:
     - target: {fileID: 6450081974327534701, guid: bf0d365ca9b2ddb42832fbb487360344,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.31
       objectReference: {fileID: 0}
     - target: {fileID: 6450081974327534701, guid: bf0d365ca9b2ddb42832fbb487360344,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6450081974327534701, guid: bf0d365ca9b2ddb42832fbb487360344,
         type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0
+      value: 0.31
       objectReference: {fileID: 0}
     - target: {fileID: 6450081974327534701, guid: bf0d365ca9b2ddb42832fbb487360344,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 24.955282
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6546623561676742501, guid: bf0d365ca9b2ddb42832fbb487360344,
         type: 3}
@@ -11656,7 +11868,23 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 3251791384647911472}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8257126990274399083, guid: bf0d365ca9b2ddb42832fbb487360344,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5199758284769116697}
+    - targetCorrespondingSourceObject: {fileID: 285400156041913208, guid: bf0d365ca9b2ddb42832fbb487360344,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5936099746432301491}
+    - targetCorrespondingSourceObject: {fileID: 6867953601413172438, guid: bf0d365ca9b2ddb42832fbb487360344,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5238659746100200567}
+    - targetCorrespondingSourceObject: {fileID: 4775155656527662259, guid: bf0d365ca9b2ddb42832fbb487360344,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7255943071450738411}
   m_SourcePrefab: {fileID: 100100000, guid: bf0d365ca9b2ddb42832fbb487360344, type: 3}
 --- !u!224 &234297794808557437 stripped
 RectTransform:
@@ -11676,6 +11904,141 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2254532855606194228 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8257126990274399083, guid: bf0d365ca9b2ddb42832fbb487360344,
+    type: 3}
+  m_PrefabInstance: {fileID: 7916906551066114911}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5199758284769116697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2254532855606194228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 344445a89b4f74a0e9a0a766903df87e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mTerm: SettingsMusic_Text
+  mTermSecondary: 
+  PrimaryTermModifier: 0
+  SecondaryTermModifier: 0
+  TermPrefix: 
+  TermSuffix: 
+  LocalizeOnAwake: 1
+  IgnoreRTL: 0
+  MaxCharactersInRTL: 0
+  IgnoreNumbersInRTL: 1
+  CorrectAlignmentForRTL: 1
+  AddSpacesToJoinedLanguages: 0
+  AllowLocalizedParameters: 1
+  AllowParameters: 1
+  TranslatedObjects: []
+  LocalizeEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  AlwaysForceLocalize: 0
+  LocalizeCallBack:
+    Target: {fileID: 0}
+    MethodName: 
+  mGUI_ShowReferences: 0
+  mGUI_ShowTems: 1
+  mGUI_ShowCallback: 0
+  mLocalizeTarget: {fileID: 0}
+  mLocalizeTargetName: I2.Loc.LocalizeTarget_UnityUI_Text
+--- !u!1 &3430126999149311980 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4775155656527662259, guid: bf0d365ca9b2ddb42832fbb487360344,
+    type: 3}
+  m_PrefabInstance: {fileID: 7916906551066114911}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7255943071450738411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3430126999149311980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 344445a89b4f74a0e9a0a766903df87e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mTerm: SettingsDialogs_Text
+  mTermSecondary: 
+  PrimaryTermModifier: 0
+  SecondaryTermModifier: 0
+  TermPrefix: 
+  TermSuffix: 
+  LocalizeOnAwake: 1
+  IgnoreRTL: 0
+  MaxCharactersInRTL: 0
+  IgnoreNumbersInRTL: 1
+  CorrectAlignmentForRTL: 1
+  AddSpacesToJoinedLanguages: 0
+  AllowLocalizedParameters: 1
+  AllowParameters: 1
+  TranslatedObjects: []
+  LocalizeEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  AlwaysForceLocalize: 0
+  LocalizeCallBack:
+    Target: {fileID: 0}
+    MethodName: 
+  mGUI_ShowReferences: 0
+  mGUI_ShowTems: 1
+  mGUI_ShowCallback: 0
+  mLocalizeTarget: {fileID: 0}
+  mLocalizeTargetName: I2.Loc.LocalizeTarget_UnityUI_Text
+--- !u!1 &3643799099026372489 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6867953601413172438, guid: bf0d365ca9b2ddb42832fbb487360344,
+    type: 3}
+  m_PrefabInstance: {fileID: 7916906551066114911}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5238659746100200567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3643799099026372489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 344445a89b4f74a0e9a0a766903df87e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mTerm: SettingsSoundEffects_Text
+  mTermSecondary: 
+  PrimaryTermModifier: 0
+  SecondaryTermModifier: 0
+  TermPrefix: 
+  TermSuffix: 
+  LocalizeOnAwake: 1
+  IgnoreRTL: 0
+  MaxCharactersInRTL: 0
+  IgnoreNumbersInRTL: 1
+  CorrectAlignmentForRTL: 1
+  AddSpacesToJoinedLanguages: 0
+  AllowLocalizedParameters: 1
+  AllowParameters: 1
+  TranslatedObjects: []
+  LocalizeEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  AlwaysForceLocalize: 0
+  LocalizeCallBack:
+    Target: {fileID: 0}
+    MethodName: 
+  mGUI_ShowReferences: 0
+  mGUI_ShowTems: 1
+  mGUI_ShowCallback: 0
+  mLocalizeTarget: {fileID: 0}
+  mLocalizeTargetName: I2.Loc.LocalizeTarget_UnityUI_Text
 --- !u!114 &4899322306404050680 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3324610068290100647, guid: bf0d365ca9b2ddb42832fbb487360344,
@@ -11700,6 +12063,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &7938563554418497575 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 285400156041913208, guid: bf0d365ca9b2ddb42832fbb487360344,
+    type: 3}
+  m_PrefabInstance: {fileID: 7916906551066114911}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5936099746432301491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7938563554418497575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 344445a89b4f74a0e9a0a766903df87e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mTerm: SettingsMusic_Text
+  mTermSecondary: 
+  PrimaryTermModifier: 0
+  SecondaryTermModifier: 0
+  TermPrefix: 
+  TermSuffix: 
+  LocalizeOnAwake: 1
+  IgnoreRTL: 0
+  MaxCharactersInRTL: 0
+  IgnoreNumbersInRTL: 1
+  CorrectAlignmentForRTL: 1
+  AddSpacesToJoinedLanguages: 0
+  AllowLocalizedParameters: 1
+  AllowParameters: 1
+  TranslatedObjects: []
+  LocalizeEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  AlwaysForceLocalize: 0
+  LocalizeCallBack:
+    Target: {fileID: 0}
+    MethodName: 
+  mGUI_ShowReferences: 0
+  mGUI_ShowTems: 1
+  mGUI_ShowCallback: 0
+  mLocalizeTarget: {fileID: 0}
+  mLocalizeTargetName: I2.Loc.LocalizeTarget_UnityUI_Text
 --- !u!1001 &8621327128319316215
 PrefabInstance:
   m_ObjectHideFlags: 0
