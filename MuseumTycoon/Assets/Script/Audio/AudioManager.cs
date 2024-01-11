@@ -80,11 +80,10 @@ public class AudioManager : MonoBehaviour
         Debug.Log("Gelen Dialogs Volume Deðeri: " + volume);
         List<GameObject> gos = FindObjectsOfType<NPCBehaviour>().Select(x => x.gameObject).ToList();
 
-        for (int i = 0; i < gos.Count; i++)
-        {
-            GetDialogAudios(gos[i].GetComponent<NPCBehaviour>().MySources)[i].volume = volume;
-
-        }
+        //for (int i = 0; i < gos.Count; i++)
+        //{
+        //    GetDialogAudios(gos[i].GetComponent<NPCBehaviour>().MySources)[i].volume = volume;
+        //}
         
     }
 

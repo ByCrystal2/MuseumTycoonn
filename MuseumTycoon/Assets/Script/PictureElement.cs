@@ -37,13 +37,29 @@ public class PictureElement : MonoBehaviour
 
     public void UpdateVisual(bool _isLoadGame = false)
     {
+        StartCoroutine(IEUpdateVisual(_isLoadGame));
+    }
+
+    IEnumerator IEUpdateVisual(bool _isLoadGame)
+    {
+        int stack = 100;
+        while (_pictureData.TextureID == 0)
+        {
+            yield return new WaitForEndOfFrame();
+            stack--;
+            if (stack < 0)
+                break;  
+        }
+
         Image im = transform.GetChild(0).GetChild(0).GetComponent<Image>();
+        Debug.Log("_pictureData.TextureID : " + _pictureData.TextureID);
         PictureElementData ped = MuseumManager.instance.GetPictureElementData(_pictureData.TextureID);
         if (ped != null)
         {
-            if(!MuseumManager.instance.CurrentActivePictures.Contains(this))
+            if (!MuseumManager.instance.CurrentActivePictures.Contains(this))
                 MuseumManager.instance.CurrentActivePictures.Add(this);
 
+            Debug.Log("ped null degil!");
             im.sprite = CatchTheColors.instance.TextureToSprite(ped.texture);
         }
         else
@@ -51,9 +67,10 @@ public class PictureElement : MonoBehaviour
             if (MuseumManager.instance.CurrentActivePictures.Contains(this))
                 MuseumManager.instance.CurrentActivePictures.Remove(this);
             im.sprite = MuseumManager.instance.EmptyPictureSprite;
+            Debug.Log("ped null!");
         }
 
-        if(!_isLoadGame)
+        if (!_isLoadGame)
             GameManager.instance.Save();
     }
 

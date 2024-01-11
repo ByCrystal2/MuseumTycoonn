@@ -12,7 +12,7 @@ namespace UnityEngine.Purchasing.Security {
         public static byte[] Data() {
         	if (IsPopulated == false)
         		return null;
-            return Obfuscator.DeObfuscate(data, order, key);
+            return null;
         }
     }
 }

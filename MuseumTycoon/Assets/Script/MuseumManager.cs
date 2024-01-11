@@ -367,10 +367,13 @@ public class MuseumManager : MonoBehaviour
     }
     public PictureElement GetPictureElement(int _id)
     {
-        Debug.Log("get itemid: " + _id);
+        Debug.Log("Onemli! get itemid: " + _id);
         PictureElement[] pictureElements = FindObjectsOfType<PictureElement>();
         CurrentActivePictures = pictureElements.Where(x=> x._pictureData.isLocked == false).ToList();
-        return CurrentActivePictures.Find(x => x._pictureData.id == _id);
+        Debug.Log("CurrentActivePictures.count: " + CurrentActivePictures.Count);
+        PictureElement pe = CurrentActivePictures.Find(x => x._pictureData.id == _id);
+        Debug.Log(pe == null ? "Pe null" : "pe id: " + (pe._pictureData != null ? pe._pictureData.id.ToString() : "Picture data is null"));
+        return pe;
     }
 
     public List<int> CultureLevel = new List<int>() 
