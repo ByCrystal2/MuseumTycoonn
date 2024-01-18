@@ -115,7 +115,7 @@ public class PicturesMenuController : MonoBehaviour
 
         lastClickedIndex = _index;
         txtPainterName.text = MuseumManager.instance.InventoryPictures[_index].painterData.Name;
-        txtRequiredGold.text = "Gerekli Altýn: " + PictureChangeRequiredAmount;
+        txtRequiredGold.text =""+PictureChangeRequiredAmount;
 
         for (int i = 0; i < MuseumManager.instance.InventoryPictures[_index].painterData.StarCount; i++)
         {
@@ -142,7 +142,7 @@ public class PicturesMenuController : MonoBehaviour
         }
 
         txtPainterName.text = PE._pictureData.painterData.Name;
-        txtRequiredGold.text = "Gerekli Altýn: " + PictureChangeRequiredAmount;
+        txtRequiredGold.text = "" + PictureChangeRequiredAmount;
 
         for (int i = 0; i < PE._pictureData.painterData.StarCount; i++)
         {

@@ -68,9 +68,20 @@ public class GameManager : MonoBehaviour
         CurrentSaveData.SkillPoint = a._SkillPoint;
         CurrentSaveData.CurrentCultureLevel = a._CurrentCultureLevel;
 
+       
+        List<RoomData> currentRooms = new List<RoomData>();
+        if (RoomManager.instance != null)
+        {
+            List<RoomData> AllActiveRooms = RoomManager.instance.RoomDatas.Where(x=> (x.isActive && !x.isLock) || x.isActive).ToList();
+            foreach (var room in AllActiveRooms)
+                currentRooms.Add(room);
+            Debug.Log("currentRooms.count: " + currentRooms.Count);
+        }
+
         List<PictureData> currentActivePictures = new List<PictureData>();
         foreach (var item in MuseumManager.instance.CurrentActivePictures)
             currentActivePictures.Add(item._pictureData);
+        Debug.Log("currentActivePictures.count: " + currentActivePictures.Count);
 
         List<PictureData> inventoryPictures = new List<PictureData>();
         foreach (var item in MuseumManager.instance.InventoryPictures)
@@ -108,32 +119,34 @@ public class GameManager : MonoBehaviour
             Debug.Log("inventoryWorkerDatas.count: " + inventoryWorkerDatas.Count);
         }
 
+        HashSet<string> savedRoomCells = new HashSet<string>(CurrentSaveData.Rooms.Select(r => r.availableRoomCell));
+        foreach (var room in currentRooms)
+        {
+            string roomCell = room.availableRoomCell.CellLetter.ToString() + room.availableRoomCell.CellNumber.ToString();
+            if (!savedRoomCells.Contains(roomCell))//
+            {
+                RoomSaveData newSaveData = new RoomSaveData();
+                newSaveData.availableRoomCell = roomCell;
+                newSaveData.isLock = room.isLock;
+                newSaveData.isActive = room.isActive;
+                newSaveData.RequiredMoney = room.RequiredMoney;
+                CurrentSaveData.Rooms.Add(newSaveData);
+            }
+            else
+            {
+                RoomSaveData currentSavedRoom = CurrentSaveData.Rooms.Where(x=> x.availableRoomCell == roomCell).SingleOrDefault();
+                currentSavedRoom.isLock = room.isLock;
+                currentSavedRoom.isActive = room.isActive;
+                currentSavedRoom.RequiredMoney = room.RequiredMoney;
+            }
+        }
+
         CurrentSaveData.CurrentPictures = currentActivePictures;
         CurrentSaveData.InventoryPictures = inventoryPictures;
         CurrentSaveData.PurchasedItems = inventoryItems;
         CurrentSaveData.SkillNodes = skillNodes;
         CurrentSaveData.CurrentWorkerDatas = currentWorkerDatas;
-        CurrentSaveData.InventoryWorkerDatas = inventoryWorkerDatas;
-
-        CurrentSaveData.Rooms = new List<RoomSaveData>();
-        if (RoomManager.instance != null)
-        {
-            int length = RoomManager.instance.transform.childCount;
-            for (int i = 0; i < length; i++)
-            {
-                if (RoomManager.instance.transform.GetChild(i).TryGetComponent(out RoomData currentRoomData))
-                {
-                    RoomSaveData newRoomSaveData = new RoomSaveData()
-                    {
-                        availableRoomCell = currentRoomData.availableRoomCell.CellLetter.ToString() + currentRoomData.availableRoomCell.CellNumber.ToString(),
-                        isLock = currentRoomData.isLock,
-                        isActive = currentRoomData.isActive,
-                        RequiredMoney = currentRoomData.RequiredMoney
-                    };
-                    CurrentSaveData.Rooms.Add(newRoomSaveData);
-                }
-            }
-        }
+        CurrentSaveData.InventoryWorkerDatas = inventoryWorkerDatas;      
 
         if(UnityAdsManager.instance != null)
             CurrentSaveData.adData = UnityAdsManager.instance.adsData;
@@ -150,32 +163,63 @@ public class GameManager : MonoBehaviour
     public void LoadRooms()
     {
         RoomManager.instance.activeRoomsRequiredMoney = CurrentSaveData.ActiveRoomsRequiredMoney;
-        int adet = 0;
-        int length = RoomManager.instance.transform.childCount;
-        int length2 = CurrentSaveData.Rooms.Count;
-        for (int x = 0; x < length; x++) //Odalarin listesi... 20...
+
+        List<RoomData> AllRooms = GameObject.FindObjectsOfType<RoomData>().ToList();
+        //RoomLoad
+        foreach (var room in AllRooms)
         {
-            if (RoomManager.instance.transform.GetChild(x).TryGetComponent(out RoomData currentRoom))
+            RoomSaveData currentRoomData = CurrentSaveData.Rooms.Where(x=> x.availableRoomCell == room.availableRoomCell.CellLetter.ToString() + room.availableRoomCell.CellNumber.ToString()).SingleOrDefault();
+            if (currentRoomData != null)
             {
-                for (int y = 0; y < length2; y++) //Save datalarimizin listesi... 20
+                Debug.Log("Current checkID: " + currentRoomData.availableRoomCell);
+                room.isActive = currentRoomData.isActive;
+                room.isLock = currentRoomData.isLock;
+                room.RequiredMoney = currentRoomData.RequiredMoney;
+
+            }
+            //PictureLoad
+            foreach (DoorDirection pictureDirection in room.pictureDirections)
+            {
+                int length3 = room.DirectionPictures[(int)pictureDirection].transform.childCount;
+                for (int i = 0; i < length3; i++)
                 {
-                    RoomSaveData currentRoomSave = CurrentSaveData.Rooms[y];
-                    string currentID = currentRoom.availableRoomCell.CellLetter.ToString() + currentRoom.availableRoomCell.CellNumber.ToString();
-                    Debug.Log("Current checkID: " + currentID);
-                    Debug.Log("currentRoomSave.availableRoomCell: " + currentRoomSave.availableRoomCell);
-                    if (currentID == currentRoomSave.availableRoomCell)
+                    if (room.DirectionPictures[i].TryGetComponent(out PictureElement pe))
                     {
-                        currentRoom.isActive = currentRoomSave.isActive;
-                        currentRoom.isLock = currentRoomSave.isLock;
-                        currentRoom.RequiredMoney = currentRoomSave.RequiredMoney;
-                        
-                        Debug.Log("kac adet oda bulundu: " + adet);
-                        adet++;
-                        break;
+                        PictureData currentPictureData = CurrentSaveData.CurrentPictures.Where(x => x.id == pe._pictureData.id).SingleOrDefault();
+                        pe._pictureData = currentPictureData;
+                        pe.UpdateVisual(true);
                     }
                 }
             }
         }
+        MuseumManager.instance.InventoryPictures = CurrentSaveData.InventoryPictures;
+
+        //int adet = 0;
+        //int length = RoomManager.instance.transform.childCount;
+        //int length2 = CurrentSaveData.Rooms.Count;
+        //for (int x = 0; x < length; x++) //Odalarin listesi... 20...
+        //{
+        //    if (RoomManager.instance.transform.GetChild(x).TryGetComponent(out RoomData currentRoom))
+        //    {
+        //        for (int y = 0; y < length2; y++) //Save datalarimizin listesi... 20
+        //        {
+        //            RoomSaveData currentRoomSave = CurrentSaveData.Rooms[y];
+        //            string currentID = currentRoom.availableRoomCell.CellLetter.ToString() + currentRoom.availableRoomCell.CellNumber.ToString();
+        //            Debug.Log("Current checkID: " + currentID);
+        //            Debug.Log("currentRoomSave.availableRoomCell: " + currentRoomSave.availableRoomCell);
+        //            if (currentID == currentRoomSave.availableRoomCell)
+        //            {
+        //                currentRoom.isActive = currentRoomSave.isActive;
+        //                currentRoom.isLock = currentRoomSave.isLock;
+        //                currentRoom.RequiredMoney = currentRoomSave.RequiredMoney;
+                        
+        //                Debug.Log("kac adet oda bulundu: " + adet);
+        //                adet++;
+        //                break;
+        //            }
+        //        }
+        //    }
+        //}
     }
 
     public void Load()
@@ -231,19 +275,6 @@ public class GameManager : MonoBehaviour
             ItemManager.instance.RItems.Remove(removeItem);
         }
 
-    }
-    public void LoadPictures(Transform _roomsParent, bool _firstload)
-    {
-        foreach (var item in CurrentSaveData.CurrentPictures)
-        {
-            PictureElement pe = _roomsParent.GetChild(item.RoomID).GetChild(item.id).GetComponent<PictureElement>();
-            Debug.Log("Before => item textureid: " + item.TextureID + " / pe._pictureData.texture ID: " + pe._pictureData.TextureID);
-            pe._pictureData = item;
-            Debug.Log("After => item textureid: " + item.TextureID + " / pe._pictureData.texture ID: " + pe._pictureData.TextureID);
-            pe.UpdateVisual(_firstload);
-        }
-
-        MuseumManager.instance.InventoryPictures = CurrentSaveData.InventoryPictures;
     }
     public void LoadSkills()
     {

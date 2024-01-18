@@ -37,6 +37,11 @@ public class UIController : MonoBehaviour
     [SerializeField] Text DailyEarnings;
     [SerializeField] Text CultureLevelInGlobal;
 
+    [Header("MidBotUIs")]
+    [SerializeField] GameObject LeftUIsPanel;
+    [SerializeField] GameObject RigthUIsPanel;
+    [Header("GameModsUIS")]
+    [SerializeField] GameObject JoystickObj;
     [Header("Skill Tree")]
     public GameObject skillsContent;
     //skill info
@@ -117,6 +122,7 @@ public class UIController : MonoBehaviour
     [Header("General")]
     public Image CultureFillBar;
     public Text CultureLevelText, GoldText, GemText;
+    [SerializeField] GameObject MoneysObj;
     //UI
     [SerializeField] private Transform ActivePnlBtnBookDefaultPos;
     [SerializeField] private Transform ActivePnlBtnWorkerMarketDefaultPos;
@@ -582,12 +588,16 @@ public class UIController : MonoBehaviour
     {
         if (!pnlMuseumStats.activeInHierarchy)
         {
+            RightUIPanelController.instance.CloseEditObj(true);
+            CloseJoystickObj(true);
             GeneralButtonActivation(true,museumStatButton);
             ShowTab(currentTab);
             pnlMuseumStats.SetActive(true);
         }
         else
         {
+            CloseJoystickObj(false);
+            RightUIPanelController.instance.CloseEditObj(false);
             pnlMuseumStats.SetActive(false);
             GeneralButtonActivation(false);
         }
@@ -640,25 +650,62 @@ public class UIController : MonoBehaviour
     public void CloseNPCInformationPanel() //Button!
     {
         NpcInformationPanel.SetActive(false);
-        NpcManager.instance.CurrentNPC.SetMyCamerasActivation(false, false);
+        if (NpcManager.instance.CurrentNPC!=null)
+        {
+            NpcManager.instance.CurrentNPC.SetMyCamerasActivation(false, false);
+        }
     }
 
     public void AddWorkersInContent()
     {
         if (!WorkerPanel.activeInHierarchy)
         {
+            RightUIPanelController.instance.CloseEditObj(true);
+            CloseJoystickObj(true);
             GeneralButtonActivation(true,WorkerPanelOnButton);
             GetDesiredWorkersInContent(WorkerType.Security, btnSecurityTab);
             WorkerPanel.SetActive(true);
         }
         else
         {
+            RightUIPanelController.instance.CloseEditObj(false);
+            CloseJoystickObj(false);
             WorkerPanel.SetActive(false);
             GeneralButtonActivation(false);
         }
     }
-   
-
+    public void CloseWorkerShopPanel(bool _close)
+    {
+        WorkerPanel.SetActive(!_close);
+    }
+    public void CloseWorkerAssignmentPanel(bool _close)
+    {
+        WorkerAssignmentPanel.SetActive(!_close);
+    }
+    public void CloseDailyRewardPanel(bool _close)
+    {
+        DailyRewardPanel.SetActive(!_close);
+    }
+    public void CloseMuseumStatsPanel(bool _close)
+    {
+        pnlMuseumStats.SetActive(!_close);
+    }
+    public void CloseCultureExpObj(bool _close)
+    {
+        CultureFillBar.gameObject.SetActive(!_close);
+    }
+    public void CloseLeftUIsPanel(bool _close)
+    {
+        LeftUIsPanel.SetActive(!_close);
+    }
+    public void CloseMoneysObj(bool _close)
+    {
+        MoneysObj.SetActive(!_close);
+    }
+    public void CloseJoystickObj(bool _close)
+    {
+        JoystickObj.SetActive(!_close);
+    }
     public void GetDesiredWorkersInContent(WorkerType _wType, Button _clikedButton = null)
     {        
         if (_clikedButton != null)
@@ -746,6 +793,8 @@ public class UIController : MonoBehaviour
     {
         if (!WorkerAssignmentPanel.activeInHierarchy)
         {
+            RightUIPanelController.instance.CloseEditObj(true);
+            CloseJoystickObj(true);
             GeneralButtonActivation(true,WorkerAssignmentPanelOnButton);
 
             ClearAssignmentRoomsButtonContent();
@@ -757,6 +806,8 @@ public class UIController : MonoBehaviour
         }
         else
         {
+            RightUIPanelController.instance.CloseEditObj(false);
+            CloseJoystickObj(false);
             WorkerAssignmentPanel.SetActive(false);
             GeneralButtonActivation(false);
         }

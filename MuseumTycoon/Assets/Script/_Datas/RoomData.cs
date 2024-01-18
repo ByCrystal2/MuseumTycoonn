@@ -13,9 +13,11 @@ public class RoomData : MonoBehaviour
     public RoomType CurrentRoomType = RoomType.Normal;
     public ShoppingType CurrentShoppingType;
     public List<DoorDirection> Directions = new List<DoorDirection>(); // Max 4!
+    public List<DoorDirection> pictureDirections = new List<DoorDirection>(); // Max 3!
     public bool isLock = true;
     public bool isActive = false;
     [SerializeField] private GameObject[] DirectionWalls; // West-North-East-South Walls
+    [SerializeField] public GameObject[] DirectionPictures; // West-North-East-South Pictures
 
     public List<int> MyRoomWorkersIDs = new List<int>();
 
@@ -53,6 +55,16 @@ public class RoomData : MonoBehaviour
                 Doors[(int)Directions[i]].SetActive(true);
                 DirectionWalls[(int)Directions[i]].SetActive(false);
             }
+            foreach (DoorDirection direction in Enum.GetValues(typeof(DoorDirection)))
+            {
+                if (!Directions.Contains(direction)) //Directionlardan birini icermiyorsa bu islemi uygula.
+                {
+                    DirectionPictures[(int)direction].SetActive(true);
+                    pictureDirections.Add(direction);
+                }
+                else
+                    DirectionPictures[(int)direction].SetActive(false);
+            }
             RoomBlok.SetActive(true);
             RoofLock.SetActive(true);
             if (CurrentShoppingType != ShoppingType.RealMoney && isActive && RoomManager.instance.activeRoomsRequiredMoney > 0)
@@ -86,6 +98,16 @@ public class RoomData : MonoBehaviour
             for (int i = 0; i < Directions.Count; i++)
             {
                 DirectionWalls[(int)Directions[i]].SetActive(false);
+            }
+            foreach (DoorDirection direction in Enum.GetValues(typeof(DoorDirection)))
+            {
+                if (!Directions.Contains(direction)) //Directionlardan birini icermiyorsa bu islemi uygula.
+                {
+                    DirectionPictures[(int)direction].SetActive(true);
+                    pictureDirections.Add(direction);
+                }
+                else
+                    DirectionPictures[(int)direction].SetActive(false);
             }
             RoomBlok.SetActive(false);
             RoofLock.SetActive(false);

@@ -25,7 +25,6 @@ public class NpcManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(this);
-        GameManager.instance.LoadPictures(RoomsParent, true);
         GameManager.instance.LoadRooms();
         WorkerManager.instance.BaseAllWorkerOptions();
         GameManager.instance.LoadWorkers();
