@@ -873,15 +873,15 @@ public class UIController : MonoBehaviour
                     break;
                 case ItemType.Gem:
                     GameObject _newDailyRewardGem = Instantiate(DailyRewardGemPrefab, DailyRewardContents[i]);
-                    _newDailyRewardGem.GetComponent<DailyRewardItemOptions>().SetMyOptions(currentItems[i].ID, currentItems[i].Name, currentItems[i].Amount, true);
+                    _newDailyRewardGem.GetComponent<DailyRewardItemOptions>().SetMyOptions(currentItems[i].ID, currentItems[i].Name, currentItems[i].Amount, true, !currentItems[i].IsPurchased);
                     break;
                 case ItemType.Gold:
                     GameObject _newDailyRewardGold = Instantiate(DailyRewardGoldPrefab, DailyRewardContents[i]);
-                    _newDailyRewardGold.GetComponent<DailyRewardItemOptions>().SetMyOptions(currentItems[i].ID, currentItems[i].Name, currentItems[i].Amount, true);
+                    _newDailyRewardGold.GetComponent<DailyRewardItemOptions>().SetMyOptions(currentItems[i].ID, currentItems[i].Name, currentItems[i].Amount, true, !currentItems[i].IsPurchased);
                     break;
                 case ItemType.Table:
                     GameObject _newDailyRewardTable = Instantiate(DailyRewardTablePrefab, DailyRewardContents[i]);
-                    _newDailyRewardTable.GetComponent<DailyRewardItemOptions>().SetMyOptions(currentItems[i].ID, currentItems[i].Name, currentItems[i].Amount, true, currentItems[i].StarCount);
+                    _newDailyRewardTable.GetComponent<DailyRewardItemOptions>().SetMyOptions(currentItems[i].ID, currentItems[i].Name, currentItems[i].Amount, true, !currentItems[i].IsPurchased, currentItems[i].StarCount);
                     break;
                 case ItemType.All:
                     break;

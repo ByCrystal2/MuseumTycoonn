@@ -16,7 +16,7 @@ public class PicturesMenuController : MonoBehaviour
     [SerializeField] Transform pictureContent;
     [SerializeField] GameObject ddPainter;
 
-    [SerializeField] GameObject pnlPicturesMenu;
+    [SerializeField] public GameObject pnlPicturesMenu;
 
     [Header("PictureInfos")]
     [SerializeField] GameObject[] OpenStars;
@@ -97,7 +97,7 @@ public class PicturesMenuController : MonoBehaviour
             int u = i;
             newPicture.GetComponent<Button>().onClick.AddListener(() => GetClickedImage(u, ped));
             newPicture.GetComponent<Image>().sprite = CatchTheColors.instance.TextureToSprite(ped.texture);
-            newPicture.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = i.ToString();
+            newPicture.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = i+1.ToString();
             pictureCount++;
         }
     }
@@ -126,11 +126,11 @@ public class PicturesMenuController : MonoBehaviour
 
     public void AddPicture(PictureElement PE)
     {
-        if (!PE._pictureData.isActive)
-        {
-            Debug.Log("Tiklanan Tablo aktif degil.");
-            return;
-        }
+        //if (!PE._pictureData.isActive)
+        //{
+        //    Debug.Log("Tiklanan Tablo aktif degil.");
+        //    return;
+        //}
         UpdatePicture();
         CurrentPicture = PE;
         SetCurrentPicture(PE);
@@ -177,7 +177,8 @@ public class PicturesMenuController : MonoBehaviour
             MuseumManager.instance.SpendingGold(PictureChangeRequiredAmount);
             if (CurrentPicture._pictureData.isFirst)
             {
-                SetPictureUpdateButton(false, "Eklendi", Color.white);                
+                SetPictureUpdateButton(false, "Eklendi", Color.white);
+                CurrentPicture._pictureData.isActive = true;
                 //MuseumManager.instance.GetPictureElement(PictureChangeRequiredAmount = Mathf.RoundToInt(CurrentPicture._pictureData.RequiredGold * 0.5f);
                 txtRequiredGold.text = "Gerekli Altýn: " + PictureChangeRequiredAmount;
             }
@@ -185,6 +186,7 @@ public class PicturesMenuController : MonoBehaviour
             {
                 isFirst = false;
                 SetPictureUpdateButton(false, "Deðiþtirildi", Color.white);
+                CurrentPicture._pictureData.isActive = true;
             }
             //CurrentPicture._pictureData.isFirst = false;
 

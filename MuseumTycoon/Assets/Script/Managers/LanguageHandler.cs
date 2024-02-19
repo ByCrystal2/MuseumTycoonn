@@ -107,7 +107,7 @@ public class LanguageHandler : MonoBehaviour
             using (StreamWriter writer = new StreamWriter(filePath))
                 writer.Write(h.AllHeaders);
             
-            UnityEditor.AssetDatabase.Refresh();
+            //UnityEditor.AssetDatabase.Refresh(); => build error veriyor bundan dolayi
         }
     }
 

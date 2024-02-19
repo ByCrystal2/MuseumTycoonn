@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class DailyRewardItemOptions : MonoBehaviour
+public class DailyRewardItemOptions : MonoBehaviour,IPointerClickHandler
 {
     public int MyItemID;
     [SerializeField] private TextMeshProUGUI MyNameText;
@@ -11,13 +12,35 @@ public class DailyRewardItemOptions : MonoBehaviour
     [SerializeField] private GameObject Light;
     [SerializeField] private GameObject[] CloseStars;
     [SerializeField] private GameObject[] OpenStars;
-
-    public void SetMyOptions(int _myItemID ,string _myName, float _myPrice, bool _lightClose, byte _starCount = 0)
+    private bool IsClickable = true;
+    
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (IsClickable)
+        {
+            DailyRewardsPanelController.instance.WinReward(this);
+        }
+    }    
+    public void SetClickable(bool _isClickable)
+    {
+        IsClickable = _isClickable;
+        if (!IsClickable)
+        {
+            DailyRewardsPanelController.instance.CreatePnlReceived(transform.parent);
+        }
+    }
+    public void SetMyOptions(int _myItemID ,string _myName, float _myPrice, bool _lightClose, bool _isClickable, byte _starCount = 0)
     {
         MyItemID = _myItemID;
         MyNameText.text = _myName;
         MyPriceText.text = _myPrice.ToString();
         Light.SetActive(_lightClose);
+        IsClickable = _isClickable;
+
+        if (!IsClickable)
+        {
+            SetClickable(false);
+        }
 
         if (CloseStars != null && OpenStars != null)
         {

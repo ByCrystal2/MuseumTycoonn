@@ -159,7 +159,7 @@ public class MuseumManager : MonoBehaviour
     {
         Gem += _gem;
         UIController.instance.GemText.text = "" + Gem;
-        Debug.Log("New gold: " + Gem);
+        Debug.Log("New Gem: " + Gem);
     }
     public void AddSkillPoint(int _point) // TEHLIKELI KOD! TESTTEN SONRA SILINMELIDIR!
     {

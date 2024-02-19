@@ -274,7 +274,23 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 8027489081042295465}
+    - targetCorrespondingSourceObject: {fileID: 4255594791626778854, guid: 9bdb07e567c5a38429abd8288e0b1587,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4730087954045057122}
   m_SourcePrefab: {fileID: 100100000, guid: 9bdb07e567c5a38429abd8288e0b1587, type: 3}
+--- !u!114 &2823882711731663979 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5063388573578733597, guid: 9bdb07e567c5a38429abd8288e0b1587,
+    type: 3}
+  m_PrefabInstance: {fileID: 7022439246490197110}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &4997464835948485129 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2607083372336924287, guid: 9bdb07e567c5a38429abd8288e0b1587,
@@ -305,6 +321,50 @@ MonoBehaviour:
   Light: {fileID: 7344657422752678134}
   CloseStars: []
   OpenStars: []
+--- !u!114 &4730087954045057122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6519628567228576912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 2823882711731663979}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &7037013787656517834 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 62146082221958332, guid: 9bdb07e567c5a38429abd8288e0b1587,

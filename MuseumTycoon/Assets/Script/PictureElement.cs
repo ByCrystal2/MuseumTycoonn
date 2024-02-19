@@ -19,7 +19,7 @@ public class PictureElement : MonoBehaviour
             //UIController.instance.GetClickedPicture(true,this);
             for (int i = 1; i < 6; i++)
                 transform.GetChild(i).GetComponent<LocationData>().SetVisittible(true);
-            _pictureData.isActive = true;
+            //_pictureData.isActive = true;
             PicturesMenuController.instance.AddPicture(this);
         }
         else

@@ -23,7 +23,7 @@ public class TimeManager : MonoBehaviour
     {
         // Belirli aralýklarla API'ye istek göndererek saati güncelle
         //InvokeRepeating("UpdateCurrentTime", 0f, 60f); // Her 60 saniyede bir güncelle
-        UpdateCurrentTime();
+        InvokeRepeating(nameof(UpdateCurrentTime), 0f, 60f);
     }
     void UpdateCurrentTime()
     {

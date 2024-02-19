@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -40,7 +41,7 @@ public class GameManager : MonoBehaviour
 
     public void Init()
     {
-        SceneManager.LoadScene("Menu");        
+        FirebaseAuthManager.instance.CreateNewLoading();
         TableCommentEvaluationManager.instance.AddAllNPCComments();
         SkillTreeManager.instance.AddSkillsForSkillTree();
         ItemManager.instance.AddItems();
@@ -95,6 +96,13 @@ public class GameManager : MonoBehaviour
         }
         Debug.Log("inventoryItems.count: " + inventoryItems.Count);
 
+        List<ItemData> dailyRewardItems = new List<ItemData>();
+        foreach (var item in ItemManager.instance.CurrentDailyRewardItems)
+        {
+            dailyRewardItems.Add(item);
+        }
+        Debug.Log("dailyRewardItems.count: " + dailyRewardItems.Count);
+
         List<SkillNode> skillNodes = new List<SkillNode>();
         foreach (var skill in SkillTreeManager.instance.skillNodes)
         {
@@ -144,6 +152,7 @@ public class GameManager : MonoBehaviour
         CurrentSaveData.CurrentPictures = currentActivePictures;
         CurrentSaveData.InventoryPictures = inventoryPictures;
         CurrentSaveData.PurchasedItems = inventoryItems;
+        CurrentSaveData.DailyRewardItems = dailyRewardItems;
         CurrentSaveData.SkillNodes = skillNodes;
         CurrentSaveData.CurrentWorkerDatas = currentWorkerDatas;
         CurrentSaveData.InventoryWorkerDatas = inventoryWorkerDatas;      
@@ -183,8 +192,9 @@ public class GameManager : MonoBehaviour
                 int length3 = room.DirectionPictures[(int)pictureDirection].transform.childCount;
                 for (int i = 0; i < length3; i++)
                 {
-                    if (room.DirectionPictures[i].TryGetComponent(out PictureElement pe))
+                    if (room.DirectionPictures[(int)pictureDirection].transform.GetChild(i).TryGetComponent(out PictureElement pe))
                     {
+                        Debug.Log(room.availableRoomCell.CellLetter + room.availableRoomCell.CellNumber + " Hucreli odanin " + room.DirectionPictures[(int)pictureDirection].name + " Yonlu Resimler contentinin " + room.DirectionPictures[(int)pictureDirection].transform.GetChild(i).name + " Adli tablosu bulunmaktadir.");
                         PictureData currentPictureData = CurrentSaveData.CurrentPictures.Where(x => x.id == pe._pictureData.id).SingleOrDefault();
                         pe._pictureData = currentPictureData;
                         pe.UpdateVisual(true);
@@ -337,6 +347,7 @@ public class GameManager : MonoBehaviour
         public List<PictureData> InventoryPictures = new List<PictureData>();
         public List<RoomSaveData> Rooms = new List<RoomSaveData>();
         public List<ItemData> PurchasedItems = new List<ItemData>();
+        public List<ItemData> DailyRewardItems = new List<ItemData>();
         public List<SkillNode> SkillNodes = new List<SkillNode>();
         public List<WorkerData> CurrentWorkerDatas = new List<WorkerData>();
         public List<WorkerData> InventoryWorkerDatas = new List<WorkerData>();
