@@ -8,23 +8,24 @@ public class LocationData : MonoBehaviour
     public bool isLocked;
     public bool HasImage;
     // Start is called before the first frame update
-    void Start()
-    {
-        PictureElement PE;
-        if (transform.parent.TryGetComponent(out PE))
-            return;
+    //void Start()
+    //{
+    //    PictureElement PE;
+    //    if (transform.parent.TryGetComponent(out PE))
+    //        return;
 
-        NpcManager.instance.Locations.Add(this);
-    }
+    //    //NpcManager.instance.Locations.Add(this);
+    //}
 
-    public void SetVisittible(bool _isVisittible)
+    public void SetVisittible(bool _isVisittible, bool _hasImage)
     {
+        isLocked = !_isVisittible;
         if (_isVisittible)
         {
             if (!NpcManager.instance.Locations.Contains(this))
             {
                 NpcManager.instance.Locations.Add(this);
-                HasImage = true;
+                HasImage = _hasImage;
             }
         }
         else
@@ -32,7 +33,7 @@ public class LocationData : MonoBehaviour
             if (NpcManager.instance.Locations.Contains(this))
             {
                 NpcManager.instance.Locations.Remove(this);
-                HasImage = false;
+                HasImage = _hasImage;
             }
         }
     }

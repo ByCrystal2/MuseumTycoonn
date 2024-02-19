@@ -16,6 +16,12 @@ public class NpcManager : MonoBehaviour
 
     public Transform RoomsParent;
 
+
+    [Header("NPC UI Visual")]
+    public Color StartColor;
+    public Color EndColor;
+    public List<Sprite> StressEmojis;
+
     private void Awake()
     {
         if (instance)

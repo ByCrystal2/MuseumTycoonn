@@ -19,6 +19,7 @@ public class NPCBehaviour : MonoBehaviour
     [SerializeField] private float NpcRotationSpeed;
     [SerializeField] private Vector3 OutsidePosition;
     [SerializeField] private NPCBehaviour DialogTarget;
+    [SerializeField] private NPCUI MyNPCUI;
 
     //UI
     [SerializeField] string MyName = "Ahmet Burak"; // Default olarak Ahmet Burak atýldý. Deðiþtirilecek.
@@ -39,7 +40,18 @@ public class NPCBehaviour : MonoBehaviour
     public MyColors DislikedColor;
     public List<string> LikedArtist;
     public float Happiness; //0-100; Mutlu npc daha fazla sanat gezmek isteyecek. Ve npc hizini etkileyecek.
-    public float Stress; //0-100; Stressli npc daha az sanat gormek isteyecek. Ve npc hizini etkileyecek.
+
+    private float _stress;
+    public float Stress
+    {
+        get { return _stress; }
+        private set
+        {
+            _stress = value;
+            MyNPCUI.UpdateStressBar(_stress);
+        }
+    }
+    //0-100; Stressli npc daha az sanat gormek isteyecek. Ve npc hizini etkileyecek.
     public float Toilet; //100-0; Tuvaleti zaten biliyoruz.
     public float Education; //0-10; Egitimli insanlar daha cok kultur kazandirir.
     public float AdditionalLuck; //sans oranini buradan arttirabiliriz.
@@ -471,7 +483,7 @@ public class NPCBehaviour : MonoBehaviour
         CurrentTarget = NpcTargets.Outside;
         CurrentState = NPCState.Move;
         Happiness = 100;
-        Stress = 20;
+        Stress = 0;
         NpcWalkType = WalkEnum.NormalWalk;
         NpcCurrentSpeed = NpcSpeed + NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f); //3.3
         Agent.speed = NpcCurrentSpeed;

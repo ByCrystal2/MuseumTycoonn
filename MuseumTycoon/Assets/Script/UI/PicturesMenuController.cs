@@ -223,6 +223,7 @@ public class PicturesMenuController : MonoBehaviour
                 MuseumManager.instance.InventoryPictures.Add(inventoryData);
             MuseumManager.instance.GetPictureElement(CurrentPicture._pictureData.id).UpdateVisual();
             UpdatePicture();
+            CurrentPicture.SetImage(!CurrentPicture._pictureData.isLocked);
         }
     }
 

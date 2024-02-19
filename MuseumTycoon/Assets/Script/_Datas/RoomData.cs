@@ -109,6 +109,7 @@ public class RoomData : MonoBehaviour
                 else
                     DirectionPictures[(int)direction].SetActive(false);
             }
+            RoomManager.instance.ActivateRoomLocations(this);
             RoomBlok.SetActive(false);
             RoofLock.SetActive(false);
         }

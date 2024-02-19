@@ -13,26 +13,14 @@ public class PictureElement : MonoBehaviour
         if (_pictureData.isLocked || EventSystem.current.IsPointerOverGameObject()) // Kilitliyse veya UI objesi arkasindan tiklaniyorsa islem yapma.
             return;
 
-        if (!_pictureData.isActive) 
-        {
-            
-            //UIController.instance.GetClickedPicture(true,this);
-            for (int i = 1; i < 6; i++)
-                transform.GetChild(i).GetComponent<LocationData>().SetVisittible(true);
-            //_pictureData.isActive = true;
-            PicturesMenuController.instance.AddPicture(this);
-        }
-        else
-        {
-            PicturesMenuController.instance.AddPicture(this);
-            //PicturesMenuController.instance.CurrentPicture = null;
-            //data = null;
-            //for (int i = 1; i < 6; i++)
-            //    transform.GetChild(i).GetComponent<LocationData>().SetVisittible(false);
+        PicturesMenuController.instance.AddPicture(this);
+    }
 
-            //isActive = false;
-            //UpdateVisual();
-        }
+    public void SetImage(bool _set)
+    {
+        Debug.Log("Image set successfully! _pictureData id: " + _pictureData.id + " name: " + transform.name + " / set=> " + _set);
+        for (int i = 1; i < 6; i++)
+            transform.GetChild(i).GetComponent<LocationData>().SetVisittible(_set, true);
     }
 
     public void UpdateVisual(bool _isLoadGame = false)
