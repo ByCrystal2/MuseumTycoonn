@@ -70,6 +70,8 @@ public class RightUIPanelController : MonoBehaviour
                 VisibleUIObj.SetActive(true);
                 UINotVisibleObj.SetActive(false);
                 GameManager.instance.SetCurrenGameMode(GameMode.MuseumEditing);
+                RoomManager.instance.CurrentEditedRoom.SetRoomBlockPanelActive(true);
+                Debug.Log("RoomEditing mode Debug.");
                 break;
             default:
                 break;

@@ -7,6 +7,7 @@ public class NPCUI : MonoBehaviour
 {
     public Image StressBackgroundImage;
     public Image StressFillerImage;
+    public Transform EffectsParent;
 
     private float _currentStress = 20;
     Coroutine UpdateVisualCoroutine;
@@ -20,23 +21,30 @@ public class NPCUI : MonoBehaviour
         UpdateVisualCoroutine = StartCoroutine(UpdateVisual(_targetStress, _currentStress < _targetStress));
     }
 
+    public void PlayEmotionEffect(NpcEmotionEffect _effect)
+    {
+        EffectsParent.GetChild((int)_effect).GetComponent<ParticleSystem>().Play();
+    }
+
     IEnumerator UpdateVisual(float _targetStress, bool _isIncrease)
     {
         if (_isIncrease)
         {
             while (_currentStress < _targetStress)
             {
-                Debug.Log("Increasing => _currentStress: " + _currentStress + " / targetstress: " + _targetStress);
+                //Debug.Log("Increasing => _currentStress: " + _currentStress + " / targetstress: " + _targetStress);
                 _currentStress += Time.deltaTime * 20;
                 if (_currentStress > _targetStress)
                     _currentStress = _targetStress;
+                if (_currentStress > 100)
+                    _currentStress = 100;
 
                 Color col = HsvToRgb(_currentStress / 100f, 1f, 1f);
                 StressFillerImage.color = col;
                 StressFillerImage.fillAmount = _currentStress / 100f;
 
-                int _emojiID = Mathf.RoundToInt(_currentStress / 16.6f);
-                Debug.Log("_emojiID: " + _emojiID);
+                int _emojiID = Mathf.FloorToInt(_currentStress / 17f);
+                //Debug.Log("_emojiID: " + _emojiID);
                 StressBackgroundImage.sprite = NpcManager.instance.StressEmojis[_emojiID];
                 //StressFillerImage.sprite = NpcManager.instance.StressEmojis[_emojiID];
                 yield return new WaitForSeconds(0.1f);
@@ -47,20 +55,22 @@ public class NPCUI : MonoBehaviour
         {
             while (_currentStress > _targetStress)
             {
-                Debug.Log("Before = Decreasing => _currentStress: " + _currentStress + " / targetstress: " + _targetStress);
+                //Debug.Log("Before = Decreasing => _currentStress: " + _currentStress + " / targetstress: " + _targetStress);
                 _currentStress -= Time.deltaTime * 20;
                 if (_currentStress < _targetStress)
                     _currentStress = _targetStress;
 
+                if (_currentStress < 0)
+                    _currentStress = 0;
                 Color col = HsvToRgb(_currentStress / 100f, 1f, 1f);
                 StressFillerImage.color = col;
                 StressFillerImage.fillAmount = _currentStress / 100f;
 
-                int _emojiID = Mathf.RoundToInt(_currentStress / 25f);
-                Debug.Log("_emojiID: " + _emojiID);
+                int _emojiID = Mathf.RoundToInt(_currentStress / 17f);
+                //Debug.Log("_emojiID: " + _emojiID);
                 StressBackgroundImage.sprite = NpcManager.instance.StressEmojis[_emojiID];
                 //StressFillerImage.sprite = NpcManager.instance.StressEmojis[_emojiID];
-                Debug.Log("After = Decreasing => _currentStress: " + _currentStress + " / targetstress: " + _targetStress);
+                //Debug.Log("After = Decreasing => _currentStress: " + _currentStress + " / targetstress: " + _targetStress);
                 yield return new WaitForSeconds(0.1f);
             }
         }

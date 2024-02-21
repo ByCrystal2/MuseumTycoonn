@@ -28,12 +28,20 @@ public class RoomData : MonoBehaviour
     private GameObject RoomBlok;
     private GameObject RoofLock;
     public List<TextMeshProUGUI> MyRequiredMoneyTexts;
+
+    public Transform LocationHolder;
+
     private void Start()
     {
         if (CurrentShoppingType == ShoppingType.RealMoney)
             IAP_ID = Constant.instance.IAPIDCompany + Constant.instance.IAPIDGame + CurrentRoomType.ToString().ToLower() + "x" + 1 + "_" + CurrentShoppingType.ToString().ToLower() + "_" + ((int)RequiredMoney).ToString(); //com_kosippysudio_museumtycoon_gold5000x_realmoney_10
+    }
+
+    public void LoadThisRoom()
+    {
         RoomBlok = gameObject.GetComponentInChildren<RoomBlokClickHandler>().gameObject;
         RoofLock = gameObject.GetComponentInChildren<PanelClickHandler>().gameObject.GetComponentInParent<Canvas>().gameObject;
+
         if (isLock)
         {
             int childCount = gameObject.transform.GetChild(4).childCount;
@@ -46,7 +54,7 @@ public class RoomData : MonoBehaviour
             {
                 door.SetActive(false);
             }
-            foreach(var directionWall in DirectionWalls)
+            foreach (var directionWall in DirectionWalls)
             {
                 directionWall.SetActive(true);
             }
@@ -109,12 +117,41 @@ public class RoomData : MonoBehaviour
                 else
                     DirectionPictures[(int)direction].SetActive(false);
             }
-            RoomManager.instance.ActivateRoomLocations(this);
             //RoomBlok.SetActive(false);
             RoofLock.SetActive(false);
         }
-        
-        Debug.Log("Oda start tamamlandi.");
+
+        foreach (DoorDirection pictureDirection in pictureDirections)
+        {
+            Debug.Log("DoorDirection ForEach Start!");
+            int length3 = DirectionPictures[(int)pictureDirection].transform.childCount;
+            for (int i = 0; i < length3; i++)
+            {
+                Debug.Log("room.DirectionPictures[(int)pictureDirection].transform name: " + DirectionPictures[(int)pictureDirection].transform.name);
+                if (DirectionPictures[(int)pictureDirection].transform.GetChild(i).TryGetComponent(out PictureElement pe))
+                {
+                    Debug.Log(availableRoomCell.CellLetter + availableRoomCell.CellNumber + " Hucreli odanin " + DirectionPictures[(int)pictureDirection].name + " Yonlu Resimler contentinin " + DirectionPictures[(int)pictureDirection].transform.GetChild(i).name + " Adli tablosu bulunmaktadir.");
+                    PictureData currentPictureData = GameManager.instance.CurrentSaveData.CurrentPictures.Where(x => x.id == pe._pictureData.id).SingleOrDefault();
+                    Debug.Log("currentPictureData is null =? " + (currentPictureData == null));
+                    if (currentPictureData != null)
+                    {
+                        pe._pictureData = currentPictureData;
+                        pe.UpdateVisual(true);
+                        if (!isLock)
+                        {
+                            if(pe._pictureData.TextureID > 0)
+                                pe.SetImage(true);
+                            RoomManager.instance.ActivateRoomLocations(this);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void SetRoomBlockPanelActive(bool _isActive)
+    {
+        RoomBlok.GetComponent<BoxCollider>().enabled = _isActive;
     }
     public void SetMyRequiredTexts(float _RequiredMoney)
     {

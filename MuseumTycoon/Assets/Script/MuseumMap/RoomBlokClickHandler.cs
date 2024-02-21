@@ -29,6 +29,7 @@ public class RoomBlokClickHandler : MonoBehaviour
                 ClickedRoom.SetActivationMyRoomEditingCamera(true);
                 GameManager.instance.SetCurrenGameMode(GameMode.RoomEditing);
                 RoomManager.instance.CurrentEditedRoom = ClickedRoom;
+                GetComponent<BoxCollider>().enabled = false;
             }
         }
     }

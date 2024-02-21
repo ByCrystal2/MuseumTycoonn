@@ -15,7 +15,7 @@ public class NpcManager : MonoBehaviour
     public Transform Enter1Point, Enter2Point;
 
     public Transform RoomsParent;
-
+    public float NpcMaxMoveDistance = 90;
 
     [Header("NPC UI Visual")]
     public Color StartColor;
@@ -62,4 +62,10 @@ public class NpcManager : MonoBehaviour
         
         RewardManager.instance.CheckRewards();// Burada gecen sureleri kontrol et ve odul verme durumunu degerlendir.
     }
+}
+
+public enum NpcEmotionEffect
+{
+    Happiness,
+    Sadness,
 }

@@ -116,7 +116,7 @@ public class RoomManager : MonoBehaviour
 
     public void ActivateRoomLocations(RoomData purchasedRoom)
     {
-        Transform locationDatasParent = purchasedRoom.transform.GetChild(8);
+        Transform locationDatasParent = purchasedRoom.LocationHolder;
         int length = locationDatasParent.childCount;
         for (int i = 0; i < length; i++)
             locationDatasParent.GetChild(i).GetComponent<LocationData>().SetVisittible(true,false);

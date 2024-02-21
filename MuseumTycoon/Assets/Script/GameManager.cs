@@ -193,21 +193,10 @@ public class GameManager : MonoBehaviour
                 room.RequiredMoney = currentRoomData.RequiredMoney;
 
             }
+            Debug.Log("Room name: " + room.transform.name + " / room.pictureDirections Count: " + room.pictureDirections.Count);
             //PictureLoad
-            foreach (DoorDirection pictureDirection in room.pictureDirections)
-            {
-                int length3 = room.DirectionPictures[(int)pictureDirection].transform.childCount;
-                for (int i = 0; i < length3; i++)
-                {
-                    if (room.DirectionPictures[(int)pictureDirection].transform.GetChild(i).TryGetComponent(out PictureElement pe))
-                    {
-                        Debug.Log(room.availableRoomCell.CellLetter + room.availableRoomCell.CellNumber + " Hucreli odanin " + room.DirectionPictures[(int)pictureDirection].name + " Yonlu Resimler contentinin " + room.DirectionPictures[(int)pictureDirection].transform.GetChild(i).name + " Adli tablosu bulunmaktadir.");
-                        PictureData currentPictureData = CurrentSaveData.CurrentPictures.Where(x => x.id == pe._pictureData.id).SingleOrDefault();
-                        pe._pictureData = currentPictureData;
-                        pe.UpdateVisual(true);
-                    }
-                }
-            }
+
+            room.LoadThisRoom();
         }
         MuseumManager.instance.InventoryPictures = CurrentSaveData.InventoryPictures;
 
