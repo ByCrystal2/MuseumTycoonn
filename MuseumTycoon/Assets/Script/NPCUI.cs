@@ -35,10 +35,10 @@ public class NPCUI : MonoBehaviour
                 StressFillerImage.color = col;
                 StressFillerImage.fillAmount = _currentStress / 100f;
 
-                int _emojiID = Mathf.RoundToInt(_currentStress / 25f);
+                int _emojiID = Mathf.RoundToInt(_currentStress / 16.6f);
                 Debug.Log("_emojiID: " + _emojiID);
                 StressBackgroundImage.sprite = NpcManager.instance.StressEmojis[_emojiID];
-                StressFillerImage.sprite = NpcManager.instance.StressEmojis[_emojiID];
+                //StressFillerImage.sprite = NpcManager.instance.StressEmojis[_emojiID];
                 yield return new WaitForSeconds(0.1f);
             }
             
@@ -59,7 +59,7 @@ public class NPCUI : MonoBehaviour
                 int _emojiID = Mathf.RoundToInt(_currentStress / 25f);
                 Debug.Log("_emojiID: " + _emojiID);
                 StressBackgroundImage.sprite = NpcManager.instance.StressEmojis[_emojiID];
-                StressFillerImage.sprite = NpcManager.instance.StressEmojis[_emojiID];
+                //StressFillerImage.sprite = NpcManager.instance.StressEmojis[_emojiID];
                 Debug.Log("After = Decreasing => _currentStress: " + _currentStress + " / targetstress: " + _targetStress);
                 yield return new WaitForSeconds(0.1f);
             }

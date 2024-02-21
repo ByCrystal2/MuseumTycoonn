@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
 
     string _GameSave = "GameSave";
     float AutoSaveTimer;
-
+    GameMode CurrentGameMode;
     private void Awake()
     {
         if (instance)
@@ -56,7 +56,14 @@ public class GameManager : MonoBehaviour
             AutoSaveTimer = Time.time + 300;
         }
     }
-    
+    public GameMode GetCurrentGameMode()
+    {
+        return CurrentGameMode;
+    }
+    public void SetCurrenGameMode(GameMode _gameMode)
+    {
+        CurrentGameMode = _gameMode;
+    }
     public void Save()
     {
         if (CurrentSaveData.SaveName == "")
@@ -352,5 +359,13 @@ public class GameManager : MonoBehaviour
         public List<WorkerData> CurrentWorkerDatas = new List<WorkerData>();
         public List<WorkerData> InventoryWorkerDatas = new List<WorkerData>();
         public AdverstingData adData; //ADS SISTEMI KURULDUKTAN SONRA EKLENECEK.
-    }
+    }    
+}
+public enum GameMode
+{
+    None,
+    MuseumEditing,
+    FPS,
+    Ghost,
+    RoomEditing
 }

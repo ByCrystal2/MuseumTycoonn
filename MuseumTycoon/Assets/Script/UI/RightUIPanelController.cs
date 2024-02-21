@@ -6,18 +6,16 @@ using UnityEngine.UI;
 
 public class RightUIPanelController : MonoBehaviour
 {
-    [SerializeField] GameObject EditModeObj;
+    [SerializeField] public GameObject EditModeObj;
     [SerializeField] GameObject FPSModeObj;
     [SerializeField] GameObject GhostModeObj;
 
-    [SerializeField] GameObject EditObj;
+    [SerializeField] public GameObject EditObj;
     [SerializeField] GameObject VisibleUIObj;
 
     [SerializeField] Button EditModeButton;
     [SerializeField] Button UIVisibleButton;
     [SerializeField] GameObject UINotVisibleObj;
-
-    [HideInInspector] public GameModes CurrentGameMode;
     public static RightUIPanelController instance { get; private set; }
     private void Awake()
     {
@@ -30,11 +28,12 @@ public class RightUIPanelController : MonoBehaviour
     }
     private void Start()
     {
+        GameManager.instance.SetCurrenGameMode(GameMode.Ghost);
+
         EditModeButton.onClick.RemoveAllListeners();
         UIVisibleButton.onClick.RemoveAllListeners();
         EditModeButton.onClick.AddListener(EditMode);
         UIVisibleButton.onClick.AddListener(UIVisible);
-        CurrentGameMode = GameModes.Ghost;
         EditMode();
     }
     bool _uIVisible = true;
@@ -42,25 +41,35 @@ public class RightUIPanelController : MonoBehaviour
     public void EditMode() // Edit Mode Button AddListener.
     {
         CloseAllMods();
-        switch (CurrentGameMode)
+        GameMode _gameMode = GameManager.instance.GetCurrentGameMode();
+        switch (_gameMode)
         {
-            case GameModes.Edit:
+            case GameMode.MuseumEditing:
                 // FPS Moduna gecis.
                 FPSModeObj.SetActive(true);
                 VisibleUIObj.SetActive(false);
-                CurrentGameMode = GameModes.FPS;
+                GameManager.instance.SetCurrenGameMode(GameMode.FPS);
                 break;
-            case GameModes.FPS:
+            case GameMode.FPS:
                 // Ghost Moduna Gecis.
                 GhostModeObj.SetActive(true);
-                CurrentGameMode = GameModes.Ghost;
+                GameManager.instance.SetCurrenGameMode(GameMode.Ghost);
                 break;
-            case GameModes.Ghost:
-                // Edit Moduna Gecis.
+            case GameMode.Ghost:
+                // Muze Edit Moduna Gecis.
                 EditModeObj.SetActive(true);
                 VisibleUIObj.SetActive(true);
                 UINotVisibleObj.SetActive(false);
-                CurrentGameMode = GameModes.Edit;
+                GameManager.instance.SetCurrenGameMode(GameMode.MuseumEditing);
+                break;
+            case GameMode.RoomEditing:
+                // Muze Edit Moduna Gecis.
+                RoomManager.instance.CurrentEditedRoom.SetActivationMyRoomEditingCamera(false);
+                UIController.instance.SetActivationRoomEditingPanel(false);
+                EditModeObj.SetActive(true);
+                VisibleUIObj.SetActive(true);
+                UINotVisibleObj.SetActive(false);
+                GameManager.instance.SetCurrenGameMode(GameMode.MuseumEditing);
                 break;
             default:
                 break;
@@ -68,13 +77,16 @@ public class RightUIPanelController : MonoBehaviour
     }
     public void UIVisible()
     {
-        if (CurrentGameMode == GameModes.Edit)
+        if (GameManager.instance.GetCurrentGameMode() == GameMode.MuseumEditing || GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
         {
             if (_uIVisible)
             {
                 UINotVisibleObj.SetActive(true);
                 EditObj.SetActive(false);
                 PicturesMenuController.instance.ExitPicturePanel();
+                if (GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
+                    UIController.instance.SetActivationRoomEditingPanel(true);
+
                 UIController.instance.CloseNPCInformationPanel();
                 UIController.instance.CloseWorkerShopPanel(true);
                 UIController.instance.CloseWorkerAssignmentPanel(true);
@@ -88,6 +100,8 @@ public class RightUIPanelController : MonoBehaviour
             else
             {
                 UINotVisibleObj.SetActive(false);
+                if (GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
+                    UIController.instance.SetActivationRoomEditingPanel(false);
                 EditObj.SetActive(true);
                 UIController.instance.CloseCultureExpObj(false);
                 UIController.instance.CloseLeftUIsPanel(false);
@@ -100,7 +114,7 @@ public class RightUIPanelController : MonoBehaviour
     {
         EditObj.SetActive(!_close);
         VisibleUIObj.SetActive(false);
-        if (CurrentGameMode == GameModes.Edit)
+        if (GameManager.instance.GetCurrentGameMode() == GameMode.MuseumEditing)
         {
             VisibleUIObj.SetActive(!_close);
         }
@@ -111,10 +125,4 @@ public class RightUIPanelController : MonoBehaviour
         FPSModeObj.SetActive(false);
         GhostModeObj.SetActive(false);
     }
-}
-public enum GameModes
-{
-    Edit,
-    FPS,
-    Ghost
 }

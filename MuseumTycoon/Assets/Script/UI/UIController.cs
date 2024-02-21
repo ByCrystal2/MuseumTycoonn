@@ -119,6 +119,9 @@ public class UIController : MonoBehaviour
     [SerializeField] GameObject DailyRewardGoldPrefab;
     [SerializeField] GameObject DailyRewardTablePrefab;
 
+    [Header("Room Editing Panel")]
+    [SerializeField] GameObject RoomEditingPanel;
+
     [Header("General")]
     public Image CultureFillBar;
     public Text CultureLevelText, GoldText, GemText;
@@ -890,6 +893,11 @@ public class UIController : MonoBehaviour
             }
             
         }
+    }
+
+    public void SetActivationRoomEditingPanel(bool _active)
+    {
+        RoomEditingPanel.SetActive(_active);
     }
 
     [SerializeField] GameObject SpiderPrefab;

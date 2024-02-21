@@ -15,7 +15,7 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
             return;
         }
         instance = this;
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject);        
     }
 
     public void InitializePurchasing()

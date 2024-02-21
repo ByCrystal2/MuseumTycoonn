@@ -22,6 +22,7 @@ public class RoomData : MonoBehaviour
     public List<int> MyRoomWorkersIDs = new List<int>();
 
     [SerializeField] public RoomCell availableRoomCell = new RoomCell();
+    [SerializeField] GameObject RoomEditingCamera; 
     //UI
     public List<GameObject> Doors = new List<GameObject>();
     private GameObject RoomBlok;
@@ -33,7 +34,6 @@ public class RoomData : MonoBehaviour
             IAP_ID = Constant.instance.IAPIDCompany + Constant.instance.IAPIDGame + CurrentRoomType.ToString().ToLower() + "x" + 1 + "_" + CurrentShoppingType.ToString().ToLower() + "_" + ((int)RequiredMoney).ToString(); //com_kosippysudio_museumtycoon_gold5000x_realmoney_10
         RoomBlok = gameObject.GetComponentInChildren<RoomBlokClickHandler>().gameObject;
         RoofLock = gameObject.GetComponentInChildren<PanelClickHandler>().gameObject.GetComponentInParent<Canvas>().gameObject;
-
         if (isLock)
         {
             int childCount = gameObject.transform.GetChild(4).childCount;
@@ -110,7 +110,7 @@ public class RoomData : MonoBehaviour
                     DirectionPictures[(int)direction].SetActive(false);
             }
             RoomManager.instance.ActivateRoomLocations(this);
-            RoomBlok.SetActive(false);
+            //RoomBlok.SetActive(false);
             RoofLock.SetActive(false);
         }
         
@@ -123,6 +123,10 @@ public class RoomData : MonoBehaviour
             requiredText.text = _RequiredMoney.ToString();
         }
     }
+    public void SetActivationMyRoomEditingCamera(bool _active)
+    {
+        RoomEditingCamera.SetActive(_active);
+    }
     public void IsPurchased(bool _isPurchased)
     {
         if (_isPurchased)
@@ -131,7 +135,7 @@ public class RoomData : MonoBehaviour
             {
                 door.SetActive(false);
             }
-            RoomBlok.SetActive(false);
+            //RoomBlok.SetActive(false);
             RoofLock.SetActive(false);
         }
         else

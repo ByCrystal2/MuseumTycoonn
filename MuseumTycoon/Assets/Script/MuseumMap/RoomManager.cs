@@ -21,6 +21,7 @@ public class RoomManager : MonoBehaviour
     int currentRoomID;
 
     public List<RoomData> RoomDatas;
+    public RoomData CurrentEditedRoom;
     public static RoomManager instance { get; set; }
     private void Awake()
     {
