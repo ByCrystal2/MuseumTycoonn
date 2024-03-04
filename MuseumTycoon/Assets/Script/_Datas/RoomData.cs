@@ -16,6 +16,7 @@ public class RoomData : MonoBehaviour
     public List<DoorDirection> pictureDirections = new List<DoorDirection>(); // Max 3!
     public bool isLock = true;
     public bool isActive = false;
+    public bool isHasStatue;
     [SerializeField] private GameObject[] DirectionWalls; // West-North-East-South Walls
     [SerializeField] public GameObject[] DirectionPictures; // West-North-East-South Pictures
 
@@ -31,12 +32,25 @@ public class RoomData : MonoBehaviour
 
     public Transform LocationHolder;
 
+    List<NPCBehaviour> NPCsInTheRoom = new List<NPCBehaviour>();
+    EditObjData MyStatue;
     private void Start()
     {
         if (CurrentShoppingType == ShoppingType.RealMoney)
             IAP_ID = Constant.instance.IAPIDCompany + Constant.instance.IAPIDGame + CurrentRoomType.ToString().ToLower() + "x" + 1 + "_" + CurrentShoppingType.ToString().ToLower() + "_" + ((int)RequiredMoney).ToString(); //com_kosippysudio_museumtycoon_gold5000x_realmoney_10
     }
-
+    public List<NPCBehaviour> GetNpcsInTheMyRoom()
+    {
+        return NPCsInTheRoom;
+    }
+    public EditObjData GetMyStatueInTheMyRoom()
+    {
+        return MyStatue;
+    }
+    public void SetMyStatue(EditObjData _newStatue)
+    {
+        MyStatue = _newStatue;
+    }
     public void LoadThisRoom()
     {
         RoomBlok = gameObject.GetComponentInChildren<RoomBlokClickHandler>().gameObject;
@@ -123,16 +137,16 @@ public class RoomData : MonoBehaviour
 
         foreach (DoorDirection pictureDirection in pictureDirections)
         {
-            Debug.Log("DoorDirection ForEach Start!");
+            //Debug.Log("DoorDirection ForEach Start!");
             int length3 = DirectionPictures[(int)pictureDirection].transform.childCount;
             for (int i = 0; i < length3; i++)
             {
-                Debug.Log("room.DirectionPictures[(int)pictureDirection].transform name: " + DirectionPictures[(int)pictureDirection].transform.name);
+                //Debug.Log("room.DirectionPictures[(int)pictureDirection].transform name: " + DirectionPictures[(int)pictureDirection].transform.name);
                 if (DirectionPictures[(int)pictureDirection].transform.GetChild(i).TryGetComponent(out PictureElement pe))
                 {
-                    Debug.Log(availableRoomCell.CellLetter + availableRoomCell.CellNumber + " Hucreli odanin " + DirectionPictures[(int)pictureDirection].name + " Yonlu Resimler contentinin " + DirectionPictures[(int)pictureDirection].transform.GetChild(i).name + " Adli tablosu bulunmaktadir.");
+                    //Debug.Log(availableRoomCell.CellLetter + availableRoomCell.CellNumber + " Hucreli odanin " + DirectionPictures[(int)pictureDirection].name + " Yonlu Resimler contentinin " + DirectionPictures[(int)pictureDirection].transform.GetChild(i).name + " Adli tablosu bulunmaktadir.");
                     PictureData currentPictureData = GameManager.instance.CurrentSaveData.CurrentPictures.Where(x => x.id == pe._pictureData.id).SingleOrDefault();
-                    Debug.Log("currentPictureData is null =? " + (currentPictureData == null));
+                    //Debug.Log("currentPictureData is null =? " + (currentPictureData == null));
                     if (currentPictureData != null)
                     {
                         pe._pictureData = currentPictureData;

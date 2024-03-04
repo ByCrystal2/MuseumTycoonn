@@ -61,6 +61,5 @@ public struct ItemData
         textureID = _item.textureID;
         IsPurchased = _item.IsPurchased;
         FocusedLevel = _item.FocusedLevel;
-    }
-   
+    }    
 }

@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RoomManager : MonoBehaviour
+public partial class RoomManager : MonoBehaviour
 {
 
     public float activeRoomsRequiredMoney;
@@ -220,6 +220,28 @@ public class RoomManager : MonoBehaviour
             // Belirtilen ID'ye sahip oda bulunamadý
             _exMessage = "Belirtilen ID'ye sahip oda bulunamadý";
             return false;
+        }
+    }
+}
+public partial class RoomManager // Room Bonus Controller
+{
+    public void RemoveNpcInTheRoom(RoomData _currentRoom, NPCBehaviour _removeNpc)
+    {
+        if (_currentRoom.GetNpcsInTheMyRoom().Contains(_removeNpc))
+        {
+            RoomEditingPanelController.instance.RemoveBonusExitedInTheRoom(_currentRoom, _removeNpc);
+            _currentRoom.GetNpcsInTheMyRoom().Remove(_removeNpc);
+
+            
+        }
+    }
+    public void AddNpcInTheRoom(RoomData _currentRoom, NPCBehaviour _newNpc)
+    {
+        if (!_currentRoom.GetNpcsInTheMyRoom().Contains(_newNpc))
+        {
+            Debug.Log($"An NPC Entered {_currentRoom.availableRoomCell.CellLetter + " " + _currentRoom.availableRoomCell.CellNumber} Cell Room. Current NPC => " + _newNpc.name);
+            RoomEditingPanelController.instance.AddBonusEnteredInTheRoom(_currentRoom, _newNpc);
+            _currentRoom.GetNpcsInTheMyRoom().Add(_newNpc);
         }
     }
 }

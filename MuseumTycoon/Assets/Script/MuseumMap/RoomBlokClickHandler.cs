@@ -5,6 +5,36 @@ using UnityEngine.EventSystems;
 
 public class RoomBlokClickHandler : MonoBehaviour
 {
+    RoomData MyParentRoomData;
+    private void Awake()
+    {
+        MyParentRoomData = GetComponentInParent<RoomData>();
+    }
+    private void OnCollisionEnter(Collision _col)
+    {
+        Debug.Log(_col.gameObject.name.ToString());
+        if (MyParentRoomData.isHasStatue)
+        {
+            if (_col.gameObject.TryGetComponent(out NPCBehaviour _enteredNpc))
+            {
+                Debug.Log("_enteredNpc.name => " + _enteredNpc.name.ToString());
+                RoomManager.instance.AddNpcInTheRoom(MyParentRoomData, _enteredNpc);
+            }
+        }
+        
+    }
+    private void OnCollisionExit(Collision _col)
+    {
+        Debug.Log(_col.gameObject.name.ToString());
+        if (MyParentRoomData.isHasStatue)
+        {
+            if (_col.gameObject.TryGetComponent(out NPCBehaviour _exitedNpc))
+            {
+                Debug.Log("_exitedNpc.name => " + _exitedNpc.name.ToString());
+                RoomManager.instance.RemoveNpcInTheRoom(MyParentRoomData, _exitedNpc);
+            }
+        }
+    }
     private void OnMouseDown()
     {
         RoomData ClickedRoom = this.GetComponentInParent<RoomData>();
@@ -29,7 +59,9 @@ public class RoomBlokClickHandler : MonoBehaviour
                 ClickedRoom.SetActivationMyRoomEditingCamera(true);
                 GameManager.instance.SetCurrenGameMode(GameMode.RoomEditing);
                 RoomManager.instance.CurrentEditedRoom = ClickedRoom;
-                GetComponent<BoxCollider>().enabled = false;
+                //RoomManager.instance.CurrentEditedRoom.SetMyStatue()
+                //RoomManager.instance.CurrentEditedRoom.GetMyStatueInTheMyRoom()._currentRoom = ClickedRoom;
+                //GetComponent<BoxCollider>().enabled = false;
             }
         }
     }

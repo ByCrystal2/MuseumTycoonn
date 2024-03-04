@@ -215,7 +215,7 @@ public class NPCBehaviour : MonoBehaviour
     {
         if (CurrentTarget == NpcTargets.Inside)
         {
-            Toilet += Time.deltaTime * 0.5f;
+            Toilet += Time.deltaTime * 4f;
             MoveOpt(TargetPosition.position);
         }
         else if (CurrentTarget == NpcTargets.Outside)
@@ -859,36 +859,39 @@ public class NPCBehaviour : MonoBehaviour
     {
         if (IsBusy)
             return;
-
-        SetCurrentAnimationState("MakeMess", 1);
+        
         int MaxCultureFactorEffect = 30;
 
         int cultureFactor = Mathf.Clamp(MuseumManager.instance.GetCurrentCultureLevel(), 0, MaxCultureFactorEffect);
         float ToiletChance = Stress * 0.5f - cultureFactor;
+        if (ToiletChance < 0)
+            ToiletChance = 0;
         float skillFactor = 0; //skillden (-) bonus gelmesi lazim. 
 
         float change = Random.Range(0, 101);
         if (change < ToiletChance)
         {
+            SetCurrentAnimationState("MakeMess", 1);
             IsBusy = true;
             Agent.isStopped = true;
             Agent.enabled = false;
             Invoke(nameof(CreateMess), 1f);
+            Toilet = 0;
+            Stress = Stress / 2;
         }
+        Toilet = 0;
 
-        Toilet = 0; 
-        Stress /= Stress;
     }
 
     public void CreateMess()
     {
         GameObject npc_Mess;
         if (Stress > 70)
-            npc_Mess = Instantiate(Resources.Load<GameObject>("NPC/NPC_Poop"));
+            npc_Mess = Instantiate(Resources.Load<GameObject>("NPC/NPC_Poop"),transform.position,Quaternion.identity);
         else if (Stress <= 70 && Stress > 40)
-            npc_Mess = Instantiate(Resources.Load<GameObject>("NPC/NPC_Gas"));
+            npc_Mess = Instantiate(Resources.Load<GameObject>("NPC/NPC_Gas"), transform.position, Quaternion.identity);
         else
-            npc_Mess = Instantiate(Resources.Load<GameObject>("NPC/NPC_Pee"));
+            npc_Mess = Instantiate(Resources.Load<GameObject>("NPC/NPC_Pee"), transform.position, Quaternion.identity);
 
         IsBusy = false;
         Agent.isStopped = false;
