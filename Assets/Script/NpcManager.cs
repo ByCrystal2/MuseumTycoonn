@@ -22,6 +22,8 @@ public class NpcManager : MonoBehaviour
     public Color EndColor;
     public List<Sprite> StressEmojis;
 
+    [SerializeField] private Transform NPCMessParent;
+
     private void Awake()
     {
         if (instance)
@@ -45,6 +47,7 @@ public class NpcManager : MonoBehaviour
         UnityAdsManager.instance.LoadBannerAd();
         UnityAdsManager.instance.ShowBannerAd();
     }
+
     private void Start()
     {
         AudioManager.instance.PlayMusicOfGame();
@@ -61,6 +64,16 @@ public class NpcManager : MonoBehaviour
         GameManager.instance.LoadSkills();
         
         RewardManager.instance.CheckRewards();// Burada gecen sureleri kontrol et ve odul verme durumunu degerlendir.
+    }
+
+    public void AddMessIntoMessParent(Transform _newMess)
+    {
+        _newMess.SetParent(NPCMessParent.GetChild(0));
+    }
+
+    public void SetMessCleaning(Transform _newMess)
+    {
+        _newMess.SetParent(NPCMessParent.GetChild(1));
     }
 }
 

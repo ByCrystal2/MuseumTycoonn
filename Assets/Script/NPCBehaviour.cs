@@ -60,6 +60,7 @@ public class NPCBehaviour : MonoBehaviour
         get { return _toilet; }
         private set
         {
+            //Debug.Log("new Toilet: " + value);
             _toilet = value;
             if (_toilet >= 100)
             {
@@ -635,8 +636,8 @@ public class NPCBehaviour : MonoBehaviour
         {
             if (Stress >= 0)
             {
-                int luck = Random.Range(0, 101);
-                if (luck < 101)
+                int luck = Random.Range(0 + (int)Stress, 101);
+                if (luck >= 70)
                 {
                     bool amIbeat;
                     if (DialogTarget._stress == _stress)
@@ -863,12 +864,14 @@ public class NPCBehaviour : MonoBehaviour
         int MaxCultureFactorEffect = 30;
 
         int cultureFactor = Mathf.Clamp(MuseumManager.instance.GetCurrentCultureLevel(), 0, MaxCultureFactorEffect);
-        float ToiletChance = Stress * 0.5f - cultureFactor;
+        float ToiletChance = 30 + (Stress * 0.5f) - cultureFactor;
         if (ToiletChance < 0)
             ToiletChance = 0;
+
         float skillFactor = 0; //skillden (-) bonus gelmesi lazim. 
 
         float change = Random.Range(0, 101);
+        Debug.Log("ToiletChance: " + ToiletChance + " / Current chance: " + change);
         if (change < ToiletChance)
         {
             SetCurrentAnimationState("MakeMess", 1);
@@ -886,13 +889,15 @@ public class NPCBehaviour : MonoBehaviour
     public void CreateMess()
     {
         GameObject npc_Mess;
-        if (Stress > 70)
+        int messChance = Random.Range(0,3);
+        if (messChance == 0)
             npc_Mess = Instantiate(Resources.Load<GameObject>("NPC/NPC_Poop"),transform.position,Quaternion.identity);
-        else if (Stress <= 70 && Stress > 40)
+        else if (messChance == 1)
             npc_Mess = Instantiate(Resources.Load<GameObject>("NPC/NPC_Gas"), transform.position, Quaternion.identity);
         else
             npc_Mess = Instantiate(Resources.Load<GameObject>("NPC/NPC_Pee"), transform.position, Quaternion.identity);
 
+        NpcManager.instance.AddMessIntoMessParent(npc_Mess.transform);
         IsBusy = false;
         Agent.isStopped = false;
         Agent.enabled = true;
