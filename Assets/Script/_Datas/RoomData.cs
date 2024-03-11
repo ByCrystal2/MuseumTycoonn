@@ -34,6 +34,7 @@ public class RoomData : MonoBehaviour
 
     List<NPCBehaviour> NPCsInTheRoom = new List<NPCBehaviour>();
     EditObjData MyStatue;
+    public Transform CenterPoint;
     private void Start()
     {
         if (CurrentShoppingType == ShoppingType.RealMoney)

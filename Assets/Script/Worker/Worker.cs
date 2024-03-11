@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 [System.Serializable]
 public abstract class Worker: ITaskAssignable
@@ -8,6 +9,7 @@ public abstract class Worker: ITaskAssignable
     public int ID;
     public string Name;
     public int Level;
+    public float Exp;
     public const int MaxLevel = 5;
     public float Speed;
     public float Energy;
@@ -17,7 +19,9 @@ public abstract class Worker: ITaskAssignable
     public List<int> IWorkRoomsIDs = new List<int>();
     public List<Task> MyTasks = new List<Task>();
     public WorkerType WorkerType;
-    public Worker(int _id,float _speed, float _energy, WorkerType workerType)
+    public WorkerBehaviour Behaviour;
+
+    public Worker(int _id,float _speed, float _energy, WorkerType workerType,float _xp, WorkerBehaviour _behaviour)
     {
         this.ID = _id;
         this.Speed = _speed;
@@ -28,7 +32,9 @@ public abstract class Worker: ITaskAssignable
         this.isMale = Random.Range(0, 2) == 1 ? true : false; // Gecici Kod.
         this.Name = "Kosippy Worker"; // Gecici Kod.
         this.Level = Random.Range(1, MaxLevel + 1); // Gecici Kod.
+        this.Exp = _xp;
         this.WorkerType = workerType;
+        this.Behaviour = _behaviour;
     }
 
     public abstract void AssignTask(Task task);
@@ -79,7 +85,8 @@ public interface IEnergyUsable
 }
 public interface IMoveable
 {
-    void Move(Vector3 direction);
+    Vector3 PatrolToRandomPoint(Vector3 originalPosition, float patrolRadius);
+    void Move(Vector3 direction, bool _hasTarget);
     void Rotate(Vector3 axis, float angle);
     float GetSpeed();
 }

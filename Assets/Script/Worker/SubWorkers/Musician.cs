@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class Musician : Worker, ISleepable, IMoveable
 {
-    public Musician(int _id, float _speed, float _energy, WorkerType workerType) : base(_id, _speed, _energy, workerType)
+    public Musician(int _id, float _speed, float _energy, WorkerType workerType, float _exp, WorkerBehaviour _behaviour) : base(_id, _speed, _energy, workerType, _exp, _behaviour)
     {
 
     }
@@ -34,7 +34,7 @@ public class Musician : Worker, ISleepable, IMoveable
         throw new System.NotImplementedException();
     }
 
-    public void Move(Vector3 direction)
+    public void Move(Vector3 direction, bool _hasTarget)
     {
         throw new System.NotImplementedException();
     }
@@ -45,6 +45,11 @@ public class Musician : Worker, ISleepable, IMoveable
     }
 
     public void Sleep()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Vector3 PatrolToRandomPoint(Vector3 originalPosition, float patrolRadius)
     {
         throw new System.NotImplementedException();
     }

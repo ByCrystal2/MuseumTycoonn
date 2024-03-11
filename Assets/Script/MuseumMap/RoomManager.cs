@@ -222,6 +222,18 @@ public partial class RoomManager : MonoBehaviour
             return false;
         }
     }
+
+    public List<RoomData> GetRoomWithIDs(List<int> _id)
+    {
+        List<RoomData> Rooms = new List<RoomData>();
+
+        foreach (var item in RoomDatas)
+            foreach (var ids in _id)
+                if (item.ID == ids)
+                    Rooms.Add(item);
+
+        return Rooms;
+    }
 }
 public partial class RoomManager // Room Bonus Controller
 {

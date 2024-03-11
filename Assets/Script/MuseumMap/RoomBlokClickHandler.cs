@@ -18,6 +18,7 @@ public class RoomBlokClickHandler : MonoBehaviour
             if (_col.gameObject.TryGetComponent(out NPCBehaviour _enteredNpc))
             {
                 Debug.Log("_enteredNpc.name => " + _enteredNpc.name.ToString());
+                _enteredNpc.CurrentVisitedRoom = MyParentRoomData;
                 RoomManager.instance.AddNpcInTheRoom(MyParentRoomData, _enteredNpc);
             }
         }

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2075676624525922070}
   - component: {fileID: 3215588230379677759}
   - component: {fileID: 707844994022531286}
+  - component: {fileID: -7803470822800896202}
   m_Layer: 0
   m_Name: NPC_Pee
   m_TagString: NPC_Mess
@@ -155,3 +156,15 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 12, y: 10, z: 12}
   m_Center: {x: 0, y: 5, z: 0}
+--- !u!114 &-7803470822800896202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2498247099710786426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7742c3893745c4498a4720268f225b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

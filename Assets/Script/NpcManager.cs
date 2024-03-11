@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Purchasing;
 
 public class NpcManager : MonoBehaviour
 {
@@ -74,6 +75,65 @@ public class NpcManager : MonoBehaviour
     public void SetMessCleaning(Transform _newMess)
     {
         _newMess.SetParent(NPCMessParent.GetChild(1));
+    }
+
+    public void DestroyMess(GameObject _newMess)
+    {
+        Destroy(_newMess);
+    }
+
+    public NpcMess GetNearestMess(Vector3 _currentHouseKeeperLocation, List<int> _myRooms)
+    {
+        List<RoomData> AllMessedRooms = new List<RoomData>();
+        int length = NPCMessParent.GetChild(0).childCount;
+        for (int i = 0; i < length; i++)
+        {
+            NpcMess messData = NPCMessParent.GetChild(0).GetChild(i).GetComponent<NpcMess>();
+            if (AllMessedRooms.Contains(messData.inRoom))
+                AllMessedRooms.Add(messData.inRoom);
+        }
+
+        List<RoomData> myRooms = RoomManager.instance.GetRoomWithIDs(_myRooms);
+
+        List<RoomData> MyMessedRooms = new List<RoomData>();
+        int allMessedCount = AllMessedRooms.Count;
+        int myRoomsCount = myRooms.Count;
+        for (int a = 0; a < allMessedCount; a++)
+            for (int b = 0; b < myRoomsCount; b++)
+                if (AllMessedRooms[a] == myRooms[b])
+                    MyMessedRooms.Add(myRooms[a]);
+
+        NpcMess NearestMess = null;
+        float nearest = 30;
+        int myMessedRoomsCount = MyMessedRooms.Count;
+        if (myMessedRoomsCount > 0)
+        {
+            nearest = 999999;
+            int roomCount = MyMessedRooms.Count;
+            for (int i = 0; i < roomCount; i++)
+            {
+                float currentDistance = Vector3.Distance(_currentHouseKeeperLocation, MyMessedRooms[i].CenterPoint.position);
+                if (currentDistance < nearest)
+                {
+                    nearest = currentDistance;
+                    NearestMess = NPCMessParent.GetChild(0).GetChild(i).GetComponent<NpcMess>();
+                }
+            }
+        }
+        else
+        {
+            int length2 = NPCMessParent.GetChild(0).childCount;
+            for (int i = 0; i < length2; i++)
+            {
+                float currentDistance = Vector3.Distance(_currentHouseKeeperLocation, NPCMessParent.GetChild(0).GetChild(i).position);
+                if (currentDistance < nearest)
+                {
+                    nearest = currentDistance;
+                    NearestMess = NPCMessParent.GetChild(0).GetChild(i).GetComponent<NpcMess>();
+                }
+            }
+        }
+        return NearestMess;
     }
 }
 

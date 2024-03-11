@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2890339319108574658}
   - component: {fileID: 6813582229906913163}
   - component: {fileID: 3748888223250287562}
+  - component: {fileID: 2918618251604769170}
   m_Layer: 0
   m_Name: NPC_Gas
   m_TagString: NPC_Mess
@@ -4702,3 +4703,15 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 0.2, z: 0.2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2918618251604769170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3095351648882764905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7742c3893745c4498a4720268f225b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -24,9 +24,12 @@ public class WorkerManager : MonoBehaviour
         }
         instance = this;
     }
+
     private void Start()
     {
+
     }
+
     public void BaseAllWorkerOptions()
     {
         int length = WorkersContent.childCount;
@@ -81,24 +84,24 @@ public class WorkerManager : MonoBehaviour
             switch (worker.workerType)
             {
                 case WorkerType.Security:
-                    worker.MyScript = new Security(worker.ID, worker.NpcCurrentSpeed, 100,worker.workerType);
-                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Level, worker.MyScript.IWorkRoomsIDs,worker.workerType);
+                    worker.MyScript = new Security(worker.ID, worker.NpcCurrentSpeed, 100,worker.workerType,0 , worker);
+                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs,worker.workerType);
                     break;
                 case WorkerType.Housekeeper:
-                    worker.MyScript = new Housekeeper(worker.ID,worker.NpcCurrentSpeed, 100, worker.workerType);
-                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Level, worker.MyScript.IWorkRoomsIDs, worker.workerType);
+                    worker.MyScript = new Housekeeper(worker.ID,worker.NpcCurrentSpeed, 100, worker.workerType,0 , worker);
+                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs, worker.workerType);
                     break;
                 case WorkerType.Musician:
-                    worker.MyScript = new Musician(worker.ID, worker.NpcCurrentSpeed, 100, worker.workerType);
-                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Level, worker.MyScript.IWorkRoomsIDs, worker.workerType);
+                    worker.MyScript = new Musician(worker.ID, worker.NpcCurrentSpeed, 100, worker.workerType, 0, worker);
+                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs, worker.workerType);
                     break;
                 case WorkerType.Receptionist:
-                    worker.MyScript = new Receptionist(worker.ID, worker.NpcCurrentSpeed, 100, worker.workerType);
-                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Level, worker.MyScript.IWorkRoomsIDs, worker.workerType);
+                    worker.MyScript = new Receptionist(worker.ID, worker.NpcCurrentSpeed, 100, worker.workerType, 0, worker);
+                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs, worker.workerType);
                     break;
                 case WorkerType.BrochureSeller:
-                    worker.MyScript = new BrochureSeller(worker.ID, worker.NpcCurrentSpeed, 100, worker.workerType);
-                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Level, worker.MyScript.IWorkRoomsIDs, worker.workerType);
+                    worker.MyScript = new BrochureSeller(worker.ID, worker.NpcCurrentSpeed, 100, worker.workerType, 0, worker);
+                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs, worker.workerType);
                     break;
                 default:
                     break;

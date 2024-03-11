@@ -21,6 +21,8 @@ public class NPCBehaviour : MonoBehaviour
     [SerializeField] private NPCBehaviour DialogTarget;
     [SerializeField] private NPCUI MyNPCUI;
 
+    public RoomData CurrentVisitedRoom;
+
     //UI
     [SerializeField] string MyName = "Ahmet Burak"; // Default olarak Ahmet Burak atýldý. Deðiþtirilecek.
     private RawImage myRawImage;
@@ -897,6 +899,7 @@ public class NPCBehaviour : MonoBehaviour
         else
             npc_Mess = Instantiate(Resources.Load<GameObject>("NPC/NPC_Pee"), transform.position, Quaternion.identity);
 
+        npc_Mess.GetComponent<NpcMess>().SetCurrentRoom(CurrentVisitedRoom);
         NpcManager.instance.AddMessIntoMessParent(npc_Mess.transform);
         IsBusy = false;
         Agent.isStopped = false;
