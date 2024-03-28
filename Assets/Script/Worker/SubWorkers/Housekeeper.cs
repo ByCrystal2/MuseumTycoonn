@@ -14,7 +14,9 @@ public class Housekeeper : Worker, ISleepable, IMoveable
     public Task CurrentActiveTask;
     public Vector3 CurrentTarget;
     public NpcMess MyCurrentMessTask;
-    public Coroutine currentActiveCoroutine;
+    private bool NpcCanSleep = true;
+    private float BaseSpeed = 3.5f;
+
     public Housekeeper(int _id, float _speed, float _energy, WorkerType workerType, float _exp, WorkerBehaviour _behaviour) : base(_id, _speed, _energy, workerType, _exp, _behaviour)
     {
 
@@ -38,14 +40,12 @@ public class Housekeeper : Worker, ISleepable, IMoveable
 
     public bool CanSleep()
     {
-        throw new System.NotImplementedException();
+        return NpcCanSleep;
     }
-
-    
 
     public float GetSpeed()
     {
-        throw new System.NotImplementedException();
+        return BaseSpeed;
     }
 
     public void Move(Vector3 direction, bool _hasTarget)
@@ -54,6 +54,7 @@ public class Housekeeper : Worker, ISleepable, IMoveable
         if (targetDistance > 1)
         {
             Behaviour.Anim.SetInteger("Walk", _hasTarget ? 102 : 1);
+            Behaviour.Agent.speed = _hasTarget ? BaseSpeed : BaseSpeed * 0.5f;
             Behaviour.Agent.SetDestination(direction);
         }
         else
@@ -76,6 +77,7 @@ public class Housekeeper : Worker, ISleepable, IMoveable
                 cleanParticle.Stop();
                 cleanParticle.Play();
                 Behaviour.CreateEndTask(CleanLength);
+                Behaviour.Weapon.SetActive(true);
             }
         }
 
@@ -84,16 +86,37 @@ public class Housekeeper : Worker, ISleepable, IMoveable
 
     public Vector3 PatrolToRandomPoint(Vector3 originalPosition, float patrolRadius)
     {
-        // Generate a random point within the patrol radius
-        Vector3 randomPoint = originalPosition + UnityEngine.Random.insideUnitSphere * patrolRadius;
+        int stuckTimer = 500;
+        Vector3 target = Vector3.zero;
+        float patrolAreaMultiplier = 1;
+        do
+        {
+            stuckTimer--;
+            if (stuckTimer <= 0)
+                break;
 
-        Debug.Log("Creating random point: " + randomPoint);
-        // Ensure the point is within the NavMesh bounds
-        NavMeshHit hit;
-        NavMesh.SamplePosition(randomPoint, out hit, patrolRadius, NavMesh.AllAreas);
-        Debug.Log("Random point sampled: " + hit.position);
+            Vector3 randomPoint = originalPosition + UnityEngine.Random.insideUnitSphere * patrolRadius * patrolAreaMultiplier;
+
+            //Debug.Log("Creating random point: " + randomPoint);
+            // Ensure the point is within the NavMesh bounds
+            NavMeshHit hit;
+            if(NavMesh.SamplePosition(randomPoint, out hit, patrolRadius, NavMesh.AllAreas))
+            {
+                Debug.Log("Random point sampled: " + hit.position);
+                if (Behaviour.IsPositionAccessible(hit.position))
+                    target = hit.position;
+            }
+            else
+            {
+                target = Vector3.zero;
+                patrolAreaMultiplier++;
+            }
+        } while (target == Vector3.zero || target == Vector3.positiveInfinity || target == Vector3.negativeInfinity);
+
+        // Generate a random point within the patrol radius
+        
         // Set the destination for the agent
-        return hit.position;
+        return target;
     }
 
     public void EndClean()
@@ -105,6 +128,7 @@ public class Housekeeper : Worker, ISleepable, IMoveable
             NpcManager.instance.DestroyMess(MyCurrentMessTask.gameObject);
             Behaviour.Anim.SetBool("Clean", false);
             Behaviour.CreateNewTargetDelay(UnityEngine.Random.Range(1.00f, 2.50f));
+            Behaviour.Weapon.SetActive(false);
         }
     }
 

@@ -24,6 +24,8 @@ public class NpcManager : MonoBehaviour
     public List<Sprite> StressEmojis;
 
     [SerializeField] private Transform NPCMessParent;
+    [SerializeField] private List<NPCBehaviour> GuiltyNpcs = new List<NPCBehaviour>();
+    [SerializeField] private List<NPCBehaviour> TargetGuiltyNpcs = new List<NPCBehaviour>();
 
     private void Awake()
     {
@@ -38,7 +40,7 @@ public class NpcManager : MonoBehaviour
         WorkerManager.instance.BaseAllWorkerOptions();
         GameManager.instance.LoadWorkers();
         WorkerManager.instance.CreateWorkersToMarket();
-        GameManager.instance.LoadPurchasedItems();     
+        GameManager.instance.LoadPurchasedItems();
 
         //Gaming Services Activation
         RoomManager.instance.AddRooms(); // in app baglantisi kurulmadan once odalar yuklendi.
@@ -60,13 +62,14 @@ public class NpcManager : MonoBehaviour
             {
                 SkillTreeManager.instance.AddSkillObject(skillsContentTransform.GetChild(i).gameObject);
 
-            }            
-        }        
+            }
+        }
         GameManager.instance.LoadSkills();
-        
+
         RewardManager.instance.CheckRewards();// Burada gecen sureleri kontrol et ve odul verme durumunu degerlendir.
     }
 
+    #region Npc Mess
     public void AddMessIntoMessParent(Transform _newMess)
     {
         _newMess.SetParent(NPCMessParent.GetChild(0));
@@ -135,6 +138,82 @@ public class NpcManager : MonoBehaviour
         }
         return NearestMess;
     }
+    #endregion
+
+    #region Npc Guilty
+
+    public void AddGuiltyNPC(NPCBehaviour _guiltyNPC)
+    {
+        if (!GuiltyNpcs.Contains(_guiltyNPC))
+            GuiltyNpcs.Add(_guiltyNPC);
+    }
+
+    public void RemoveGuiltyNPC(NPCBehaviour _guiltyNPC)
+    {
+        if (GuiltyNpcs.Contains(_guiltyNPC))
+            GuiltyNpcs.Remove(_guiltyNPC);
+
+        if (TargetGuiltyNpcs.Contains(_guiltyNPC))
+            TargetGuiltyNpcs.Remove(_guiltyNPC);
+    }
+
+    public void SetGuiltyNPCAsTarget(NPCBehaviour _guiltyNPC)
+    {
+        if (_guiltyNPC != null)
+        {
+            if (GuiltyNpcs.Contains(_guiltyNPC))
+                GuiltyNpcs.Remove(_guiltyNPC);
+
+            if (!TargetGuiltyNpcs.Contains(_guiltyNPC))
+                TargetGuiltyNpcs.Add(_guiltyNPC);
+        }
+    }
+
+    public NPCBehaviour GetNearestGuiltyNPC(Vector3 _currentSecurityLocation, List<int> _myRooms)
+    {
+        List<RoomData> myRooms = RoomManager.instance.GetRoomWithIDs(_myRooms);
+
+        List<NPCBehaviour> firstPrioritNPCs = new List<NPCBehaviour>();
+        foreach (var npc in GuiltyNpcs)
+            foreach (var room in myRooms)
+                if (npc.CurrentVisitedRoom.ID == room.ID)
+                    firstPrioritNPCs.Add(npc);
+
+        NPCBehaviour NearestNPC = null;
+        float nearest = 30;
+        int myFirstPriorityRoomsCount = firstPrioritNPCs.Count;
+        if (myFirstPriorityRoomsCount > 0)
+        {
+            nearest = 999999;
+            for (int i = 0; i < myFirstPriorityRoomsCount; i++)
+            {
+                float currentDistance = Vector3.Distance(_currentSecurityLocation, firstPrioritNPCs[i].transform.position);
+                if (currentDistance < nearest)
+                {
+                    nearest = currentDistance;
+                    NearestNPC = firstPrioritNPCs[i];
+                }
+            }
+        }
+        else
+        {
+            int length2 = GuiltyNpcs.Count;
+            for (int i = 0; i < length2; i++)
+            {
+                float currentDistance = Vector3.Distance(_currentSecurityLocation, GuiltyNpcs[i].transform.position);
+                if (currentDistance < nearest)
+                {
+                    nearest = currentDistance;
+                    NearestNPC = GuiltyNpcs[i];
+                }
+            }
+        }
+
+        SetGuiltyNPCAsTarget(NearestNPC);
+        return NearestNPC;
+    }
+
+    #endregion
 }
 
 public enum NpcEmotionEffect

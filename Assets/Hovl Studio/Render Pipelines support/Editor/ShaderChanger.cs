@@ -29,8 +29,8 @@ namespace HovlStudio
         public static void ShowWindow()
         {
             RPChanger window = (RPChanger)EditorWindow.GetWindow(typeof(RPChanger));
-            window.minSize = new Vector2(250, 120);
-            window.maxSize = new Vector2(250, 120);
+            window.minSize = new Vector2(250, 140);
+            window.maxSize = new Vector2(250, 140);
         }
 
 
@@ -45,6 +45,11 @@ namespace HovlStudio
             if (GUILayout.Button("Universal RP"))
             {
                 pipeline = 1;
+                ImportPipelinePackage();
+            }
+            if (GUILayout.Button("Universal RP 2D or orthographic camera"))
+            {
+                pipeline = 3;
                 ImportPipelinePackage();
             }
             GUILayout.Label("Don't forget to enable Depth and Opaque\ncheck-buttons in your URP asset seeting.", GUILayout.ExpandWidth(true));
@@ -191,6 +196,14 @@ namespace HovlStudio
                     }
                     AssetDatabase.importPackageCompleted += OnImportPackageCompleted;
                     break;
+                case 3:
+                    string[] unityPackagesURP2D = AssetDatabase.FindAssets("Solves transparent problem Unity 2020+ URPHS");
+                    foreach (var guid in unityPackagesURP2D)
+                    {
+                        AssetDatabase.ImportPackage(AssetDatabase.GUIDToAssetPath(guid), false);
+                    }
+                    AssetDatabase.importPackageCompleted += OnImportPackageCompleted;
+                    break;
                 default:
                     Debug.Log("You didn't choose pipeline");
                     break;
@@ -208,6 +221,9 @@ namespace HovlStudio
                     break;
                 case 2:
                     ChangeToHDRP();
+                    break;
+                case 3:
+                    ChangeToURP();
                     break;
                 default:
                     Debug.Log("You didn't choose pipeline");

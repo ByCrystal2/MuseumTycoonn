@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Timeline;
 using UnityEngine.UI;
 
 public class NPCBehaviour : MonoBehaviour
@@ -20,6 +21,7 @@ public class NPCBehaviour : MonoBehaviour
     [SerializeField] private Vector3 OutsidePosition;
     [SerializeField] private NPCBehaviour DialogTarget;
     [SerializeField] private NPCUI MyNPCUI;
+    [SerializeField] private Transform BeatenEffectParent;
 
     public RoomData CurrentVisitedRoom;
 
@@ -133,6 +135,9 @@ public class NPCBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (IsBusy)
+            return;
+
         if (TargetPosition == null)
         {
             CreateTarget();
@@ -514,14 +519,16 @@ public class NPCBehaviour : MonoBehaviour
         
     }
 
-    void OnExitWayMuseum()
+    void OnExitWayMuseum(float _multiplier = 1)
     {
+        OnEndGuilty();
+        NpcManager.instance.RemoveGuiltyNPC(this);
         CurrentTarget = NpcTargets.Outside;
         CurrentState = NPCState.Move;
         Happiness = 100;
         Stress = 0;
         NpcWalkType = WalkEnum.NormalWalk;
-        NpcCurrentSpeed = NpcSpeed + NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f); //3.3
+        NpcCurrentSpeed = (NpcSpeed + NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f) * _multiplier); //3.3
         Agent.speed = NpcCurrentSpeed;
         TargetPosition = NpcManager.instance.GidisListe[Random.Range(0, NpcManager.instance.GidisListe.Count)];
 
@@ -531,7 +538,7 @@ public class NPCBehaviour : MonoBehaviour
         if (NavMesh.SamplePosition(OutsidePosition, out hit, 10, NavMesh.AllAreas))
             OutsidePosition = hit.position;
 
-        SetCurrentAnimationState("Walk", (int)NpcWalkType, "Dialog", 0);
+        SetCurrentAnimationState("Walk", _multiplier == 1 ? (int)NpcWalkType : 102, "Dialog", 0);
         MuseumManager.instance.OnNpcExitedMuseum(this);
     }
 
@@ -697,6 +704,8 @@ public class NPCBehaviour : MonoBehaviour
                 yield return new WaitForEndOfFrame();
             }
 
+            NpcManager.instance.AddGuiltyNPC(this);
+            OnBeginGuilty();
             SetCurrentAnimationState("Dialog", -1);
             while (anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "AfterKick")
             {
@@ -750,6 +759,7 @@ public class NPCBehaviour : MonoBehaviour
 
             Stress += 50;
             int x = Random.Range(4, 11);
+            PlayBeatenEffect(true);
             yield return new WaitForSeconds(x);
             SetCurrentAnimationState("Dialog", -1);
 
@@ -776,11 +786,98 @@ public class NPCBehaviour : MonoBehaviour
             SetCurrentAnimationState("Dialog", 0);
             npcDialogState = NpcDialogState.None;
             IsBusy = false;
+            PlayBeatenEffect(false);
             if (OnNPCInvestigatedArt())
                 CreateTarget();
             else
                 OnExitWayMuseum();
         }
+    }
+
+    public void PlayBeatenEffect(bool _isPlay)
+    {
+        ParticleSystem[] cleanParticle = BeatenEffectParent.GetComponentsInChildren<ParticleSystem>();
+        foreach (var item in cleanParticle)
+        {
+            if (_isPlay)
+                item.Play();
+            else
+                item.Stop();
+        } 
+    }
+
+    public void OnBeginGuilty()
+    {
+        MyNPCUI.SetNPCasGuilty(true);
+    }
+
+    public void OnEndGuilty()
+    {
+        MyNPCUI.SetNPCasGuilty(false);
+    }
+
+    public void Beaten()
+    {
+        StopAllCoroutines();
+        StartCoroutine(BeatenNumerator());
+        OnEndGuilty();
+    }
+
+    public IEnumerator BeatenNumerator()
+    {
+        Agent.isStopped = true;
+        Agent.enabled = false;
+        IsBusy = true;
+        yield return new WaitForSeconds(0.6f);
+
+        SetCurrentAnimationState("Dialog", -2, "Walk", 0);
+        while (anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "FallAnimation")
+        {
+            Debug.Log("Anim.GetCurrentAnimatorClipInfo(0)[0].clip.name: " + anim.GetCurrentAnimatorClipInfo(0)[0].clip.name);
+            yield return new WaitForEndOfFrame();
+        }
+
+        float timer = anim.GetCurrentAnimatorClipInfo(0)[0].clip.length;
+        //AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcByeBye, CurrentAudioSource);
+        while (timer > 0)
+        {
+            if (DialogTarget != null)
+                LookAtOptimal(DialogTarget.transform);
+            timer -= Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+
+        Stress += 50;
+        int x = Random.Range(4, 11);
+        PlayBeatenEffect(true);
+        yield return new WaitForSeconds(x);
+        SetCurrentAnimationState("Dialog", -1);
+
+        while (anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "StandUp")
+        {
+            Debug.Log("Anim.GetCurrentAnimatorClipInfo(0)[0].clip.name: " + anim.GetCurrentAnimatorClipInfo(0)[0].clip.name);
+            yield return new WaitForEndOfFrame();
+        }
+
+        timer = anim.GetCurrentAnimatorClipInfo(0)[0].clip.length;
+        //AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcByeBye, CurrentAudioSource);
+        while (timer > 0)
+        {
+            if (DialogTarget != null)
+                LookAtOptimal(DialogTarget.transform);
+            timer -= Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+
+        Agent.isStopped = false;
+        Agent.enabled = true;
+        DialogTarget = null;
+        CurrentInvestigate = InvestigateState.Look;
+        SetCurrentAnimationState("Dialog", 0);
+        npcDialogState = NpcDialogState.None;
+        IsBusy = false;
+        PlayBeatenEffect(false);
+        OnExitWayMuseum(2f);
     }
 
     IEnumerator FarewellDelay()
@@ -840,6 +937,16 @@ public class NPCBehaviour : MonoBehaviour
             myWorkCamera.gameObject.SetActive(true);
         else 
             myWorkCamera.gameObject.SetActive(false);
+    }
+
+    public void IncreaseHappiness(int _amount)
+    {
+        Happiness += _amount;
+        Stress -= _amount;
+
+        MyNPCUI.PlayEmotionEffect(NpcEmotionEffect.Happiness);
+
+        OnHappinessChange();
     }
 
     private void OnMouseDown()

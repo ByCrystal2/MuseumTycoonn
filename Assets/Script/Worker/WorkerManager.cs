@@ -15,6 +15,15 @@ public class WorkerManager : MonoBehaviour
 
     [SerializeField] Transform WorkersContent;
     public static WorkerManager instance { get; set; }
+
+    private List<int> RequiredExpsPerLevel = new List<int>() { 
+        0, 110, 145, 180, 235, //1Star 5LV
+        470, 561, 643, 756, 904, //2Star 10lv
+        1808, 2104, 2208, 2315, 2531, //3Star 15lv
+        5062, 5433, 5761, 6062, 6437, //4Star 20lv
+        12874, 14643, 17001, 19362, 24099, //5Star 25lv
+    }; 
+
     private void Awake()
     {
         if (instance)
@@ -23,11 +32,6 @@ public class WorkerManager : MonoBehaviour
             return;
         }
         instance = this;
-    }
-
-    private void Start()
-    {
-
     }
 
     public void BaseAllWorkerOptions()
@@ -42,8 +46,35 @@ public class WorkerManager : MonoBehaviour
             WorkersContent.GetChild(i).gameObject.SetActive(false);
         }
         AddAllWorkersSubWork();
-       
     }
+
+    public int CalculateCurrentLevel(float _myExp)
+    {
+        int level = 1;
+        int length = RequiredExpsPerLevel.Count;
+        for (int i = length - 1; i >= 0; i--)
+            if (_myExp >= RequiredExpsPerLevel[i])
+                level = i + 1;
+
+        return level;
+    }
+
+    public bool CanEarnExp(float _myExp, int _rank)
+    {
+        int level = CalculateCurrentLevel(_myExp);
+        bool can = true;
+        if (_rank == 1 && level >= 5)
+            can = false;
+        if (_rank == 2 && level >= 10)
+            can = false;
+        if (_rank == 3 && level >= 15)
+            can = false;
+        if (_rank == 4 && level >= 20)
+            can = false;
+
+        return can;
+    }
+
     public void CreateWorkersToMarket()
     {
         int length = WorkersInInventory.Count;

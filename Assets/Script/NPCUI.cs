@@ -5,12 +5,22 @@ using UnityEngine.UI;
 
 public class NPCUI : MonoBehaviour
 {
+    public Image GuiltyImage;
     public Image StressBackgroundImage;
     public Image StressFillerImage;
     public Transform EffectsParent;
 
+    public bool isGuiltyNow;
     private float _currentStress = 20;
     Coroutine UpdateVisualCoroutine;
+
+    public void SetNPCasGuilty(bool _isGuilty)
+    {
+        isGuiltyNow = _isGuilty;
+        GuiltyImage.gameObject.SetActive(_isGuilty);
+        StressBackgroundImage.gameObject.SetActive(!_isGuilty);
+        StressFillerImage.gameObject.SetActive(!_isGuilty);
+    }
 
     public void UpdateStressBar(float _targetStress)
     {
