@@ -184,8 +184,18 @@ public class UIController : MonoBehaviour
         SetSelectedPicture(0);
         //pnlPicturesMenu.SetActive(active);
     }
+    public bool IsPointerOverUIObject()
+    {
+        if (Input.touchCount > 0)
+        {
+           Touch touch = Input.GetTouch(0);
+           return touch.phase == TouchPhase.Began && !EventSystem.current.IsPointerOverGameObject(touch.fingerId)?false:true;
+            
+        }
+        else return false;
+    }
 
-    public string GetDropDownSelectedPainter()
+public string GetDropDownSelectedPainter()
     {
         TMP_Dropdown dropdown = GameObject.FindObjectOfType<TMP_Dropdown>();
         int selectedOptionIndex = dropdown.value;

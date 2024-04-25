@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.EventSystems;
 using UnityEngine.Timeline;
 using UnityEngine.UI;
 
@@ -948,10 +949,13 @@ public class NPCBehaviour : MonoBehaviour
 
         OnHappinessChange();
     }
+    
 
     private void OnMouseDown()
     {
-        Debug.Log("NPC'ye tiklandi/dokunuldu.");
+        if (EventSystem.current.IsPointerOverGameObject()&&UIController.instance.IsPointerOverUIObject())
+            return;
+        Debug.Log("NPC'ye tiklandi/dokunuldu.");    
         NpcManager.instance.CurrentNPC = this;
         UIController.instance.NpcInformationPanel.SetActive(true);
         UIController.instance.SetNPCInfoPanelUIs(MyName, Happiness, Stress, Toilet, Education, LikedColors, LikedArtist);

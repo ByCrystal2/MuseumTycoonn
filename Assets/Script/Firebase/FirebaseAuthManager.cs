@@ -23,75 +23,76 @@ public class FirebaseAuthManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
     void Start()
-    {        
-        try
-        {
-            PlayGamesPlatform.Instance.Authenticate(status =>
-            {
+    {
+        CreateNewLoading();
+        //try
+        //{
+        //    PlayGamesPlatform.Instance.Authenticate(status =>
+        //    {
 
-                if (status == SignInStatus.Success)
-                {
-                    try
-                    {
-                        PlayGamesPlatform.Instance.RequestServerSideAccess(true, code =>
-                        {
-                            FirebaseAuth auth = FirebaseAuth.DefaultInstance;
+        //        if (status == SignInStatus.Success)
+        //        {
+        //            try
+        //            {
+        //                PlayGamesPlatform.Instance.RequestServerSideAccess(true, code =>
+        //                {
+        //                    FirebaseAuth auth = FirebaseAuth.DefaultInstance;
 
-                            Credential credential = PlayGamesAuthProvider.GetCredential(code);
+        //                    Credential credential = PlayGamesAuthProvider.GetCredential(code);
 
-                            StartCoroutine(AuthGet());
+        //                    StartCoroutine(AuthGet());
 
-                            IEnumerator AuthGet()
-                            {
-                                System.Threading.Tasks.Task<FirebaseUser> task = auth.SignInWithCredentialAsync(credential);
+        //                    IEnumerator AuthGet()
+        //                    {
+        //                        System.Threading.Tasks.Task<FirebaseUser> task = auth.SignInWithCredentialAsync(credential);
 
-                                while (task.IsCompleted)
-                                {
-                                    yield return null;
-                                }
+        //                        while (task.IsCompleted)
+        //                        {
+        //                            yield return null;
+        //                        }
 
-                                if (task.IsCanceled)
-                                {
-                                    //Cancel
-                                    textMeshPro.text += "Auth Cancelled";
-                                }
-                                else if (task.IsFaulted)
-                                {
-                                    //task.exeption
-                                    textMeshPro.text += "Fauled => " + task.Exception.ToString();
-                                }
-                                else
-                                {
-                                    FirebaseUser newUser = task.Result;
-                                    textMeshPro.text += newUser.ToString();
-                                    CreateNewLoading();
-                                }
-                            }
-                        });
-                    }
-                    catch (System.Exception e)
-                    {
+        //                        if (task.IsCanceled)
+        //                        {
+        //                            //Cancel
+        //                            textMeshPro.text += "Auth Cancelled";
+        //                        }
+        //                        else if (task.IsFaulted)
+        //                        {
+        //                            //task.exeption
+        //                            textMeshPro.text += "Fauled => " + task.Exception.ToString();
+        //                        }
+        //                        else
+        //                        {
+        //                            FirebaseUser newUser = task.Result;
+        //                            textMeshPro.text += newUser.ToString();
+        //                            CreateNewLoading();
+        //                        }
+        //                    }
+        //                });
+        //            }
+        //            catch (System.Exception e)
+        //            {
 
-                        textMeshPro.text += "Exception => " + e.Message;
-                    }
+        //                textMeshPro.text += "Exception => " + e.Message;
+        //            }
                     
 
-                }
-                else
-                {
-                    textMeshPro.text = "Auth Failed!";
+        //        }
+        //        else
+        //        {
+        //            textMeshPro.text = "Auth Failed!";
 
-                    // <Testlerden sonra silineccek kodlar>
-                    CreateNewLoading();
-                    // </Testlerden sonra silineccek kodlar>
-                }
-            });
-        }
-        catch (System.Exception e)
-        {
-            textMeshPro.text += e.Message;
-            throw;
-        }
+        //            // <Testlerden sonra silineccek kodlar>
+        //            CreateNewLoading();
+        //            // </Testlerden sonra silineccek kodlar>
+        //        }
+        //    });
+        //}
+        //catch (System.Exception e)
+        //{
+        //    textMeshPro.text += e.Message;
+        //    throw;
+        //}
     }
 
     public void CreateNewLoading()
