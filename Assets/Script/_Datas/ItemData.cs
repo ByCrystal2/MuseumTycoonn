@@ -33,7 +33,7 @@ public struct ItemData
         Description = _description;
         RequiredMoney = _requiredMoney;
         Amount = _amount;
-        Debug.Log("texture id for item creating: " + _textureID);
+        //Debug.Log("texture id for item creating: " + _textureID);
         if (_itemType == ItemType.Table)
             ImageSprite = CatchTheColors.instance.TextureToSprite(MuseumManager.instance.GetPictureElementData(_textureID).texture);
         else

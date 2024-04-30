@@ -164,6 +164,7 @@ public class NPCBehaviour : MonoBehaviour
             SetCurrentAnimationState("Walk", 0);
             if (CurrentInvestigate == InvestigateState.Dialog)
             {
+                Debug.Log("end Dialog");
                 if (IdleTimer < Time.time)
                 {
                     Debug.Log("Dialog end with npc: " + name + " /dialogTarget: " + DialogTarget.name);
@@ -563,7 +564,7 @@ public class NPCBehaviour : MonoBehaviour
     }
 
     public void OnEndInvestigatePicture()
-    {
+    { // Tabloya bakma animasyonu (Looking) bitisinde cagirilan method.
         Debug.Log("Looking end.");
         SetCurrentAnimationState("Look", 0);
         if (DialogTarget != null)

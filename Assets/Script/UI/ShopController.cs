@@ -277,7 +277,7 @@ public class ShopController : MonoBehaviour
         else if (_item.CurrentShoppingType == ShoppingType.RealMoney)
         {
             _item.IsPurchased = true;
-            BuyingConsumables.instance.BuyItemFromStore(_item);
+            //BuyingConsumables.instance.BuyItemFromStore(_item);
             if (_item.CurrentItemType == ItemType.Table)
             {
                 ItemManager.instance.ShopItemDatas.Remove(_item);

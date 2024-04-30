@@ -37,14 +37,15 @@ public class NpcManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(this);
         GameManager.instance.LoadRooms();
+        RoomManager.instance.AddRooms(); // in app baglantisi kurulmadan once odalar yuklendi.
         WorkerManager.instance.BaseAllWorkerOptions();
         GameManager.instance.LoadWorkers();
         WorkerManager.instance.CreateWorkersToMarket();
         GameManager.instance.LoadPurchasedItems();
-
+        GameManager.instance.LoadDailyRewardItems();
         //Gaming Services Activation
-        RoomManager.instance.AddRooms(); // in app baglantisi kurulmadan once odalar yuklendi.
-        BuyingConsumables.instance.InitializePurchasing();
+
+        //BuyingConsumables.instance.InitializePurchasing();
         UnityAdsManager.instance.Initialize();
         UnityAdsManager.instance.CreateBannerView();
         UnityAdsManager.instance.LoadBannerAd();

@@ -24,6 +24,10 @@ public class DailyRewardsPanelController : MonoBehaviour
     {
         InvokeRepeating(nameof(StartSetTimeTextIE), 0f, 1f);
     }
+    private void Update()
+    {
+        if (RewardManager.instance.CheckTheInRewardControl()) RewardManager.instance.CheckRewards();
+    }
     public void StartSetTimeTextIE()
     {
             StartCoroutine(SetTimeText()); // DailyRewards paneli aktifse calisacak kod. (if kontrolu ona gore saglanmali.)
@@ -121,6 +125,6 @@ public class DailyRewardsPanelController : MonoBehaviour
             newInventoryItem.painterData = new PainterData(_currentRewardItem.ID, _currentRewardItem.Description, _currentRewardItem.Name, _currentRewardItem.StarCount);
             MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
         }
-
+        GameManager.instance.Save();
     }
 }

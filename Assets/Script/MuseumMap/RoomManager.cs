@@ -110,7 +110,7 @@ public partial class RoomManager : MonoBehaviour
         else if (purchasedRoom.CurrentShoppingType == ShoppingType.RealMoney)
         {
             // Gercek Parayla satin alinan oda islemleri...
-            BuyingConsumables.instance.BuyItemFromStore(purchasedRoom);
+            //BuyingConsumables.instance.BuyItemFromStore(purchasedRoom);
         }
     }
 

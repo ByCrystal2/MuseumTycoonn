@@ -47,8 +47,8 @@ public class WorkerBehaviour : MonoBehaviour
 
     private void OnEnable()
     {
-        if (Weapon != null)
-            Weapon.SetActive(false);
+        //if (Weapon != null)
+        //    Weapon.SetActive(false);
         
         if (MyScript is Housekeeper hk)
         {
@@ -70,6 +70,8 @@ public class WorkerBehaviour : MonoBehaviour
         }
         else if (MyScript is Security sc)
         {
+            Debug.Log("MyDatas.WorkRoomsIDs => " + " [" + name + "] "+ MyDatas.WorkRoomsIDs.Count);
+            Debug.Log("All room count => " + RoomManager.instance.RoomDatas.Count);
             List<RoomData> myRooms = RoomManager.instance.GetRoomWithIDs(MyDatas.WorkRoomsIDs);
             if (myRooms.Count > 0)
             {

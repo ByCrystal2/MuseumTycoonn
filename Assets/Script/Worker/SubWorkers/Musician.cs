@@ -73,7 +73,7 @@ public class Musician : Worker, ISleepable, IMoveable
             Behaviour.CreateEndTask(15);
         }
 
-        Debug.Log("Moving to current Target: " + CurrentTarget);
+        //Debug.Log("Moving to current Target: " + CurrentTarget);
     }
 
     public Vector3 PatrolToRandomPoint(Vector3 originalPosition, float patrolRadius)
@@ -88,11 +88,11 @@ public class Musician : Worker, ISleepable, IMoveable
 
             Vector3 randomPoint = originalPosition + UnityEngine.Random.insideUnitSphere * patrolRadius;
 
-            Debug.Log("Creating random point: " + randomPoint);
+            //Debug.Log("Creating random point: " + randomPoint);
             // Ensure the point is within the NavMesh bounds
             NavMeshHit hit;
             NavMesh.SamplePosition(randomPoint, out hit, patrolRadius, NavMesh.AllAreas);
-            Debug.Log("Random point sampled: " + hit.position);
+            //Debug.Log("Random point sampled: " + hit.position);
 
             if (Behaviour.IsPositionAccessible(hit.position))
                 target = hit.position;

@@ -18,6 +18,8 @@ public class WorkerHiringButton : MonoBehaviour, IPointerClickHandler
                 WorkerManager.instance.AddWorkerToInventory(WorkerManager.instance.GetAllWorkers().Where(x => x.ID == MyWorkerID).SingleOrDefault());
                 Destroy(GetComponentInParent<WorkerInfoUIs>().gameObject);
                 UIController.instance.GetDesiredWorkersInContent(WorkerManager.instance.GetWorkersInInventory().Where(x => x.ID == MyWorkerID).SingleOrDefault().workerType);
+
+                GameManager.instance.Save();
                 break;
             }
         }

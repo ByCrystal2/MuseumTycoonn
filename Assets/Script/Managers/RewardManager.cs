@@ -25,7 +25,7 @@ public class RewardManager : MonoBehaviour
     }
     private void Update()
     {
-        if (CheckTheInRewardControl()) CheckRewards();
+        
     }
     public void CheckRewards()
     {
@@ -56,7 +56,7 @@ public class RewardManager : MonoBehaviour
             lastWeeklyRewardTime = currentTime; // Son alýnan haftalýk ödül zamanýný güncelle
         }
     }
-    private bool CheckTheInRewardControl()
+    public bool CheckTheInRewardControl()
     {
         DateTime currentTime = TimeManager.instance.CurrentDateTime;
         if (currentTime >= lastDailyRewardTime + dailyRewardInterval || currentTime >= lastWeeklyRewardTime + weeklyRewardInterval)

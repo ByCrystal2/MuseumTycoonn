@@ -32,7 +32,7 @@ public class WorkerInventoryChooseRoomsButton : MonoBehaviour,IPointerClickHandl
                             if (WorkerManager.instance.GetAllWorkers().Where(x => x.ID == room.MyRoomWorkersIDs[i]).SingleOrDefault().workerType == WorkerManager.instance.GetAllWorkers().Where(x => x.ID == MyWorker.ID).SingleOrDefault().workerType)
                             {
                                 Debug.Log("Bu turde bir isci, bu odaya baglý. Oda Kodu => " + room.availableRoomCell.CellLetter + "" + room.availableRoomCell.CellNumber);
-                                UIController.instance.AddDesiredChooseRoomsInContent(MyWorker.ID, Color.red, room.availableRoomCell.CellLetter + "" + room.availableRoomCell.CellNumber, false);
+                                UIController.instance.AddDesiredChooseRoomsInContent(room.ID,MyWorker.ID, Color.red, room.availableRoomCell.CellLetter + "" + room.availableRoomCell.CellNumber, false);
                                 break;
                             }
 
@@ -48,21 +48,21 @@ public class WorkerInventoryChooseRoomsButton : MonoBehaviour,IPointerClickHandl
                         if (WorkerManager.instance.GetAllWorkers().Where(x => x.ID == room.MyRoomWorkersIDs[i]).SingleOrDefault().workerType == WorkerManager.instance.GetAllWorkers().Where(x => x.ID == MyWorker.ID).SingleOrDefault().workerType)
                         {
                             Debug.Log("Bu turde bir isci, bu odaya baglý. Oda Kodu => " + room.availableRoomCell.CellLetter + "" + room.availableRoomCell.CellNumber);
-                            UIController.instance.AddDesiredChooseRoomsInContent(MyWorker.ID, Color.red, room.availableRoomCell.CellLetter + "" + room.availableRoomCell.CellNumber, false);
+                            UIController.instance.AddDesiredChooseRoomsInContent(room.ID, MyWorker.ID, Color.red, room.availableRoomCell.CellLetter + "" + room.availableRoomCell.CellNumber, false);
                             isOtherWorkerType = true;
                             break;
                         }
                     }
                     if (!isOtherWorkerType)
                     {
-                        UIController.instance.AddDesiredChooseRoomsInContent(MyWorker.ID, Color.green, room.availableRoomCell.CellLetter + "" + room.availableRoomCell.CellNumber, true);
+                        UIController.instance.AddDesiredChooseRoomsInContent(room.ID, MyWorker.ID, Color.green, room.availableRoomCell.CellLetter + "" + room.availableRoomCell.CellNumber, true);
                     }
                 }
             }
             else
             {
                 Debug.Log("Oda satin alinmamis. Oda Kodu => " + room.availableRoomCell.CellLetter + "" + room.availableRoomCell.CellNumber);
-                UIController.instance.AddDesiredChooseRoomsInContent(MyWorker.ID, Color.black, room.availableRoomCell.CellLetter + "" + room.availableRoomCell.CellNumber, false);
+                UIController.instance.AddDesiredChooseRoomsInContent(room.ID, MyWorker.ID, Color.black, room.availableRoomCell.CellLetter + "" + room.availableRoomCell.CellNumber, false);
             }
         }
 

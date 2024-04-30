@@ -145,6 +145,13 @@ public class GameManager : MonoBehaviour
                 newSaveData.isLock = room.isLock;
                 newSaveData.isActive = room.isActive;
                 newSaveData.RequiredMoney = room.RequiredMoney;
+
+                newSaveData.MyRoomWorkersIDs.Clear();
+                int length = room.MyRoomWorkersIDs.Count;
+                for (int i = 0; i < length; i++)
+                {
+                    newSaveData.MyRoomWorkersIDs.Add(room.MyRoomWorkersIDs[i]);
+                }
                 CurrentSaveData.Rooms.Add(newSaveData);
             }
             else
@@ -153,6 +160,12 @@ public class GameManager : MonoBehaviour
                 currentSavedRoom.isLock = room.isLock;
                 currentSavedRoom.isActive = room.isActive;
                 currentSavedRoom.RequiredMoney = room.RequiredMoney;
+                currentSavedRoom.MyRoomWorkersIDs.Clear();
+                int length = room.MyRoomWorkersIDs.Count;
+                for (int i = 0; i < length; i++)
+                {
+                    currentSavedRoom.MyRoomWorkersIDs.Add(room.MyRoomWorkersIDs[i]);
+                }
             }
         }
 
@@ -191,7 +204,12 @@ public class GameManager : MonoBehaviour
                 room.isActive = currentRoomData.isActive;
                 room.isLock = currentRoomData.isLock;
                 room.RequiredMoney = currentRoomData.RequiredMoney;
-
+                room.MyRoomWorkersIDs.Clear();
+                int length = currentRoomData.MyRoomWorkersIDs.Count;
+                for (int i = 0; i < length; i++)
+                {
+                    room.MyRoomWorkersIDs.Add(currentRoomData.MyRoomWorkersIDs[i]);
+                }
             }
             Debug.Log("Room name: " + room.transform.name + " / room.pictureDirections Count: " + room.pictureDirections.Count);
             //PictureLoad
@@ -315,14 +333,35 @@ public class GameManager : MonoBehaviour
     {
         foreach (WorkerData worker in CurrentSaveData.CurrentWorkerDatas)
         {
-           Worker w = WorkerManager.instance.GetWorkerToWorkerType(worker);
+            Worker w = WorkerManager.instance.GetWorkerToWorkerType(worker);
+            WorkerBehaviour wb = WorkerManager.instance.GetAllWorkers().Where(x=> x.ID == w.ID).SingleOrDefault();
+            w.IWorkRoomsIDs.Clear();
+            wb.MyDatas.WorkRoomsIDs.Clear();
+            int length = worker.WorkRoomsIDs.Count;
+            Debug.Log("worker.WorkRoomsIDs.Count => " + worker.WorkRoomsIDs.Count);
+            for (int i = 0; i < length; i++)
+            {
+                Debug.Log("worker.WorkRoomsIDs[i] => " + worker.WorkRoomsIDs[i]);
+                w.IWorkRoomsIDs.Add(worker.WorkRoomsIDs[i]);
+                wb.MyDatas.WorkRoomsIDs.Add(worker.WorkRoomsIDs[i]);
+            }
            WorkerManager.instance.GetCurrentWorkers().Add(WorkerManager.instance.GetAllWorkers().Where(x=> x.ID == w.ID).SingleOrDefault());
+
+            if (w.IWorkRoomsIDs.Count > 0)
+            {
+                wb.gameObject.SetActive(true);
+                Debug.Log("wb.gameObject.SetActive(true) => " + (w.IWorkRoomsIDs.Count > 0) + "Worker Name => " + wb.name);
+            }
         }
         foreach (WorkerData worker in CurrentSaveData.InventoryWorkerDatas)
         {
             Worker w = WorkerManager.instance.GetWorkerToWorkerType(worker);
             WorkerManager.instance.GetWorkersInInventory().Add(WorkerManager.instance.GetAllWorkers().Where(x => x.ID == w.ID).SingleOrDefault());
         }
+    }
+    public void LoadDailyRewardItems()
+    {
+        ItemManager.instance.DailyRewardItems = GameManager.instance.CurrentSaveData.DailyRewardItems;
     }
 
     [System.Serializable]

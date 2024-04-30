@@ -224,9 +224,14 @@ public class PicturesMenuController : MonoBehaviour
             MuseumManager.instance.GetPictureElement(CurrentPicture._pictureData.id).UpdateVisual();
             UpdatePicture();
             CurrentPicture.SetImage(!CurrentPicture._pictureData.isLocked);
+            StartCoroutine(nameof(WaitForSpendingGoldPicture));
         }
     }
-
+    public IEnumerator WaitForSpendingGoldPicture()
+    {
+        yield return new WaitForSeconds(0.5f);
+        ExitPicturePanel();
+    }
     public void SetCurrentPicture(PictureElement PE)
     {
         Debug.Log("Set current picture!");

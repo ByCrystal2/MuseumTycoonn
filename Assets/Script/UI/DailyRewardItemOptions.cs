@@ -20,12 +20,13 @@ public class DailyRewardItemOptions : MonoBehaviour,IPointerClickHandler
         {
             DailyRewardsPanelController.instance.WinReward(this);
         }
-    }    
+    }
     public void SetClickable(bool _isClickable)
     {
         IsClickable = _isClickable;
         if (!IsClickable)
         {
+            Debug.Log(this.gameObject + " is not clickable and this is purchased!");
             DailyRewardsPanelController.instance.CreatePnlReceived(transform.parent);
         }
     }
@@ -37,10 +38,7 @@ public class DailyRewardItemOptions : MonoBehaviour,IPointerClickHandler
         Light.SetActive(_lightClose);
         IsClickable = _isClickable;
 
-        if (!IsClickable)
-        {
-            SetClickable(false);
-        }
+        SetClickable(IsClickable);
 
         if (CloseStars != null && OpenStars != null)
         {

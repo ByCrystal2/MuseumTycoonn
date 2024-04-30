@@ -70,7 +70,7 @@ public class Security : Worker, ISleepable, IMoveable
             {
                 Behaviour.CreateNewTargetDelay(UnityEngine.Random.Range(2.00f, 4.00f));
                 //Behaviour.Invoke(nameof(CreateNewTarget), UnityEngine.Random.Range(2.00f, 4.00f));
-                Debug.Log("Arrived target. Creating new Target");
+                //Debug.Log("Arrived target. Creating new Target");
             }
             else
             {
@@ -80,7 +80,7 @@ public class Security : Worker, ISleepable, IMoveable
             }
         }
 
-        Debug.Log("Moving to current Target: " + CurrentTarget);
+        //Debug.Log("Moving to current Target: " + CurrentTarget);
     }
 
     public Vector3 PatrolToRandomPoint(Vector3 originalPosition, float patrolRadius)
@@ -95,11 +95,11 @@ public class Security : Worker, ISleepable, IMoveable
 
             Vector3 randomPoint = originalPosition + UnityEngine.Random.insideUnitSphere * patrolRadius;
 
-            Debug.Log("Creating random point: " + randomPoint);
+            //Debug.Log("Creating random point: " + randomPoint);
             // Ensure the point is within the NavMesh bounds
             NavMeshHit hit;
             NavMesh.SamplePosition(randomPoint, out hit, patrolRadius, NavMesh.AllAreas);
-            Debug.Log("Random point sampled: " + hit.position);
+            //Debug.Log("Random point sampled: " + hit.position);
 
             if (Behaviour.IsPositionAccessible(hit.position))
                 target = hit.position;
@@ -157,7 +157,7 @@ public class Security : Worker, ISleepable, IMoveable
             //Vector3 patrolLocation = PatrolToRandomPoint(Behaviour.transform.position, Behaviour.PatrolRadius);
             CurrentTarget = patrolLocation;
         }
-        Debug.Log("set new target point: " + CurrentTarget);
+        //Debug.Log("set new target point: " + CurrentTarget);
     }
 
     public void Rotate(Vector3 axis, float angle)

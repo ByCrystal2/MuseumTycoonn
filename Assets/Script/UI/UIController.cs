@@ -854,11 +854,11 @@ public string GetDropDownSelectedPainter()
         Debug.Log($"Worker Turu => {_wType} olan Isciler Envantere Listelendi.");
     }
 
-    public void AddDesiredChooseRoomsInContent(int _workerID, Color _color, string _cellNumber, bool _interectable)
+    public void AddDesiredChooseRoomsInContent(int _roomID,int _workerID, Color _color, string _cellNumber, bool _interectable)
     {
         GameObject newAssignmentRoom = Instantiate(AssignmentRoomPrefab_V1, WorkerAssignContent);
         WorkerAssignmentRoomButton _newAssing = newAssignmentRoom.GetComponent<WorkerAssignmentRoomButton>();
-        _newAssing.AssignmentRoomButton(_workerID,_color, _cellNumber, _interectable);
+        _newAssing.AssignmentRoomButton(_roomID, _workerID,_color, _cellNumber, _interectable);
     }
 
     public void W_WorkerTypesButtonControl()
