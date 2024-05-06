@@ -12,33 +12,40 @@ public class DailyRewardItemOptions : MonoBehaviour,IPointerClickHandler
     [SerializeField] private GameObject Light;
     [SerializeField] private GameObject[] CloseStars;
     [SerializeField] private GameObject[] OpenStars;
-    private bool IsClickable = true;
+    private bool IsPurchased = false;
+    private bool IsLocked = true;
     
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (IsClickable)
+        if (!IsPurchased && !IsLocked)
         {
             DailyRewardsPanelController.instance.WinReward(this);
         }
     }
-    public void SetClickable(bool _isClickable)
+    public void SetClickable(bool _isPurchased, bool _isLocked)
     {
-        IsClickable = _isClickable;
-        if (!IsClickable)
+        IsPurchased = _isPurchased;
+        IsLocked = _isLocked;
+        if (IsPurchased && !IsLocked)
         {
             Debug.Log(this.gameObject + " is not clickable and this is purchased!");
             DailyRewardsPanelController.instance.CreatePnlReceived(transform.parent);
         }
+        else if (!IsPurchased && IsLocked)
+        {
+            Debug.Log(this.gameObject + " is not Purchased and this is UnLocked!");
+            DailyRewardsPanelController.instance.CreatePnlLocked(transform.parent);
+        }
     }
-    public void SetMyOptions(int _myItemID ,string _myName, float _myPrice, bool _lightClose, bool _isClickable, byte _starCount = 0)
+    public void SetMyOptions(int _myItemID ,string _myName, float _myPrice, bool _lightClose, bool _isPurchased, bool _isLocked, byte _starCount = 0)
     {
         MyItemID = _myItemID;
         MyNameText.text = _myName;
         MyPriceText.text = _myPrice.ToString();
         Light.SetActive(_lightClose);
-        IsClickable = _isClickable;
-
-        SetClickable(IsClickable);
+        IsPurchased = _isPurchased;
+        IsLocked = _isLocked;
+        SetClickable(IsPurchased, IsLocked);
 
         if (CloseStars != null && OpenStars != null)
         {

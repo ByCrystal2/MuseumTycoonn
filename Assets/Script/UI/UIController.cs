@@ -114,6 +114,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private Button W_InventoryTabBrochureSeller;
     [Header("Daily Reward Panel")]
     [SerializeField] GameObject DailyRewardPanel;
+    [SerializeField] Button DailyRewardPanelOnButton;
     [SerializeField] Transform[] DailyRewardContents;
     [SerializeField] GameObject DailyRewardGemPrefab;
     [SerializeField] GameObject DailyRewardGoldPrefab;
@@ -175,6 +176,9 @@ public class UIController : MonoBehaviour
         WorkerInventoryTabPanel.SetActive(false);
         W_WorkerTypesButton.gameObject.SetActive(true);
         W_WorkerTypesButton.onClick.AddListener(W_WorkerTypesButtonControl);
+
+        // DailyRewardPanel 
+        DailyRewardPanelOnButton.onClick.AddListener(() => ActiveInHierarchyDailyRewardPanelControl());
 
         MuseumManager.instance.CalculateAndAddTextAllInfos();
     }
@@ -699,6 +703,23 @@ public string GetDropDownSelectedPainter()
     {
         DailyRewardPanel.SetActive(!_close);
     }
+    public void ActiveInHierarchyDailyRewardPanelControl()
+    {
+        if (!DailyRewardPanel.activeInHierarchy)
+        {
+            GeneralButtonActivation(true,DailyRewardPanelOnButton);
+            RightUIPanelController.instance.CloseEditObj(true);
+            CloseJoystickObj(true);
+            DailyRewardPanel.SetActive(true);
+        }
+        else
+        {
+            CloseJoystickObj(false);
+            RightUIPanelController.instance.CloseEditObj(false);
+            DailyRewardPanel.SetActive(false);
+            GeneralButtonActivation(false);
+        }
+    }
     public void CloseMuseumStatsPanel(bool _close)
     {
         pnlMuseumStats.SetActive(!_close);
@@ -744,6 +765,7 @@ public string GetDropDownSelectedPainter()
             museumStatButton.gameObject.SetActive(!_buttonActive);
             WorkerPanelOnButton.gameObject.SetActive(!_buttonActive);
             WorkerAssignmentPanelOnButton.gameObject.SetActive(!_buttonActive);
+            DailyRewardPanelOnButton.gameObject.SetActive(!_buttonActive);
 
             GameObject _activeGO = _activePnlButton.gameObject;
             if (_activeGO == museumStatButton.gameObject)
@@ -761,6 +783,10 @@ public string GetDropDownSelectedPainter()
                 _activePnlButton.gameObject.transform.position = ActivePnlBtnWorkerAssignmentDefaultPos.position;
                 _activePnlButton.gameObject.SetActive(_buttonActive);
             }
+            else if (_activeGO == DailyRewardPanelOnButton.gameObject)
+            {
+                _activePnlButton.gameObject.SetActive(_buttonActive);
+            }
 
         }
         else
@@ -771,6 +797,7 @@ public string GetDropDownSelectedPainter()
             museumStatButton.gameObject.SetActive(true);
             WorkerPanelOnButton.gameObject.SetActive(true);
             WorkerAssignmentPanelOnButton.gameObject.SetActive(true);
+            DailyRewardPanelOnButton.gameObject.SetActive(true);
 
         }
 
@@ -870,8 +897,9 @@ public string GetDropDownSelectedPainter()
         InventoryWorkerTabButtonsOn();
     }
 
-    public void SetNewWeeklyRewards()
+    public void SetUpdateWeeklyRewards()
     {
+        ClearDailyRewardContents();
         List<ItemData> currentItems = new List<ItemData>();
         for (int i = 0; i < ItemManager.instance.CurrentDailyRewardItems.Count; i++)
         {
@@ -886,15 +914,15 @@ public string GetDropDownSelectedPainter()
                     break;
                 case ItemType.Gem:
                     GameObject _newDailyRewardGem = Instantiate(DailyRewardGemPrefab, DailyRewardContents[i]);
-                    _newDailyRewardGem.GetComponent<DailyRewardItemOptions>().SetMyOptions(currentItems[i].ID, currentItems[i].Name, currentItems[i].Amount, true, !currentItems[i].IsPurchased);
+                    _newDailyRewardGem.GetComponent<DailyRewardItemOptions>().SetMyOptions(currentItems[i].ID, currentItems[i].Name, currentItems[i].Amount, true, currentItems[i].IsPurchased, currentItems[i].IsLocked);
                     break;
                 case ItemType.Gold:
                     GameObject _newDailyRewardGold = Instantiate(DailyRewardGoldPrefab, DailyRewardContents[i]);
-                    _newDailyRewardGold.GetComponent<DailyRewardItemOptions>().SetMyOptions(currentItems[i].ID, currentItems[i].Name, currentItems[i].Amount, true, !currentItems[i].IsPurchased);
+                    _newDailyRewardGold.GetComponent<DailyRewardItemOptions>().SetMyOptions(currentItems[i].ID, currentItems[i].Name, currentItems[i].Amount, true, currentItems[i].IsPurchased, currentItems[i].IsLocked);
                     break;
                 case ItemType.Table:
                     GameObject _newDailyRewardTable = Instantiate(DailyRewardTablePrefab, DailyRewardContents[i]);
-                    _newDailyRewardTable.GetComponent<DailyRewardItemOptions>().SetMyOptions(currentItems[i].ID, currentItems[i].Name, currentItems[i].Amount, true, !currentItems[i].IsPurchased, currentItems[i].StarCount);
+                    _newDailyRewardTable.GetComponent<DailyRewardItemOptions>().SetMyOptions(currentItems[i].ID, currentItems[i].Name, currentItems[i].Amount, true, currentItems[i].IsPurchased, currentItems[i].IsLocked, currentItems[i].StarCount);
                     break;
                 case ItemType.All:
                     break;
@@ -902,6 +930,18 @@ public string GetDropDownSelectedPainter()
                     break;
             }
             
+        }
+    }
+    public void ClearDailyRewardContents()
+    {
+        int length = DailyRewardContents.Length;
+        for (int i = 0; i < length; i++)
+        {
+            int length1 = DailyRewardContents[i].childCount;
+            for (int k = 0; k < length1; k++)
+            {
+                Destroy(DailyRewardContents[i].GetChild(k).gameObject);
+            }
         }
     }
 

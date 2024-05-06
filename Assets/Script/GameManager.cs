@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TMPro;
+using TMPro.EditorUtilities;
 using Unity.VisualScripting.Dependencies.Sqlite;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -21,6 +23,8 @@ public class GameManager : MonoBehaviour
     string _GameSave = "GameSave";
     float AutoSaveTimer;
     GameMode CurrentGameMode;
+
+    public RewardManager rewardManager;
     private void Awake()
     {
         if (instance)
@@ -35,12 +39,26 @@ public class GameManager : MonoBehaviour
 
     public void Start()
     {
+        StartCoroutine(WaitForInstance());
+    }
+    public IEnumerator WaitForInstance()
+    {
+        while (TimeManager.instance == null)
+        {
+            yield return null;
+        }
+        TimeManager.instance.InvokeRepeating(nameof(TimeManager.instance.UpdateCurrentTime), 1, 1f);
+        DateTime dateControl = new DateTime(0001,01,01,01,01,01);
+        //Debug.Log("TimeManager.instance.CurrentDateTime <= dateControl => " + TimeManager.instance.CurrentDateTime + " | " + dateControl);
+        while (TimeManager.instance.CurrentDateTime.Second <= dateControl.Second)
+        {
+            yield return null;
+        }
         Init();
         Load();
     }
-
     public void Init()
-    {
+    {        
         FirebaseAuthManager.instance.CreateNewLoading();
         TableCommentEvaluationManager.instance.AddAllNPCComments();
         SkillTreeManager.instance.AddSkillsForSkillTree();
@@ -56,6 +74,7 @@ public class GameManager : MonoBehaviour
             AutoSaveTimer = Time.time + 300;
         }
     }
+    
     public GameMode GetCurrentGameMode()
     {
         return CurrentGameMode;
@@ -76,7 +95,20 @@ public class GameManager : MonoBehaviour
         CurrentSaveData.SkillPoint = a._SkillPoint;
         CurrentSaveData.CurrentCultureLevel = a._CurrentCultureLevel;
 
-       
+        if (NpcManager.instance != null)
+        {
+            CurrentSaveData.IsFirstGame = NpcManager.instance.IsFirstGame;
+        }
+
+        if (rewardManager != null)
+        {
+            CurrentSaveData.LastDailyRewardTime =  rewardManager.lastDailyRewardTime.ToString("yyyy-MM-dd HH:mm:ss");
+            CurrentSaveData.WhatDay = TimeManager.instance.WhatDay;
+        }
+        
+
+        Debug.Log("CurrentSaveData.LastDailyRewardTime => " + CurrentSaveData.LastDailyRewardTime);
+        Debug.Log("CurrentSaveData.WhatDay => " + CurrentSaveData.WhatDay);
         List<RoomData> currentRooms = new List<RoomData>();
         if (RoomManager.instance != null)
         {
@@ -251,6 +283,9 @@ public class GameManager : MonoBehaviour
         if (CurrentSaveData.SaveName == "")
             CurrentSaveData.SaveName = _GameSave;
 
+        
+        
+
         if (File.Exists(Application.persistentDataPath + "/" + CurrentSaveData.SaveName + ".json"))
         {
             string jsonString = File.ReadAllText(Application.persistentDataPath + "/" + CurrentSaveData.SaveName + ".json"); // read the json file from the file system
@@ -263,7 +298,19 @@ public class GameManager : MonoBehaviour
         else
         {
             Debug.Log("Save dosyasi yok..");
+            // su an saat 08:00  => lastDailyRewardTime = 08:00 
+            // => AfterDailyRewardTime => lastDailyRewardTime + dailyRewardInterval
+            // => WhichDay++ => if dailyRewardInterval <= (lastDailyRewardTime + dailyRewardInterval) - CurrentTime;
+            //08:00                //24               09:00
+           
             Save();
+        }
+    }
+    public void LoadIsFirstGame()
+    {
+        if (NpcManager.instance != null)
+        {
+            NpcManager.instance.IsFirstGame = CurrentSaveData.IsFirstGame;
         }
     }
     public void LoadPurchasedItems()
@@ -361,7 +408,21 @@ public class GameManager : MonoBehaviour
     }
     public void LoadDailyRewardItems()
     {
-        ItemManager.instance.DailyRewardItems = GameManager.instance.CurrentSaveData.DailyRewardItems;
+        ItemManager.instance.CurrentDailyRewardItems = CurrentSaveData.DailyRewardItems;        
+    }
+    public void LoadLastDailyRewardTime()
+    {
+        Debug.Log("CurrentSaveData.LastDailyRewardTime => " + CurrentSaveData.LastDailyRewardTime);
+        if (CurrentSaveData.LastDailyRewardTime != "")
+        {
+            rewardManager.lastDailyRewardTime = DateTime.Parse(CurrentSaveData.LastDailyRewardTime);
+            TimeManager.instance.WhatDay = CurrentSaveData.WhatDay;
+        }
+    }
+
+    private void OnApplicationQuit()
+    {
+        TimeManager.instance.FirstOpen = true;
     }
 
     [System.Serializable]
@@ -375,6 +436,8 @@ public class GameManager : MonoBehaviour
         public float SkillPoint;
         public int CurrentCultureLevel;
 
+        //IsFirstGame
+        public bool IsFirstGame = true;
         //RoomManager
         public float ActiveRoomsRequiredMoney;
 
@@ -387,6 +450,10 @@ public class GameManager : MonoBehaviour
         public List<WorkerData> CurrentWorkerDatas = new List<WorkerData>();
         public List<WorkerData> InventoryWorkerDatas = new List<WorkerData>();
         public AdverstingData adData; //ADS SISTEMI KURULDUKTAN SONRA EKLENECEK.
+
+        //DailyReward
+        public string LastDailyRewardTime = "";
+        public byte WhatDay;
     }    
 }
 public enum GameMode

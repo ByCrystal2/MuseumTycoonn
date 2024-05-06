@@ -9,6 +9,7 @@ public class DailyRewardsPanelController : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI txtTime;
     [SerializeField] GameObject pnlIsReceivedPrefab;
+    [SerializeField] GameObject pnlIsLockedPrefab;
 
     public static DailyRewardsPanelController instance { get; private set; }
     private void Awake()
@@ -22,26 +23,21 @@ public class DailyRewardsPanelController : MonoBehaviour
     }
     private void Start()
     {
-        InvokeRepeating(nameof(StartSetTimeTextIE), 0f, 1f);
+        InvokeRepeating(nameof(SetTimeText), 0, 1);
     }
-    private void Update()
-    {
-        if (RewardManager.instance.CheckTheInRewardControl()) RewardManager.instance.CheckRewards();
-    }
-    public void StartSetTimeTextIE()
-    {
-            StartCoroutine(SetTimeText()); // DailyRewards paneli aktifse calisacak kod. (if kontrolu ona gore saglanmali.)
 
-    }
-    IEnumerator SetTimeText()
+    void SetTimeText()
     {
-        System.DateTime currentTime = RewardManager.instance.GetTimeRemaining();
-        txtTime.text = currentTime.ToString("HH:mm:ss");
-        yield return new WaitForSecondsRealtime(1f);
+        System.TimeSpan _currentTime = (GameManager.instance.rewardManager.lastDailyRewardTime + GameManager.instance.rewardManager.dailyRewardInterval - GameManager.instance.rewardManager.currentTime);
+        txtTime.text = $"{_currentTime.Hours:D2}:{_currentTime.Minutes:D2}:{_currentTime.Seconds:D2}";
     }
     public void CreatePnlReceived(Transform _content)
     {
         Instantiate(pnlIsReceivedPrefab, _content);
+    }
+    public void CreatePnlLocked(Transform _content)
+    {
+        Instantiate(pnlIsLockedPrefab, _content);
     }
     public void WinReward(DailyRewardItemOptions _rewardItemOption)
     {
@@ -54,7 +50,7 @@ public class DailyRewardsPanelController : MonoBehaviour
         
         if (_currentRewardItem.CurrentItemType == ItemType.Gem)
         {
-            _rewardItemOption.SetClickable(false);
+            _rewardItemOption.SetClickable(true,false);
             _rewardItemOption.GetComponent<Button>().enabled = false;
             int index = ItemManager.instance.CurrentDailyRewardItems.FindIndex(y => y.ID == _currentRewardItem.ID);
 
@@ -69,6 +65,7 @@ public class DailyRewardsPanelController : MonoBehaviour
 
                 // Kopyanýn üzerinde deðiþiklik yap
                 updatedItem.IsPurchased = true;
+                updatedItem.IsLocked = false;
 
                 // Kopyayý orijinal listeye geri yerleþtir
                 ItemManager.instance.CurrentDailyRewardItems[index] = updatedItem;
@@ -77,7 +74,7 @@ public class DailyRewardsPanelController : MonoBehaviour
         }
         else if (_currentRewardItem.CurrentItemType == ItemType.Gold)
         {
-            _rewardItemOption.SetClickable(false);
+            _rewardItemOption.SetClickable(true, false);
             _rewardItemOption.GetComponent<Button>().enabled = false;
             int index = ItemManager.instance.CurrentDailyRewardItems.FindIndex(y => y.ID == _currentRewardItem.ID);
 
@@ -92,6 +89,7 @@ public class DailyRewardsPanelController : MonoBehaviour
 
                 // Kopyanýn üzerinde deðiþiklik yap
                 updatedItem.IsPurchased = true;
+                updatedItem.IsLocked = false;
 
                 // Kopyayý orijinal listeye geri yerleþtir
                 ItemManager.instance.CurrentDailyRewardItems[index] = updatedItem;
@@ -100,7 +98,7 @@ public class DailyRewardsPanelController : MonoBehaviour
         }
         else if (_currentRewardItem.CurrentItemType == ItemType.Table)
         {
-            _rewardItemOption.SetClickable(false);
+            _rewardItemOption.SetClickable(true, false);
             _rewardItemOption.GetComponent<Button>().enabled = false;
             int index = ItemManager.instance.CurrentDailyRewardItems.FindIndex(y => y.ID == _currentRewardItem.ID);
 
@@ -115,6 +113,7 @@ public class DailyRewardsPanelController : MonoBehaviour
 
                 // Kopyanýn üzerinde deðiþiklik yap
                 updatedItem.IsPurchased = true;
+                updatedItem.IsLocked = false;
 
                 // Kopyayý orijinal listeye geri yerleþtir
                 ItemManager.instance.CurrentDailyRewardItems[index] = updatedItem;

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,6 +28,7 @@ public class NpcManager : MonoBehaviour
     [SerializeField] private List<NPCBehaviour> GuiltyNpcs = new List<NPCBehaviour>();
     [SerializeField] private List<NPCBehaviour> TargetGuiltyNpcs = new List<NPCBehaviour>();
 
+    public bool IsFirstGame = true;
     private void Awake()
     {
         if (instance)
@@ -36,6 +38,9 @@ public class NpcManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(this);
+        GameManager.instance.rewardManager = FindObjectOfType<RewardManager>();
+
+        GameManager.instance.LoadIsFirstGame();
         GameManager.instance.LoadRooms();
         RoomManager.instance.AddRooms(); // in app baglantisi kurulmadan once odalar yuklendi.
         WorkerManager.instance.BaseAllWorkerOptions();
@@ -66,8 +71,38 @@ public class NpcManager : MonoBehaviour
             }
         }
         GameManager.instance.LoadSkills();
+        GameManager.instance.LoadLastDailyRewardTime();
 
-        RewardManager.instance.CheckRewards();// Burada gecen sureleri kontrol et ve odul verme durumunu degerlendir.
+
+        if (IsFirstGame)
+        {
+            ItemManager.instance.SetCalculatedDailyRewardItems();
+            IsFirstGame = false;
+
+            GameManager.instance.rewardManager.lastDailyRewardTime = TimeManager.instance.CurrentDateTime;
+
+            int index = TimeManager.instance.WhatDay;
+            // Eðer bulunduysa
+            if (index != -1)
+            {
+                // Orijinal listedeki öðeyi al
+                var originalItem = ItemManager.instance.CurrentDailyRewardItems[index];
+
+                // Orijinal öðenin bir kopyasýný oluþtur
+                var updatedItem = originalItem;
+
+                // Kopyanýn üzerinde deðiþiklik yap
+                updatedItem.IsLocked = false;
+
+                // Kopyayý orijinal listeye geri yerleþtir
+                ItemManager.instance.CurrentDailyRewardItems[index] = updatedItem;
+            }
+            //GameManager.instance.rewardManager.CheckRewards(true);
+        }
+        else
+        {
+        }
+        UIController.instance.SetUpdateWeeklyRewards();
     }
 
     #region Npc Mess

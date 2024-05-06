@@ -6,8 +6,10 @@ using System.Collections;
 public class TimeManager : MonoBehaviour
 {
     private string apiUrl = "https://worldtimeapi.org/api/timezone/Europe/Istanbul";
-    public DateTime CurrentDateTime;
+    public DateTime CurrentDateTime; // Su an ki mevcut zamani tutar.
     public TimeData timeData;
+    public byte WhatDay = 0;
+    public bool FirstOpen = true;
     public static TimeManager instance { get; set; }
     private void Awake()
     {
@@ -23,9 +25,9 @@ public class TimeManager : MonoBehaviour
     {
         // Belirli aralýklarla API'ye istek göndererek saati güncelle
         //InvokeRepeating("UpdateCurrentTime", 0f, 60f); // Her 60 saniyede bir güncelle
-        InvokeRepeating(nameof(UpdateCurrentTime), 0f, 60f);
+        
     }
-    void UpdateCurrentTime()
+    public void UpdateCurrentTime()
     {
         StartCoroutine(GetTime());
     }
@@ -46,8 +48,17 @@ public class TimeManager : MonoBehaviour
                 timeData = JsonUtility.FromJson<TimeData>(responseData);
 
                 // Saati alma
+
+                // CurrentDateTime => 07:59:59
                 CurrentDateTime = DateTime.Parse(timeData.datetime);
-                Debug.Log("Þu an saat: " + CurrentDateTime.ToString("HH:mm:ss"));
+                // CurrentDateTime => 08:00:00
+                if (GameManager.instance.rewardManager != null)
+                {
+                    StartCoroutine(GameManager.instance.rewardManager.WaitForLastDailyRewardTime());
+                    GameManager.instance.rewardManager.CheckRewards();
+                    //Debug.Log("Þu an saat: " + CurrentDateTime.ToString("HH:mm:ss"));
+                }
+                
             }
         }
     }    
@@ -56,6 +67,5 @@ public class TimeManager : MonoBehaviour
 [Serializable]
 public class TimeData
 {
-    public string datetime;
-    public byte WhatDay;
+    public string datetime;    
 }

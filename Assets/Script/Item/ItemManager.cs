@@ -10,8 +10,8 @@ public class ItemManager : MonoBehaviour
     public List<ItemData> ShopItemDatas = new List<ItemData>();
     public List<ItemData> IAPItems = new List<ItemData>();
     public List<ItemData> RItems = new List<ItemData>(); //Random items
-    public List<ItemData> DailyRewardItems = new List<ItemData>(); //Daily Reward items
-    public List<ItemData> CurrentDailyRewardItems = new List<ItemData>(); //Daily Reward items
+    public List<ItemData> DailyRewardItems = new List<ItemData>(); // 30 adet gunluk odul ogesi iceren liste.
+    public List<ItemData> CurrentDailyRewardItems = new List<ItemData>(); // mevcut gunluk odul ogesi listesi (max 7)
     public static ItemManager instance { get; set; }
     private void Awake()
     {
@@ -44,7 +44,7 @@ public class ItemManager : MonoBehaviour
             //DailyItems
             
             //Gem
-            ItemData itemDaily1 = new ItemData(2000,"Gem","",15,0,gemTexture,ItemType.Gem,ShoppingType.DailyReward,0,0,"IAP Urunu Degil",false,5);
+            ItemData itemDaily1 = new ItemData(2000,"Gem","",15,0,gemTexture,ItemType.Gem,ShoppingType.DailyReward,0,0,"IAP Urunu Degil", false, 5);
             ItemData itemDaily2 = new ItemData(2001,"Gem","",20,0,gemTexture,ItemType.Gem,ShoppingType.DailyReward,0, 0, "IAP Urunu Degil", false, 5);
             ItemData itemDaily3 = new ItemData(2002,"Gem","",25,0,gemTexture,ItemType.Gem,ShoppingType.DailyReward,0, 0, "IAP Urunu Degil", false, 5);
             ItemData itemDaily4 = new ItemData(2003,"Gem","",30,0,gemTexture,ItemType.Gem,ShoppingType.DailyReward,0, 0, "IAP Urunu Degil", false, 5);
@@ -113,6 +113,7 @@ public class ItemManager : MonoBehaviour
             DailyRewardItems.Add(itemDaily29);
             DailyRewardItems.Add(itemDaily30);
 
+            Debug.Log("DailyRewardItems.Count => " + DailyRewardItems.Count);
             //ItemData item5 = new ItemData(1004, "Gem", "Þok Fiyata!", 200, 29.99f, "", ItemType.Gem, ShoppingType.RealMoney);
             //ItemData item6 = new ItemData(1005, "Gem", "Al-Ver", 5, 25000, "", ItemType.Gem, ShoppingType.Gold);
 
@@ -190,9 +191,9 @@ public class ItemManager : MonoBehaviour
         for (int i = 0; i < length; i++)
         {
             ItemData _newItem = new ItemData();
-            _newItem = GetDailyRandomItem();
+            _newItem = GetDailyRandomItem(); // level 5 = 1k gold, level 10 = 15k Gold;
             randomItems.Add(_newItem);
-        }
+        }// 1k gold 10 adet - 3gem 10 adet - 10 adet tablo
         byte maxGoldItemCount = (byte)Random.Range(3,5), maxGemItemCount = (byte)(6 - maxGoldItemCount), maxTabletemCount = 1, currentGoldItemCount = 0, currentGemItemCount=0, currentTableItemCount = 0;
         if (maxGoldItemCount+maxGemItemCount+maxTabletemCount != 7)
         {
@@ -202,13 +203,13 @@ public class ItemManager : MonoBehaviour
         List<ItemData> currentItems = new List<ItemData>();
         foreach (var item in randomItems)
         {
-            if (item.CurrentItemType == ItemType.Gold && currentGoldItemCount < maxGoldItemCount )
+            if (item.CurrentItemType == ItemType.Gold && currentGoldItemCount < maxGoldItemCount  && !currentItems.Contains(item))
             {
                 currentItems.Add(item);
                 Debug.Log("Before" + item.ID);
                 currentGoldItemCount++;
             }
-            else if (item.CurrentItemType == ItemType.Gem && currentGemItemCount < maxGemItemCount)
+            else if (item.CurrentItemType == ItemType.Gem && currentGemItemCount < maxGemItemCount && !currentItems.Contains(item))
             {
                 currentItems.Add(item);
                 Debug.Log("Before" + item.ID);
@@ -239,7 +240,7 @@ public class ItemManager : MonoBehaviour
             <= 10 => 10,
             <= 15 => 15,
             _ => 15,
-        };
+        }; // 1k gold | 2 gem 
         currentCultureLevelItems = DailyRewardItems.Where(x=> x.FocusedLevel == LevelControl).ToList();
         return currentCultureLevelItems[Random.Range(0, currentCultureLevelItems.Count)];
     }
@@ -263,6 +264,10 @@ public class ItemManager : MonoBehaviour
     public List<ItemData> GetAllIAPItemDatas()
     {
         return IAPItems;
+    }
+    public List<ItemData> GetAllDailyRewardItemDatas()
+    {
+        return CurrentDailyRewardItems;
     }
     public void SetCalculatedDailyRewardItems()
     {
