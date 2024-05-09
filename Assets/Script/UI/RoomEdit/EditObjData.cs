@@ -4,21 +4,33 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class EditObjData : MonoBehaviour, IPointerClickHandler
+[System.Serializable]
+public class EditObjData
 {
     public int ID;
     public string Name;
     public float Price;
-    private bool IsPurchased;
+    public bool IsPurchased;
+    public bool IsLocked;
+    public int FocusedLevel;
     public Sprite ImageSprite;
     public EditObjType EditType;
     public List<(EditObjBonusType _bonusses, int _value)> BonusEnums = new List<(EditObjBonusType _bonusses, int _value)>();
     public RoomData _currentRoom;
-    public EditObjData(int _id, string _name,Texture2D _resourcesTexture , EditObjType _objType, List<(EditObjBonusType _bonusses, int _value)> Bonusses_Values)
+    public int myStatueIndex;
+
+    public bool isClickable;
+
+    public EditObjData()
+    {
+        
+    }
+    public EditObjData(int _id, string _name,float _price,Texture2D _resourcesTexture , EditObjType _objType, List<(EditObjBonusType _bonusses, int _value)> Bonusses_Values,int _focusedLevel, int _myStatueIndex = -1, bool _isLocked = true)
     {
         ID = _id;
         Name = _name;
         Debug.Log(_name + " => _resourcesTexture.name => " + _resourcesTexture.name);
+        Price = _price;
         ImageSprite = CatchTheColors.instance.TextureToSprite(_resourcesTexture);
         EditType = _objType;
         if (Bonusses_Values.Count > 0)
@@ -36,13 +48,36 @@ public class EditObjData : MonoBehaviour, IPointerClickHandler
                 Debug.Log("BonusEnums[i]._bonusses.ToString() + BonusEnums[i]._value.ToString() => " + BonusEnums[i]._bonusses.ToString() +" "+ BonusEnums[i]._value.ToString());
             }
         }
+        FocusedLevel = _focusedLevel;
+        IsLocked = _isLocked;
+        myStatueIndex = _myStatueIndex;
+    }
+    public void UnLock()
+    {
+        IsLocked = false;
     }
     public EditObjData(EditObjData _newData)
     {
         ID = _newData.ID;
         Name = _newData.Name;
+        Price = _newData.Price;
         ImageSprite = _newData.ImageSprite;
         EditType = _newData.EditType;
+        BonusEnums.Clear();
+        int length = _newData.BonusEnums.Count;
+        for (int i = 0; i < length; i++)
+        {
+            Debug.Log("Bonusses_Values[i]._bonusses.ToString() + Bonusses_Values[i]._bonusses.ToString() => " + _newData.BonusEnums[i]._bonusses.ToString() + " " + _newData.BonusEnums[i]._value.ToString());
+            BonusEnums.Add(_newData.BonusEnums[i]);
+        }
+        int length1 = BonusEnums.Count;
+        for (int i = 0; i < length1; i++)
+        {
+            Debug.Log("BonusEnums[i]._bonusses.ToString() + BonusEnums[i]._value.ToString() => " + BonusEnums[i]._bonusses.ToString() + " " + BonusEnums[i]._value.ToString());
+        }
+        IsPurchased = _newData.IsPurchased;
+        IsLocked = _newData.IsLocked;
+        FocusedLevel = _newData.FocusedLevel;
     }
     public void SetIsPurchased()
     {
@@ -56,23 +91,18 @@ public class EditObjData : MonoBehaviour, IPointerClickHandler
             {
                 Debug.Log(BonusEnums[i]._bonusses.ToString());
             }
-            RoomEditingPanelController.instance.AddAndBonusCalculator(this);
+            RoomManager.instance.statuesHandler.AddAndBonusCalculator(this);
         }
         else if (EditType == EditObjType.Decoration)
         {
-            RoomEditingPanelController.instance.AddAndBonusCalculator(this);
+            RoomManager.instance.statuesHandler.AddAndBonusCalculator(this);
         }
     }
     public bool GetIsPurchased()
     {
         return IsPurchased;
     }
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        RoomEditingPanelController.instance.ClickedEditObjData = this;
-        RoomEditingPanelController.instance.ClickedEditObjImage.sprite = ImageSprite;
-        RoomEditingPanelController.instance.BuyEditObjPanel.SetActive(true);
-    }
+    
 
 }
 public class Bonus<T>

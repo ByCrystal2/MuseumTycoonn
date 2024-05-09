@@ -33,7 +33,7 @@ public class RightUIPanelController : MonoBehaviour
         EditModeButton.onClick.RemoveAllListeners();
         UIVisibleButton.onClick.RemoveAllListeners();
         EditModeButton.onClick.AddListener(EditMode);
-        UIVisibleButton.onClick.AddListener(UIVisible);
+        UIVisibleButton.onClick.AddListener(UIVisibleClose);
         EditMode();
     }
     bool _uIVisible = true;
@@ -77,7 +77,7 @@ public class RightUIPanelController : MonoBehaviour
                 break;
         }
     }
-    public void UIVisible()
+    public void UIVisibleClose()
     {
         if (GameManager.instance.GetCurrentGameMode() == GameMode.MuseumEditing || GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
         {
@@ -86,8 +86,8 @@ public class RightUIPanelController : MonoBehaviour
                 UINotVisibleObj.SetActive(true);
                 EditObj.SetActive(false);
                 PicturesMenuController.instance.ExitPicturePanel();
-                if (GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
-                    UIController.instance.SetActivationRoomEditingPanel(true);
+                //if (GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
+                //    UIController.instance.SetActivationRoomEditingPanel(true);
 
                 UIController.instance.CloseNPCInformationPanel();
                 UIController.instance.CloseWorkerShopPanel(true);
@@ -102,14 +102,40 @@ public class RightUIPanelController : MonoBehaviour
             else
             {
                 UINotVisibleObj.SetActive(false);
-                if (GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
-                    UIController.instance.SetActivationRoomEditingPanel(false);
+                //if (GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
+                //    UIController.instance.SetActivationRoomEditingPanel(false);
                 EditObj.SetActive(true);
                 UIController.instance.CloseCultureExpObj(false);
                 UIController.instance.CloseLeftUIsPanel(false);
                 UIController.instance.CloseMoneysObj(false);
                 _uIVisible = true;
             }
+        }
+    }
+    public void UIVisibleClose(bool _forceVisible)
+    {
+        if (_forceVisible)
+        {
+            UINotVisibleObj.SetActive(true);
+            EditObj.SetActive(false);
+            PicturesMenuController.instance.ExitPicturePanel();
+
+            UIController.instance.CloseNPCInformationPanel();
+            UIController.instance.CloseWorkerShopPanel(true);
+            UIController.instance.CloseWorkerAssignmentPanel(true);
+            UIController.instance.CloseDailyRewardPanel(true);
+            UIController.instance.CloseMuseumStatsPanel(true);
+            UIController.instance.CloseCultureExpObj(true);
+            UIController.instance.CloseLeftUIsPanel(true);
+            UIController.instance.CloseMoneysObj(true);
+        }
+        else
+        {
+            UINotVisibleObj.SetActive(false);
+            EditObj.SetActive(true);
+            UIController.instance.CloseCultureExpObj(false);
+            UIController.instance.CloseLeftUIsPanel(false);
+            UIController.instance.CloseMoneysObj(false);
         }
     }
     public void CloseEditObj(bool _close)

@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 public partial class RoomManager : MonoBehaviour
 {
+    //Statues
+    public StatuesHandler statuesHandler;
+    //Statues
 
     public float activeRoomsRequiredMoney;
     // Buy Room Panel Elements
@@ -31,10 +34,12 @@ public partial class RoomManager : MonoBehaviour
             return;
         }
         instance = this;
-    }
+    }    
+    
     public void AddRooms()
     {
         RoomDatas = GameObject.FindObjectsOfType<RoomData>().ToList();
+        statuesHandler = new StatuesHandler(); // ctor ile heykeller olusturuldu.
     }
     public void BuyTheRoom(RoomData currentRoom)
     {
@@ -241,7 +246,7 @@ public partial class RoomManager // Room Bonus Controller
     {
         if (_currentRoom.GetNpcsInTheMyRoom().Contains(_removeNpc))
         {
-            RoomEditingPanelController.instance.RemoveBonusExitedInTheRoom(_currentRoom, _removeNpc);
+            statuesHandler.RemoveBonusExitedInTheRoom(_currentRoom, _removeNpc);
             _currentRoom.GetNpcsInTheMyRoom().Remove(_removeNpc);
 
             
@@ -252,7 +257,7 @@ public partial class RoomManager // Room Bonus Controller
         if (!_currentRoom.GetNpcsInTheMyRoom().Contains(_newNpc))
         {
             Debug.Log($"An NPC Entered {_currentRoom.availableRoomCell.CellLetter + " " + _currentRoom.availableRoomCell.CellNumber} Cell Room. Current NPC => " + _newNpc.name);
-            RoomEditingPanelController.instance.AddBonusEnteredInTheRoom(_currentRoom, _newNpc);
+            statuesHandler.AddBonusEnteredInTheRoom(_currentRoom, _newNpc);
             _currentRoom.GetNpcsInTheMyRoom().Add(_newNpc);
         }
     }

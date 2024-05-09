@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44402188, g: 0.4931649, b: 0.57223135, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2599,7 +2599,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 8562044157c4343468bb7c6f7a061175, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -2923,7 +2923,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 300ebcde228da5e4aa068a79d94246f3, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 0.3
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -3053,7 +3053,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeData:
     datetime: 
-    WhatDay: 0
+  WhatDay: 0
+  FirstOpen: 1
 --- !u!4 &930688040
 Transform:
   m_ObjectHideFlags: 0
@@ -3234,6 +3235,7 @@ MonoBehaviour:
     Gem: 0
     SkillPoint: 0
     CurrentCultureLevel: 0
+    IsFirstGame: 1
     ActiveRoomsRequiredMoney: 0
     CurrentPictures: []
     InventoryPictures: []
@@ -3243,6 +3245,9 @@ MonoBehaviour:
     SkillNodes: []
     CurrentWorkerDatas: []
     InventoryWorkerDatas: []
+    LastDailyRewardTime: 
+    WhatDay: 0
+  rewardManager: {fileID: 0}
 --- !u!4 &1202299727
 Transform:
   m_ObjectHideFlags: 0
@@ -3949,7 +3954,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 46115f01662a09147aae256877b1502a, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -4238,12 +4243,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1 &1711952599
 GameObject:
   m_ObjectHideFlags: 0
