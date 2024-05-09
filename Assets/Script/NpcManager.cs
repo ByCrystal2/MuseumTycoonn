@@ -121,7 +121,7 @@ public class NpcManager : MonoBehaviour
         Destroy(_newMess);
     }
 
-    public NpcMess GetNearestMess(Vector3 _currentHouseKeeperLocation, List<int> _myRooms)
+    public NpcMess GetNearestMess(Vector3 _pos,List<int> _myRooms)
     {
         List<RoomData> AllMessedRooms = new List<RoomData>();
         int length = NPCMessParent.GetChild(0).childCount;
@@ -143,15 +143,14 @@ public class NpcManager : MonoBehaviour
                     MyMessedRooms.Add(myRooms[a]);
 
         NpcMess NearestMess = null;
-        float nearest = 30;
+        float nearest = 100;
         int myMessedRoomsCount = MyMessedRooms.Count;
         if (myMessedRoomsCount > 0)
         {
             nearest = 999999;
-            int roomCount = MyMessedRooms.Count;
-            for (int i = 0; i < roomCount; i++)
+            for (int i = 0; i < myMessedRoomsCount; i++)
             {
-                float currentDistance = Vector3.Distance(_currentHouseKeeperLocation, MyMessedRooms[i].CenterPoint.position);
+                float currentDistance = Vector3.Distance(_pos, MyMessedRooms[i].CenterPoint.position);
                 if (currentDistance < nearest)
                 {
                     nearest = currentDistance;
@@ -164,7 +163,7 @@ public class NpcManager : MonoBehaviour
             int length2 = NPCMessParent.GetChild(0).childCount;
             for (int i = 0; i < length2; i++)
             {
-                float currentDistance = Vector3.Distance(_currentHouseKeeperLocation, NPCMessParent.GetChild(0).GetChild(i).position);
+                float currentDistance = Vector3.Distance(myRooms.Count > 0 ? myRooms[0].transform.position : _pos, NPCMessParent.GetChild(0).GetChild(i).position);
                 if (currentDistance < nearest)
                 {
                     nearest = currentDistance;
@@ -216,7 +215,7 @@ public class NpcManager : MonoBehaviour
                     firstPrioritNPCs.Add(npc);
 
         NPCBehaviour NearestNPC = null;
-        float nearest = 30;
+        float nearest = 100;
         int myFirstPriorityRoomsCount = firstPrioritNPCs.Count;
         if (myFirstPriorityRoomsCount > 0)
         {
@@ -236,7 +235,7 @@ public class NpcManager : MonoBehaviour
             int length2 = GuiltyNpcs.Count;
             for (int i = 0; i < length2; i++)
             {
-                float currentDistance = Vector3.Distance(_currentSecurityLocation, GuiltyNpcs[i].transform.position);
+                float currentDistance = Vector3.Distance(myRooms.Count > 0 ? myRooms[0].transform.position : _currentSecurityLocation, GuiltyNpcs[i].transform.position);
                 if (currentDistance < nearest)
                 {
                     nearest = currentDistance;

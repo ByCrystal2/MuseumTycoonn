@@ -246,10 +246,9 @@ public partial class RoomManager // Room Bonus Controller
     {
         if (_currentRoom.GetNpcsInTheMyRoom().Contains(_removeNpc))
         {
-            statuesHandler.RemoveBonusExitedInTheRoom(_currentRoom, _removeNpc);
+            if(_currentRoom.isHasStatue)
+                statuesHandler.RemoveBonusExitedInTheRoom(_currentRoom, _removeNpc);
             _currentRoom.GetNpcsInTheMyRoom().Remove(_removeNpc);
-
-            
         }
     }
     public void AddNpcInTheRoom(RoomData _currentRoom, NPCBehaviour _newNpc)
@@ -257,7 +256,8 @@ public partial class RoomManager // Room Bonus Controller
         if (!_currentRoom.GetNpcsInTheMyRoom().Contains(_newNpc))
         {
             Debug.Log($"An NPC Entered {_currentRoom.availableRoomCell.CellLetter + " " + _currentRoom.availableRoomCell.CellNumber} Cell Room. Current NPC => " + _newNpc.name);
-            statuesHandler.AddBonusEnteredInTheRoom(_currentRoom, _newNpc);
+            if(_currentRoom.isHasStatue)
+                statuesHandler.AddBonusEnteredInTheRoom(_currentRoom, _newNpc);
             _currentRoom.GetNpcsInTheMyRoom().Add(_newNpc);
         }
     }

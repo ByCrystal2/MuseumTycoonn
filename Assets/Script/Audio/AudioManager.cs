@@ -189,8 +189,11 @@ public class AudioManager : MonoBehaviour
     {
         _audioSource.Stop();
         List<AudioSource> audioSources = _dialogDatas.Where(x=> x.DiaType == _dialogType).Select(x => x.AudioSource).ToList();
-        _audioSource = audioSources[Random.Range(0,audioSources.Count)];
-        _audioSource.Play();
+        if(audioSources.Count > 0)
+        {
+            _audioSource = audioSources[Random.Range(0,audioSources.Count)];
+            _audioSource.Play();
+        }
     }
 
     public List<AudioSource> GetDialogAudios(List<DialogData> _dialogDatas)

@@ -10,30 +10,21 @@ public class RoomBlokClickHandler : MonoBehaviour
     {
         MyParentRoomData = GetComponentInParent<RoomData>();
     }
-    private void OnCollisionEnter(Collision _col)
+    private void OnCollisionEnter(Collision _col) //_col is NPC
     {
-        Debug.Log(_col.gameObject.name.ToString());
-        if (MyParentRoomData.isHasStatue)
+        Debug.Log("NPC: <color=#4CC324>" + _col.gameObject.name.ToString() + "</color> entered the room ID: <color=#4CC324>" + MyParentRoomData.ID + "</color>");
+        if (_col.gameObject.TryGetComponent(out NPCBehaviour _enteredNpc))
         {
-            if (_col.gameObject.TryGetComponent(out NPCBehaviour _enteredNpc))
-            {
-                Debug.Log("_enteredNpc.name => " + _enteredNpc.name.ToString());
-                _enteredNpc.CurrentVisitedRoom = MyParentRoomData;
-                RoomManager.instance.AddNpcInTheRoom(MyParentRoomData, _enteredNpc);
-            }
+            _enteredNpc.CurrentVisitedRoom = MyParentRoomData;
+            RoomManager.instance.AddNpcInTheRoom(MyParentRoomData, _enteredNpc);
         }
-        
     }
     private void OnCollisionExit(Collision _col)
     {
-        Debug.Log(_col.gameObject.name.ToString());
-        if (MyParentRoomData.isHasStatue)
+        Debug.Log("NPC: <color=#C3A624>" + _col.gameObject.name.ToString() + "</color> exitted the room ID: <color=#4CC324>" + MyParentRoomData.ID + "</color>");
+        if (_col.gameObject.TryGetComponent(out NPCBehaviour _exitedNpc))
         {
-            if (_col.gameObject.TryGetComponent(out NPCBehaviour _exitedNpc))
-            {
-                Debug.Log("_exitedNpc.name => " + _exitedNpc.name.ToString());
-                RoomManager.instance.RemoveNpcInTheRoom(MyParentRoomData, _exitedNpc);
-            }
+            RoomManager.instance.RemoveNpcInTheRoom(MyParentRoomData, _exitedNpc);
         }
     }
     private void OnMouseDown()

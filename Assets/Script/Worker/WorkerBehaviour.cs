@@ -322,7 +322,6 @@ public class WorkerBehaviour : MonoBehaviour
         CancelInvoke();
         Invoke(nameof(StartStandUP), 8);
         Invoke(nameof(RefreshEnergy), 10);
-        RefreshEnergy();
         RestIcon.SetActive(true);
     }
 

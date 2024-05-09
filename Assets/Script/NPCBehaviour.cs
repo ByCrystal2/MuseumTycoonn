@@ -136,17 +136,18 @@ public class NPCBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (IsBusy)
-            return;
-
         if (TargetPosition == null)
         {
+            if (IsBusy)
+                return;
             CreateTarget();
             return;
         }
 
         if (CurrentState == NPCState.Idle)
         {
+            if (IsBusy)
+                return;
             if (IdleTimer < Time.time)
             {
                 CreateTarget();
@@ -155,6 +156,8 @@ public class NPCBehaviour : MonoBehaviour
         }
         else if (CurrentState == NPCState.Move)
         {
+            if (IsBusy)
+                return;
             if (IdleTimer > Time.time)
                 return;
             Move();
@@ -581,7 +584,7 @@ public class NPCBehaviour : MonoBehaviour
             CurrentInvestigate = InvestigateState.Dialog;
             DialogTarget = npcTarget;
             IsBusy = true;
-            Debug.Log("IdleTimer: " + IdleTimer + " /Dialog end with npc: " + name + " /dialogTarget: " + DialogTarget.name);
+            Debug.Log("IdleTimer: " + IdleTimer + " /Dialog start with npc: " + name + " /dialogTarget: " + DialogTarget.name);
             SetCurrentAnimationState("Dialog", Random.Range(1, 4));            
             AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcTalking,CurrentAudioSource);            
             return;
@@ -648,7 +651,7 @@ public class NPCBehaviour : MonoBehaviour
             if (Stress >= 0)
             {
                 int luck = Random.Range(0 + (int)Stress, 101);
-                if (luck >= 70)
+                if (luck >= (70 - Stress))
                 {
                     bool amIbeat;
                     if (DialogTarget._stress == _stress)
@@ -830,6 +833,7 @@ public class NPCBehaviour : MonoBehaviour
         Agent.isStopped = true;
         Agent.enabled = false;
         IsBusy = true;
+        SetCurrentAnimationState("Dialog", 0, "Walk", 0);
         yield return new WaitForSeconds(0.6f);
 
         SetCurrentAnimationState("Dialog", -2, "Walk", 0);

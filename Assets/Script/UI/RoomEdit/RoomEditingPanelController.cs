@@ -154,12 +154,12 @@ public class RoomEditingPanelController : MonoBehaviour
         Debug.Log("currentState.name => " + currentStateContent.name);
         Debug.Log("Statues[ClickedEditObjBehaviour.myStatueIndex].name => " + RoomManager.instance.statuesHandler.Statues[ClickedEditObjBehaviour.data.myStatueIndex].name);
 
-        Vector3 anaScale = gameObject.transform.localScale;
+        Vector3 anaScale = currentStateContent.transform.localScale;
 
         // Prefabýn scale deðerlerini hesapla ve ayarla
-        Vector3 prefabScale = new Vector3(1.0f * anaScale.x, 1.0f * anaScale.y, 1.0f * anaScale.z);
 
         GameObject Statue = Instantiate(RoomManager.instance.statuesHandler.Statues[ClickedEditObjBehaviour.data.myStatueIndex], currentStateContent.transform);
+        Vector3 prefabScale = new Vector3(Statue.transform.localScale.x / anaScale.x, Statue.transform.localScale.y / anaScale.y, Statue.transform.localScale.z / anaScale.z);
         Statue.transform.localScale = prefabScale;
         EditObjBehaviour currentStatueData = Statue.AddComponent<EditObjBehaviour>();
         currentStatueData.data = new EditObjData(ClickedEditObjBehaviour.GetComponent<EditObjBehaviour>().data);
