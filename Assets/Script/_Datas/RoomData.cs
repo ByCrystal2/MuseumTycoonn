@@ -27,6 +27,7 @@ public class RoomData : MonoBehaviour
     //UI
     public List<GameObject> Doors = new List<GameObject>();
     private GameObject RoomBlok;
+    [SerializeField] GameObject NotPurchasedBlok;
     private GameObject RoofLock;
     public List<TextMeshProUGUI> MyRequiredMoneyTexts;
 
@@ -89,6 +90,7 @@ public class RoomData : MonoBehaviour
                     DirectionPictures[(int)direction].SetActive(false);
             }
             RoomBlok.SetActive(true);
+            NotPurchasedBlok.SetActive(true);
             RoofLock.SetActive(true);
             if (CurrentShoppingType != ShoppingType.RealMoney && isActive && RoomManager.instance.activeRoomsRequiredMoney > 0)
             {
@@ -134,6 +136,7 @@ public class RoomData : MonoBehaviour
             }
             //RoomBlok.SetActive(false);
             RoofLock.SetActive(false);
+            NotPurchasedBlok.SetActive(false);
         }
 
         foreach (DoorDirection pictureDirection in pictureDirections)
@@ -189,6 +192,7 @@ public class RoomData : MonoBehaviour
             }
             //RoomBlok.SetActive(false);
             RoofLock.SetActive(false);
+            NotPurchasedBlok.SetActive(false);
         }
         else
         {
@@ -206,6 +210,7 @@ public class RoomData : MonoBehaviour
                 Doors[(int)Directions[i]].SetActive(true);
             }
             RoomBlok.SetActive(true);
+            NotPurchasedBlok.SetActive(true);
             RoofLock.SetActive(true);
         }
     }
