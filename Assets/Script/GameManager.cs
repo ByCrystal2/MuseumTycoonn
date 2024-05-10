@@ -147,6 +147,15 @@ public class GameManager : MonoBehaviour
         {
             skillNodes.Add(skill);
         }
+
+        List<EditObjData> statueDatas = new List<EditObjData>();
+        if (RoomManager.instance != null)
+        {
+            foreach (var statueData in RoomManager.instance.statuesHandler.activeEditObjs)
+            {
+                statueDatas.Add(statueData);
+            }
+        }
         List<WorkerData> currentWorkerDatas = new List<WorkerData>();
         List<WorkerData> inventoryWorkerDatas = new List<WorkerData>();
         Debug.Log("skillNodes.count: " + skillNodes.Count);
@@ -177,6 +186,8 @@ public class GameManager : MonoBehaviour
                 newSaveData.isLock = room.isLock;
                 newSaveData.isActive = room.isActive;
                 newSaveData.RequiredMoney = room.RequiredMoney;
+                newSaveData.IsHasStatue = room.isHasStatue;
+                newSaveData.MyStatue = room.GetMyStatueInTheMyRoom();
 
                 newSaveData.MyRoomWorkersIDs.Clear();
                 int length = room.MyRoomWorkersIDs.Count;
@@ -192,6 +203,9 @@ public class GameManager : MonoBehaviour
                 currentSavedRoom.isLock = room.isLock;
                 currentSavedRoom.isActive = room.isActive;
                 currentSavedRoom.RequiredMoney = room.RequiredMoney;
+                currentSavedRoom.IsHasStatue = room.isHasStatue;
+                currentSavedRoom.MyStatue = room.GetMyStatueInTheMyRoom();
+
                 currentSavedRoom.MyRoomWorkersIDs.Clear();
                 int length = room.MyRoomWorkersIDs.Count;
                 for (int i = 0; i < length; i++)
@@ -207,7 +221,8 @@ public class GameManager : MonoBehaviour
         CurrentSaveData.DailyRewardItems = dailyRewardItems;
         CurrentSaveData.SkillNodes = skillNodes;
         CurrentSaveData.CurrentWorkerDatas = currentWorkerDatas;
-        CurrentSaveData.InventoryWorkerDatas = inventoryWorkerDatas;      
+        CurrentSaveData.InventoryWorkerDatas = inventoryWorkerDatas;
+        CurrentSaveData.StatueDatas = statueDatas;
 
         if(UnityAdsManager.instance != null)
             CurrentSaveData.adData = UnityAdsManager.instance.adsData;
@@ -236,6 +251,9 @@ public class GameManager : MonoBehaviour
                 room.isActive = currentRoomData.isActive;
                 room.isLock = currentRoomData.isLock;
                 room.RequiredMoney = currentRoomData.RequiredMoney;
+                room.isHasStatue = currentRoomData.IsHasStatue;
+                room.SetMyStatue(currentRoomData.MyStatue);
+
                 room.MyRoomWorkersIDs.Clear();
                 int length = currentRoomData.MyRoomWorkersIDs.Count;
                 for (int i = 0; i < length; i++)
@@ -420,6 +438,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void LoadStatues()
+    {
+        RoomManager.instance.statuesHandler.activeEditObjs = CurrentSaveData.StatueDatas;
+
+        foreach (var statue in RoomManager.instance.statuesHandler.activeEditObjs)
+        {
+            RoomManager.instance.AddSavedStatues(statue);
+        }
+    }
+
     private void OnApplicationQuit()
     {
         TimeManager.instance.FirstOpen = true;
@@ -450,6 +478,8 @@ public class GameManager : MonoBehaviour
         public List<WorkerData> CurrentWorkerDatas = new List<WorkerData>();
         public List<WorkerData> InventoryWorkerDatas = new List<WorkerData>();
         public AdverstingData adData; //ADS SISTEMI KURULDUKTAN SONRA EKLENECEK.
+
+        public List<EditObjData> StatueDatas = new List<EditObjData>();
 
         //DailyReward
         public string LastDailyRewardTime = "";

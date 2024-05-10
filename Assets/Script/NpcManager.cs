@@ -43,6 +43,7 @@ public class NpcManager : MonoBehaviour
         GameManager.instance.LoadIsFirstGame();
         GameManager.instance.LoadRooms();
         RoomManager.instance.AddRooms(); // in app baglantisi kurulmadan once odalar yuklendi.
+        GameManager.instance.LoadStatues();
         WorkerManager.instance.BaseAllWorkerOptions();
         GameManager.instance.LoadWorkers();
         WorkerManager.instance.CreateWorkersToMarket();

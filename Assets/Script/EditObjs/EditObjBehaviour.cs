@@ -11,7 +11,8 @@ public class EditObjBehaviour : MonoBehaviour, IPointerClickHandler
     {
         if (!data.isClickable) return;
         RoomEditingPanelController.instance.ClickedEditObjBehaviour = this;
-        RoomEditingPanelController.instance.ClickedEditObjImage.sprite = data.ImageSprite;
+        RoomEditingPanelController.instance.ClickedEditObjBehaviour.data = this.data;
+        RoomEditingPanelController.instance.SetStatueBuyingPanelUIs(this.data);
         RoomEditingPanelController.instance.BuyEditObjPanel.SetActive(true);
     }
 }

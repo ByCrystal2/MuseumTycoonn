@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -15,8 +16,8 @@ public class EditObjData
     public int FocusedLevel;
     public Sprite ImageSprite;
     public EditObjType EditType;
-    public List<(EditObjBonusType _bonusses, int _value)> BonusEnums = new List<(EditObjBonusType _bonusses, int _value)>();
-    public RoomData _currentRoom;
+    public List<Bonus> Bonusses = new List<Bonus>();
+    public RoomCell _currentRoomCell;
     public int myStatueIndex;
 
     public bool isClickable;
@@ -25,7 +26,7 @@ public class EditObjData
     {
         
     }
-    public EditObjData(int _id, string _name,float _price,Texture2D _resourcesTexture , EditObjType _objType, List<(EditObjBonusType _bonusses, int _value)> Bonusses_Values,int _focusedLevel, int _myStatueIndex = -1, bool _isLocked = true)
+    public EditObjData(int _id, string _name,float _price,Texture2D _resourcesTexture , EditObjType _objType, List<Bonus> _Bonusses,int _focusedLevel, int _myStatueIndex = -1, bool _isLocked = true)
     {
         ID = _id;
         Name = _name;
@@ -33,20 +34,15 @@ public class EditObjData
         Price = _price;
         ImageSprite = CatchTheColors.instance.TextureToSprite(_resourcesTexture);
         EditType = _objType;
-        if (Bonusses_Values.Count > 0)
+        if (_Bonusses.Count > 0)
         {
-            BonusEnums.Clear();
-            int length = Bonusses_Values.Count;
+            Bonusses.Clear();
+            int length = _Bonusses.Count;
             for (int i = 0; i < length; i++)
             {
-                Debug.Log("Bonusses_Values[i]._bonusses.ToString() + Bonusses_Values[i]._bonusses.ToString() => " + Bonusses_Values[i]._bonusses.ToString() +" "+ Bonusses_Values[i]._value.ToString());
-                BonusEnums.Add(Bonusses_Values[i]);
-            }
-            int length1 = BonusEnums.Count;
-            for (int i = 0; i < length1; i++)
-            {
-                Debug.Log("BonusEnums[i]._bonusses.ToString() + BonusEnums[i]._value.ToString() => " + BonusEnums[i]._bonusses.ToString() +" "+ BonusEnums[i]._value.ToString());
-            }
+                Debug.Log("_Bonusses[i].BonussesType + _Bonusses[i].Value => " + _Bonusses[i].BonusType.ToString() +" "+ _Bonusses[i].Value.ToString());
+                Bonusses.Add(_Bonusses[i]);
+            }            
         }
         FocusedLevel = _focusedLevel;
         IsLocked = _isLocked;
@@ -63,17 +59,12 @@ public class EditObjData
         Price = _newData.Price;
         ImageSprite = _newData.ImageSprite;
         EditType = _newData.EditType;
-        BonusEnums.Clear();
-        int length = _newData.BonusEnums.Count;
+        Bonusses.Clear();
+        int length = _newData.Bonusses.Count;
         for (int i = 0; i < length; i++)
         {
-            Debug.Log("Bonusses_Values[i]._bonusses.ToString() + Bonusses_Values[i]._bonusses.ToString() => " + _newData.BonusEnums[i]._bonusses.ToString() + " " + _newData.BonusEnums[i]._value.ToString());
-            BonusEnums.Add(_newData.BonusEnums[i]);
-        }
-        int length1 = BonusEnums.Count;
-        for (int i = 0; i < length1; i++)
-        {
-            Debug.Log("BonusEnums[i]._bonusses.ToString() + BonusEnums[i]._value.ToString() => " + BonusEnums[i]._bonusses.ToString() + " " + BonusEnums[i]._value.ToString());
+            Debug.Log("_Bonusses[i].BonussesType + _Bonusses[i].Value => " + _newData.Bonusses[i].BonusType.ToString() + " " + _newData.Bonusses[i].Value.ToString());
+            Bonusses.Add(_newData.Bonusses[i]);
         }
         IsPurchased = _newData.IsPurchased;
         IsLocked = _newData.IsLocked;
@@ -85,11 +76,11 @@ public class EditObjData
         IsPurchased = true;
         if (EditType == EditObjType.Statue)
         {
-            _currentRoom.isHasStatue = true;
-            int length = BonusEnums.Count;
+            RoomManager.instance.GetRoomWithRoomCell(_currentRoomCell).isHasStatue = true;
+            int length = Bonusses.Count;
             for (int i = 0; i < length; i++)
             {
-                Debug.Log(BonusEnums[i]._bonusses.ToString());
+                Debug.Log(Bonusses[i].BonusType.ToString());
             }
             RoomManager.instance.statuesHandler.AddAndBonusCalculator(this);
         }
@@ -105,12 +96,15 @@ public class EditObjData
     
 
 }
-public class Bonus<T>
+[System.Serializable]
+public class Bonus
 {
-    public T Value { get; set; } // Bonus deðeri
-    public Bonus(T value)
+    public EditObjBonusType BonusType;
+    public int Value;
+    public Bonus(EditObjBonusType _bonusType, int _value)
     {
-        Value = value;
+        BonusType = _bonusType;
+        Value = _value;
     }
 }
 public enum EditObjBonusType

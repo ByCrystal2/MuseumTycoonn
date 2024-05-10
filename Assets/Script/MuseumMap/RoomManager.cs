@@ -40,6 +40,8 @@ public partial class RoomManager : MonoBehaviour
     {
         RoomDatas = GameObject.FindObjectsOfType<RoomData>().ToList();
         statuesHandler = new StatuesHandler(); // ctor ile heykeller olusturuldu.
+        statuesHandler.AddEditObjs();
+        
     }
     public void BuyTheRoom(RoomData currentRoom)
     {
@@ -239,6 +241,10 @@ public partial class RoomManager : MonoBehaviour
 
         return Rooms;
     }
+    public RoomData GetRoomWithRoomCell(RoomCell _cell)
+    {
+        return RoomDatas.Where(x=> x.availableRoomCell.CellLetter.ToString() + x.availableRoomCell.CellNumber.ToString()  == _cell.CellLetter.ToString() + _cell.CellNumber.ToString()).SingleOrDefault();
+    }
 }
 public partial class RoomManager // Room Bonus Controller
 {
@@ -260,5 +266,21 @@ public partial class RoomManager // Room Bonus Controller
                 statuesHandler.AddBonusEnteredInTheRoom(_currentRoom, _newNpc);
             _currentRoom.GetNpcsInTheMyRoom().Add(_newNpc);
         }
+    }
+    public void AddSavedStatues(EditObjData _statue)
+    {
+        StatueSlotHandler currentStateContent = FindObjectsOfType<StatueSlotHandler>().Where(x => x.MyRoomCode == (_statue._currentRoomCell.CellLetter.ToString() + _statue._currentRoomCell.CellNumber.ToString())).SingleOrDefault();
+
+        Vector3 anaScale = currentStateContent.transform.localScale;
+
+        GameObject Statue = Instantiate(statuesHandler.Statues[_statue.myStatueIndex], currentStateContent.transform);
+
+        Vector3 prefabScale = new Vector3(Statue.transform.localScale.x / anaScale.x, Statue.transform.localScale.y / anaScale.y, Statue.transform.localScale.z / anaScale.z);
+        Statue.transform.localScale = prefabScale;
+
+        EditObjBehaviour currentStatueData = Statue.AddComponent<EditObjBehaviour>();
+        currentStatueData.data = new EditObjData(_statue);
+        currentStateContent.MyStatue = currentStatueData.data;
+        statuesHandler.currentEditObjs.Remove(statuesHandler.editObjs.Where(x => x.ID == _statue.ID).SingleOrDefault());
     }
 }

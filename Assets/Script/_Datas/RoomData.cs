@@ -262,6 +262,8 @@ public class RoomSaveData
     public bool isLock = true;
     public bool isActive = false;
     public float RequiredMoney;
+    public bool IsHasStatue = false;
+    public EditObjData MyStatue;
     public List<int> MyRoomWorkersIDs = new List<int>();
 }
 

@@ -12,7 +12,16 @@ public class RoomEditingPanelController : MonoBehaviour
     [SerializeField] GameObject EditObj_DecorationVariant;    
     //UI
     [SerializeField] public GameObject BuyEditObjPanel;
-    [SerializeField] public Image ClickedEditObjImage;
+    [SerializeField] public Transform ClikedStatueBonusContentPanel;
+    [SerializeField] public Image ClickedStatueImage;
+    [SerializeField] public Text txtClickedStatuePrice;
+    [SerializeField] public Text txtClickedStatueName;
+    [SerializeField] public Text txtClickedStatueTargetLevel;
+    [SerializeField] public GameObject InsufficientFundsText;
+    [SerializeField] public GameObject BonusText; // Prefab
+    [SerializeField] public Button BuyStatueButton;
+
+
     public StatueSlotHandler CurrentStatueSlot;
     public EditObjBehaviour ClickedEditObjBehaviour;
     
@@ -61,9 +70,9 @@ public class RoomEditingPanelController : MonoBehaviour
             MyEditObj.data.Price = _newData.Price;
             MyEditObj.data.EditType = _newData.EditType;
             MyEditObj.data.ImageSprite = _newData.ImageSprite;
-            MyEditObj.data._currentRoom = _newData._currentRoom;
-            MyEditObj.data.BonusEnums = new List<(EditObjBonusType _bonusses, int _value)>();
-            MyEditObj.data.BonusEnums.Clear();
+            MyEditObj.data._currentRoomCell = _newData._currentRoomCell;
+            MyEditObj.data.Bonusses = new List<Bonus>();
+            MyEditObj.data.Bonusses.Clear();
             MyEditObj.data.IsPurchased = _newData.IsPurchased;
             MyEditObj.data.IsLocked = _newData.IsLocked;
             MyEditObj.data.FocusedLevel = _newData.FocusedLevel;
@@ -79,10 +88,10 @@ public class RoomEditingPanelController : MonoBehaviour
                 MyEditObj.data.isClickable = false;
                 Instantiate(LockedPanel, _newStatue.transform.GetChild(0));
             }
-            int length1 = _newData.BonusEnums.Count;
+            int length1 = _newData.Bonusses.Count;
             for (int j = 0; j < length1; j++)
             {
-                MyEditObj.data.BonusEnums.Add(_newData.BonusEnums[j]);
+                MyEditObj.data.Bonusses.Add(_newData.Bonusses[j]);
             }
             _newStatue.transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = _newData.ImageSprite;
         }
@@ -105,7 +114,7 @@ public class RoomEditingPanelController : MonoBehaviour
             MyEditObj.data.Price = _newData.Price;
             MyEditObj.data.EditType = _newData.EditType;
             MyEditObj.data.ImageSprite = _newData.ImageSprite;
-            MyEditObj.data._currentRoom = _newData._currentRoom;
+            MyEditObj.data._currentRoomCell = _newData._currentRoomCell;
             MyEditObj.data.IsPurchased = _newData.IsPurchased;
             MyEditObj.data.IsLocked = _newData.IsLocked;
             if (MuseumManager.instance.GetCurrentCultureLevel() >= MyEditObj.data.FocusedLevel)
@@ -121,12 +130,12 @@ public class RoomEditingPanelController : MonoBehaviour
             }
             MyEditObj.data.FocusedLevel = _newData.FocusedLevel;
 
-            MyEditObj.data.BonusEnums = new List<(EditObjBonusType _bonusses, int _value)>();
-            MyEditObj.data.BonusEnums.Clear();
-            int length1 = _newData.BonusEnums.Count;
+            MyEditObj.data.Bonusses = new List<Bonus>();
+            MyEditObj.data.Bonusses.Clear();
+            int length1 = _newData.Bonusses.Count;
             for (int j = 0; j < length1; j++)
             {
-                MyEditObj.data.BonusEnums.Add(_newData.BonusEnums[j]);
+                MyEditObj.data.Bonusses.Add(_newData.Bonusses[j]);
             }
 
             _newStatue.transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = _newData.ImageSprite;            
@@ -148,9 +157,9 @@ public class RoomEditingPanelController : MonoBehaviour
         else
             MuseumManager.instance.SpendingGold(ClickedEditObjBehaviour.data.Price);
 
-        ClickedEditObjBehaviour.data._currentRoom = RoomManager.instance.CurrentEditedRoom;
+        ClickedEditObjBehaviour.data._currentRoomCell = RoomManager.instance.CurrentEditedRoom.availableRoomCell;
         ClickedEditObjBehaviour.data.SetIsPurchased();
-        StatueSlotHandler currentStateContent = FindObjectsOfType<StatueSlotHandler>().Where(x => x.MyRoomCode == (ClickedEditObjBehaviour.data._currentRoom.availableRoomCell.CellLetter.ToString() + ClickedEditObjBehaviour.data._currentRoom.availableRoomCell.CellNumber.ToString())).SingleOrDefault();
+        StatueSlotHandler currentStateContent = FindObjectsOfType<StatueSlotHandler>().Where(x => x.MyRoomCode == (ClickedEditObjBehaviour.data._currentRoomCell.CellLetter.ToString() + ClickedEditObjBehaviour.data._currentRoomCell.CellNumber.ToString())).SingleOrDefault();
         Debug.Log("currentState.name => " + currentStateContent.name);
         Debug.Log("Statues[ClickedEditObjBehaviour.myStatueIndex].name => " + RoomManager.instance.statuesHandler.Statues[ClickedEditObjBehaviour.data.myStatueIndex].name);
 
@@ -164,12 +173,57 @@ public class RoomEditingPanelController : MonoBehaviour
         EditObjBehaviour currentStatueData = Statue.AddComponent<EditObjBehaviour>();
         currentStatueData.data = new EditObjData(ClickedEditObjBehaviour.GetComponent<EditObjBehaviour>().data);
         currentStateContent.MyStatue = currentStatueData.data;
-        RoomManager.instance.statuesHandler.currentEditObjs.Remove(RoomManager.instance.statuesHandler.currentEditObjs.Where(x => x.ID == ClickedEditObjBehaviour.data.ID).SingleOrDefault());
+
+        RoomManager.instance.statuesHandler.activeEditObjs.Add(ClickedEditObjBehaviour.data);
+
+        RoomManager.instance.statuesHandler.currentEditObjs.Remove(ClickedEditObjBehaviour.data);
+
+
         ClickedEditObjBehaviour = null;
         //UIController.instance.SetActivationRoomEditingPanel(false);
         AddStatuesInContent();
         UIController.instance.SetActivationRoomEditingPanel(false);
         RightUIPanelController.instance.UIVisibleClose(false);
+
+        GameManager.instance.Save();
+    }
+
+    public void ClearClikedStatueBonusContent()
+    {
+        int length = ClikedStatueBonusContentPanel.childCount;
+        if (length == 0) return;
+        for (int i = 0; i < length; i++)
+        {
+            Destroy(ClikedStatueBonusContentPanel.GetChild(i).gameObject);
+        }
+    }
+    public void SetStatueBuyingPanelUIs(EditObjData _data)
+    {
+        ClearClikedStatueBonusContent();
+        ClickedStatueImage.sprite = _data.ImageSprite;
+        float dataPrice = _data.Price;
+        txtClickedStatuePrice.text = dataPrice.ToString();
+        if (dataPrice > MuseumManager.instance.GetCurrentGold())
+        {
+            txtClickedStatuePrice.color = Color.red;
+            InsufficientFundsText.SetActive(true);
+            BuyStatueButton.interactable = false;
+        }
+        else
+        {
+            txtClickedStatuePrice.color = Color.green;
+            InsufficientFundsText.SetActive(false);
+            BuyStatueButton.interactable = true;
+        }
+        txtClickedStatueName.text = _data.Name;
+        txtClickedStatueTargetLevel.text = "+" + _data.FocusedLevel.ToString() + " lvl";
+
+        foreach (var bonus in _data.Bonusses)
+        {
+            GameObject newBonusObj = Instantiate(BonusText, ClikedStatueBonusContentPanel.transform);
+            Text newBonusText = newBonusObj.GetComponent<Text>();
+            newBonusText.text = $"{bonus.BonusType} => +{bonus.Value}";
+        }
     }
 }
 
