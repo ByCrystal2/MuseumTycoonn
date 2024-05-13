@@ -32,7 +32,7 @@ namespace TouchScript.Core
                     var objects = FindObjectsOfType<LayerManagerInstance>();
                     if (objects.Length == 0)
                     {
-                        var go = new GameObject("GestureManager Instance");
+                        var go = new GameObject("GestureManager instance");
                         instance = go.AddComponent<LayerManagerInstance>();
                     }
                     else if (objects.Length >= 1)

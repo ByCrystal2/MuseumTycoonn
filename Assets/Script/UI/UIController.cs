@@ -128,6 +128,14 @@ public class UIController : MonoBehaviour
     public Text CultureLevelText, GoldText, GemText;
     [SerializeField] GameObject MoneysObj;
     //UI
+    [SerializeField] private RectTransform LeftUISBackground;
+    [SerializeField] private Transform LeftUIArrow;
+    [SerializeField] private Button btnLeftUIOpen;
+
+    [SerializeField] private Transform BaseBtnBookPos;
+    [SerializeField] private Transform BaseBtnWorkerMarketPos;
+    [SerializeField] private Transform BaseBtnWorkerAssignmentPos;
+
     [SerializeField] private Transform ActivePnlBtnBookDefaultPos;
     [SerializeField] private Transform ActivePnlBtnWorkerMarketDefaultPos;
     [SerializeField] private Transform ActivePnlBtnWorkerAssignmentDefaultPos;
@@ -151,9 +159,11 @@ public class UIController : MonoBehaviour
     }
     private void Start()
     {
+        LeftUISBackground.gameObject.SetActive(false);
         defaultBtnBookPos = museumStatButton.transform.position;
         defaultBtnWorkerMarketPos = WorkerPanelOnButton.transform.position;
         defaultBtnWorkerAssignmentPos = WorkerAssignmentPanelOnButton.transform.position;
+        btnLeftUIOpen.onClick.AddListener(() => StartRightPanelUISBasePosAnim(false));
         museumStatButton.onClick.AddListener(ShowMuseumStatsPanel);
         unlockButton.onClick.AddListener(BuySkill);
         NpcInfoPanelExitButton.onClick.AddListener(CloseNPCInformationPanel);
@@ -187,6 +197,67 @@ public class UIController : MonoBehaviour
         _LastSelectedPicture = _lastSelectedPicture;
         SetSelectedPicture(0);
         //pnlPicturesMenu.SetActive(active);
+    }
+    private bool rightAnimOpen = false;
+    private bool rightAnimOpenOverWrite = false;
+    public void StartRightPanelUISBasePosAnim(bool _overWrite = false)
+    {
+        DOTween.KillAll();
+        if (_overWrite)
+        {
+            if (!rightAnimOpenOverWrite)
+            {
+                btnLeftUIOpen.gameObject.SetActive(false);
+                LeftUIArrow.DOLocalRotate(new Vector3(0, 0, 180), 0.2f);
+                LeftUISBackground.DOScaleX(1, 0.4f).SetEase(Ease.Linear).OnComplete(() =>
+                {
+                    LeftUISBackground.gameObject.SetActive(false);
+                });
+                LeftUISBackground.DOScaleY(1, 0.2f).SetEase(Ease.Linear);
+            }
+            else
+            {
+                btnLeftUIOpen.gameObject.SetActive(true);
+                LeftUISBackground.gameObject.SetActive(true);
+                LeftUISBackground.DOScaleX(14, 0.05f).SetEase(Ease.Linear);
+                LeftUISBackground.DOScaleY(50, 0.1f).SetEase(Ease.Linear);            
+            }
+            rightAnimOpen = !rightAnimOpen;
+            LeftUIArrow.DOLocalRotate(new Vector3(0, 0, 0), 0.2f);
+            rightAnimOpenOverWrite = !rightAnimOpenOverWrite;
+            return;
+        }
+        if (!rightAnimOpen)
+        {
+            LeftUISBackground.gameObject.SetActive(true);
+            LeftUIArrow.DOLocalRotate(new Vector3(0, 0, 0),0.2f);
+            LeftUISBackground.DOScaleX(14, 0.2f).SetEase(Ease.Linear).OnComplete(() =>
+            {
+                LeftUISBackground.DOScaleY(50, 0.3f).SetEase(Ease.Linear).OnComplete(() =>
+                {
+                    museumStatButton.transform.DOMove(BaseBtnBookPos.position, 0.1f).SetEase(Ease.Linear);
+                    WorkerPanelOnButton.transform.DOMove(BaseBtnWorkerMarketPos.position, 0.1f).SetEase(Ease.Linear);
+                    WorkerAssignmentPanelOnButton.transform.DOMove(BaseBtnWorkerAssignmentPos.position, 0.1f).SetEase(Ease.Linear);
+                });
+            });
+
+            
+        }
+        else
+        {
+            LeftUIArrow.DOLocalRotate(new Vector3(0, 0, 180), 0.2f);
+            museumStatButton.transform.DOMove(defaultBtnBookPos, 0.05f).SetEase(Ease.Linear);
+            WorkerPanelOnButton.transform.DOMove(defaultBtnWorkerMarketPos, 0.05f).SetEase(Ease.Linear);
+            WorkerAssignmentPanelOnButton.transform.DOMove(defaultBtnWorkerAssignmentPos, 0.05f).SetEase(Ease.Linear).OnComplete(() =>
+            {
+                LeftUISBackground.DOScaleX(1, 0.4f).SetEase(Ease.Linear).OnComplete(()=>
+                {
+                    LeftUISBackground.gameObject.SetActive(false);
+                });
+                LeftUISBackground.DOScaleY(1, 0.2f).SetEase(Ease.Linear);
+            });
+        }
+        rightAnimOpen = !rightAnimOpen;
     }
     public bool IsPointerOverUIObject()
     {
@@ -705,6 +776,7 @@ public string GetDropDownSelectedPainter()
     }
     public void ActiveInHierarchyDailyRewardPanelControl()
     {
+        GoogleAdsManager.instance.ShowInterstitialAd();
         if (!DailyRewardPanel.activeInHierarchy)
         {
             GeneralButtonActivation(true,DailyRewardPanelOnButton);
@@ -717,7 +789,7 @@ public string GetDropDownSelectedPainter()
             CloseJoystickObj(false);
             RightUIPanelController.instance.CloseEditObj(false);
             DailyRewardPanel.SetActive(false);
-            GeneralButtonActivation(false);
+            GeneralButtonActivation(false,DailyRewardPanelOnButton);
         }
     }
     public void CloseMuseumStatsPanel(bool _close)
@@ -766,39 +838,66 @@ public string GetDropDownSelectedPainter()
             WorkerPanelOnButton.gameObject.SetActive(!_buttonActive);
             WorkerAssignmentPanelOnButton.gameObject.SetActive(!_buttonActive);
             DailyRewardPanelOnButton.gameObject.SetActive(!_buttonActive);
-
+            
             GameObject _activeGO = _activePnlButton.gameObject;
             if (_activeGO == museumStatButton.gameObject)
             {
                 _activePnlButton.gameObject.transform.position = ActivePnlBtnBookDefaultPos.position;
                 _activePnlButton.gameObject.SetActive(_buttonActive);
+                StartRightPanelUISBasePosAnim(true);
             }
             else if (_activeGO == WorkerPanelOnButton.gameObject)
             {
                 _activePnlButton.gameObject.transform.position = ActivePnlBtnWorkerMarketDefaultPos.position;
                 _activePnlButton.gameObject.SetActive(_buttonActive);
+                StartRightPanelUISBasePosAnim(true);
             }
             else if (_activeGO == WorkerAssignmentPanelOnButton.gameObject)
             {
                 _activePnlButton.gameObject.transform.position = ActivePnlBtnWorkerAssignmentDefaultPos.position;
                 _activePnlButton.gameObject.SetActive(_buttonActive);
+                StartRightPanelUISBasePosAnim(true);
             }
             else if (_activeGO == DailyRewardPanelOnButton.gameObject)
             {
                 _activePnlButton.gameObject.SetActive(_buttonActive);
+                btnLeftUIOpen.gameObject.SetActive(false);
+                LeftUIArrow.DOLocalRotate(new Vector3(0, 0, 180), 0.2f);
+                museumStatButton.transform.DOMove(defaultBtnBookPos, 0.05f).SetEase(Ease.Linear);
+                WorkerPanelOnButton.transform.DOMove(defaultBtnWorkerMarketPos, 0.05f).SetEase(Ease.Linear);
+                WorkerAssignmentPanelOnButton.transform.DOMove(defaultBtnWorkerAssignmentPos, 0.05f).SetEase(Ease.Linear).OnComplete(() =>
+                {
+                    LeftUISBackground.DOScaleX(1, 0.4f).SetEase(Ease.Linear).OnComplete(() =>
+                    {
+                        LeftUISBackground.gameObject.SetActive(false);
+                    });
+                    LeftUISBackground.DOScaleY(1, 0.2f).SetEase(Ease.Linear);
+                });
+                rightAnimOpenOverWrite = false;
+                rightAnimOpen = false;
             }
-
         }
         else
         {
-            museumStatButton.transform.position = defaultBtnBookPos;
-            WorkerPanelOnButton.transform.position = defaultBtnWorkerMarketPos;
-            WorkerAssignmentPanelOnButton.transform.position = defaultBtnWorkerAssignmentPos;
+            if (_activePnlButton != null && _activePnlButton.gameObject == DailyRewardPanelOnButton.gameObject)
+            {
+                museumStatButton.gameObject.SetActive(true);
+                WorkerPanelOnButton.gameObject.SetActive(true);
+                WorkerAssignmentPanelOnButton.gameObject.SetActive(true);
+                DailyRewardPanelOnButton.gameObject.SetActive(true);
+                btnLeftUIOpen.gameObject.SetActive(true);
+                //StartRightPanelUISBasePosAnim(true);
+                Debug.Log("_activePnlButton.gameObject => " + _activePnlButton.gameObject);
+                return;
+            }
+            museumStatButton.transform.position = BaseBtnBookPos.position;
+            WorkerPanelOnButton.transform.position = BaseBtnWorkerMarketPos.position;
+            WorkerAssignmentPanelOnButton.transform.position = BaseBtnWorkerAssignmentPos.position;
             museumStatButton.gameObject.SetActive(true);
             WorkerPanelOnButton.gameObject.SetActive(true);
             WorkerAssignmentPanelOnButton.gameObject.SetActive(true);
             DailyRewardPanelOnButton.gameObject.SetActive(true);
-
+            StartRightPanelUISBasePosAnim(true);
         }
 
     }

@@ -134,7 +134,7 @@ public class Housekeeper : Worker, ISleepable, IMoveable
 
     public void CreateNewTarget()
     {
-        MyCurrentMessTask = NpcManager.instance.GetNearestMess(Behaviour.transform.position, IWorkRoomsIDs);
+        MyCurrentMessTask = NpcManager.instance.GetNearestMess(Behaviour.transform, IWorkRoomsIDs);
         if (MyCurrentMessTask != null)
         {
             DateTimeOffset currentTime = DateTimeOffset.UtcNow;

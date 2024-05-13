@@ -110,7 +110,7 @@ namespace TouchScript.Core
                     var objects = FindObjectsOfType<TouchManagerInstance>();
                     if (objects.Length == 0)
                     {
-                        var go = new GameObject("TouchManager Instance");
+                        var go = new GameObject("TouchManager instance");
                         instance = go.AddComponent<TouchManagerInstance>();
                     }
                     else if (objects.Length >= 1)

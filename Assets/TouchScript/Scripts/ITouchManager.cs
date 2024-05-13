@@ -33,9 +33,9 @@ namespace TouchScript
     /// <example>
     /// This sample shows how to get TouchManager instance and subscribe to events.
     /// <code>
-    /// TouchManager.Instance.PointersPressed += 
+    /// TouchManager.instance.PointersPressed += 
     ///     (sender, args) => { foreach (var pointer in args.Pointers) Debug.Log("Pressed: " + pointer.Id); }; 
-    /// TouchManager.Instance.PointersReleased += 
+    /// TouchManager.instance.PointersReleased += 
     ///     (sender, args) => { foreach (var pointer in args.Pointers) Debug.Log("Released: " + pointer.Id); }; 
     /// </code>
     /// </example>

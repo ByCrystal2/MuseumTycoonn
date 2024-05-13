@@ -192,7 +192,7 @@ namespace SpriteShadersUltimate
                 else
                 {
                     Material newMaterial = Instantiate<Material>(sharedMaterial);
-                    newMaterial.name = sharedMaterial + " (Instance)";
+                    newMaterial.name = sharedMaterial + " (instance)";
                     materialPool.Add(sharedMaterial, newMaterial);
                     return newMaterial;
                 }

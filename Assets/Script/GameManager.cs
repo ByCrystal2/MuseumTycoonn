@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TMPro;
-using TMPro.EditorUtilities;
-using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -224,8 +222,8 @@ public class GameManager : MonoBehaviour
         CurrentSaveData.InventoryWorkerDatas = inventoryWorkerDatas;
         CurrentSaveData.StatueDatas = statueDatas;
 
-        if(UnityAdsManager.instance != null)
-            CurrentSaveData.adData = UnityAdsManager.instance.adsData;
+        if(GoogleAdsManager.instance != null)
+            CurrentSaveData.adData = GoogleAdsManager.instance.adsData;
 
         if (RoomManager.instance != null)
             CurrentSaveData.ActiveRoomsRequiredMoney = RoomManager.instance.activeRoomsRequiredMoney;
@@ -308,7 +306,7 @@ public class GameManager : MonoBehaviour
         {
             string jsonString = File.ReadAllText(Application.persistentDataPath + "/" + CurrentSaveData.SaveName + ".json"); // read the json file from the file system
             CurrentSaveData = JsonUtility.FromJson<PlayerSaveData>(jsonString); // de-serialize the data to your myData object            
-            UnityAdsManager.instance.adsData = CurrentSaveData.adData;
+            GoogleAdsManager.instance.adsData = CurrentSaveData.adData;
             //MuseumManager.instance.CurrentActivePictures = CurrentSaveData.CurrentPictures;
             //MuseumManager.instance.InventoryPictures = CurrentSaveData.InventoryPictures;
             MuseumManager.instance.SetSaveData(CurrentSaveData.Gold, CurrentSaveData.Culture, CurrentSaveData.Gem, CurrentSaveData.SkillPoint, CurrentSaveData.CurrentCultureLevel);

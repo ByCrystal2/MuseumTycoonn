@@ -301,27 +301,27 @@ public class PicturesMenuController : MonoBehaviour
 
     public void TestingLoadRewardVideo() //Button
     {
-        UnityAdsManager.instance.LoadRewardedAd();
+        GoogleAdsManager.instance.LoadRewardedAd();
         Debug.Log("Test Load Reward Video Ýþlemi Tamamlandý.");
     }
     public void TestingLoadNormalVideo() //Button
     {
-        UnityAdsManager.instance.LoadInterstitialAd();
+        GoogleAdsManager.instance.LoadInterstitialAd();
         Debug.Log("Test Load Normal Video Ýþlemi Tamamlandý.");
     }
     public void TestingShowRewardVideo() //Button
     {        
-        UnityAdsManager.instance.ShowRewardedAd();
+        GoogleAdsManager.instance.ShowRewardedAd();
         Debug.Log("Test Show Reward Video Ýþlemi Tamamlandý.");
     }
     public void TestingShowNormalVideo() //Button
     {
-        UnityAdsManager.instance.ShowNonRewardedAd();
+        //GoogleAdsManager.instance.ShowNonRewardedAd();
         Debug.Log("Test Show Normal Video Ýþlemi Tamamlandý.");
     }
     public void RemoveAllAds()
     {
-        UnityAdsManager.instance.adsData.RemovedAllAds = true;
+        GoogleAdsManager.instance.adsData.RemovedAllAds = true;
     }
     public void ExitPicturePanel()
     {        

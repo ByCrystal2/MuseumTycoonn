@@ -17,7 +17,7 @@ namespace SpriteShadersUltimate.Demo
         {
             Renderer renderer = GetComponentInChildren<Renderer>();
 
-            if(renderer.sharedMaterial.name.EndsWith("(Instance)"))
+            if(renderer.sharedMaterial.name.EndsWith("(instance)"))
             {
                 mat = renderer.sharedMaterial;
             }

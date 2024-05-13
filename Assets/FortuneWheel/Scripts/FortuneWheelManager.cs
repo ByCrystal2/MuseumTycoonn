@@ -97,7 +97,7 @@ public class FortuneWheelManager : MonoBehaviour
 	{
 		if (isFree)
 		{
-			UnityAdsManager.instance.ShowNonRewardedAd();
+			//GoogleAdsManager.instance.ShowNonRewardedAd();
 		}
 		_currentLerpRotationTime = 0f;
 
@@ -166,7 +166,7 @@ public class FortuneWheelManager : MonoBehaviour
 	public void TurnWheelButtonClick ()
 	{
 		if (_isFreeTurnAvailable) {
-            UnityAdsManager.instance.LoadInterstitialAd();
+            GoogleAdsManager.instance.LoadInterstitialAd();
             TurnWheelForFree ();
 		} else {
 			// If we have enabled paid turns

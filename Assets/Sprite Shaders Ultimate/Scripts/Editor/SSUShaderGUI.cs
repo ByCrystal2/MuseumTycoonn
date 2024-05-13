@@ -857,7 +857,7 @@ namespace SpriteShadersUltimate
                         EditorGUILayout.EndVertical();
                     }
 
-                    //Instance Required:
+                    //instance Required:
                     if (requiresInstancing && Selection.activeGameObject != null && Selection.activeGameObject.GetComponent<InstancerSSU>() == null)
                     {
                         StartWarning();

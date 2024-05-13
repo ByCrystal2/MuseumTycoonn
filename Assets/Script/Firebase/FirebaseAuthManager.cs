@@ -27,14 +27,14 @@ public class FirebaseAuthManager : MonoBehaviour
         CreateNewLoading();
         //try
         //{
-        //    PlayGamesPlatform.Instance.Authenticate(status =>
+        //    PlayGamesPlatform.instance.Authenticate(status =>
         //    {
 
         //        if (status == SignInStatus.Success)
         //        {
         //            try
         //            {
-        //                PlayGamesPlatform.Instance.RequestServerSideAccess(true, code =>
+        //                PlayGamesPlatform.instance.RequestServerSideAccess(true, code =>
         //                {
         //                    FirebaseAuth auth = FirebaseAuth.DefaultInstance;
 

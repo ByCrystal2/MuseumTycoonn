@@ -20,7 +20,7 @@
 
 //    public void InitializePurchasing()
 //    {
-//        var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
+//        var builder = ConfigurationBuilder.instance(StandardPurchasingModule.instance());
 
 //        foreach (var item in ItemManager.instance.GetAllIAPItemDatas())
 //        {
