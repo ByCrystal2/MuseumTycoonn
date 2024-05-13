@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.Purchasing;
 
@@ -161,10 +162,31 @@ public class NpcManager : MonoBehaviour
         }
         else
         {
+            List<RoomData> nearRoomsToMyArea = new List<RoomData>();
+            foreach (var item in myRooms)
+            {
+                //fonksiyon icinde -item- gondermen yeterli olucak. Bos listeyi silip fonksiyondan donen listeyi kullanabilirsin.
+                //List<RoomData> current = RoomManager.instance.GetDesiredNeighborRooms();
+                List<RoomData> current = new List<RoomData>();
+                foreach (var item2 in current)
+                    nearRoomsToMyArea.Add(item2);
+            }
             int length2 = NPCMessParent.GetChild(0).childCount;
             for (int i = 0; i < length2; i++)
             {
-                float currentDistance = Vector3.Distance(myRooms.Count > 0 ? myRooms[0].transform.position : _pos, NPCMessParent.GetChild(0).GetChild(i).position);
+                bool contains = false;
+                foreach (var item in nearRoomsToMyArea)
+                {
+                    if (AllMessedRooms[i].ID == item.ID)
+                    {
+                        contains = true;
+                        break;
+                    }
+                }
+                if (!contains)
+                    continue;
+
+                float currentDistance = Vector3.Distance(_pos, NPCMessParent.GetChild(0).GetChild(i).position);
                 if (currentDistance < nearest)
                 {
                     nearest = currentDistance;
@@ -233,10 +255,31 @@ public class NpcManager : MonoBehaviour
         }
         else
         {
+            List<RoomData> nearRoomsToMyArea = new List<RoomData>();
+            foreach (var item in myRooms)
+            {
+                //fonksiyon icinde -item- gondermen yeterli olucak. Bos listeyi silip fonksiyondan donen listeyi kullanabilirsin.
+                //List<RoomData> current = RoomManager.instance.GetDesiredNeighborRooms();
+                List<RoomData> current = new List<RoomData>();
+                foreach (var item2 in current)
+                    nearRoomsToMyArea.Add(item2);
+            }
             int length2 = GuiltyNpcs.Count;
             for (int i = 0; i < length2; i++)
             {
-                float currentDistance = Vector3.Distance(myRooms.Count > 0 ? myRooms[0].transform.position : _currentSecurityLocation, GuiltyNpcs[i].transform.position);
+                bool contains = false;
+                foreach (var item in nearRoomsToMyArea)
+                {
+                    if (GuiltyNpcs[i].CurrentVisitedRoom.ID == item.ID)
+                    {
+                        contains = true;
+                        break;
+                    }
+                }
+                if (!contains)
+                    continue;
+
+                float currentDistance = Vector3.Distance(_currentSecurityLocation, GuiltyNpcs[i].transform.position);
                 if (currentDistance < nearest)
                 {
                     nearest = currentDistance;
