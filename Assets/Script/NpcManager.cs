@@ -164,7 +164,7 @@ public class NpcManager : MonoBehaviour
             foreach (var room in myRooms)
             {
                 List<RoomData> neighborRooms = RoomManager.instance.GetDesiredNeighborRooms(room);
-                string x = "My room id: " + room + "\n";
+                string x = "My room id: " + room.ID + "\n";
                 foreach (var neighborRoom in neighborRooms)
                 {
                     x += "Neighbor room ID => " + neighborRoom.ID + "\n";
@@ -257,13 +257,16 @@ public class NpcManager : MonoBehaviour
         else
         {
             List<RoomData> nearRoomsToMyArea = new List<RoomData>();
-            foreach (var item in myRooms)
+            foreach (var room in myRooms)
             {
-                //fonksiyon icinde -room- gondermen yeterli olucak. Bos listeyi silip fonksiyondan donen listeyi kullanabilirsin.
-                //List<RoomData> neighborRooms = RoomManager.instance.GetDesiredNeighborRooms();
-                List<RoomData> current = new List<RoomData>();
-                foreach (var item2 in current)
-                    nearRoomsToMyArea.Add(item2);
+                List<RoomData> neighborRooms = RoomManager.instance.GetDesiredNeighborRooms(room);
+                string x = "My room id: " + room.ID + "\n";
+                foreach (var neighborRoom in neighborRooms)
+                {
+                    x += "Neighbor room ID => " + neighborRoom.ID + "\n";
+                    nearRoomsToMyArea.Add(neighborRoom);
+                }
+                Debug.Log(x);
             }
             int length2 = GuiltyNpcs.Count;
             for (int i = 0; i < length2; i++)
