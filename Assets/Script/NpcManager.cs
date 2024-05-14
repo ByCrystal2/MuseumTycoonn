@@ -143,7 +143,7 @@ public class NpcManager : MonoBehaviour
                     MyMessedRooms.Add(myRooms[a]);
 
         NpcMess NearestMess = null;
-        float nearest = 100;
+        float nearest = 100000;
         int myMessedRoomsCount = MyMessedRooms.Count;
         if (myMessedRoomsCount > 0)
         {
@@ -163,15 +163,14 @@ public class NpcManager : MonoBehaviour
             List<RoomData> nearRoomsToMyArea = new List<RoomData>();
             foreach (var room in myRooms)
             {
-                //fonksiyon icinde -room- gondermen yeterli olucak. Bos listeyi silip fonksiyondan donen listeyi kullanabilirsin.
                 List<RoomData> neighborRooms = RoomManager.instance.GetDesiredNeighborRooms(room);
-                //List<RoomData> neighborRooms = new List<RoomData>();
+                string x = "My room id: " + room + "\n";
                 foreach (var neighborRoom in neighborRooms)
                 {
-                    Debug.Log("Neighbor room => " + neighborRoom.name + " CurrentNPC Name => " + _pos.name);
+                    x += "Neighbor room ID => " + neighborRoom.ID + "\n";
                     nearRoomsToMyArea.Add(neighborRoom);
-                }
-                    
+                }   
+                Debug.Log(x);
             }
             int length2 = NPCMessParent.GetChild(0).childCount;
             for (int i = 0; i < length2; i++)
@@ -179,7 +178,7 @@ public class NpcManager : MonoBehaviour
                 bool contains = false;
                 foreach (var item in nearRoomsToMyArea)
                 {
-                    if (AllMessedRooms[i].ID == item.ID)
+                    if (NPCMessParent.GetChild(0).GetChild(i).GetComponent<NpcMess>().inRoom.ID == item.ID)
                     {
                         contains = true;
                         break;
