@@ -15,7 +15,7 @@ public class PlayerMotor : MonoBehaviour
         playerMove = GetComponent<PlayerMovement>();
     }
 
-    public float speed = 5.0f; // Hareket hýzý
+    public float speed = 5.0f; // Hareket hï¿½zï¿½
     private Rigidbody rb;
 
     void Start()
@@ -26,12 +26,12 @@ public class PlayerMotor : MonoBehaviour
 
     void FixedUpdate()
     {
-        float horizontalInput = Input.GetAxis("Horizontal"); // Yatay giriþ (WSAD veya ok tuþlarý)
-        float verticalInput = Input.GetAxis("Vertical"); // Dikey giriþ (WSAD veya ok tuþlarý)
+        float horizontalInput = Input.GetAxis("Horizontal"); // Yatay giriï¿½ (WSAD veya ok tuï¿½larï¿½)
+        float verticalInput = Input.GetAxis("Vertical"); // Dikey giriï¿½ (WSAD veya ok tuï¿½larï¿½)
 
-        Vector3 movement = new Vector3(horizontalInput, 0.0f, verticalInput) * speed; // Hareket vektörü
+        Vector3 movement = new Vector3(horizontalInput, 0.0f, verticalInput) * speed; // Hareket vektï¿½rï¿½
 
-        rb.velocity = transform.TransformDirection(movement); // Hareket vektörünü karakterin yönüne dönüþtürerek uygula
+        rb.linearVelocity = transform.TransformDirection(movement); // Hareket vektï¿½rï¿½nï¿½ karakterin yï¿½nï¿½ne dï¿½nï¿½ï¿½tï¿½rerek uygula
     }
 
 

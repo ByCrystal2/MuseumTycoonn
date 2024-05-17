@@ -77,11 +77,11 @@ public class SettingsController : MonoBehaviour
     {
         Debug.Log("Graphic value changed: " + GraphicQualityDropdown.value);
         if (GraphicQualityDropdown.value == 0)
-            GraphicsSettings.renderPipelineAsset = performantURPAsset;
+            GraphicsSettings.defaultRenderPipeline = performantURPAsset;
         else if (GraphicQualityDropdown.value == 1)
-            GraphicsSettings.renderPipelineAsset = balancedURPAsset;
+            GraphicsSettings.defaultRenderPipeline = balancedURPAsset;
         else if (GraphicQualityDropdown.value == 2)
-            GraphicsSettings.renderPipelineAsset = highFidelityURPAsset;
+            GraphicsSettings.defaultRenderPipeline = highFidelityURPAsset;
 
         QualitySettings.SetQualityLevel(GraphicQualityDropdown.value, true);
     }

@@ -11,8 +11,8 @@ public class PlayerMovement : MonoBehaviour
     public float rotationSpeed = 3.0f;
     public float jumpForce = 10.0f;
     public LayerMask collisionLayers;
-    public float maxVerticalRotation = 80.0f; // Maksimum yukarý dönüþ açýsý
-    public float minVerticalRotation = -80.0f; // Maksimum aþaðý dönüþ açýsý
+    public float maxVerticalRotation = 80.0f; // Maksimum yukarï¿½ dï¿½nï¿½ï¿½ aï¿½ï¿½sï¿½
+    public float minVerticalRotation = -80.0f; // Maksimum aï¿½aï¿½ï¿½ dï¿½nï¿½ï¿½ aï¿½ï¿½sï¿½
     public float ascendDescendSpeed = 5.0f;
     private Rigidbody rb;
     private float verticalRotation = 0.0f;
@@ -40,8 +40,8 @@ public class PlayerMovement : MonoBehaviour
             if (Cursor.lockState == CursorLockMode.Locked)
                 Move();
             else
-            rb.velocity = Vector3.zero;
-            // Yükselme ve alçalma iþlevselliði
+            rb.linearVelocity = Vector3.zero;
+            // Yï¿½kselme ve alï¿½alma iï¿½levselliï¿½i
             if (Input.GetKey(KeyCode.LeftShift))
             {
                Vector3 up = transform.position;
@@ -71,7 +71,7 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 moveDirection = (transform.forward * forwardMovement) + (transform.right * sidewaysMovement);
 
-        rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z);
+        rb.linearVelocity = new Vector3(moveDirection.x, rb.linearVelocity.y, moveDirection.z);
 
         float horizontalRotation = Input.GetAxis("Mouse X") * rotationSpeed;
         transform.Rotate(0, horizontalRotation, 0);

@@ -3,6 +3,7 @@ using GoogleMobileAds.Api;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class GoogleAdsManager : MonoBehaviour
 {
@@ -17,7 +18,40 @@ public class GoogleAdsManager : MonoBehaviour
     public BannerView BannerView => _bannerView;
 
 #if UNITY_ANDROID
-    const string _rewardedAdUnitId = "ca-app-pub-3940256099942544/5224354917";
+    //const string _rewardedAdUnitId = "ca-app-pub-1301273545593514/1783006872";
+    readonly List<(string id, int focusedLevel)> _rewardedAdUnitIds = new List<(string id, int focusedLevel)>()
+    {
+        // => 5 - 10 Gem
+        ("ca-app-pub-1301273545593514/1783006872",5),
+        ("ca-app-pub-1301273545593514/4700490193",5),
+        ("ca-app-pub-1301273545593514/9009015263",5),
+        ("ca-app-pub-1301273545593514/5342568150",5),
+        ("ca-app-pub-1301273545593514/3383539098",5),
+        ("ca-app-pub-1301273545593514/1617610400",5),
+
+        // => 11 - 16 Gem
+        ("ca-app-pub-1301273545593514/6486793706",10),
+        ("ca-app-pub-1301273545593514/7893629740",10),
+        ("ca-app-pub-1301273545593514/3902413847",10),
+        ("ca-app-pub-1301273545593514/1878885738",10),
+        ("ca-app-pub-1301273545593514/5809472019",10),
+        ("ca-app-pub-1301273545593514/4496390347",10),
+
+        // => 500 - 1000 Gold
+        ("ca-app-pub-1301273545593514/4093985536",5),
+        ("ca-app-pub-1301273545593514/1882755169",5),
+        ("ca-app-pub-1301273545593514/4052202059",5),
+        ("ca-app-pub-1301273545593514/2739120388",5),
+        ("ca-app-pub-1301273545593514/2443606918",5),
+        ("ca-app-pub-1301273545593514/7122553682",5),
+
+        // => 1100 - 1400 Gold
+        ("ca-app-pub-1301273545593514/1870227003",10),
+        ("ca-app-pub-1301273545593514/3004265148",10),
+        ("ca-app-pub-1301273545593514/1211751457",10),
+        ("ca-app-pub-1301273545593514/3867836392",10),
+    };                                            
+    //const string _rewardedAdUnitId = "ca-app-pub-3940256099942544/5224354917"; test id
     const string _interstitialAdUnitId = "ca-app-pub-3940256099942544/1033173712";
     const string _bannerViewAdId = "ca-app-pub-3940256099942544/6300978111";
 #elif PLATFORM_ANDROID
@@ -30,6 +64,15 @@ public class GoogleAdsManager : MonoBehaviour
     const string _bannerViewAdId = "unexcepted";
 #endif
 
+    private bool IsInterstitialAdShow = true;
+    private bool IsRewardAdShow = true;
+    private bool IsBannerAdShow = true;
+
+    private float InterstitialAdWaitingTime = 20; // second
+    private float RewardAdWaitingTime = 10; // default: 60 second
+    private float BannerAdWaitingTime = 120; // second
+
+    RewardAdData currentRewardAdData;
     private void Awake()
     {
         if (instance == null)
@@ -47,9 +90,63 @@ public class GoogleAdsManager : MonoBehaviour
             //LoadInterstitialAd();
         });
     }
+    private void Update()
+    {
+        if (!IsInterstitialAdShow)
+        {
+            InterstitialAdWaitingTime -= Time.deltaTime;
+            Debug.Log("InterstitialAdWaitingTime => " + InterstitialAdWaitingTime);
+            if (InterstitialAdWaitingTime <= 0)
+            {
+                IsInterstitialAdShow = true;
+                InterstitialAdWaitingTime = 20;
+                LoadInterstitialAd();
+            }
+        }
 
+        if (!IsRewardAdShow)
+        {
+            RewardAdWaitingTime -= Time.deltaTime;
+            Debug.Log("RewardAdWaitingTime => " + RewardAdWaitingTime);
+            if (RewardAdWaitingTime <= 0)
+            {
+                IsRewardAdShow = true;
+                RewardAdWaitingTime = 60;
+                LoadRewardedAd();
+                StartCoroutine(DelayForRewardAdsShowing());
+            }
+        }
+
+        if (!IsBannerAdShow)
+        {
+            BannerAdWaitingTime -= Time.deltaTime;
+            Debug.Log("BannerAdWaitingTime => " + BannerAdWaitingTime);
+            if (BannerAdWaitingTime <= 0)
+            {
+                IsBannerAdShow = true;
+                BannerAdWaitingTime = 120;
+                _bannerView = null;
+                LoadBannerAd();
+            }
+        }
+    }
+    public void StartRewardAdBool(bool _start)
+    {
+        IsRewardAdShow = !_start;
+    }
+    IEnumerator DelayForRewardAdsShowing()
+    {
+        while (!_rewardedAd.CanShowAd())
+            yield return new WaitForEndOfFrame();
+        
+        
+        UIController.instance.CloseRewardAdPanel(false);
+        Debug.Log("currentRewardAdData => " + currentRewardAdData.Amount);
+        UIController.instance.RewardAdController.SetRewardAdUIS(currentRewardAdData);
+    }
     public void CreateBannerView()
     {
+        if (adsData.RemovedAllAds) return;
         Debug.Log("Creating banner view");
 
         // If we already have a banner, destroy the old one.
@@ -65,10 +162,14 @@ public class GoogleAdsManager : MonoBehaviour
 
     public void ShowInterstitialAd()
     {
+        if (adsData.RemovedAllAds) return;
+
+        if (!IsInterstitialAdShow) return;
         if (_interstitialAd != null && _interstitialAd.CanShowAd())
         {
             Debug.Log("Showing interstitial ad.");
             _interstitialAd.Show();
+            IsInterstitialAdShow = false;
         }
         else
         {
@@ -78,6 +179,8 @@ public class GoogleAdsManager : MonoBehaviour
 
     public void LoadInterstitialAd()
     {
+        if (adsData.RemovedAllAds) return;
+
         // Clean up the old ad before loading a new one.
         if (_interstitialAd != null)
         {
@@ -112,6 +215,9 @@ public class GoogleAdsManager : MonoBehaviour
 
     public void LoadBannerAd()
     {
+        if (adsData.RemovedAllAds) return;
+
+
         // create an instance of a banner view first.
         if (_bannerView == null)
         {
@@ -129,10 +235,12 @@ public class GoogleAdsManager : MonoBehaviour
         // send the request to load the ad.
         Debug.Log("Loading banner ad.");
         _bannerView.LoadAd(adRequest);
+        IsBannerAdShow = false;
     }
 
     public void LoadRewardedAd()
     {
+        if (adsData.RemovedAllAds) return;
         // Clean up the old ad before loading a new one.
         if (_rewardedAd != null)
         {
@@ -146,10 +254,44 @@ public class GoogleAdsManager : MonoBehaviour
         var adRequest = new AdRequest();
 
         // send the request to load the ad.
-        RewardedAd.Load(_rewardedAdUnitId, adRequest,
+        List<(string _id, int _focusedLevel)> currentAdIds = new List<(string _id, int _focusedLevel)>();
+
+        Debug.Log("_rewardedAdUnitIds.Count => " + _rewardedAdUnitIds.Count);
+        foreach (var item in _rewardedAdUnitIds)
+        {
+            if (GameManager.instance.rewardManager.IsSendingFocusedLevelSuitable(item.focusedLevel))
+            {
+                currentAdIds.Add(item);
+                Debug.Log("item.focusedLevel => " + item.focusedLevel);
+            }
+        }
+
+        Debug.Log("currentAdIds => " + currentAdIds.Count);
+        string currentRewardedAdUnityId = currentAdIds[UnityEngine.Random.Range(0, currentAdIds.Count)]._id;
+        RewardedAd.Load(currentRewardedAdUnityId, adRequest,
             (RewardedAd ad, LoadAdError error) =>
             {
                 // if error is not null, the load request failed.
+                Reward r = ad.GetRewardItem();
+                Debug.Log("reward.Type => " + r.Type + "reward.Amount => " + r.Amount);
+                RewardAdData earnReward = new RewardAdData();
+                if (int.TryParse(r.Type, out int result))
+                {
+                    earnReward = GameManager.instance.rewardManager.GetRewardAdsWithID(result);
+                }
+                else
+                {
+
+                    Debug.Log(r.Type + " isminde ki odul int deger vermedi.");
+                    earnReward = GameManager.instance.rewardManager.GetRewardAdsWithID(1);
+                    Debug.Log("earnReward.Amount => " + earnReward.Amount.ToString());
+                }                    
+                
+                
+                if (earnReward != null)
+                {
+                    currentRewardAdData = earnReward;
+                }
                 if (error != null || ad == null)
                 {
                     Debug.LogError("Rewarded ad failed to load an ad " +
@@ -169,6 +311,9 @@ public class GoogleAdsManager : MonoBehaviour
 
     public void ShowRewardedAd()
     {
+        if (adsData.RemovedAllAds) return;
+
+        if (!IsRewardAdShow) return;
         if (_rewardedAd != null && _rewardedAd.CanShowAd())
         {
             _rewardedAd.Show((Reward reward) =>
@@ -180,7 +325,16 @@ public class GoogleAdsManager : MonoBehaviour
 
     private void GiveRewards()
     {
-        print("reward added");
+        if (currentRewardAdData.Type == ItemType.Gem)
+        {
+            MuseumManager.instance.AddGem(currentRewardAdData.Amount);
+        }
+        else if (currentRewardAdData.Type == ItemType.Gold)
+        {
+            MuseumManager.instance.AddGold(currentRewardAdData.Amount);
+        }
+
+        GameManager.instance.Save();
     }
 
     private void RegisterEventHandlers(RewardedAd ad)
@@ -188,37 +342,69 @@ public class GoogleAdsManager : MonoBehaviour
         // Raised when the ad is estimated to have earned money.
         ad.OnAdPaid += (AdValue adValue) =>
         {
+            UIController.instance.RewardAdController.adStarting = false;
+            UIController.instance.CloseRewardAdPanel(true);
+            IsRewardAdShow = false;
             Debug.Log(String.Format("Rewarded ad paid {0} {1}.",
                 adValue.Value,
                 adValue.CurrencyCode));
+
+            RewardAdData earnReward = GameManager.instance.rewardManager.GetRewardAdsWithID(int.Parse(adValue.CurrencyCode));
+
+            if (earnReward.Type == ItemType.Gem)
+            {
+                MuseumManager.instance.AddGem(earnReward.Amount);
+            }
+            else if (earnReward.Type == ItemType.Gold)
+            {
+                MuseumManager.instance.AddGold(earnReward.Amount);
+            }
+
+            //Arttirilinabilinir. Mesela bir tablo verilebilir dusuk ihtimalle.
+            
         };
         // Raised when an impression is recorded for an ad.
         ad.OnAdImpressionRecorded += () =>
         {
             Debug.Log("Rewarded ad recorded an impression.");
+            UIController.instance.RewardAdController.adStarting = false;
+            UIController.instance.CloseRewardAdPanel(true);
+            IsRewardAdShow = false;
         };
         // Raised when a click is recorded for an ad.
         ad.OnAdClicked += () =>
         {
             Debug.Log("Rewarded ad was clicked.");
+            UIController.instance.RewardAdController.adStarting = false;
+            UIController.instance.CloseRewardAdPanel(true);
+            IsRewardAdShow = false;
         };
         // Raised when an ad opened full screen content.
         ad.OnAdFullScreenContentOpened += () =>
         {
             Debug.Log("Rewarded ad full screen content opened.");
+            UIController.instance.RewardAdController.adStarting = false;
+            UIController.instance.CloseRewardAdPanel(true);
+            IsRewardAdShow = false;
         };
         // Raised when the ad closed full screen content.
         ad.OnAdFullScreenContentClosed += () =>
         {
             LoadRewardedAd();
+            UIController.instance.RewardAdController.adStarting = false;
+            UIController.instance.CloseRewardAdPanel(true);
+            IsRewardAdShow = false;
             Debug.Log("Rewarded ad full screen content closed.");
         };
         // Raised when the ad failed to open full screen content.
         ad.OnAdFullScreenContentFailed += (AdError error) =>
         {
             Debug.LogError("Rewarded ad failed to open full screen content " +
-                           "with error : " + error);
+                           "with error : " + error);            
             LoadRewardedAd();
+            UIController.instance.RewardAdController.adStarting = false;
+            UIController.instance.CloseRewardAdPanel(true);
+            IsRewardAdShow = false;
         };
     }
 
@@ -303,8 +489,16 @@ public class GoogleAdsManager : MonoBehaviour
                            "with error : " + error);
         };
     }
+    public void RemoveAds()
+    {
+        adsData.RemovedAllAds = true;
+    }
 }
-    public sealed class AdverstingData
+public sealed class AdverstingData
 {
     public bool RemovedAllAds = false;
+    public AdverstingData()
+    {
+        RemovedAllAds = false;
+    }
 }

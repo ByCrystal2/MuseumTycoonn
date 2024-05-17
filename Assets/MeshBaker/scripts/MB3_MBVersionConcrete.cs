@@ -671,10 +671,10 @@ namespace DigitalOpus.MB.Core
         public MBVersion.PipelineType DetectPipeline()
         {
 #if UNITY_2019_1_OR_NEWER
-            if (UnityEngine.Rendering.GraphicsSettings.renderPipelineAsset != null)
+            if (UnityEngine.Rendering.GraphicsSettings.defaultRenderPipeline != null)
             {
                 // SRP
-                var srpType = UnityEngine.Rendering.GraphicsSettings.renderPipelineAsset.GetType().ToString();
+                var srpType = UnityEngine.Rendering.GraphicsSettings.defaultRenderPipeline.GetType().ToString();
                 if (srpType.Contains("HDRenderPipelineAsset"))
                 {
                     return MBVersion.PipelineType.HDRP;

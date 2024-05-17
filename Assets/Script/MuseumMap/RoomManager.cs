@@ -95,6 +95,8 @@ public partial class RoomManager : MonoBehaviour
                 RoomsActivationAndPurchasedControl(purchasedRoom, roomDatas);
                 MuseumManager.instance.SpendingGem(purchasedRoom.RequiredMoney);
                 GameManager.instance.Save();
+
+                GoogleAdsManager.instance.ShowInterstitialAd();
             }
             else
             {
@@ -108,6 +110,7 @@ public partial class RoomManager : MonoBehaviour
                 RoomsActivationAndPurchasedControl(purchasedRoom, roomDatas);
                 MuseumManager.instance.SpendingGold(purchasedRoom.RequiredMoney);
                 GameManager.instance.Save();
+                GoogleAdsManager.instance.ShowInterstitialAd();
             }
             else
             {
@@ -118,6 +121,7 @@ public partial class RoomManager : MonoBehaviour
         {
             // Gercek Parayla satin alinan oda islemleri...
             //BuyingConsumables.instance.BuyItemFromStore(purchasedRoom);
+            GoogleAdsManager.instance.ShowInterstitialAd();
         }
     }
 
@@ -248,6 +252,7 @@ public partial class RoomManager : MonoBehaviour
 }
 public partial class RoomManager // Room Bonus Controller
 {
+    
     public void RemoveNpcInTheRoom(RoomData _currentRoom, NPCBehaviour _removeNpc)
     {
         if (_currentRoom.GetNpcsInTheMyRoom().Contains(_removeNpc))
@@ -299,6 +304,38 @@ public partial class RoomManager // Room Bonus Controller
             {
                 desiredRooms.Add(room);
                 Debug.Log("Desired Neighbor Room Code => " + n_letter.ToString() + n_number + " Current Room Code => " + c_letter.ToString()+c_number.ToString());
+            }
+        }
+        if (desiredRooms.Count > 0)
+        {
+            return desiredRooms;
+        }
+        else
+        {
+            Debug.Log("Komsu oda bulunamadi.");
+            return null;
+        }
+    }
+    public List<RoomData> GetDesiredNeighborRooms(RoomData _currentRoom, int _howMuchRoom)
+    {
+        List<RoomData> desiredRooms = new List<RoomData>();
+        foreach (var room in RoomDatas)
+        {
+            CellLetter n_letter = room.availableRoomCell.CellLetter;
+            int n_number = room.availableRoomCell.CellNumber;
+
+            CellLetter c_letter = _currentRoom.availableRoomCell.CellLetter;
+            int c_number = _currentRoom.availableRoomCell.CellNumber;
+            // A5
+            // B
+            if ((n_letter == c_letter && n_number == c_number - 1) /* Mevcut Oda B3 ise */ || (n_letter == c_letter && n_number == c_number + 1) /* Mevcut Oda B5 ise */  || (n_letter == c_letter - 1 && n_number == c_number) /* Mevcut Oda A4 ise */  || (n_letter == c_letter + 1 && n_number == c_number) /* Mevcut Oda C4 ise */)
+            {
+                desiredRooms.Add(room);
+                Debug.Log("Desired Neighbor Room Code => " + n_letter.ToString() + n_number + " Current Room Code => " + c_letter.ToString() + c_number.ToString());
+            }
+            if (desiredRooms.Count >= _howMuchRoom)
+            {
+                break;
             }
         }
         if (desiredRooms.Count > 0)

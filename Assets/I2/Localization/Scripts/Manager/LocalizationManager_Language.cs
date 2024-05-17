@@ -21,7 +21,10 @@ namespace I2.Loc
                 string SupportedLanguage = GetSupportedLanguage(value);
                 if (!string.IsNullOrEmpty(SupportedLanguage) && mCurrentLanguage != SupportedLanguage)
                 {
+                    UnityEngine.Debug.Log(SupportedLanguage + " Adli dil devreye girdi.");
                     SetLanguageAndCode(SupportedLanguage, GetLanguageCode(SupportedLanguage));
+                    GameManager.instance.GameLanguage = SupportedLanguage;
+                    GameManager.instance.Save();
                 }
             }
         }

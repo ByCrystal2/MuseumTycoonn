@@ -1,3 +1,4 @@
+using I2.Loc;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ public class GameManager : MonoBehaviour
     public PlayerSaveData CurrentSaveData;
 
     string _GameSave = "GameSave";
+    public string GameLanguage = "Turkish";
     float AutoSaveTimer;
     GameMode CurrentGameMode;
 
@@ -54,6 +56,10 @@ public class GameManager : MonoBehaviour
         }
         Init();
         Load();
+        if (GameLanguage == "" || GameLanguage == null || GameLanguage == string.Empty)
+            SetGameLanguage("Turkish");
+        else
+            SetGameLanguage(CurrentSaveData.GameLanguage);
     }
     public void Init()
     {        
@@ -71,8 +77,19 @@ public class GameManager : MonoBehaviour
             Save();
             AutoSaveTimer = Time.time + 300;
         }
+
     }
     
+    public string GetGameLanguage()
+    {
+        return GameLanguage;
+    }
+    public void SetGameLanguage(string _language)
+    {
+        GameLanguage = _language;
+        LocalizationManager.CurrentLanguage = _language;
+        CurrentSaveData.GameLanguage = _language;
+    }
     public GameMode GetCurrentGameMode()
     {
         return CurrentGameMode;
@@ -85,6 +102,8 @@ public class GameManager : MonoBehaviour
     {
         if (CurrentSaveData.SaveName == "")
             CurrentSaveData.SaveName = _GameSave;
+
+        CurrentSaveData.GameLanguage = GameLanguage;
 
         var a = MuseumManager.instance.GetSaveData();
         CurrentSaveData.Gold = a._gold;
@@ -306,9 +325,10 @@ public class GameManager : MonoBehaviour
         {
             string jsonString = File.ReadAllText(Application.persistentDataPath + "/" + CurrentSaveData.SaveName + ".json"); // read the json file from the file system
             CurrentSaveData = JsonUtility.FromJson<PlayerSaveData>(jsonString); // de-serialize the data to your myData object            
-            GoogleAdsManager.instance.adsData = CurrentSaveData.adData;
+            
             //MuseumManager.instance.CurrentActivePictures = CurrentSaveData.CurrentPictures;
             //MuseumManager.instance.InventoryPictures = CurrentSaveData.InventoryPictures;
+            LoadGameLanguage();
             MuseumManager.instance.SetSaveData(CurrentSaveData.Gold, CurrentSaveData.Culture, CurrentSaveData.Gem, CurrentSaveData.SkillPoint, CurrentSaveData.CurrentCultureLevel);
         }
         else
@@ -321,6 +341,15 @@ public class GameManager : MonoBehaviour
            
             Save();
         }
+    }
+    public void LoadGameLanguage()
+    {
+        GameLanguage = CurrentSaveData.GameLanguage;
+    }
+    public void LoadRemoveAds()
+    {
+        if (GoogleAdsManager.instance != null)
+            GoogleAdsManager.instance.adsData = CurrentSaveData.adData;        
     }
     public void LoadIsFirstGame()
     {
@@ -455,6 +484,7 @@ public class GameManager : MonoBehaviour
     public class PlayerSaveData
     {
         public string SaveName;
+        public string GameLanguage;
 
         public float Gold;
         public float Culture;

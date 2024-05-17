@@ -7,8 +7,9 @@ public class Constant : MonoBehaviour
     private const string iAPIDCompany = "com_kosippysudio_";
     public string IAPIDCompany { get { return iAPIDCompany; } }
 
-    private const string iAPIDGame = "museumtycoon_";
+    private const string iAPIDGame = "museumofexcesses_";
     public string IAPIDGame { get { return iAPIDGame; } }
+
     public static Constant instance { get; set; }
     private void Awake()
     {

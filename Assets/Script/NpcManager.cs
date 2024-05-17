@@ -101,8 +101,13 @@ public class NpcManager : MonoBehaviour
         {
         }
         UIController.instance.SetUpdateWeeklyRewards();
+        GameManager.instance.LoadRemoveAds();
+        if (GoogleAdsManager.instance.adsData == null)
+            GoogleAdsManager.instance.adsData = new AdverstingData();
         GoogleAdsManager.instance.LoadBannerAd();
+        GoogleAdsManager.instance.LoadInterstitialAd();
         GoogleAdsManager.instance.LoadRewardedAd();
+        GoogleAdsManager.instance.StartRewardAdBool(true);
     }
 
     #region Npc Mess
@@ -128,7 +133,7 @@ public class NpcManager : MonoBehaviour
         for (int i = 0; i < length; i++)
         {
             NpcMess messData = NPCMessParent.GetChild(0).GetChild(i).GetComponent<NpcMess>();
-            if (AllMessedRooms.Contains(messData.inRoom))
+            if (!AllMessedRooms.Contains(messData.inRoom))
                 AllMessedRooms.Add(messData.inRoom);
         }
 

@@ -11,7 +11,7 @@ namespace I2.Loc
 		public LanguageSource mSource;
 #endif
 		
-		void OnClick()
+		public void OnClick()
 		{
 			ApplyLanguage();
         }

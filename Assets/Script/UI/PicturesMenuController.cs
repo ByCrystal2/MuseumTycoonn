@@ -59,13 +59,6 @@ public class PicturesMenuController : MonoBehaviour
     {
         PictureUpdateButton.onClick.AddListener(UpdateTablo);
         ExitPanelButton.onClick.AddListener(ExitPicturePanel);
-        AdsPanelActivationButton.onClick.AddListener(TestingAdsPanelActivation);
-        LoadRewardVideoButton.onClick.AddListener(TestingLoadRewardVideo);
-        LoadNormalVideoButton.onClick.AddListener(TestingLoadNormalVideo);
-
-        RewardVideoButton.onClick.AddListener(TestingShowRewardVideo);
-        NormalVideoButton.onClick.AddListener(TestingShowNormalVideo);
-        RemoveAdsButton.onClick.AddListener(RemoveAllAds);
     }
 
     public void UpdatePicture()
@@ -297,32 +290,8 @@ public class PicturesMenuController : MonoBehaviour
         {
             SetPictureUpdateButton(false, "Yetersiz", Color.red);
         }     
-    }
-
-    public void TestingLoadRewardVideo() //Button
-    {
-        GoogleAdsManager.instance.LoadRewardedAd();
-        Debug.Log("Test Load Reward Video Ýþlemi Tamamlandý.");
-    }
-    public void TestingLoadNormalVideo() //Button
-    {
-        GoogleAdsManager.instance.LoadInterstitialAd();
-        Debug.Log("Test Load Normal Video Ýþlemi Tamamlandý.");
-    }
-    public void TestingShowRewardVideo() //Button
-    {        
-        GoogleAdsManager.instance.ShowRewardedAd();
-        Debug.Log("Test Show Reward Video Ýþlemi Tamamlandý.");
-    }
-    public void TestingShowNormalVideo() //Button
-    {
-        //GoogleAdsManager.instance.ShowNonRewardedAd();
-        Debug.Log("Test Show Normal Video Ýþlemi Tamamlandý.");
-    }
-    public void RemoveAllAds()
-    {
-        GoogleAdsManager.instance.adsData.RemovedAllAds = true;
-    }
+    }    
+    
     public void ExitPicturePanel()
     {        
         pnlPicturesMenu.SetActive(false);

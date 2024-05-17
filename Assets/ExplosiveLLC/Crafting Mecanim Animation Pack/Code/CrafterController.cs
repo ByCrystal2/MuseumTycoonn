@@ -81,7 +81,7 @@ namespace CraftingAnims
 			if (animator) {
 				animator.gameObject.AddComponent<CrafterAnimatorController>();
 				animator.GetComponent<CrafterAnimatorController>().crafterController = this;
-				animator.updateMode = AnimatorUpdateMode.AnimatePhysics;
+				animator.updateMode = AnimatorUpdateMode.Fixed;
 				animator.cullingMode = AnimatorCullingMode.CullUpdateTransforms;
 				animator.SetLayerWeight(1, 1f);
 				animator.SetLayerWeight(2, 0f);
@@ -205,8 +205,8 @@ namespace CraftingAnims
 				}
 
 				// Get local velocity of charcter and update animator with values.
-				float velocityZ = transform.InverseTransformDirection(rb.velocity).z;
-				float velocityX = transform.InverseTransformDirection(rb.velocity).x;
+				float velocityZ = transform.InverseTransformDirection(rb.linearVelocity).z;
+				float velocityX = transform.InverseTransformDirection(rb.linearVelocity).x;
 
 				// Set animator values if not pushpull.
 				if (charState != CrafterState.PushPull) {
@@ -254,8 +254,8 @@ namespace CraftingAnims
 			}
 
 			// If character is falling use momentum.
-			newVelocity.y = rb.velocity.y;
-			rb.velocity = newVelocity;
+			newVelocity.y = rb.linearVelocity.y;
+			rb.linearVelocity = newVelocity;
 
 			// Return a movement value for the animator.
 			return inputVec.magnitude;

@@ -35,7 +35,7 @@ public class RoomBlokClickHandler : MonoBehaviour
             Debug.Log("Oda Aktif Ve Kilitli!");
             Debug.Log("Tiklanan Obje => " + EventSystem.current.currentSelectedGameObject);
             
-            if (!EventSystem.current.IsPointerOverGameObject() )
+            if (UIController.instance.AllUIPanelClosed())
             {
                 RoomManager.instance.BuyTheRoom(ClickedRoom);
             }
@@ -43,7 +43,7 @@ public class RoomBlokClickHandler : MonoBehaviour
         }
         else if (ClickedRoom.isActive && !ClickedRoom.isLock && GameManager.instance.GetCurrentGameMode() == GameMode.MuseumEditing)
         {
-            if (!EventSystem.current.IsPointerOverGameObject())
+            if (UIController.instance.AllUIPanelClosed())
             {
                 Debug.Log("Oda Aktif Ve Kilitli Degil!");
                 Debug.Log("Oda Duzenleme Moduna Giris Yapildi. Oda Hucre No =>" + ClickedRoom.availableRoomCell.CellLetter + ClickedRoom.availableRoomCell.CellNumber);

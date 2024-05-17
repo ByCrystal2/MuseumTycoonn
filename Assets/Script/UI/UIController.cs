@@ -9,7 +9,8 @@ using UnityEngine.UI;
 public class UIController : MonoBehaviour
 {
     private PictureElement _LastSelectedPicture;
-
+    [SerializeField] public pnlRewardAdController RewardAdController;
+    [SerializeField] List<GameObject> IsGameObjectOverPanels;
     [Header("MuseumInfos")]
     [SerializeField] GameObject pnlMuseumStats;
     [SerializeField] Button museumStatButton;
@@ -36,6 +37,12 @@ public class UIController : MonoBehaviour
     [SerializeField] Text TotalHappinessScore;
     [SerializeField] Text DailyEarnings;
     [SerializeField] Text CultureLevelInGlobal;
+
+    [Header("FortuneWheel")]
+    [SerializeField] GameObject pnlFortuneWheel;
+    //[SerializeField] Button pnlFortuneWheelOnButton;
+    [SerializeField] Button pnlFortuneWheelCloseButton;
+
 
     [Header("MidBotUIs")]
     [SerializeField] GameObject LeftUIsPanel;
@@ -167,7 +174,8 @@ public class UIController : MonoBehaviour
         museumStatButton.onClick.AddListener(ShowMuseumStatsPanel);
         unlockButton.onClick.AddListener(BuySkill);
         NpcInfoPanelExitButton.onClick.AddListener(CloseNPCInformationPanel);
-
+        //pnlFortuneWheelOnButton.onClick.AddListener(ShowFortuneWheelanel);
+        pnlFortuneWheelCloseButton.onClick.AddListener(() => CloseFortuneWheelPanel(true));
         // WorkerMarket
         WorkerPanelOnButton.onClick.AddListener(AddWorkersInContent);
         btnSecurityTab.onClick.AddListener(() => GetDesiredWorkersInContent(WorkerType.Security,btnSecurityTab));
@@ -449,8 +457,7 @@ public string GetDropDownSelectedPainter()
         {
             if (currentSkill.SkillCurrentLevel < currentSkill.SkillMaxLevel)
             {
-                MuseumManager.instance.SpendingGold(currentSkill.SkillRequiredMoney);
-                
+                MuseumManager.instance.SpendingGold(currentSkill.SkillRequiredMoney);                
                 SkillTreeManager.instance.SelectedSkillGameObject.GetComponentInChildren<SkillAbilityAmountController>().IncreasingAbilityAmount(); //Skill Ability Amount Arttirma.
                 
                 
@@ -490,6 +497,7 @@ public string GetDropDownSelectedPainter()
                 currentSkill.Purchased(true);
                 
                 SkillTreeManager.instance.RefreshSkillBonuses();
+                GoogleAdsManager.instance.ShowInterstitialAd();
             }
             else
             {
@@ -690,6 +698,16 @@ public string GetDropDownSelectedPainter()
             GeneralButtonActivation(false);
         }
     }
+    private void ShowFortuneWheelanel()
+    {
+        if (!pnlFortuneWheel.activeInHierarchy)
+        {
+            RightUIPanelController.instance.CloseEditObj(true);
+            CloseJoystickObj(true);
+            //GeneralButtonActivation(true, pnlFortuneWheelOnButton);
+            CloseFortuneWheelPanel(false);
+        }        
+    }
     public void SetNPCInfoPanelUIs(string _Fullname, float _Happiness, float _Stress, float _Toilet, float _Education, List<MyColors> _LikedColors, List<string> _LikedArtist)
     {
         txtFullName.text = _Fullname;
@@ -796,6 +814,16 @@ public string GetDropDownSelectedPainter()
     {
         pnlMuseumStats.SetActive(!_close);
     }
+    public void CloseFortuneWheelPanel(bool _close)
+    {
+        if (_close)
+        {
+            CloseJoystickObj(false);
+            RightUIPanelController.instance.CloseEditObj(false);
+            GeneralButtonActivation(false);
+        }
+        pnlFortuneWheel.SetActive(!_close);
+    }
     public void CloseCultureExpObj(bool _close)
     {
         CultureFillBar.gameObject.SetActive(!_close);
@@ -811,6 +839,10 @@ public string GetDropDownSelectedPainter()
     public void CloseJoystickObj(bool _close)
     {
         JoystickObj.SetActive(!_close);
+    }
+    public void CloseRewardAdPanel(bool _close)
+    {
+        RewardAdController.gameObject.SetActive(!_close);
     }
     public void GetDesiredWorkersInContent(WorkerType _wType, Button _clikedButton = null)
     {        
@@ -838,6 +870,7 @@ public string GetDropDownSelectedPainter()
             WorkerPanelOnButton.gameObject.SetActive(!_buttonActive);
             WorkerAssignmentPanelOnButton.gameObject.SetActive(!_buttonActive);
             DailyRewardPanelOnButton.gameObject.SetActive(!_buttonActive);
+            //pnlFortuneWheelOnButton.gameObject.SetActive(!_buttonActive);
             
             GameObject _activeGO = _activePnlButton.gameObject;
             if (_activeGO == museumStatButton.gameObject)
@@ -875,7 +908,7 @@ public string GetDropDownSelectedPainter()
                 });
                 rightAnimOpenOverWrite = false;
                 rightAnimOpen = false;
-            }
+            }            
         }
         else
         {
@@ -897,6 +930,7 @@ public string GetDropDownSelectedPainter()
             WorkerPanelOnButton.gameObject.SetActive(true);
             WorkerAssignmentPanelOnButton.gameObject.SetActive(true);
             DailyRewardPanelOnButton.gameObject.SetActive(true);
+            //pnlFortuneWheelOnButton.gameObject.SetActive(true);
             StartRightPanelUISBasePosAnim(true);
         }
 
@@ -1089,4 +1123,16 @@ public string GetDropDownSelectedPainter()
         return new GameObject("Null Obj");
     }
     
+    public bool AllUIPanelClosed()
+    {
+        bool active = true;
+        foreach (var ui in IsGameObjectOverPanels)
+        {
+            if (ui.activeSelf)
+            {
+                active = false;
+            }
+        }
+        return active;
+    }
 }

@@ -4,7 +4,7 @@ using System.Collections;
 using System;
 using System.Linq;
 using UnityEngine.Events;
-
+using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -21,12 +21,15 @@ public class FortuneWheelManager : MonoBehaviour
 	public Text NextFreeTurnTimerText;			// Text element that contains remaining time to next free turn
 
 	[Header("How much currency one paid turn costs")]
-	public int TurnCost = 300;					// How much coins user waste when turn whe wheel
+	public int TurnCost = 75;					// How much coins user waste when turn whe wheel
 
-	private bool _isStarted;					// Flag that the wheel is spinning
+	private bool _isStarted;                    // Flag that the wheel is spinning
 
 	[Header("Params for each sector")]
-	public FortuneWheelSector[] Sectors;		// All sectors objects
+	[SerializeField] List<Image> SectorCoins = new List<Image>();
+	[SerializeField] List<Text> SectorTexts = new List<Text>();
+	private List<Text> defaultSectorTexts = new List<Text>();
+	public List<FortuneWheelSector> Sectors = new List<FortuneWheelSector>();		// All sectors objects
 
 	private float _finalAngle;					// The final angle is needed to calculate the reward
 	private float _startAngle;    				// The first time start angle equals 0 but the next time it equals the last final angle
@@ -65,6 +68,8 @@ public class FortuneWheelManager : MonoBehaviour
 
 	[SerializeField]private FortuneWheelSector _finalSector;
 
+	[SerializeField] Sprite _goldSprite;
+	[SerializeField] Sprite _gemSprite;
 	private void Awake ()
 	{
 		_previousCoinsAmount = _currentCoinsAmount;
@@ -72,10 +77,14 @@ public class FortuneWheelManager : MonoBehaviour
 		CurrentCoinsText.text = _currentCoinsAmount.ToString ();
 
 		// Show sector reward value in text object if it's set
-		foreach (var sector in Sectors)
+		Sectors.Clear();
+		Sectors = GetSectorsWithCurrentMuseumLevel();
+
+		for (int i = 0; i < Sectors.Count; i++)
 		{
-			if (sector.ValueTextObject != null)
-				sector.ValueTextObject.GetComponent<Text>().text = sector.RewardValue.ToString();
+			FortuneWheelSector fhs = Sectors[i];
+			SectorTexts[i].text = fhs.ValueTextObject.text;
+			SectorCoins[i].sprite = fhs.SpriteObject;
 		}
 
 		if (IsFreeTurnEnabled) {
@@ -88,6 +97,77 @@ public class FortuneWheelManager : MonoBehaviour
 		} else {
 			NextTurnTimerWrapper.gameObject.SetActive (false);
 		}
+		defaultSectorTexts.Clear();
+		List<Text> copyTexts = new List<Text>();
+		int length = SectorTexts.Count;
+		for (int i = 0; i < length; i++)
+		{
+			copyTexts.Add(SectorTexts[i]);
+		}
+		defaultSectorTexts = copyTexts;
+	}
+	public List<FortuneWheelSector> GetSectorsWithCurrentMuseumLevel()
+	{
+		List<FortuneWheelSector> desiredSectors = new List<FortuneWheelSector>();
+		int museumLevel = MuseumManager.instance.GetCurrentCultureLevel();
+		if (museumLevel <= 0)
+		{
+			museumLevel = 1;
+		}
+		Debug.Log("museumLevel => " + museumLevel);
+		Debug.Log("UnityEngine.Random.Range(5 * (museumLevel / 5), 10 * (museumLevel / 5) => " + UnityEngine.Random.Range(5 + (5 * (museumLevel / 5)), 10 + (5 * (museumLevel / 5))));
+		int sectorCount = 12;
+		int maxGoldCount = sectorCount - (sectorCount / 3), maxGemCount = sectorCount - maxGoldCount;
+		int currentGoldCount = 0, currentGemCount = 0;
+		bool isTurnGem = true;
+		for (int i = 0; i < sectorCount; i++)
+		{
+			if (currentGoldCount + currentGemCount >= sectorCount)
+			{
+				Debug.Log("Sector islemi tamamlandi." + " currentGoldCount => " + currentGoldCount + " currentGemCount => " + currentGemCount);
+				break;
+			}
+
+			int coin;
+			Sprite sprite;
+            if (isTurnGem)
+			{                
+                currentGemCount++;
+                isTurnGem = false;
+                if (currentGemCount <= maxGemCount)
+                {
+					coin = UnityEngine.Random.Range(5 + (5 * (museumLevel / 5)), 10 + (10 * (museumLevel / 5)));
+                    sprite = _gemSprite;
+                }
+				else
+				{
+                    coin = UnityEngine.Random.Range(150 + (150 * (museumLevel / 5)), 250 + (250 * (museumLevel / 5)));
+                    sprite = _goldSprite;
+                }
+            }
+			else
+			{
+				currentGoldCount++;
+				isTurnGem = true;
+				if (currentGoldCount < maxGoldCount)
+				{
+					coin = UnityEngine.Random.Range(150 + (150 * (museumLevel / 5)), 250 + (250 * (museumLevel / 5)));
+                    sprite = _goldSprite;
+                }
+				else
+				{
+					coin = UnityEngine.Random.Range(5 + (5 * (museumLevel / 5)), 10 + (10 * (museumLevel / 5)));
+                    sprite = _gemSprite;
+                }
+				
+			}
+			Debug.Log(" FortuneWheel Coin => " + coin);
+			UnityEvent e = new UnityEvent();
+			e.AddListener(() => RewardCoins(coin));
+            FortuneWheelSector s1 = new FortuneWheelSector(SectorTexts[i],sprite,coin,100,e);
+			desiredSectors.Add(s1);
+		}
+		return desiredSectors;
 	}
 
 	private void TurnWheelForFree() { TurnWheel (true);	}
@@ -102,13 +182,13 @@ public class FortuneWheelManager : MonoBehaviour
 		_currentLerpRotationTime = 0f;
 
 		// All sectors angles
-		int[] sectorsAngles = new int[Sectors.Length];
+		int[] sectorsAngles = new int[Sectors.Count];
 
 		// Fill the necessary angles (for example if we want to have 12 sectors we need to fill the angles with 30 degrees step)
 		// It's recommended to use the EVEN sectors count (2, 4, 6, 8, 10, 12, etc)
-		for (int i = 1; i <= Sectors.Length; i++)
+		for (int i = 1; i <= Sectors.Count; i++)
 		{
-			sectorsAngles[i - 1] =  360 / Sectors.Length * i;
+			sectorsAngles[i - 1] =  360 / Sectors.Count * i;
 		}
 
 		//int cumulativeProbability = Sectors.Sum(sector => sector.Probability);
@@ -121,13 +201,13 @@ public class FortuneWheelManager : MonoBehaviour
 		int randomFinalAngle = sectorsAngles [0];
 		_finalSector = Sectors[0];
 
-		for (int i = 0; i < Sectors.Length; i++) {
+		for (int i = 0; i < Sectors.Count; i++) {
 			cumulativeProbability += Sectors[i].Probability;
 
 			if (rndNumber <= cumulativeProbability) {
 				// Choose final sector
-				randomFinalAngle = sectorsAngles [i];
-				_finalSector = Sectors[i];
+				randomFinalAngle = sectorsAngles[i];
+				_finalSector = Sectors[i+1];
 				break;
 			}
 		}
@@ -166,7 +246,7 @@ public class FortuneWheelManager : MonoBehaviour
 	public void TurnWheelButtonClick ()
 	{
 		if (_isFreeTurnAvailable) {
-            GoogleAdsManager.instance.LoadInterstitialAd();
+            //GoogleAdsManager.instance.LoadInterstitialAd();
             TurnWheelForFree ();
 		} else {
 			// If we have enabled paid turns
@@ -266,6 +346,7 @@ public class FortuneWheelManager : MonoBehaviour
 	/// <param name="awardCoins">Coins for user</param>
 	public void RewardCoins (int awardCoins)
 	{
+		GoogleAdsManager.instance.ShowRewardedAd();
 		_currentCoinsAmount += awardCoins;
 		// Show animated delta coins
 		DeltaCoinsText.text = String.Format("+{0}", awardCoins);
@@ -366,7 +447,8 @@ public class FortuneWheelManager : MonoBehaviour
 public class FortuneWheelSector : System.Object
 {
 	[Tooltip("Text object where value will be placed (not required)")]
-	public GameObject ValueTextObject;
+	public Text ValueTextObject;
+	public Sprite SpriteObject;
 
 	[Tooltip("Value of reward")]
 	public int RewardValue = 100;
@@ -377,6 +459,20 @@ public class FortuneWheelSector : System.Object
 
 	[Tooltip("Method that will be invoked if this sector will be randomly selected")]
 	public UnityEvent RewardCallback;
+
+    public FortuneWheelSector()
+    {
+        
+    }
+    public FortuneWheelSector(Text _myText,Sprite _sprite, int _rewardValue, int _probability, UnityEvent _rewardCallBack)
+    {
+		ValueTextObject = _myText;
+        SpriteObject = _sprite;
+		RewardValue = _rewardValue;
+		Probability = _probability;
+		RewardCallback = _rewardCallBack;
+		ValueTextObject.text = _rewardValue.ToString();
+    }
 }
 
 /**
