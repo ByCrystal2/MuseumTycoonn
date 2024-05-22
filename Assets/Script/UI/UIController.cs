@@ -1124,16 +1124,38 @@ public string GetDropDownSelectedPainter()
         return new GameObject("Null Obj");
     }
     
-    public bool AllUIPanelClosed()
+    public bool IsPointerOverAnyUI()
     {
-        bool active = true;
-        foreach (var ui in IsGameObjectOverPanels)
+        //bool active = true;
+        //foreach (var ui in IsGameObjectOverPanels)
+        //{
+        //    if (ui.activeSelf)
+        //    {
+        //        active = false;
+        //    }
+        //}
+        //return active;
+
+        //bir ui paneli acikken 3d objelere tiklanmayacak.
+        //ui paneli acik degilken 3d objelere tiklanabilir.
+        if (Input.touchCount > 0)
         {
-            if (ui.activeSelf)
+            Touch t = Input.GetTouch(0);
+
+            if (EventSystem.current.IsPointerOverGameObject(t.fingerId))
             {
-                active = false;
+                Debug.Log("UI üzerine dokunuldu.");
+                return true;
+            }
+            else
+            {
+                Debug.Log("UI dýþýnda bir yere dokunuldu.");
+                return false;
             }
         }
-        return active;
+        else
+        {
+            return false;
+        }
     }
 }

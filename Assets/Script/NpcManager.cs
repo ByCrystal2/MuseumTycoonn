@@ -48,10 +48,10 @@ public class NpcManager : MonoBehaviour
         GameManager.instance.LoadDailyRewardItems();
         //Gaming Services Activation
 
-        //BuyingConsumables.instance.InitializePurchasing();
+        BuyingConsumables.instance.InitializePurchasing();
         //UnityAdsManager.instance.Initialize();
         //UnityAdsManager.instance.CreateBannerView();
-        
+
         //UnityAdsManager.instance.ShowBannerAd();
     }
 

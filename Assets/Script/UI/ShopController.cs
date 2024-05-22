@@ -284,6 +284,7 @@ public class ShopController : MonoBehaviour
                 MuseumManager.instance.PurchasedItems.Add(_item);
                 ItemManager.instance.AddItemInShop(ItemManager.instance.RItems[Random.Range(0, ItemManager.instance.RItems.Count)]);
             }
+            BuyingConsumables.instance.BuyItemFromStore(_item);
             GameManager.instance.Save();
         }
 

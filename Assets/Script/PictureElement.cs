@@ -10,7 +10,7 @@ public class PictureElement : MonoBehaviour
     public PictureData _pictureData;
     private void OnMouseDown()
     {
-        if (_pictureData.isLocked || !UIController.instance.AllUIPanelClosed()) // Kilitliyse veya UI objesi arkasindan tiklaniyorsa islem yapma.
+        if (_pictureData.isLocked || UIController.instance.IsPointerOverAnyUI()) // Kilitliyse veya UI objesi arkasindan tiklaniyorsa islem yapma.
             return;
 
         PicturesMenuController.instance.AddPicture(this);

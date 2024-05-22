@@ -14,7 +14,7 @@ public class StatueSlotHandler : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (!UIController.instance.AllUIPanelClosed())
+        if (UIController.instance.IsPointerOverAnyUI())
             return;
         UIController.instance.SetActivationRoomEditingPanel(true);
         RoomManager.instance.CurrentEditedRoom = RoomManager.instance.RoomDatas.Where(x => (x.availableRoomCell.CellLetter.ToString() + x.availableRoomCell.CellNumber.ToString()) == MyRoomCode).SingleOrDefault();
