@@ -78,7 +78,7 @@ public class NpcManager : MonoBehaviour
             IsFirstGame = false;
 
             GameManager.instance.rewardManager.lastDailyRewardTime = TimeManager.instance.CurrentDateTime;
-
+            MuseumManager.instance.OnNpcPaid(500);
             int index = TimeManager.instance.WhatDay;
             // Eðer bulunduysa
             if (index != -1)

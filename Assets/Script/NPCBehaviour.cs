@@ -458,6 +458,7 @@ public class NPCBehaviour : MonoBehaviour
 
         NPCCurrentScore = Random.Range(NPCMinScore, NPCMaxScore + 1);
         MuseumManager.instance.AddCultureExp(NPCCurrentScore * 3);
+        MuseumManager.instance.OnNpcPaid(NPCCurrentScore);
         // MuseumManager.instance.AddTotalVisitorCommentCount(1);
         MuseumManager.instance.OnNpcCommentedPicture(this,PE, Mathf.Round(NPCCurrentScore)); // Þimdilik Current Score Göre Yýldýz Yorumu Yapýldý.
 
@@ -518,10 +519,7 @@ public class NPCBehaviour : MonoBehaviour
 
         CurrentTarget = NpcTargets.Inside;
         CurrentState = NPCState.Move;
-        CreateTarget();
-
-        MuseumManager.instance.OnNpcPaid();
-        
+        CreateTarget();        
     }
 
     void OnExitWayMuseum(float _multiplier = 1)

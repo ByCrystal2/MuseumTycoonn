@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class MuseumManager : MonoBehaviour
 {
@@ -128,11 +129,12 @@ public class MuseumManager : MonoBehaviour
         //Kac adet npc var buraya guncellenicek.
     }
 
-    public void OnNpcPaid()
+    public void OnNpcPaid(float _score)
     {
-        Gold += GetTicketPrice();
-        UIController.instance.GoldText.text = "" + Gold;
-        Debug.Log("An npc entered Museum. New gold: " + Gold);
+        float targetGold = _score * GetTicketPrice();
+        UIController.instance.GoldText.GetComponent<GoldStackHandler>().AddTempGold(targetGold);
+        Gold += targetGold;
+        Debug.Log("Earned: " + targetGold + " by npc paid for an image. New gold: " + Gold);
         DailyEarning = Gold;
         UIController.instance.InMuseumCurrentNPCCountChanged(GetInMuseumVisitorCount());
         UIController.instance.InMuseumDailyEarningChanged(DailyEarning);
@@ -353,6 +355,7 @@ public class MuseumManager : MonoBehaviour
 
     public float GetTicketPrice()
     {
+        Debug.Log("Ticket price: " + (SkillTreeManager.instance.CurrentBuffs[(int)eStat.MuseumEnterPrice] + TicketPricePerCultureLevel[CurrentCultureLevel]));
         return SkillTreeManager.instance.CurrentBuffs[(int)eStat.MuseumEnterPrice] + TicketPricePerCultureLevel[CurrentCultureLevel];
     }
 
@@ -376,23 +379,23 @@ public class MuseumManager : MonoBehaviour
         return pe;
     }
 
-    public List<int> CultureLevel = new List<int>() 
+    private List<int> CultureLevel = new List<int>() 
     { 0, 100, 225, 450, 600, 800, 1050, 1350, 1700, 2100, 2650,
         3200, 3750, 4600, 5300, 6000, 999999
     };
 
-    public List<int> MaxVisitorPerCultureLevel = new List<int>()
+    private List<int> MaxVisitorPerCultureLevel = new List<int>()
     {
         0, 5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
     };
 
-    public List<int> TicketPricePerCultureLevel = new List<int>()
+    private List<int> TicketPricePerCultureLevel = new List<int>()
     {
-        0, 300,  305,  310,  315,  320,  325, 330, 335, 340, 345, 350, 358, 366, 374, 382, 390
+        0, 5,  6,  7,  8,  9,  10, 12, 14, 16, 18, 20, 23, 26, 29, 32, 35
     };
 
-    public List<int> RequiredSkillPointExp = new List<int>()
+    private List<int> RequiredSkillPointExp = new List<int>()
     {
-        0, 100,  150,  200,  250,  300,  350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850
+        0, 100,  125,  150,  175,  200,  225, 250, 275, 300, 335, 370, 405, 440, 475, 510, 550
     };
 }

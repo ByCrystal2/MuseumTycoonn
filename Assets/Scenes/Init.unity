@@ -3230,6 +3230,7 @@ MonoBehaviour:
   allAudioSources: []
   CurrentSaveData:
     SaveName: 
+    GameLanguage: 
     Gold: 0
     Culture: 0
     Gem: 0
@@ -3248,6 +3249,7 @@ MonoBehaviour:
     StatueDatas: []
     LastDailyRewardTime: 
     WhatDay: 0
+  GameLanguage: Turkish
   rewardManager: {fileID: 0}
 --- !u!4 &1202299727
 Transform:
@@ -4094,10 +4096,10 @@ MonoBehaviour:
   TotalVisitorCommentCount: 0
   TotalVisitorHappiness: 0
   DailyEarning: 0
-  CultureLevel: 0000000064000000e1000000c201000058020000200300001a04000046050000a4060000340800005a0a0000800c0000a60e0000f8110000b4140000701700003f420f00
-  MaxVisitorPerCultureLevel: 0000000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f0000001000000011000000120000001300000014000000
-  TicketPricePerCultureLevel: 000000002c01000031010000360100003b01000040010000450100004a0100004f01000054010000590100005e010000660100006e010000760100007e01000086010000
-  RequiredSkillPointExp: 000000006400000096000000c8000000fa0000002c0100005e01000090010000c2010000f401000026020000580200008a020000bc020000ee0200002003000052030000
+  CultureLevel: 
+  MaxVisitorPerCultureLevel: 
+  TicketPricePerCultureLevel: 
+  RequiredSkillPointExp: 
 --- !u!4 &1626886296
 Transform:
   m_ObjectHideFlags: 0
@@ -4244,12 +4246,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    m_Quality: 3
-    m_FrameInfluence: 0.1
-    m_JitterScale: 1
-    m_MipBias: 0
-    m_VarianceClampScale: 0.9
-    m_ContrastAdaptiveSharpening: 0
+    quality: 3
+    frameInfluence: 0.1
+    jitterScale: 1
+    mipBias: 0
+    varianceClampScale: 0.9
+    contrastAdaptiveSharpening: 0
 --- !u!1 &1711952599
 GameObject:
   m_ObjectHideFlags: 0

@@ -106,7 +106,6 @@ public class GoogleAdsManager : MonoBehaviour
         if (!IsRewardAdShow)
         {
             RewardAdWaitingTime -= Time.deltaTime;
-            Debug.Log("RewardAdWaitingTime => " + RewardAdWaitingTime);
             if (RewardAdWaitingTime <= 0)
             {
                 IsRewardAdShow = true;
