@@ -843,6 +843,7 @@ public string GetDropDownSelectedPainter()
     public void CloseRewardAdPanel(bool _close)
     {
         RewardAdController.gameObject.SetActive(!_close);
+        Debug.Log("RewardAdController is activeSelf => " + !_close + " its gameoject name is => " + RewardAdController.gameObject.name);
     }
     public void GetDesiredWorkersInContent(WorkerType _wType, Button _clikedButton = null)
     {        

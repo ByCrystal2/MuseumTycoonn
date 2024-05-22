@@ -30,7 +30,21 @@ public struct ItemData
         Name = _name;
         IAP_ID = _iAPId;
         if (_shoppingType == ShoppingType.RealMoney)
-            IAP_ID = Constant.instance.IAPIDCompany + Constant.instance.IAPIDGame + _itemType.ToString().ToLower() + "x" + _amount.ToString() + "_" + _shoppingType.ToString().ToLower() + "_" + ((int)_requiredMoney).ToString(); //com_kosippysudio_museumtycoon_gold5000x_realmoney_10
+        {
+            string requiredMoneyChange = _requiredMoney.ToString();
+            foreach (char c in requiredMoneyChange)
+            {
+                Debug.Log("requiredMoney[c] => " + c);
+                if (c == ',')
+                {
+                    requiredMoneyChange = requiredMoneyChange.Replace(c, '.');
+                    Debug.Log("requiredMoneyChange => " +  requiredMoneyChange);
+                }
+                    
+            }
+            IAP_ID = Constant.instance.IAPIDCompany + Constant.instance.IAPIDGame + _itemType.ToString().ToLower() + "x" + _amount.ToString() + "_" + _shoppingType.ToString().ToLower() + "_" + requiredMoneyChange; //com_kosippysudio_museumtycoon_gold5000x_realmoney_10
+        }
+
         Description = _description;
         RequiredMoney = _requiredMoney;
         Amount = _amount;

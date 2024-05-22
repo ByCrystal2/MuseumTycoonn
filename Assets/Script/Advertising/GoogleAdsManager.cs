@@ -50,8 +50,8 @@ public class GoogleAdsManager : MonoBehaviour
         ("ca-app-pub-1301273545593514/3004265148",10),
         ("ca-app-pub-1301273545593514/1211751457",10),
         ("ca-app-pub-1301273545593514/3867836392",10),
-    };                                            
-    //const string _rewardedAdUnitId = "ca-app-pub-3940256099942544/5224354917"; test id
+    };
+    const string _rewardedAdUnitId = "ca-app-pub-3940256099942544/5224354917"; //test id
     const string _interstitialAdUnitId = "ca-app-pub-3940256099942544/1033173712";
     const string _bannerViewAdId = "ca-app-pub-3940256099942544/6300978111";
 #elif PLATFORM_ANDROID
@@ -95,7 +95,6 @@ public class GoogleAdsManager : MonoBehaviour
         if (!IsInterstitialAdShow)
         {
             InterstitialAdWaitingTime -= Time.deltaTime;
-            Debug.Log("InterstitialAdWaitingTime => " + InterstitialAdWaitingTime);
             if (InterstitialAdWaitingTime <= 0)
             {
                 IsInterstitialAdShow = true;
@@ -120,7 +119,6 @@ public class GoogleAdsManager : MonoBehaviour
         if (!IsBannerAdShow)
         {
             BannerAdWaitingTime -= Time.deltaTime;
-            Debug.Log("BannerAdWaitingTime => " + BannerAdWaitingTime);
             if (BannerAdWaitingTime <= 0)
             {
                 IsBannerAdShow = true;
@@ -136,6 +134,9 @@ public class GoogleAdsManager : MonoBehaviour
     }
     IEnumerator DelayForRewardAdsShowing()
     {
+        while (_rewardedAd == null)
+            yield return new WaitForEndOfFrame();
+
         while (!_rewardedAd.CanShowAd())
             yield return new WaitForEndOfFrame();
         

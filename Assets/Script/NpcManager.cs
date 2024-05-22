@@ -106,7 +106,7 @@ public class NpcManager : MonoBehaviour
             GoogleAdsManager.instance.adsData = new AdverstingData();
         GoogleAdsManager.instance.LoadBannerAd();
         GoogleAdsManager.instance.LoadInterstitialAd();
-        GoogleAdsManager.instance.LoadRewardedAd();
+        //GoogleAdsManager.instance.LoadRewardedAd();
         GoogleAdsManager.instance.StartRewardAdBool(true);
     }
 
