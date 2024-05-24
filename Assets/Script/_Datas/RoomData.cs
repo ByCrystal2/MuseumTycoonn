@@ -95,6 +95,8 @@ public class RoomData : MonoBehaviour
             if (CurrentShoppingType != ShoppingType.RealMoney && isActive && RoomManager.instance.activeRoomsRequiredMoney > 0)
             {
                 SetMyRequiredTexts(RoomManager.instance.activeRoomsRequiredMoney);
+                StartCoroutine(WaitForRoomUISHandler());
+                
                 Debug.Log("Oda Aktif Ve activeRoomsRequiredMoney 0'dan buyuk" + RoomManager.instance.activeRoomsRequiredMoney);
             }
             else
@@ -137,6 +139,7 @@ public class RoomData : MonoBehaviour
             //RoomBlok.SetActive(false);
             RoofLock.SetActive(false);
             NotPurchasedBlok.SetActive(false);
+            StartCoroutine(WaitForRoomUISHandler());
         }
 
         foreach (DoorDirection pictureDirection in pictureDirections)
@@ -167,6 +170,15 @@ public class RoomData : MonoBehaviour
         }
     }
 
+    IEnumerator WaitForRoomUISHandler()
+    {
+        while (UIController.instance.roomUISPanelController.GetRoomUIS().Count <= 0)
+            yield return new WaitForEndOfFrame();
+        RoomUIHandler _targetHandler = UIController.instance.roomUISPanelController.GetRoomUI(availableRoomCell);
+        Debug.Log("UIController.instance.roomUISPanelController.GetRoomUI(availableRoomCell).name; => " + UIController.instance.roomUISPanelController.GetRoomUI(availableRoomCell).name);
+        Debug.Log("_targetHandler.name => " + _targetHandler.name);
+        _targetHandler.UpdateMyUI();
+    }
     public void SetRoomBlockPanelActive(bool _isActive)
     {
         RoomBlok.GetComponent<BoxCollider>().enabled = _isActive;

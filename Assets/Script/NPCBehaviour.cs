@@ -10,7 +10,6 @@ using UnityEngine.UI;
 public class NPCBehaviour : MonoBehaviour
 {
     [SerializeField] private Transform TargetPosition;
-    [SerializeField] public List<DialogData> MySources;
     [SerializeField] private AudioSource CurrentAudioSource;
     [SerializeField] private NPCState CurrentState;
     [SerializeField] private NpcTargets CurrentTarget;
@@ -99,7 +98,6 @@ public class NPCBehaviour : MonoBehaviour
     }
     void Start()
     {
-        MySources = AudioManager.instance.GetDialogs(IsMale);
         CurrentAudioSource = transform.GetChild(0).GetComponent<AudioSource>();
         AdditionalLuck = 1000;
         NpcCurrentSpeed = NpcSpeed + NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f); ;
@@ -364,7 +362,7 @@ public class NPCBehaviour : MonoBehaviour
             float sadSpeed = NpcSpeed * 0.35f;
             NpcCurrentSpeed = sadSpeed + sadSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f);
             Agent.speed = NpcCurrentSpeed;
-            AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcSad, CurrentAudioSource);
+            AudioManager.instance.GetDialogAudios(DialogType.NpcSad, CurrentAudioSource, IsMale);
             if (Happiness < 0)
             {
                 Happiness = 0;
@@ -383,7 +381,7 @@ public class NPCBehaviour : MonoBehaviour
             float happySpeed = NpcSpeed * 1.25f;
             NpcCurrentSpeed = happySpeed + happySpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f);
             Agent.speed = NpcCurrentSpeed;
-            AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcHappiness, CurrentAudioSource);
+            AudioManager.instance.GetDialogAudios(DialogType.NpcHappiness, CurrentAudioSource, IsMale);
             if (Happiness > 100)
             {
                 Happiness = 100;
@@ -465,14 +463,14 @@ public class NPCBehaviour : MonoBehaviour
         int center = 5;
         if (NPCCurrentScore < center)
         {
-            AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcDisLike, CurrentAudioSource);
+            AudioManager.instance.GetDialogAudios(DialogType.NpcDisLike, CurrentAudioSource, IsMale);
             Stress += (5 - NPCCurrentScore) * 2;
             Happiness -= Mathf.Round(Stress * 0.2f);
             MyNPCUI.PlayEmotionEffect(NpcEmotionEffect.Sadness);
         }
         else
         {
-            AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcLike, CurrentAudioSource);
+            AudioManager.instance.GetDialogAudios(DialogType.NpcLike, CurrentAudioSource, IsMale);
             Stress -= (NPCCurrentScore - 5) * 2;
             int _happiness = (int)Mathf.Round((100 - Stress) * 0.05f);
             _happiness = (int)(_happiness + (float)_happiness * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.HappinessIncreaseRatio] / 100f));
@@ -584,7 +582,7 @@ public class NPCBehaviour : MonoBehaviour
             IsBusy = true;
             Debug.Log("IdleTimer: " + IdleTimer + " /Dialog start with npc: " + name + " /dialogTarget: " + DialogTarget.name);
             SetCurrentAnimationState("Dialog", Random.Range(1, 4));            
-            AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcTalking,CurrentAudioSource);            
+            AudioManager.instance.GetDialogAudios(DialogType.NpcTalking, CurrentAudioSource, IsMale);            
             return;
         }
 
@@ -696,6 +694,7 @@ public class NPCBehaviour : MonoBehaviour
                 Debug.Log("Anim.GetCurrentAnimatorClipInfo(0)[0].clip.name: " + anim.GetCurrentAnimatorClipInfo(0)[0].clip.name);
                 yield return new WaitForEndOfFrame();
             }
+            AudioManager.instance.PlayPunchSound(CurrentAudioSource);
 
             float timer = anim.GetCurrentAnimatorClipInfo(0)[0].clip.length;
             //AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcByeBye, CurrentAudioSource);

@@ -139,11 +139,8 @@ public partial class RoomManager : MonoBehaviour
         purchasedRoom.isLock = false;
         purchasedRoom.isActive = true;
         purchasedRoom.IsPurchased(true);
-        List<RoomUIHandler> roomUIHandlers = FindObjectsOfType<RoomUIHandler>().ToList();
-        foreach (var handler in roomUIHandlers)
-        {
-            handler.UpdateMyUI();
-        }
+        RoomUIHandler _purchasedHandler= UIController.instance.roomUISPanelController.GetRoomUI(purchasedRoom.availableRoomCell);
+        _purchasedHandler.UpdateMyUI();
         int purchasedRoomCellNumber = purchasedRoom.availableRoomCell.CellNumber;
         int purchasedRoomCellLetter = ((int)purchasedRoom.availableRoomCell.CellLetter);
         // B4
@@ -162,9 +159,10 @@ public partial class RoomManager : MonoBehaviour
                 if ((currentRoomCellLetter == purchasedRoomCellLetter && currentRoomCellNumber == purchasedRoomCellNumber - 1) /* Mevcut Oda B3 ise */ || (currentRoomCellLetter == purchasedRoomCellLetter && currentRoomCellNumber == purchasedRoomCellNumber + 1) /* Mevcut Oda B5 ise */  || (currentRoomCellLetter == purchasedRoomCellLetter - 1 && currentRoomCellNumber == purchasedRoomCellNumber) /* Mevcut Oda A4 ise */  || (currentRoomCellLetter == purchasedRoomCellLetter + 1 && currentRoomCellNumber == purchasedRoomCellNumber) /* Mevcut Oda C4 ise */)
                 {
                     currentRoom.isActive = true;
-                    Debug.Log(currentRoom.availableRoomCell.CellLetter + " " + currentRoom.availableRoomCell.CellNumber + " Kodlu Oda Aktif Edildi.");                    
-                    currentRoom.GetComponentInChildren<RoomCloudActivation>().CloudActivationChange(false);
-
+                    Debug.Log(currentRoom.availableRoomCell.CellLetter + " " + currentRoom.availableRoomCell.CellNumber + " Kodlu Oda Aktif Edildi.");
+                    //currentRoom.GetComponentInChildren<RoomCloudActivation>().CloudActivationChange(false);
+                    RoomUIHandler _neighborHandler = UIController.instance.roomUISPanelController.GetRoomUI(currentRoom.availableRoomCell);
+                    _neighborHandler.UpdateMyUI();
                     if (purchasedRoom.CurrentShoppingType != ShoppingType.RealMoney) // Satin alinan oda, Gercek para ile satin alinmamissa islemleri uygula.
                     {
                         if (currentRoom.CurrentShoppingType == ShoppingType.RealMoney)

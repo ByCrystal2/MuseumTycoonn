@@ -33,9 +33,15 @@ public class AudioManager : MonoBehaviour
     {
        
     }
-    public void PlayGoldPaidSound(AudioClip _clip)
+    public void PlayGoldPaidSound()
     {
-        SoundEffectsSources[Random.Range(0,SoundEffectsSources.Count)].PlayOneShot(_clip);
+        List<AudioClip> Sources = GetSoundEffects(SoundEffectType.EarnGold).Select(x => x.MyClip).ToList();
+        SoundEffectsSources[Random.Range(0, SoundEffectsSources.Count)].PlayOneShot(Sources[Random.Range(0,Sources.Count)]);
+    }
+    public void PlayPunchSound(AudioSource _npcSource)
+    {
+        List<AudioClip> Sources = GetSoundEffects(SoundEffectType.Punch).Select(x => x.MyClip).ToList();
+        _npcSource.PlayOneShot(Sources[Random.Range(0, Sources.Count)]);
     }
 
     public void PlayMusicOfMenu()
@@ -189,10 +195,11 @@ public class AudioManager : MonoBehaviour
         return Dialogs.Where(x=> x.IsMale == _isMale && x.DiaType == _dialogType && x.IsGlobal == _isGlobal).ToList();
     }
 
-    public void GetDialogAudios(List<DialogData> _dialogDatas, DialogType _dialogType, AudioSource _audioSource)
+    public void GetDialogAudios(DialogType _dialogType, AudioSource _audioSource, bool _isMale)
     {
         _audioSource.Stop();
-        List<AudioClip> audioSources = _dialogDatas.Where(x=> x.DiaType == _dialogType).Select(x => x.MyClip).ToList();
+        List<AudioClip> audioSources = Dialogs.Where(x=> x.DiaType == _dialogType && x.IsMale == _isMale).Select(x => x.MyClip).ToList();
+        Debug.Log("_dialogType => " + _dialogType + " _audioSource NPC => " + _audioSource.gameObject.name + " _isMale => " + _isMale);
         if(audioSources.Count > 0)
         {
             _audioSource.clip = audioSources[Random.Range(0,audioSources.Count)];

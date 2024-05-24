@@ -145,8 +145,8 @@ public class MuseumManager : MonoBehaviour
             Debug.Log("Picture Control: " + PicturesMenuController.instance.CurrentPicture.name);
             PicturesMenuController.instance.GoldControledButtonShape();
         }
-        List<AudioClip> Sources = AudioManager.instance.GetSoundEffects(SoundEffectType.EarnGold).Select(x=> x.MyClip).ToList();
-        AudioManager.instance.PlayGoldPaidSound(Sources[Random.Range(0,Sources.Count)]);
+        
+        AudioManager.instance.PlayGoldPaidSound();
     }
     
     public void AddGold(float _gold)

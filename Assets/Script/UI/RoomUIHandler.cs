@@ -7,9 +7,10 @@ using UnityEngine.UI;
 
 public class RoomUIHandler : MonoBehaviour, IPointerClickHandler
 {
-    [SerializeField] RoomCell MyRoomCellCode;
+    [SerializeField] public RoomCell MyRoomCellCode;
 
     [SerializeField] Text RoomCellCodeText;
+    [SerializeField] GameObject RoomCloud;
 
     private RoomData MyTargetRoom;
     private void OnEnable()
@@ -20,14 +21,19 @@ public class RoomUIHandler : MonoBehaviour, IPointerClickHandler
     }
     public void UpdateMyUI()
     {
+        if (MyTargetRoom.isActive)
+        {
+            SetRoomCloudActivation(false);
+        }
         if (!MyTargetRoom.isLock && MyTargetRoom.isActive)
         {
-            GetComponent<Image>().color = Color.green;
+            GetComponent<Image>().color = Color.green;            
         }
         else
         {
             GetComponent<Image>().color = Color.black;
         }
+        
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -58,5 +64,9 @@ public class RoomUIHandler : MonoBehaviour, IPointerClickHandler
                 //GetComponent<BoxCollider>().enabled = false;
             }
         }
+    }
+    public void SetRoomCloudActivation(bool _active)
+    {
+        RoomCloud.SetActive(_active);
     }
 }
