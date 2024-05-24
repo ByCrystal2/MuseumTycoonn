@@ -213,8 +213,19 @@ public class ShopController : MonoBehaviour
     {
         _newItem.transform.GetChild(3).GetComponent<Text>().text = _currentItem.Name;
         _newItem.transform.GetChild(4).GetComponent<Text>().text = childFourValue;
-        _newItem.transform.GetChild(5).transform.GetChild(1).GetComponent<Image>().sprite = SetAndControlItemIcon(_currentItem.CurrentShoppingType);
-        _newItem.transform.GetChild(5).transform.GetChild(2).GetComponent<Text>().text = _currentItem.RequiredMoney.ToString();
+        
+        if(_currentItem.CurrentShoppingType != ShoppingType.RealMoney)
+        {
+            _newItem.transform.GetChild(5).transform.GetChild(2).GetComponent<Text>().text = _currentItem.RequiredMoney.ToString();
+            _newItem.transform.GetChild(5).transform.GetChild(1).GetComponent<Image>().sprite = SetAndControlItemIcon(_currentItem.CurrentShoppingType);
+        }
+        else
+        {
+            _newItem.transform.GetChild(5).transform.GetChild(2).GetComponent<Text>().text = BuyingConsumables.instance.GetProductLocalizedPriceString(_currentItem.IAP_ID);
+            Debug.Log("_currentItem.IAP_ID => " + _currentItem.IAP_ID);
+            _newItem.transform.GetChild(5).transform.GetChild(1).gameObject.SetActive(false);
+
+        }
         _newItem.transform.GetChild(0).GetComponent<Image>().sprite = _currentItem.ImageSprite;
         _newItem.transform.GetChild(2).GetComponent<Image>().sprite = _currentItem.ImageSprite;
     }
@@ -278,12 +289,7 @@ public class ShopController : MonoBehaviour
         {
             _item.IsPurchased = true;
             //BuyingConsumables.instance.BuyItemFromStore(_item);
-            if (_item.CurrentItemType == ItemType.Table)
-            {
-                ItemManager.instance.ShopItemDatas.Remove(_item);
-                MuseumManager.instance.PurchasedItems.Add(_item);
-                ItemManager.instance.AddItemInShop(ItemManager.instance.RItems[Random.Range(0, ItemManager.instance.RItems.Count)]);
-            }
+            
             BuyingConsumables.instance.BuyItemFromStore(_item);
             GameManager.instance.Save();
         }
@@ -303,7 +309,7 @@ public class ShopController : MonoBehaviour
         {
             ShoppingType.Gem => GemSprite,
             ShoppingType.Gold => GoldSprite,
-            ShoppingType.RealMoney => RealMoneySprite,
+            ShoppingType.RealMoney => null,
             _ => GoldSprite
         };
 

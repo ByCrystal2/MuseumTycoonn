@@ -31,30 +31,27 @@ public class GiftBoxBehaviour : MonoBehaviour
 
     void ShakeStart()
     {
-        transform.DOMove(endPos, posDuration).SetEase(Ease.OutQuint).OnComplete(() => ShakeEnd());
-
+        DOTween.Play(transform.DOMove(endPos, posDuration).SetEase(Ease.OutQuint).OnComplete(() => ShakeEnd()));        
 
     }
     void ShakeEnd()
     {
-        transform.DOMove(startPos, posDuration).SetEase(Ease.OutQuint).OnComplete(() => ShakeStart());
-
-
+        DOTween.Play(transform.DOMove(startPos, posDuration).SetEase(Ease.OutQuint).OnComplete(() => ShakeStart()));
     }
     void ScaleStart()
     {
-        transform.DOScale(scaleEnd, scaleDuration).SetEase(Ease.OutBounce).OnComplete(() => ScaleEnd());
+        DOTween.Play(transform.DOScale(scaleEnd, scaleDuration).SetEase(Ease.OutBounce).OnComplete(() => ScaleEnd()));
     }
     void ScaleEnd()
     {
-        transform.DOScale(scaleStart, scaleDuration).SetEase(Ease.InOutQuad).OnComplete(() => ScaleStart());
+        DOTween.Play(transform.DOScale(scaleStart, scaleDuration).SetEase(Ease.InOutQuad).OnComplete(() => ScaleStart()));
     }
     void RotateStart()
     {
-        transform.DOLocalRotate(new Vector3(0, 0, rotateEndZ), rotateDuration).SetEase(Ease.InOutQuad).OnComplete(() => RotateEnd());
+        DOTween.Play(transform.DOLocalRotate(new Vector3(0, 0, rotateEndZ), rotateDuration).SetEase(Ease.InOutQuad).OnComplete(() => RotateEnd()));
     }
     void RotateEnd()
     {
-        transform.DOLocalRotate(new Vector3(0, 0, rotateStartZ), rotateDuration).SetEase(Ease.InOutQuad).OnComplete(() => RotateStart());
+        DOTween.Play(transform.DOLocalRotate(new Vector3(0, 0, rotateStartZ), rotateDuration).SetEase(Ease.InOutQuad).OnComplete(() => RotateStart()));
     }    
 }

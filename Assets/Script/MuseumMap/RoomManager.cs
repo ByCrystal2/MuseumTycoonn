@@ -139,6 +139,11 @@ public partial class RoomManager : MonoBehaviour
         purchasedRoom.isLock = false;
         purchasedRoom.isActive = true;
         purchasedRoom.IsPurchased(true);
+        List<RoomUIHandler> roomUIHandlers = FindObjectsOfType<RoomUIHandler>().ToList();
+        foreach (var handler in roomUIHandlers)
+        {
+            handler.UpdateMyUI();
+        }
         int purchasedRoomCellNumber = purchasedRoom.availableRoomCell.CellNumber;
         int purchasedRoomCellLetter = ((int)purchasedRoom.availableRoomCell.CellLetter);
         // B4

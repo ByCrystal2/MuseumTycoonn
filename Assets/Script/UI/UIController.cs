@@ -5,6 +5,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Purchasing;
 using UnityEngine.UI;
 public class UIController : MonoBehaviour
 {
@@ -29,7 +30,7 @@ public class UIController : MonoBehaviour
     [Header("General Infos")]
     //Left
     [SerializeField] GameObject commentPrefab;
-    [SerializeField] Transform commentParent;    
+    [SerializeField] Transform commentParent;
     //Right
     [SerializeField] Text TotalVisitorsCommentCount;
     [SerializeField] Text DailyVisitorCount;
@@ -70,7 +71,7 @@ public class UIController : MonoBehaviour
     public GameObject YeterliPoint;
     public GameObject YeterliMoney;
 
-    
+
 
     public TextMeshProUGUI RequiredPointText;
     public TextMeshProUGUI RequiredMoneyText;
@@ -87,7 +88,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private List<TextMeshProUGUI> ArtistTexts;
 
     [Header("Worker Market Panel")]
-    public Transform WorkerContent; 
+    public Transform WorkerContent;
     public GameObject WorkerPrefabV2_V1;
     //UI
     public GameObject WorkerPanel;
@@ -99,7 +100,7 @@ public class UIController : MonoBehaviour
     public Button btnReceptionistTab;
     public Button btnBrochureSellerTab;
 
-    [Header("Worker Assignment Panel")]    
+    [Header("Worker Assignment Panel")]
     //UI
     [SerializeField] private GameObject WorkerAssignmentPanel;
     [SerializeField] private Button WorkerAssignmentPanelOnButton;
@@ -146,6 +147,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private Transform ActivePnlBtnBookDefaultPos;
     [SerializeField] private Transform ActivePnlBtnWorkerMarketDefaultPos;
     [SerializeField] private Transform ActivePnlBtnWorkerAssignmentDefaultPos;
+
+    [SerializeField] GameObject EditModeCanvas;
     private Vector3 defaultBtnBookPos, defaultBtnWorkerMarketPos, defaultBtnWorkerAssignmentPos;
     public static UIController instance { get; private set; }
     private void Awake()
@@ -178,7 +181,7 @@ public class UIController : MonoBehaviour
         pnlFortuneWheelCloseButton.onClick.AddListener(() => CloseFortuneWheelPanel(true));
         // WorkerMarket
         WorkerPanelOnButton.onClick.AddListener(AddWorkersInContent);
-        btnSecurityTab.onClick.AddListener(() => GetDesiredWorkersInContent(WorkerType.Security,btnSecurityTab));
+        btnSecurityTab.onClick.AddListener(() => GetDesiredWorkersInContent(WorkerType.Security, btnSecurityTab));
         btnHouseKeeperTab.onClick.AddListener(() => GetDesiredWorkersInContent(WorkerType.Housekeeper, btnHouseKeeperTab));
         btnMusicianTab.onClick.AddListener(() => GetDesiredWorkersInContent(WorkerType.Musician, btnMusicianTab));
         btnReceptionistTab.onClick.AddListener(() => GetDesiredWorkersInContent(WorkerType.Receptionist, btnReceptionistTab));
@@ -200,7 +203,7 @@ public class UIController : MonoBehaviour
 
         MuseumManager.instance.CalculateAndAddTextAllInfos();
     }
-    public void GetClickedPicture(bool active, PictureElement _lastSelectedPicture) 
+    public void GetClickedPicture(bool active, PictureElement _lastSelectedPicture)
     {
         _LastSelectedPicture = _lastSelectedPicture;
         SetSelectedPicture(0);
@@ -228,7 +231,7 @@ public class UIController : MonoBehaviour
                 btnLeftUIOpen.gameObject.SetActive(true);
                 LeftUISBackground.gameObject.SetActive(true);
                 LeftUISBackground.DOScaleX(14, 0.05f).SetEase(Ease.Linear);
-                LeftUISBackground.DOScaleY(50, 0.1f).SetEase(Ease.Linear);            
+                LeftUISBackground.DOScaleY(50, 0.1f).SetEase(Ease.Linear);
             }
             rightAnimOpen = !rightAnimOpen;
             LeftUIArrow.DOLocalRotate(new Vector3(0, 0, 0), 0.2f);
@@ -238,7 +241,7 @@ public class UIController : MonoBehaviour
         if (!rightAnimOpen)
         {
             LeftUISBackground.gameObject.SetActive(true);
-            LeftUIArrow.DOLocalRotate(new Vector3(0, 0, 0),0.2f);
+            LeftUIArrow.DOLocalRotate(new Vector3(0, 0, 0), 0.2f);
             LeftUISBackground.DOScaleX(14, 0.2f).SetEase(Ease.Linear).OnComplete(() =>
             {
                 LeftUISBackground.DOScaleY(50, 0.3f).SetEase(Ease.Linear).OnComplete(() =>
@@ -249,7 +252,7 @@ public class UIController : MonoBehaviour
                 });
             });
 
-            
+
         }
         else
         {
@@ -258,7 +261,7 @@ public class UIController : MonoBehaviour
             WorkerPanelOnButton.transform.DOMove(defaultBtnWorkerMarketPos, 0.05f).SetEase(Ease.Linear);
             WorkerAssignmentPanelOnButton.transform.DOMove(defaultBtnWorkerAssignmentPos, 0.05f).SetEase(Ease.Linear).OnComplete(() =>
             {
-                LeftUISBackground.DOScaleX(1, 0.4f).SetEase(Ease.Linear).OnComplete(()=>
+                LeftUISBackground.DOScaleX(1, 0.4f).SetEase(Ease.Linear).OnComplete(() =>
                 {
                     LeftUISBackground.gameObject.SetActive(false);
                 });
@@ -271,28 +274,28 @@ public class UIController : MonoBehaviour
     {
         if (Input.touchCount > 0)
         {
-           Touch touch = Input.GetTouch(0);
-           return touch.phase == TouchPhase.Began && !EventSystem.current.IsPointerOverGameObject(touch.fingerId)?false:true;
-            
+            Touch touch = Input.GetTouch(0);
+            return touch.phase == TouchPhase.Began && !EventSystem.current.IsPointerOverGameObject(touch.fingerId) ? false : true;
+
         }
         else return false;
     }
 
-public string GetDropDownSelectedPainter()
+    public string GetDropDownSelectedPainter()
     {
         TMP_Dropdown dropdown = GameObject.FindObjectOfType<TMP_Dropdown>();
         int selectedOptionIndex = dropdown.value;
         string selectedOptionText = dropdown.options[selectedOptionIndex].text;
 
         return selectedOptionText;
-    }    
+    }
 
     public void SetSelectedPicture(int _id)
     {
         _LastSelectedPicture._pictureData.TextureID = _id;
         _LastSelectedPicture.UpdateVisual();
     }
-    
+
     bool shopCreated = false;
     public void ShowTab(int tabIndex)
     {
@@ -314,9 +317,9 @@ public string GetDropDownSelectedPainter()
             skillInfoPanel.SetActive(false);
             SkillRequiredInfoPanel.SetActive(false);
         }
-        
+
         if (tabIndex == 2)
-        {            
+        {
             if (!shopCreated)
             {
                 Button allButton, gemButton, goldButton, tableButton;
@@ -329,7 +332,7 @@ public string GetDropDownSelectedPainter()
                 gemButton.onClick.AddListener(ShopController.instance.GetGemItems);
                 goldButton.onClick.AddListener(ShopController.instance.GetGoldItems);
                 tableButton.onClick.AddListener(ShopController.instance.GetTableItems);
-                
+
                 spiderParent = newShop.transform.GetChild(1).transform;
                 shopCreated = true;
                 newSpider = SetCreateGameobject(SpiderPrefab, spiderParent);
@@ -337,7 +340,7 @@ public string GetDropDownSelectedPainter()
 
                 ShopController.instance.GetAllItemsUpdate();
             }
-            
+            newShop.GetComponentInParent<ScrollRect>().content = (RectTransform)newShop.transform.GetChild(2).transform;
             SpiderMove(newSpider);
         }
         else
@@ -399,15 +402,15 @@ public string GetDropDownSelectedPainter()
     public void ShowSkillInfo(int _id) // Skill Buttons
     {
         skillInfoPanel.SetActive(false);
-        
+
         SkillNode selectedSkill = SkillTreeManager.instance.GetSelectedSkillNode(_id);
-        
+
 
         SkillTreeManager.instance.SelectedSkill = selectedSkill;
         SkillTreeManager.instance.SelectedSkillGameObject = EventSystem.current.currentSelectedGameObject;
         Debug.Log("Selected Skill Gameobject => " + SkillTreeManager.instance.SelectedSkillGameObject.gameObject);
         if (SkillTreeManager.instance.SelectedSkillGameObject != null)
-        {            
+        {
             int point = (int)SkillTreeManager.instance.SelectedSkillGameObject.GetComponent<BaseSkillOptions>().MyPoint;
             foreach (GameObject pointUI in InfoPointerUIs)
             {
@@ -457,10 +460,10 @@ public string GetDropDownSelectedPainter()
         {
             if (currentSkill.SkillCurrentLevel < currentSkill.SkillMaxLevel)
             {
-                MuseumManager.instance.SpendingGold(currentSkill.SkillRequiredMoney);                
+                MuseumManager.instance.SpendingGold(currentSkill.SkillRequiredMoney);
                 SkillTreeManager.instance.SelectedSkillGameObject.GetComponentInChildren<SkillAbilityAmountController>().IncreasingAbilityAmount(); //Skill Ability Amount Arttirma.
-                
-                
+
+
                 SkillPointText.text = "" + (MuseumManager.instance.GetCurrentSkillPoint() - currentSkill.SkillRequiredPoint);
                 MuseumManager.instance.SpendingSkillPoint(currentSkill.SkillRequiredPoint);
                 SkillRequiredPointAndMoneyController(currentSkill);
@@ -478,13 +481,13 @@ public string GetDropDownSelectedPainter()
                     skillRequiredPointText.text = "";
                     skillRequiredMoneyText.text = "";
                 }
-                
-                
 
-                
+
+
+
                 Debug.Log($"Skill => {currentSkill.SkillName} Yetenek leveli => {currentSkill.SkillCurrentLevel} Yetenek Puaný => {currentSkill.SkillRequiredPoint}");
 
-                
+
                 if (currentSkill.SkillCurrentLevel > currentSkill.SkillMaxLevel)
                 {
                     currentSkill.SkillCurrentLevel = currentSkill.SkillMaxLevel;
@@ -495,13 +498,13 @@ public string GetDropDownSelectedPainter()
                 }
 
                 currentSkill.Purchased(true);
-                
+
                 SkillTreeManager.instance.RefreshSkillBonuses();
                 GoogleAdsManager.instance.ShowInterstitialAd();
             }
             else
             {
-                Debug.Log("Skill Max Level! => Current Skill Level: " + currentSkill.SkillCurrentLevel+"/"+currentSkill.SkillMaxLevel);
+                Debug.Log("Skill Max Level! => Current Skill Level: " + currentSkill.SkillCurrentLevel + "/" + currentSkill.SkillMaxLevel);
             }
         }
         else
@@ -510,7 +513,7 @@ public string GetDropDownSelectedPainter()
         }
         UIChangesControl();
     }
-    
+
     private void SkillRequiredPointAndMoneyController(SkillNode _skill)
     {
         _skill.SkillRequiredPoint += SkillCurrentLevelControl(_skill.SkillCurrentLevel).skillPoint; // Base Value => 1
@@ -526,7 +529,7 @@ public string GetDropDownSelectedPainter()
         else if (_skillLevel == 2)
         {
             return (2, 0.6f);
-        }        
+        }
         else if (_skillLevel == 4)
         {
             return (3, 0.7f);
@@ -568,7 +571,7 @@ public string GetDropDownSelectedPainter()
             ChangedUnlockButton(false, "Max Seviye", Color.white);
             return;
         }
-        else if (currentSkill.IsPurchased && currentSkill.SkillCurrentLevel != currentSkill.SkillMaxLevel && MuseumManager.instance.GetCurrentSkillPoint() >=currentSkill.SkillRequiredPoint && MuseumManager.instance.GetCurrentGold() >= currentSkill.SkillRequiredMoney)
+        else if (currentSkill.IsPurchased && currentSkill.SkillCurrentLevel != currentSkill.SkillMaxLevel && MuseumManager.instance.GetCurrentSkillPoint() >= currentSkill.SkillRequiredPoint && MuseumManager.instance.GetCurrentGold() >= currentSkill.SkillRequiredMoney)
         {
             ChangedUnlockButton(true, "Seviye Arttýr", Color.green);
             return;
@@ -584,8 +587,8 @@ public string GetDropDownSelectedPainter()
     }
     public void SkillUnLockButtonControl(SkillNode _selectedSkill)
     {
-        
-        if (!_selectedSkill.IsLocked &&_selectedSkill.SkillCurrentLevel != _selectedSkill.SkillMaxLevel)
+
+        if (!_selectedSkill.IsLocked && _selectedSkill.SkillCurrentLevel != _selectedSkill.SkillMaxLevel)
         {
             ChangedUnlockButton(true, "Seviye Arttýr", Color.green);
         }
@@ -617,7 +620,7 @@ public string GetDropDownSelectedPainter()
                 RequiredMoneyText.text = "$" + (-(MuseumManager.instance.GetCurrentGold() - _selectedSkill.SkillRequiredMoney));
                 RequiredMoney.SetActive(true);
                 YeterliMoney.SetActive(false);
-                SkillRequiredInfoPanel.SetActive(true);                
+                SkillRequiredInfoPanel.SetActive(true);
             }
             else
             {
@@ -627,17 +630,17 @@ public string GetDropDownSelectedPainter()
 
             if ((_selectedSkill.SkillRequiredPoint <= MuseumManager.instance.GetCurrentSkillPoint() && _selectedSkill.SkillRequiredMoney <= MuseumManager.instance.GetCurrentGold()))
             {
-                StartCoroutine(SetActiveFalseWaiter(1.5f, SkillRequiredInfoPanel));                
+                StartCoroutine(SetActiveFalseWaiter(1.5f, SkillRequiredInfoPanel));
             }
         }
     }
 
     IEnumerator SetActiveFalseWaiter(float _duration, GameObject _go)
-    {        
+    {
         yield return new WaitForSeconds(_duration);
         _go.SetActive(false);
     }
-    
+
     public void InMuseumCurrentNPCCountChanged(int _currentVisitorCount)
     {
         InMuseumCurrentNPCCount.text = _currentVisitorCount.ToString();
@@ -686,7 +689,7 @@ public string GetDropDownSelectedPainter()
         {
             RightUIPanelController.instance.CloseEditObj(true);
             CloseJoystickObj(true);
-            GeneralButtonActivation(true,museumStatButton);
+            GeneralButtonActivation(true, museumStatButton);
             ShowTab(currentTab);
             pnlMuseumStats.SetActive(true);
         }
@@ -706,7 +709,7 @@ public string GetDropDownSelectedPainter()
             CloseJoystickObj(true);
             //GeneralButtonActivation(true, pnlFortuneWheelOnButton);
             CloseFortuneWheelPanel(false);
-        }        
+        }
     }
     public void SetNPCInfoPanelUIs(string _Fullname, float _Happiness, float _Stress, float _Toilet, float _Education, List<MyColors> _LikedColors, List<string> _LikedArtist)
     {
@@ -734,8 +737,8 @@ public string GetDropDownSelectedPainter()
         else
             Debug.Log("NPC'nin Color Listesi Bos!");
 
-        
-        int length1 = ArtistTexts.Count;        
+
+        int length1 = ArtistTexts.Count;
         if (_LikedArtist != null && _LikedArtist.Count > 0)
         {
             for (int i = 0; i < length1; i++)
@@ -756,7 +759,7 @@ public string GetDropDownSelectedPainter()
     public void CloseNPCInformationPanel() //Button!
     {
         NpcInformationPanel.SetActive(false);
-        if (NpcManager.instance.CurrentNPC!=null)
+        if (NpcManager.instance.CurrentNPC != null)
         {
             NpcManager.instance.CurrentNPC.SetMyCamerasActivation(false, false);
         }
@@ -768,7 +771,7 @@ public string GetDropDownSelectedPainter()
         {
             RightUIPanelController.instance.CloseEditObj(true);
             CloseJoystickObj(true);
-            GeneralButtonActivation(true,WorkerPanelOnButton);
+            GeneralButtonActivation(true, WorkerPanelOnButton);
             GetDesiredWorkersInContent(WorkerType.Security, btnSecurityTab);
             WorkerPanel.SetActive(true);
         }
@@ -797,7 +800,7 @@ public string GetDropDownSelectedPainter()
         GoogleAdsManager.instance.ShowInterstitialAd();
         if (!DailyRewardPanel.activeInHierarchy)
         {
-            GeneralButtonActivation(true,DailyRewardPanelOnButton);
+            GeneralButtonActivation(true, DailyRewardPanelOnButton);
             RightUIPanelController.instance.CloseEditObj(true);
             CloseJoystickObj(true);
             DailyRewardPanel.SetActive(true);
@@ -807,7 +810,7 @@ public string GetDropDownSelectedPainter()
             CloseJoystickObj(false);
             RightUIPanelController.instance.CloseEditObj(false);
             DailyRewardPanel.SetActive(false);
-            GeneralButtonActivation(false,DailyRewardPanelOnButton);
+            GeneralButtonActivation(false, DailyRewardPanelOnButton);
         }
     }
     public void CloseMuseumStatsPanel(bool _close)
@@ -845,8 +848,12 @@ public string GetDropDownSelectedPainter()
         RewardAdController.gameObject.SetActive(!_close);
         Debug.Log("RewardAdController is activeSelf => " + !_close + " its gameoject name is => " + RewardAdController.gameObject.name);
     }
+    public void CloseEditModeCanvas(bool _close)
+    {
+        EditModeCanvas.SetActive(!_close);
+    }
     public void GetDesiredWorkersInContent(WorkerType _wType, Button _clikedButton = null)
-    {        
+    {
         if (_clikedButton != null)
         {
             WorkerTabButtonsOn();
@@ -854,12 +861,12 @@ public string GetDropDownSelectedPainter()
             WorkerContent.position = WorkerPanelDefaultPos;
         }
         ClearWorkerContent(WorkerContent);
-        
-        List<WorkerBehaviour> workers = WorkerManager.instance.GetWorkersInMarket().Where(x=> x.workerType == _wType).OrderBy(x => x.MyScript.Level).ToList();
+
+        List<WorkerBehaviour> workers = WorkerManager.instance.GetWorkersInMarket().Where(x => x.workerType == _wType).OrderBy(x => x.MyScript.Level).ToList();
         foreach (WorkerBehaviour worker in workers)
         {
             GameObject newSecurityObj = Instantiate(WorkerPrefabV2_V1, WorkerContent);
-            newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(worker.ID,worker.MyScript.Name, worker.MyScript.Age, worker.MyScript.Height);
+            newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(worker.ID, worker.MyScript.Name, worker.MyScript.Age, worker.MyScript.Height);
         }
         Debug.Log($"Worker Turu => {_wType} olan Isciler Listelendi.");
     }
@@ -872,7 +879,7 @@ public string GetDropDownSelectedPainter()
             WorkerAssignmentPanelOnButton.gameObject.SetActive(!_buttonActive);
             DailyRewardPanelOnButton.gameObject.SetActive(!_buttonActive);
             //pnlFortuneWheelOnButton.gameObject.SetActive(!_buttonActive);
-            
+
             GameObject _activeGO = _activePnlButton.gameObject;
             if (_activeGO == museumStatButton.gameObject)
             {
@@ -909,7 +916,7 @@ public string GetDropDownSelectedPainter()
                 });
                 rightAnimOpenOverWrite = false;
                 rightAnimOpen = false;
-            }            
+            }
         }
         else
         {
@@ -969,7 +976,7 @@ public string GetDropDownSelectedPainter()
         {
             RightUIPanelController.instance.CloseEditObj(true);
             CloseJoystickObj(true);
-            GeneralButtonActivation(true,WorkerAssignmentPanelOnButton);
+            GeneralButtonActivation(true, WorkerAssignmentPanelOnButton);
 
             ClearAssignmentRoomsButtonContent();
             ClearWorkerContent(WorkerAssignContent);
@@ -1006,20 +1013,20 @@ public string GetDropDownSelectedPainter()
         }
         ClearWorkerContent(WorkerInventoryContent);
 
-        List<WorkerBehaviour> workers = WorkerManager.instance.GetWorkersInInventory().Where(x => x.workerType == _wType).OrderBy(x=> x.MyScript.Level).ToList();
+        List<WorkerBehaviour> workers = WorkerManager.instance.GetWorkersInInventory().Where(x => x.workerType == _wType).OrderBy(x => x.MyScript.Level).ToList();
         foreach (WorkerBehaviour worker in workers)
         {
             GameObject newSecurityObj = Instantiate(InventoryWorkerPrefab_V1, WorkerInventoryContent);
-            newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(worker.ID, worker.MyScript.Name, worker.MyScript.Age, worker.MyScript.Height,worker.MyScript.Level);
+            newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(worker.ID, worker.MyScript.Name, worker.MyScript.Age, worker.MyScript.Height, worker.MyScript.Level);
         }
         Debug.Log($"Worker Turu => {_wType} olan Isciler Envantere Listelendi.");
     }
 
-    public void AddDesiredChooseRoomsInContent(int _roomID,int _workerID, Color _color, string _cellNumber, bool _interectable)
+    public void AddDesiredChooseRoomsInContent(int _roomID, int _workerID, Color _color, string _cellNumber, bool _interectable)
     {
         GameObject newAssignmentRoom = Instantiate(AssignmentRoomPrefab_V1, WorkerAssignContent);
         WorkerAssignmentRoomButton _newAssing = newAssignmentRoom.GetComponent<WorkerAssignmentRoomButton>();
-        _newAssing.AssignmentRoomButton(_roomID, _workerID,_color, _cellNumber, _interectable);
+        _newAssing.AssignmentRoomButton(_roomID, _workerID, _color, _cellNumber, _interectable);
     }
 
     public void W_WorkerTypesButtonControl()
@@ -1063,7 +1070,7 @@ public string GetDropDownSelectedPainter()
                 default:
                     break;
             }
-            
+
         }
     }
     public void ClearDailyRewardContents()
@@ -1093,15 +1100,15 @@ public string GetDropDownSelectedPainter()
     Vector3 spiderOffset;
     float swingDuration = 10f;
     float swingHeight = 1f;
-    public void SpiderMove(GameObject _newSpider)    
-    {        
+    public void SpiderMove(GameObject _newSpider)
+    {
         if (_newSpider != null)
         {
             // Ýlk pozisyon
             Vector3 startPos = spiderOffset;
 
             // Ýlk sallama konumu
-            Vector3 midPos = startPos + new Vector3(0,-500,0) * swingHeight;
+            Vector3 midPos = startPos + new Vector3(0, -500, 0) * swingHeight;
             Vector3 endPos = midPos + new Vector3(0, 100, 0);
 
             // Ýlk sallama
@@ -1109,21 +1116,21 @@ public string GetDropDownSelectedPainter()
             .OnComplete(() =>
             {
                 // Ýkinci sallama ve baþlangýç konumuna dönme
-                spiderTween2 = _newSpider.transform.DOMove(endPos, swingDuration / 2).SetEase(Ease.InOutQuad);                    
+                spiderTween2 = _newSpider.transform.DOMove(endPos, swingDuration / 2).SetEase(Ease.InOutQuad);
             }); ;
         }
     }
 
     public GameObject SetCreateGameobject(GameObject go, Transform parent)
     {
-        if (go != null && parent != null )
+        if (go != null && parent != null)
         {
             GameObject obj = Instantiate(go, parent);
             return obj;
         }
         return new GameObject("Null Obj");
     }
-    
+
     public bool IsPointerOverAnyUI()
     {
         //bool active = true;
@@ -1158,4 +1165,5 @@ public string GetDropDownSelectedPainter()
             return false;
         }
     }
+    
 }

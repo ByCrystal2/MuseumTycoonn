@@ -66,7 +66,7 @@ namespace I2.Loc
 
         #region Variables: References
 
-        public List<Object> TranslatedObjects = new List<Object>();  // For targets that reference objects (e.g. AudioSource, UITexture,etc) 
+        public List<Object> TranslatedObjects = new List<Object>();  // For targets that reference objects (e.g. MyClip, UITexture,etc) 
                                                                     // this keeps a reference to the possible options.
                                                                     // If the value is not the name of any of this objects then it will try to load the object from the Resources
 

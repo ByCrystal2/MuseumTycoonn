@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Purchasing;
@@ -6,6 +7,7 @@ using UnityEngine.Purchasing.Extension;
 public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
 {
     IStoreController m_StoreController; // The Unity Purchasing system.
+
     public static BuyingConsumables instance { get; set; }
     private void Awake()
     {
@@ -15,7 +17,7 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
             return;
         }
         instance = this;
-        DontDestroyOnLoad(gameObject);        
+        DontDestroyOnLoad(gameObject);
     }
 
     public void InitializePurchasing()
@@ -86,6 +88,19 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
         }
 
         Debug.Log(errorMessage);
+    }
+    public string GetProductLocalizedPriceString(string _iAPID)
+    {
+        Product product = m_StoreController.products.WithID(_iAPID);
+        if (product != null && product.metadata != null)
+        {
+            return product.metadata.localizedPriceString;
+        }
+        else
+        {
+            Debug.Log("Ürün veya fiyat bilgisi bulunamadý.");
+            return "Null";
+        }
     }
 
     public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
@@ -188,5 +203,6 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
         Debug.Log($"Purchase failed - Product: '{product.definition.id}'," +
             $" Purchase failure reason: {failureDescription.reason}," +
             $" Purchase failure details: {failureDescription.message}");
-    }
+    }  
+    
 }

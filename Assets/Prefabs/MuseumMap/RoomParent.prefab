@@ -277,7 +277,7 @@ GameObject:
   - component: {fileID: 6123374550173894070}
   - component: {fileID: 419837674810709241}
   - component: {fileID: 1032479564588780344}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1825,7 +1825,7 @@ GameObject:
   - component: {fileID: 6473954538137273499}
   - component: {fileID: 7878260044531109873}
   - component: {fileID: 1402245857505562180}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2832,7 +2832,7 @@ GameObject:
   - component: {fileID: 7209434147399668030}
   - component: {fileID: 6373091451784403213}
   - component: {fileID: 4917986305806566954}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4619,7 +4619,7 @@ GameObject:
   - component: {fileID: 1450810890934968638}
   - component: {fileID: 2822398302530906202}
   - component: {fileID: 7757267785373302312}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4721,7 +4721,7 @@ GameObject:
   - component: {fileID: 7753357740035837994}
   - component: {fileID: 4950404701024631008}
   - component: {fileID: 4821154301592611836}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8561,6 +8561,10 @@ PrefabInstance:
     - target: {fileID: 171218, guid: e5a9e0b66bb8a8b47a28819231a34fc2, type: 3}
       propertyPath: m_Name
       value: Clouds_Cumulus_G2
+      objectReference: {fileID: 0}
+    - target: {fileID: 171218, guid: e5a9e0b66bb8a8b47a28819231a34fc2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 182212, guid: e5a9e0b66bb8a8b47a28819231a34fc2, type: 3}
       propertyPath: m_IsActive

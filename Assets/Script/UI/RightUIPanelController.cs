@@ -16,6 +16,10 @@ public class RightUIPanelController : MonoBehaviour
     [SerializeField] Button EditModeButton;
     [SerializeField] Button UIVisibleButton;
     [SerializeField] GameObject UINotVisibleObj;
+
+    [SerializeField] GameObject btnDailyRewardObj;
+    private Vector3 defaultDailyRewardPos;
+    [SerializeField] Transform fpsModeDailyRewardTransform;
     public static RightUIPanelController instance { get; private set; }
     private void Awake()
     {
@@ -24,7 +28,8 @@ public class RightUIPanelController : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        instance = this;        
+        instance = this;
+        defaultDailyRewardPos = btnDailyRewardObj.transform.position;
     }
     private void Start()
     {
@@ -46,29 +51,41 @@ public class RightUIPanelController : MonoBehaviour
         {
             case GameMode.MuseumEditing:
                 // FPS Moduna gecis.
+                UIController.instance.CloseEditModeCanvas(true);
                 FPSModeObj.SetActive(true);
                 VisibleUIObj.SetActive(false);
                 GameManager.instance.SetCurrenGameMode(GameMode.FPS);
+                btnDailyRewardObj.transform.position = fpsModeDailyRewardTransform.position;
                 break;
             case GameMode.FPS:
                 // Ghost Moduna Gecis.
-                GhostModeObj.SetActive(true);
-                GameManager.instance.SetCurrenGameMode(GameMode.Ghost);
-                break;
-            case GameMode.Ghost:
-                // Muze Edit Moduna Gecis.
+                UIController.instance.CloseEditModeCanvas(false);
                 EditModeObj.SetActive(true);
                 VisibleUIObj.SetActive(true);
                 UINotVisibleObj.SetActive(false);
                 GameManager.instance.SetCurrenGameMode(GameMode.MuseumEditing);
+                btnDailyRewardObj.transform.position = defaultDailyRewardPos;
+                //GhostModeObj.SetActive(true);
+                //GameManager.instance.SetCurrenGameMode(GameMode.Ghost);
+                break;
+            case GameMode.Ghost: // simdilik devre disi. Ileride acilabilir.
+                // Muze Edit Moduna Gecis.
+                UIController.instance.CloseEditModeCanvas(false);
+                EditModeObj.SetActive(true);
+                VisibleUIObj.SetActive(true);
+                UINotVisibleObj.SetActive(false);
+                GameManager.instance.SetCurrenGameMode(GameMode.MuseumEditing);
+                btnDailyRewardObj.transform.position = defaultDailyRewardPos;
                 break;
             case GameMode.RoomEditing:
                 // Muze Edit Moduna Gecis.
+                UIController.instance.CloseEditModeCanvas(false);
                 RoomManager.instance.CurrentEditedRoom.SetActivationMyRoomEditingCamera(false);
                 UIController.instance.SetActivationRoomEditingPanel(false);
                 EditModeObj.SetActive(true);
                 VisibleUIObj.SetActive(true);
                 UINotVisibleObj.SetActive(false);
+                btnDailyRewardObj.transform.position = defaultDailyRewardPos;
                 GameManager.instance.SetCurrenGameMode(GameMode.MuseumEditing);
                 RoomManager.instance.CurrentEditedRoom.SetRoomBlockPanelActive(true);
                 Debug.Log("RoomEditing mode Debug.");

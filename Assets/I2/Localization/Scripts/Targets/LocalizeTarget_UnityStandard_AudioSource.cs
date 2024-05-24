@@ -10,7 +10,7 @@ namespace I2.Loc
     public class LocalizeTarget_UnityStandard_AudioSource : LocalizeTarget<AudioSource>
     {
         static LocalizeTarget_UnityStandard_AudioSource() { AutoRegister(); }
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)] static void AutoRegister() { LocalizationManager.RegisterTarget(new LocalizeTargetDesc_Type<AudioSource, LocalizeTarget_UnityStandard_AudioSource> { Name = "AudioSource", Priority = 100 }); }
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)] static void AutoRegister() { LocalizationManager.RegisterTarget(new LocalizeTargetDesc_Type<AudioSource, LocalizeTarget_UnityStandard_AudioSource> { Name = "MyClip", Priority = 100 }); }
 
         public override eTermType GetPrimaryTermType(Localize cmp) { return eTermType.AudioClip; }
         public override eTermType GetSecondaryTermType(Localize cmp) { return eTermType.Text; }

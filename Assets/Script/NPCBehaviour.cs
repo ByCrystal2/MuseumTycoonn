@@ -173,7 +173,7 @@ public class NPCBehaviour : MonoBehaviour
                     Debug.Log("Dialog end with npc: " + name + " /dialogTarget: " + DialogTarget.name);
                     OnDialogEnd();
                     CurrentAudioSource.Stop();
-                    AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcByeBye, CurrentAudioSource);
+                    //AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcByeBye, CurrentAudioSource);
                     return;
                 }
                 if(DialogTarget != null)
@@ -895,7 +895,7 @@ public class NPCBehaviour : MonoBehaviour
         }
 
         float timer = anim.GetCurrentAnimatorClipInfo(0)[0].clip.length;
-        AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcByeBye, CurrentAudioSource);
+        //AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcByeBye, CurrentAudioSource);
         while (timer > 0)
         {
             if (DialogTarget != null)
