@@ -14,18 +14,16 @@ public class RoomUIHandler : MonoBehaviour, IPointerClickHandler
     [SerializeField] Image RoomIUImage;
     [SerializeField] GameObject RoomCloud;
 
-    private RoomData MyTargetRoom;
-    private void OnEnable()
-    {
-        
-    }
-
-    private void Start()
+    private RoomData MyTargetRoom;    
+    private void Awake()
     {
         MyTargetRoom = GetComponentInParent<RoomData>();
         MyRoomCellCode = MyTargetRoom.availableRoomCell;
         RoomCellCodeText.text = MyRoomCellCode.CellLetter.ToString() + MyRoomCellCode.CellNumber.ToString();
-        UpdateMyUI();
+    }
+    private void Start()
+    {
+        
     }
     public void UpdateMyUI()
     {

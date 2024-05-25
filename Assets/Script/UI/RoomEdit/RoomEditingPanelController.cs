@@ -196,7 +196,7 @@ public class RoomEditingPanelController : MonoBehaviour
         AddStatuesInContent();
         UIController.instance.SetActivationRoomEditingPanel(false);
         RightUIPanelController.instance.UIVisibleClose(false);
-
+        UIController.instance.CloseJoystickObj(false);
         GameManager.instance.Save();
     }
 

@@ -16,6 +16,8 @@ public class RoomUISPanelController : MonoBehaviour
     }
     public RoomUIHandler GetRoomUI(RoomCell _cell)
     {
-        return RoomUIS.Where(x => x.MyRoomCellCode.CellLetter == _cell.CellLetter && x.MyRoomCellCode.CellNumber == _cell.CellNumber).SingleOrDefault();
+        RoomUIHandler roomUIHandler = RoomUIS.Where(x => x.MyRoomCellCode.CellLetter.ToString() == _cell.CellLetter.ToString() && x.MyRoomCellCode.CellNumber.ToString() == _cell.CellNumber.ToString()).SingleOrDefault();
+        Debug.Log("roomUIHandler => " + roomUIHandler.MyRoomCellCode.CellLetter.ToString() + roomUIHandler.MyRoomCellCode.CellNumber.ToString());
+        return roomUIHandler;
     }
 }

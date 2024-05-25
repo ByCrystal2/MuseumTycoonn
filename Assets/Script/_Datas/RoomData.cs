@@ -175,7 +175,6 @@ public class RoomData : MonoBehaviour
         while (UIController.instance.roomUISPanelController.GetRoomUIS().Count <= 0)
             yield return new WaitForEndOfFrame();
         RoomUIHandler _targetHandler = UIController.instance.roomUISPanelController.GetRoomUI(availableRoomCell);
-        Debug.Log("_targetHandler.name => " + _targetHandler.name);
         _targetHandler.UpdateMyUI();
     }
     public void SetRoomBlockPanelActive(bool _isActive)
