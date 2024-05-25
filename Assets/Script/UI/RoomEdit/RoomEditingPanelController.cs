@@ -20,7 +20,6 @@ public class RoomEditingPanelController : MonoBehaviour
     [SerializeField] public GameObject InsufficientFundsText;
     [SerializeField] public GameObject BonusText; // Prefab
     [SerializeField] public Button BuyStatueButton;
-    [SerializeField] public Button ExitButton;
 
 
     public StatueSlotHandler CurrentStatueSlot;
@@ -35,24 +34,13 @@ public class RoomEditingPanelController : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        instance = this;
-        ExitButton.onClick.AddListener(ExitMyPanel);
+        instance = this;        
     }
     private void OnEnable()
     {
         
     }
     
-    private void ExitMyPanel()
-    {
-        if (GameManager.instance.GetCurrentGameMode() == GameMode.FPS)
-        {
-            PlayerManager.instance.UnLockPlayer();
-        }
-        UIController.instance.SetActivationRoomEditingPanel(false);
-        RightUIPanelController.instance.UIVisibleClose(false);
-        UIController.instance.CloseJoystickObj(false);
-    }
     
     private void ClearEditObjContent()
     {

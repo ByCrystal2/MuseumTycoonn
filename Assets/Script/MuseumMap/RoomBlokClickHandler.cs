@@ -27,25 +27,19 @@ public class RoomBlokClickHandler : MonoBehaviour
             RoomManager.instance.RemoveNpcInTheRoom(MyParentRoomData, _exitedNpc);
         }
     }
-    IEnumerator WaitingForIsPointerOver()
+    private void OnMouseDown()
     {
-        //for (int i = 0; i < 3; i++)
-            yield return new WaitForEndOfFrame();
-
         RoomData ClickedRoom = this.GetComponentInParent<RoomData>();
-        
         if (ClickedRoom.isActive && ClickedRoom.isLock)
         {
             Debug.Log("Oda Aktif Ve Kilitli!");
             Debug.Log("Tiklanan Obje => " + EventSystem.current.currentSelectedGameObject);
+            
             if (!UIController.instance.IsPointerOverAnyUI())
             {
                 RoomManager.instance.BuyTheRoom(ClickedRoom);
-                if (GameManager.instance.GetCurrentGameMode() == GameMode.FPS)
-                {
-                    PlayerManager.instance.LockPlayer();
-                }
             }
+
         }
         else if (ClickedRoom.isActive && !ClickedRoom.isLock && GameManager.instance.GetCurrentGameMode() == GameMode.MuseumEditing)
         {
@@ -57,17 +51,10 @@ public class RoomBlokClickHandler : MonoBehaviour
                 ClickedRoom.SetActivationMyRoomEditingCamera(true);
                 GameManager.instance.SetCurrenGameMode(GameMode.RoomEditing);
                 RoomManager.instance.CurrentEditedRoom = ClickedRoom;
-                UIController.instance.CloseEditModeCanvas(true);
                 //RoomManager.instance.CurrentEditedRoom.SetMyStatue()
                 //RoomManager.instance.CurrentEditedRoom.GetMyStatueInTheMyRoom()._currentRoom = ClickedRoom;
                 //GetComponent<BoxCollider>().enabled = false;
             }
         }
-    }
-    private void OnMouseDown()
-    {
-        StopAllCoroutines();
-        StartCoroutine(WaitingForIsPointerOver());
-        
     }
 }

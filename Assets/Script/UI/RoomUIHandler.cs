@@ -36,11 +36,8 @@ public class RoomUIHandler : MonoBehaviour, IPointerClickHandler
         
     }
 
-    IEnumerator WaitingForIsPointerOver()
+    public void OnPointerClick(PointerEventData eventData)
     {
-        for (int i = 0; i < 3; i++)
-            yield return new WaitForEndOfFrame();
-
         if (MyTargetRoom.isActive && MyTargetRoom.isLock)
         {
             Debug.Log("Oda Aktif Ve Kilitli!");
@@ -62,17 +59,11 @@ public class RoomUIHandler : MonoBehaviour, IPointerClickHandler
                 MyTargetRoom.SetActivationMyRoomEditingCamera(true);
                 GameManager.instance.SetCurrenGameMode(GameMode.RoomEditing);
                 RoomManager.instance.CurrentEditedRoom = MyTargetRoom;
-                UIController.instance.CloseEditModeCanvas(true);
                 //RoomManager.instance.CurrentEditedRoom.SetMyStatue()
                 //RoomManager.instance.CurrentEditedRoom.GetMyStatueInTheMyRoom()._currentRoom = ClickedRoom;
                 //GetComponent<BoxCollider>().enabled = false;
             }
         }
-    }
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        StopAllCoroutines();
-        StartCoroutine(WaitingForIsPointerOver());
     }
     public void SetRoomCloudActivation(bool _active)
     {

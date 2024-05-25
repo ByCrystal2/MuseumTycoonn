@@ -8,31 +8,12 @@ using UnityEngine.UI;
 public class PictureElement : MonoBehaviour
 {
     public PictureData _pictureData;
-
-    IEnumerator WaitingForIsPointerOver()
-    {
-        //for (int i = 0; i < 3; i++)
-            yield return new WaitForEndOfFrame();
-
-        if (_pictureData.isLocked || UIController.instance.IsPointerOverAnyUI()) 
-        {
-            // Kilitliyse veya UI objesi arkasindan tiklaniyorsa islem yapma.
-        }
-        else
-        {
-            if (GameManager.instance.GetCurrentGameMode() == GameMode.FPS)
-            {
-                PlayerManager.instance.LockPlayer();
-            }
-            RightUIPanelController.instance.UIVisibleClose(true);
-            UIController.instance.CloseJoystickObj(true);
-            PicturesMenuController.instance.AddPicture(this);
-        }
-    }
     private void OnMouseDown()
     {
-        StopAllCoroutines();
-        StartCoroutine(WaitingForIsPointerOver());
+        if (_pictureData.isLocked || UIController.instance.IsPointerOverAnyUI()) // Kilitliyse veya UI objesi arkasindan tiklaniyorsa islem yapma.
+            return;
+
+        PicturesMenuController.instance.AddPicture(this);
     }
 
     public void SetImage(bool _set)

@@ -231,6 +231,8 @@ public class ShopController : MonoBehaviour
     }
     public void BuyItem(ItemData _item)
     {
+        MuseumManager.instance.AddGold(1000); // KRÝTÝK KOD TESTTEN SONRA SÝLÝNMELÝ!
+        MuseumManager.instance.AddGem(1000); // KRÝTÝK KOD TESTTEN SONRA SÝLÝNMELÝ!
         Debug.Log(_item.CurrentItemType + " Item tipinde ki " + _item.Amount + " miktarda  ürün " + _item.RequiredMoney + " " + _item.CurrentShoppingType + " karþýlýðýnda satýlmak istendi.");
         if (_item.CurrentShoppingType == ShoppingType.Gem)
         {

@@ -293,9 +293,7 @@ public class PicturesMenuController : MonoBehaviour
     }    
     
     public void ExitPicturePanel()
-    {
-        RightUIPanelController.instance.UIVisibleClose(false);
-        UIController.instance.CloseJoystickObj(false);
+    {        
         pnlPicturesMenu.SetActive(false);
         tableClicked = false;
         CurrentPicture = null;

@@ -45,7 +45,8 @@ public partial class RoomManager : MonoBehaviour
     }
     public void BuyTheRoom(RoomData currentRoom)
     {
-        Debug.Log("Kapý kilidine týklandý/dokunuldu.");      
+        Debug.Log("Kapý kilidine týklandý/dokunuldu.");
+        MuseumManager.instance.AddGold(500); // KRÝTÝK KOD TEST EDÝLDÝKTEN SONRA KALDIRILMALI!!        
         currentRoomID = currentRoom.ID;
 
         PnlBuyRoom.SetActive(false);
@@ -69,20 +70,14 @@ public partial class RoomManager : MonoBehaviour
     public void CancelButton()
     {
         PnlBuyRoom.SetActive(false);
-        if (GameManager.instance.GetCurrentGameMode() == GameMode.FPS)
-        {
-            PlayerManager.instance.UnLockPlayer();
-        }
+
     }
 
     public void AcceptButton()
     {
         PnlBuyRoom.SetActive(false);
         List<RoomData> roomDatas = GameObject.FindObjectsOfType<RoomData>().ToList();
-        if (GameManager.instance.GetCurrentGameMode() == GameMode.FPS)
-        {
-            PlayerManager.instance.UnLockPlayer();
-        }
+
         //RoomData purchasedRoom = roomDatas.Where(x=> x.ID == currentRoomID).SingleOrDefault();
         RoomData purchasedRoom;
         string exMessage;

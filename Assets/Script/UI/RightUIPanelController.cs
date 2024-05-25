@@ -55,7 +55,6 @@ public class RightUIPanelController : MonoBehaviour
                 FPSModeObj.SetActive(true);
                 VisibleUIObj.SetActive(false);
                 GameManager.instance.SetCurrenGameMode(GameMode.FPS);
-                PicturesMenuController.instance.ExitPicturePanel();
                 btnDailyRewardObj.transform.position = fpsModeDailyRewardTransform.position;
                 break;
             case GameMode.FPS:
@@ -65,7 +64,6 @@ public class RightUIPanelController : MonoBehaviour
                 VisibleUIObj.SetActive(true);
                 UINotVisibleObj.SetActive(false);
                 GameManager.instance.SetCurrenGameMode(GameMode.MuseumEditing);
-                PicturesMenuController.instance.ExitPicturePanel();
                 btnDailyRewardObj.transform.position = defaultDailyRewardPos;
                 //GhostModeObj.SetActive(true);
                 //GameManager.instance.SetCurrenGameMode(GameMode.Ghost);
@@ -90,7 +88,6 @@ public class RightUIPanelController : MonoBehaviour
                 btnDailyRewardObj.transform.position = defaultDailyRewardPos;
                 GameManager.instance.SetCurrenGameMode(GameMode.MuseumEditing);
                 RoomManager.instance.CurrentEditedRoom.SetRoomBlockPanelActive(true);
-                PicturesMenuController.instance.ExitPicturePanel();
                 Debug.Log("RoomEditing mode Debug.");
                 break;
             default:
@@ -117,7 +114,6 @@ public class RightUIPanelController : MonoBehaviour
                 UIController.instance.CloseCultureExpObj(true);
                 UIController.instance.CloseLeftUIsPanel(true);
                 UIController.instance.CloseMoneysObj(true);
-                btnDailyRewardObj.SetActive(false);
                 _uIVisible = false;
             }
             else
@@ -129,8 +125,6 @@ public class RightUIPanelController : MonoBehaviour
                 UIController.instance.CloseCultureExpObj(false);
                 UIController.instance.CloseLeftUIsPanel(false);
                 UIController.instance.CloseMoneysObj(false);
-                UIController.instance.SetActivationRoomEditingPanel(false);
-                btnDailyRewardObj.SetActive(true);
                 _uIVisible = true;
             }
         }
@@ -151,8 +145,6 @@ public class RightUIPanelController : MonoBehaviour
             UIController.instance.CloseCultureExpObj(true);
             UIController.instance.CloseLeftUIsPanel(true);
             UIController.instance.CloseMoneysObj(true);
-            btnDailyRewardObj.SetActive(false);
-            _uIVisible = false;
         }
         else
         {
@@ -161,8 +153,6 @@ public class RightUIPanelController : MonoBehaviour
             UIController.instance.CloseCultureExpObj(false);
             UIController.instance.CloseLeftUIsPanel(false);
             UIController.instance.CloseMoneysObj(false);
-            btnDailyRewardObj.SetActive(true);
-            _uIVisible = true;
         }
     }
     public void CloseEditObj(bool _close)
