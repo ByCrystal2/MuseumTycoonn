@@ -299,6 +299,10 @@ public class PicturesMenuController : MonoBehaviour
         pnlPicturesMenu.SetActive(false);
         tableClicked = false;
         CurrentPicture = null;
+        if (GameManager.instance.GetCurrentGameMode() == GameMode.FPS)
+        {
+            PlayerManager.instance.UnLockPlayer();
+        }
     }
 
     public void TestingAdsPanelActivation()

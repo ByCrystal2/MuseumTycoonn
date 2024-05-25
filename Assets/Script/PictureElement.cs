@@ -19,14 +19,14 @@ public class PictureElement : MonoBehaviour
             // Kilitliyse veya UI objesi arkasindan tiklaniyorsa islem yapma.
         }
         else
-        {
+        {            
+            RightUIPanelController.instance.UIVisibleClose(true);
+            UIController.instance.CloseJoystickObj(true);
+            PicturesMenuController.instance.AddPicture(this);
             if (GameManager.instance.GetCurrentGameMode() == GameMode.FPS)
             {
                 PlayerManager.instance.LockPlayer();
             }
-            RightUIPanelController.instance.UIVisibleClose(true);
-            UIController.instance.CloseJoystickObj(true);
-            PicturesMenuController.instance.AddPicture(this);
         }
     }
     private void OnMouseDown()

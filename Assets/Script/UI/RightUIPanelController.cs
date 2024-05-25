@@ -51,7 +51,7 @@ public class RightUIPanelController : MonoBehaviour
         {
             case GameMode.MuseumEditing:
                 // FPS Moduna gecis.
-                UIController.instance.CloseEditModeCanvas(true);
+                //UIController.instance.CloseEditModeCanvas(true);
                 FPSModeObj.SetActive(true);
                 VisibleUIObj.SetActive(false);
                 GameManager.instance.SetCurrenGameMode(GameMode.FPS);
@@ -60,7 +60,7 @@ public class RightUIPanelController : MonoBehaviour
                 break;
             case GameMode.FPS:
                 // Ghost Moduna Gecis.
-                UIController.instance.CloseEditModeCanvas(false);
+                //UIController.instance.CloseEditModeCanvas(false);
                 EditModeObj.SetActive(true);
                 VisibleUIObj.SetActive(true);
                 UINotVisibleObj.SetActive(false);
@@ -72,7 +72,7 @@ public class RightUIPanelController : MonoBehaviour
                 break;
             case GameMode.Ghost: // simdilik devre disi. Ileride acilabilir.
                 // Muze Edit Moduna Gecis.
-                UIController.instance.CloseEditModeCanvas(false);
+                //UIController.instance.CloseEditModeCanvas(false);
                 EditModeObj.SetActive(true);
                 VisibleUIObj.SetActive(true);
                 UINotVisibleObj.SetActive(false);
@@ -81,7 +81,7 @@ public class RightUIPanelController : MonoBehaviour
                 break;
             case GameMode.RoomEditing:
                 // Muze Edit Moduna Gecis.
-                UIController.instance.CloseEditModeCanvas(false);
+                //UIController.instance.CloseEditModeCanvas(false);
                 RoomManager.instance.CurrentEditedRoom.SetActivationMyRoomEditingCamera(false);
                 UIController.instance.SetActivationRoomEditingPanel(false);
                 EditModeObj.SetActive(true);

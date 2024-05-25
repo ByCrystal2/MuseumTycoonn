@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -9,13 +10,20 @@ public class RoomUIHandler : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] public RoomCell MyRoomCellCode;
 
-    [SerializeField] Text RoomCellCodeText;
+    [SerializeField] TextMeshProUGUI RoomCellCodeText;
+    [SerializeField] Image RoomIUImage;
     [SerializeField] GameObject RoomCloud;
 
     private RoomData MyTargetRoom;
     private void OnEnable()
     {
-        MyTargetRoom = RoomManager.instance.GetRoomWithRoomCell(MyRoomCellCode);
+        
+    }
+
+    private void Start()
+    {
+        MyTargetRoom = GetComponentInParent<RoomData>();
+        MyRoomCellCode = MyTargetRoom.availableRoomCell;
         RoomCellCodeText.text = MyRoomCellCode.CellLetter.ToString() + MyRoomCellCode.CellNumber.ToString();
         UpdateMyUI();
     }
@@ -27,11 +35,11 @@ public class RoomUIHandler : MonoBehaviour, IPointerClickHandler
         }
         if (!MyTargetRoom.isLock && MyTargetRoom.isActive)
         {
-            GetComponent<Image>().color = Color.green;            
+            RoomIUImage.color = Color.green;            
         }
         else
         {
-            GetComponent<Image>().color = Color.black;
+            RoomIUImage.color = Color.black;
         }
         
     }

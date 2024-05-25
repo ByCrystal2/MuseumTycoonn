@@ -101,7 +101,7 @@ public class RoomData : MonoBehaviour
             }
             else
             {
-                SetMyRequiredTexts(RequiredMoney);
+                SetMyRequiredTexts("Not Purchased");
                 Debug.Log("Oda Aktif deðil Ve activeRoomsRequiredMoney 0'dan kucuk => " + RoomManager.instance.activeRoomsRequiredMoney + "|| My Required Money => " + RequiredMoney);
             }
         }
@@ -175,7 +175,6 @@ public class RoomData : MonoBehaviour
         while (UIController.instance.roomUISPanelController.GetRoomUIS().Count <= 0)
             yield return new WaitForEndOfFrame();
         RoomUIHandler _targetHandler = UIController.instance.roomUISPanelController.GetRoomUI(availableRoomCell);
-        Debug.Log("UIController.instance.roomUISPanelController.GetRoomUI(availableRoomCell).name; => " + UIController.instance.roomUISPanelController.GetRoomUI(availableRoomCell).name);
         Debug.Log("_targetHandler.name => " + _targetHandler.name);
         _targetHandler.UpdateMyUI();
     }
@@ -187,7 +186,18 @@ public class RoomData : MonoBehaviour
     {
         foreach (var requiredText in MyRequiredMoneyTexts)
         {
+            requiredText.fontStyle = FontStyles.Normal;
+            requiredText.fontSize = 1.1f;
             requiredText.text = _RequiredMoney.ToString();
+        }
+    }
+    public void SetMyRequiredTexts(string _RequiredMoney)
+    {
+        foreach (var requiredText in MyRequiredMoneyTexts)
+        {
+            requiredText.fontStyle = FontStyles.Underline;
+            requiredText.fontSize = 0.6f;
+            requiredText.text = _RequiredMoney;
         }
     }
     public void SetActivationMyRoomEditingCamera(bool _active)

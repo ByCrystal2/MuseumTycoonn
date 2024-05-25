@@ -40,11 +40,11 @@ public class RoomBlokClickHandler : MonoBehaviour
             Debug.Log("Tiklanan Obje => " + EventSystem.current.currentSelectedGameObject);
             if (!UIController.instance.IsPointerOverAnyUI())
             {
-                RoomManager.instance.BuyTheRoom(ClickedRoom);
                 if (GameManager.instance.GetCurrentGameMode() == GameMode.FPS)
                 {
                     PlayerManager.instance.LockPlayer();
                 }
+                RoomManager.instance.BuyTheRoom(ClickedRoom);                
             }
         }
         else if (ClickedRoom.isActive && !ClickedRoom.isLock && GameManager.instance.GetCurrentGameMode() == GameMode.MuseumEditing)
@@ -57,7 +57,7 @@ public class RoomBlokClickHandler : MonoBehaviour
                 ClickedRoom.SetActivationMyRoomEditingCamera(true);
                 GameManager.instance.SetCurrenGameMode(GameMode.RoomEditing);
                 RoomManager.instance.CurrentEditedRoom = ClickedRoom;
-                UIController.instance.CloseEditModeCanvas(true);
+                //UIController.instance.CloseEditModeCanvas(true);
                 //RoomManager.instance.CurrentEditedRoom.SetMyStatue()
                 //RoomManager.instance.CurrentEditedRoom.GetMyStatueInTheMyRoom()._currentRoom = ClickedRoom;
                 //GetComponent<BoxCollider>().enabled = false;

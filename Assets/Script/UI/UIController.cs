@@ -149,7 +149,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private Transform ActivePnlBtnWorkerMarketDefaultPos;
     [SerializeField] private Transform ActivePnlBtnWorkerAssignmentDefaultPos;
 
-    [SerializeField] GameObject EditModeCanvas;
+    //[SerializeField] GameObject EditModeCanvas;
     private Vector3 defaultBtnBookPos, defaultBtnWorkerMarketPos, defaultBtnWorkerAssignmentPos;
     public static UIController instance { get; private set; }
     private void Awake()
@@ -852,7 +852,7 @@ public class UIController : MonoBehaviour
     }
     public void CloseEditModeCanvas(bool _close)
     {
-        EditModeCanvas.SetActive(!_close);
+        //EditModeCanvas.SetActive(!_close);
     }
     public void GetDesiredWorkersInContent(WorkerType _wType, Button _clikedButton = null)
     {
