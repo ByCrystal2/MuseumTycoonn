@@ -952,23 +952,35 @@ public class NPCBehaviour : MonoBehaviour
         OnHappinessChange();
     }
     
+    IEnumerator WaitingForIsPointerOver()
+    {
+        //for (int i = 0; i < 3; i++)
+            yield return new WaitForEndOfFrame();
 
+        if (!UIController.instance.IsPointerOverAnyUI())
+        {
+            Debug.Log("NPC'ye tiklandi/dokunuldu.");
+            if (GameManager.instance.GetCurrentGameMode() == GameMode.FPS)
+            {
+                PlayerManager.instance.LockPlayer();
+            }
+            NpcManager.instance.CurrentNPC = this;
+            UIController.instance.NpcInformationPanel.SetActive(true);
+            UIController.instance.SetNPCInfoPanelUIs(MyName, Happiness, Stress, Toilet, Education, LikedColors, LikedArtist);
+            if (!(CurrentInvestigate == InvestigateState.Fight || CurrentInvestigate == InvestigateState.Dialog || CurrentInvestigate == InvestigateState.Look)) // InvestiagetState sistemi yanlis calisiyor. Bundan dolayi if icerisinde donen bool degerin tersi alindi (Orn: npc tabloya bakmamasina ragmen, InvestiagetState Look oluyor.)
+            {
+                SetMyCamerasActivation(false, true);
+            }
+            else
+            {
+                SetMyCamerasActivation(true, false);
+            }
+        }
+    }
     private void OnMouseDown()
     {
-        if (EventSystem.current.IsPointerOverGameObject()&&UIController.instance.IsPointerOverUIObject())
-            return;
-        Debug.Log("NPC'ye tiklandi/dokunuldu.");    
-        NpcManager.instance.CurrentNPC = this;
-        UIController.instance.NpcInformationPanel.SetActive(true);
-        UIController.instance.SetNPCInfoPanelUIs(MyName, Happiness, Stress, Toilet, Education, LikedColors, LikedArtist);
-        if (!(CurrentInvestigate == InvestigateState.Fight || CurrentInvestigate == InvestigateState.Dialog || CurrentInvestigate == InvestigateState.Look)) // InvestiagetState sistemi yanlis calisiyor. Bundan dolayi if icerisinde donen bool degerin tersi alindi (Orn: npc tabloya bakmamasina ragmen, InvestiagetState Look oluyor.)
-        {
-            SetMyCamerasActivation(false, true);
-        }
-        else
-        {
-            SetMyCamerasActivation(true, false);
-        }
+        StopAllCoroutines();
+        StartCoroutine(WaitingForIsPointerOver());
     }
 
     public void DoToilet()

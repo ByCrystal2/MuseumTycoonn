@@ -204,6 +204,13 @@ public class UIController : MonoBehaviour
 
         MuseumManager.instance.CalculateAndAddTextAllInfos();
     }
+
+    private bool isPointerOverUI;
+    private void Update()
+    {
+        isPointerOverUI = EventSystem.current.IsPointerOverGameObject();
+        Debug.Log("UI Mi var =??? => " + isPointerOverUI);
+    }
     public void GetClickedPicture(bool active, PictureElement _lastSelectedPicture)
     {
         _LastSelectedPicture = _lastSelectedPicture;
@@ -270,17 +277,7 @@ public class UIController : MonoBehaviour
             });
         }
         rightAnimOpen = !rightAnimOpen;
-    }
-    public bool IsPointerOverUIObject()
-    {
-        if (Input.touchCount > 0)
-        {
-            Touch touch = Input.GetTouch(0);
-            return touch.phase == TouchPhase.Began && !EventSystem.current.IsPointerOverGameObject(touch.fingerId) ? false : true;
-
-        }
-        else return false;
-    }
+    }    
 
     public string GetDropDownSelectedPainter()
     {
@@ -456,7 +453,7 @@ public class UIController : MonoBehaviour
     public void BuySkill() // SKILL SATIN ALMA BUTONU!
     {
         SkillNode currentSkill = SkillTreeManager.instance.SelectedSkill;
-        MuseumManager.instance.AddSkillPoint(10);  // TEHLIKELI KOD! TESTTEN SONRA SILINMELIDIR!
+        //MuseumManager.instance.AddSkillPoint(10);  // TEHLIKELI KOD! TESTTEN SONRA SILINMELIDIR!
         if (MuseumManager.instance.GetCurrentGold() >= currentSkill.SkillRequiredMoney && MuseumManager.instance.GetCurrentSkillPoint() >= currentSkill.SkillRequiredPoint)
         {
             if (currentSkill.SkillCurrentLevel < currentSkill.SkillMaxLevel)
@@ -759,6 +756,10 @@ public class UIController : MonoBehaviour
     }
     public void CloseNPCInformationPanel() //Button!
     {
+        if (GameManager.instance.GetCurrentGameMode() == GameMode.FPS)
+        {
+            PlayerManager.instance.UnLockPlayer();
+        }
         NpcInformationPanel.SetActive(false);
         if (NpcManager.instance.CurrentNPC != null)
         {
@@ -1134,37 +1135,37 @@ public class UIController : MonoBehaviour
 
     public bool IsPointerOverAnyUI()
     {
-        //bool active = true;
-        //foreach (var ui in IsGameObjectOverPanels)
+        //if (Input.touchCount > 0)
         //{
-        //    if (ui.activeSelf)
+        //    Touch t1 = Input.GetTouch(0);
+        //    Debug.Log("t1.position => " + t1.position);
+        //    Ray ray = Camera.main.ScreenPointToRay(t1.position);
+        //    RaycastHit hit;
+
+        //    if (Physics.Raycast(ray, out hit))
         //    {
-        //        active = false;
+        //        if (hit.collider.CompareTag("UI"))
+        //        {
+        //            return true;
+        //        }                
+        //    }           
+        //}
+        //return false;
+
+        //if (Input.touchCount > 0)
+        //{
+        //    Touch t1 = Input.GetTouch(0);
+        //    Debug.Log("t1.position => " + t1.position);
+
+        //    if (EventSystem.current.IsPointerOverGameObject(t1.fingerId))
+        //    {
+        //        Debug.Log(t1.fingerId + " ID'li dokunma UI ile cakisti.");
+        //        return true;
         //    }
         //}
-        //return active;
-
-        //bir ui paneli acikken 3d objelere tiklanmayacak.
-        //ui paneli acik degilken 3d objelere tiklanabilir.
-        if (Input.touchCount > 0)
-        {
-            Touch t = Input.GetTouch(0);
-
-            if (EventSystem.current.IsPointerOverGameObject(t.fingerId))
-            {
-                Debug.Log("UI üzerine dokunuldu.");
-                return true;
-            }
-            else
-            {
-                Debug.Log("UI dýþýnda bir yere dokunuldu.");
-                return false;
-            }
-        }
-        else
-        {
-            return false;
-        }
+        //return false;
+        
+        return isPointerOverUI;
     }
     
 }
