@@ -55,8 +55,14 @@ public class ShopController : MonoBehaviour
                 break;
         }
     }
+    public bool isAfterShopUIType = false;
     public void GetAllItemsUpdate()
     {
+        if (currentShopUIType == ShopUIType.All)
+            isAfterShopUIType = true;
+        else
+            isAfterShopUIType = false;
+
         currentShopUIType = ShopUIType.All;
         itemContent = GameObject.FindWithTag("ShopPanelItems").transform;
         
@@ -67,7 +73,7 @@ public class ShopController : MonoBehaviour
         {
             
                 GameObject newItem;
-                if (item.CurrentItemType == ItemType.Gold || item.CurrentItemType == ItemType.Gem)
+                if (item.CurrentItemType == ItemType.Gold || item.CurrentItemType == ItemType.Gem || item.CurrentItemType == ItemType.Ads)
                 {
                     newItem = Instantiate(itemPrefabv1, itemContent);
                 }
@@ -96,7 +102,11 @@ public class ShopController : MonoBehaviour
                     case ItemType.Table:
                         newItem.transform.GetChild(5).GetComponent<Button>().onClick.AddListener(() => BuyItem(item));
                         SetNewItemProparties(newItem, item, ItemType.Table);
-                        break;                   
+                        break;
+                    case ItemType.Ads:
+                        newItem.transform.GetChild(5).GetComponent<Button>().onClick.AddListener(() => BuyItem(item));
+                        SetNewItemProparties(newItem, item, ItemType.Ads);
+                    break;
                     default:
                         break;
                 }
@@ -114,6 +124,11 @@ public class ShopController : MonoBehaviour
     
     public void GetGemItems()//Gem button click e baðlýdýr.
     {
+        if (currentShopUIType == ShopUIType.Gem)
+            isAfterShopUIType = true;
+        else
+            isAfterShopUIType = false;
+
         currentShopUIType = ShopUIType.Gem;
         SetButtonsAlphaValue();
 
@@ -130,6 +145,11 @@ public class ShopController : MonoBehaviour
     }
     public void GetGoldItems()//Gold button click e baðlýdýr.
     {
+        if (currentShopUIType == ShopUIType.Gold)
+            isAfterShopUIType = true;
+        else
+            isAfterShopUIType = false;
+
         currentShopUIType = ShopUIType.Gold;
         SetButtonsAlphaValue();
 
@@ -147,6 +167,11 @@ public class ShopController : MonoBehaviour
 
     public void GetTableItems()//Table button click e baðlýdýr.
     {
+        if (currentShopUIType == ShopUIType.Table)
+            isAfterShopUIType = true;
+        else
+            isAfterShopUIType = false;
+
         currentShopUIType = ShopUIType.Table;
         SetButtonsAlphaValue();
         
@@ -208,6 +233,10 @@ public class ShopController : MonoBehaviour
                 OpenStars[i].gameObject.SetActive(true);
             }
         }
+        else if (_itemType == ItemType.Ads)
+        {
+            AssignmentToItemChildren(_newItem, _currentItem, _currentItem.Description);
+        }
     }
     public void AssignmentToItemChildren(GameObject _newItem, ItemData _currentItem, string childFourValue)
     {
@@ -247,7 +276,7 @@ public class ShopController : MonoBehaviour
                     //Tablo satýlýnca marketten kaldýrýlmayacak fakat satýn alýndý yazýsý çýkacak.
                     PictureData newInventoryItem = new PictureData();
                     newInventoryItem.TextureID = _item.textureID;
-                    newInventoryItem.RequiredGold = PicturesMenuController.instance.PictureChangeRequiredAmount;
+                    newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
                     newInventoryItem.painterData = new PainterData(_item.ID, _item.Description, _item.Name, _item.StarCount);
                     MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
                     ItemsBuyingUpdate(_item);
@@ -271,7 +300,7 @@ public class ShopController : MonoBehaviour
                 {
                     PictureData newInventoryItem = new PictureData();
                     newInventoryItem.TextureID = _item.textureID;
-                    newInventoryItem.RequiredGold = PicturesMenuController.instance.PictureChangeRequiredAmount;
+                    newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
                     newInventoryItem.painterData = new PainterData(_item.ID,_item.Description,_item.Name, _item.StarCount);
                     MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
                     ItemsBuyingUpdate(_item);
@@ -297,7 +326,7 @@ public class ShopController : MonoBehaviour
     {
         ItemManager.instance.ShopItemDatas.Remove(_item);
         MuseumManager.instance.PurchasedItems.Add(_item);
-        ItemManager.instance.AddItemInShop(ItemManager.instance.RItems[Random.Range(0, ItemManager.instance.RItems.Count)]);
+        //ItemManager.instance.AddItemInShop(ItemManager.instance.RItems[Random.Range(0, ItemManager.instance.RItems.Count)]);
         GameManager.instance.Save();
         GetCurrentShoppingTypeItems();
     }

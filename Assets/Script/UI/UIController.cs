@@ -681,15 +681,17 @@ public class UIController : MonoBehaviour
         newComment.transform.GetChild(4).GetComponent<Text>().text = _npcMessage;
         Debug.Log("Global Stats'a Yorum Eklendi.");
     }
+    private bool museumStatActive = false, workerHirinActive = false, workerAssigmentActive = false, dailyRewardActive = false;
     private void ShowMuseumStatsPanel()
     {
-        if (!pnlMuseumStats.activeInHierarchy)
+        if (!museumStatActive)
         {
             RightUIPanelController.instance.CloseEditObj(true);
             CloseJoystickObj(true);
             GeneralButtonActivation(true, museumStatButton);
             ShowTab(currentTab);
             pnlMuseumStats.SetActive(true);
+            museumStatActive=true;
         }
         else
         {
@@ -697,6 +699,7 @@ public class UIController : MonoBehaviour
             RightUIPanelController.instance.CloseEditObj(false);
             pnlMuseumStats.SetActive(false);
             GeneralButtonActivation(false);
+            museumStatActive = false;
         }
     }
     private void ShowFortuneWheelanel()
@@ -775,13 +778,14 @@ public class UIController : MonoBehaviour
 
     public void AddWorkersInContent()
     {
-        if (!WorkerPanel.activeInHierarchy)
+        if (!workerHirinActive)
         {
             RightUIPanelController.instance.CloseEditObj(true);
             CloseJoystickObj(true);
             GeneralButtonActivation(true, WorkerPanelOnButton);
             GetDesiredWorkersInContent(WorkerType.Security, btnSecurityTab);
             WorkerPanel.SetActive(true);
+            workerHirinActive = true;
         }
         else
         {
@@ -789,6 +793,7 @@ public class UIController : MonoBehaviour
             CloseJoystickObj(false);
             WorkerPanel.SetActive(false);
             GeneralButtonActivation(false);
+            workerHirinActive = false;
         }
     }
     public void CloseWorkerShopPanel(bool _close)
@@ -806,12 +811,13 @@ public class UIController : MonoBehaviour
     public void ActiveInHierarchyDailyRewardPanelControl()
     {
         GoogleAdsManager.instance.ShowInterstitialAd();
-        if (!DailyRewardPanel.activeInHierarchy)
+        if (!dailyRewardActive)
         {
             GeneralButtonActivation(true, DailyRewardPanelOnButton);
             RightUIPanelController.instance.CloseEditObj(true);
             CloseJoystickObj(true);
             DailyRewardPanel.SetActive(true);
+            dailyRewardActive = true;
         }
         else
         {
@@ -819,6 +825,7 @@ public class UIController : MonoBehaviour
             RightUIPanelController.instance.CloseEditObj(false);
             DailyRewardPanel.SetActive(false);
             GeneralButtonActivation(false, DailyRewardPanelOnButton);
+            dailyRewardActive = false;
         }
     }
     public void CloseMuseumStatsPanel(bool _close)
@@ -874,7 +881,8 @@ public class UIController : MonoBehaviour
         foreach (WorkerBehaviour worker in workers)
         {
             GameObject newSecurityObj = Instantiate(WorkerPrefabV2_V1, WorkerContent);
-            newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(worker.ID, worker.MyScript.Name, worker.MyScript.Age, worker.MyScript.Height);
+            Debug.Log("worker.MyScript.Level => " + worker.MyScript.Level);
+            newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(worker.ID, worker.MyScript.Name, worker.MyScript.Age, worker.MyScript.Height, worker.MyScript.Level);
         }
         Debug.Log($"Worker Turu => {_wType} olan Isciler Listelendi.");
     }
@@ -980,7 +988,7 @@ public class UIController : MonoBehaviour
 
     public void AddInventoryWorkersInAssignmentPanelContent()
     {
-        if (!WorkerAssignmentPanel.activeInHierarchy)
+        if (!workerAssigmentActive)
         {
             RightUIPanelController.instance.CloseEditObj(true);
             CloseJoystickObj(true);
@@ -992,6 +1000,7 @@ public class UIController : MonoBehaviour
             W_WorkerTypesButton.gameObject.SetActive(false);
             InventoryWorkerTabButtonsOn();
             WorkerAssignmentPanel.SetActive(true);
+            workerAssigmentActive = true;
         }
         else
         {
@@ -999,6 +1008,7 @@ public class UIController : MonoBehaviour
             CloseJoystickObj(false);
             WorkerAssignmentPanel.SetActive(false);
             GeneralButtonActivation(false);
+            workerAssigmentActive = false;
         }
     }
     public void ClearAssignmentRoomsButtonContent()
@@ -1025,6 +1035,7 @@ public class UIController : MonoBehaviour
         foreach (WorkerBehaviour worker in workers)
         {
             GameObject newSecurityObj = Instantiate(InventoryWorkerPrefab_V1, WorkerInventoryContent);
+            Debug.Log("worker.MyScript.Level => " + worker.MyScript.Level);
             newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(worker.ID, worker.MyScript.Name, worker.MyScript.Age, worker.MyScript.Height, worker.MyScript.Level);
         }
         Debug.Log($"Worker Turu => {_wType} olan Isciler Envantere Listelendi.");

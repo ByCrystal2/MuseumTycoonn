@@ -23,8 +23,8 @@ public class GameManager : MonoBehaviour
     public string GameLanguage = "Turkish";
     float AutoSaveTimer;
     GameMode CurrentGameMode;
-
     public RewardManager rewardManager;
+    public int PictureChangeRequiredAmount = 250;
     private void Awake()
     {
         if (instance)
@@ -249,6 +249,9 @@ public class GameManager : MonoBehaviour
         if (RoomManager.instance != null)
             CurrentSaveData.ActiveRoomsRequiredMoney = RoomManager.instance.activeRoomsRequiredMoney;
 
+        if (WorkerManager.instance != null)
+            CurrentSaveData.baseWorkerHiringPrice = WorkerManager.instance.BaseWorkerHiringPrice;
+
         string jsonString = JsonUtility.ToJson(CurrentSaveData);
         File.WriteAllText(Application.persistentDataPath + "/" + CurrentSaveData.SaveName + ".json", jsonString); // this will write the json to the specified path
 
@@ -320,9 +323,7 @@ public class GameManager : MonoBehaviour
     public void Load()
     {
         if (CurrentSaveData.SaveName == "")
-            CurrentSaveData.SaveName = _GameSave;
-
-        
+            CurrentSaveData.SaveName = _GameSave;   
         
 
         if (File.Exists(Application.persistentDataPath + "/" + CurrentSaveData.SaveName + ".json"))
@@ -342,9 +343,20 @@ public class GameManager : MonoBehaviour
             // => AfterDailyRewardTime => lastDailyRewardTime + dailyRewardInterval
             // => WhichDay++ => if dailyRewardInterval <= (lastDailyRewardTime + dailyRewardInterval) - CurrentTime;
             //08:00                //24               09:00
-            CurrentSaveData.ActiveRoomsRequiredMoney = 1000;
+            CurrentSaveData.ActiveRoomsRequiredMoney = 1000;                     
             Save();
         }
+        PictureChangesReqiuredAmountCalculater();
+        CurrentSaveData.baseWorkerHiringPrice = 500;
+    }
+    public void PictureChangesReqiuredAmountCalculater()
+    {        
+        int museumLevel = MuseumManager.instance.GetCurrentCultureLevel();
+
+        if (museumLevel <= 5)
+            PictureChangeRequiredAmount = 0;
+        else
+            PictureChangeRequiredAmount = 250;
     }
     public void LoadGameLanguage()
     {
@@ -427,6 +439,7 @@ public class GameManager : MonoBehaviour
 
     public void LoadWorkers()
     {
+        WorkerManager.instance.BaseWorkerHiringPrice = CurrentSaveData.baseWorkerHiringPrice;
         foreach (WorkerData worker in CurrentSaveData.CurrentWorkerDatas)
         {
             Worker w = WorkerManager.instance.GetWorkerToWorkerType(worker);
@@ -482,6 +495,7 @@ public class GameManager : MonoBehaviour
     private void OnApplicationQuit()
     {
         TimeManager.instance.FirstOpen = true;
+        Save();
     }
 
     [System.Serializable]
@@ -500,6 +514,8 @@ public class GameManager : MonoBehaviour
         public bool IsFirstGame = true;
         //RoomManager
         public float ActiveRoomsRequiredMoney = 1000;
+        //WorkerManager
+        public float baseWorkerHiringPrice;
 
         public List<PictureData> CurrentPictures = new List<PictureData>();
         public List<PictureData> InventoryPictures = new List<PictureData>();

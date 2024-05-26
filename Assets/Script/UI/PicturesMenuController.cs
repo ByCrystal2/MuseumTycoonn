@@ -40,7 +40,7 @@ public class PicturesMenuController : MonoBehaviour
     public PictureElement CurrentPicture;
 
     public int pictureCount;
-    public int PictureChangeRequiredAmount = 250;
+    
 
     public int lastClickedIndex = -1;
 
@@ -108,7 +108,7 @@ public class PicturesMenuController : MonoBehaviour
 
         lastClickedIndex = _index;
         txtPainterName.text = MuseumManager.instance.InventoryPictures[_index].painterData.Name;
-        txtRequiredGold.text =""+PictureChangeRequiredAmount;
+        txtRequiredGold.text =""+GameManager.instance.PictureChangeRequiredAmount;
 
         for (int i = 0; i < MuseumManager.instance.InventoryPictures[_index].painterData.StarCount; i++)
         {
@@ -135,7 +135,7 @@ public class PicturesMenuController : MonoBehaviour
         }
 
         txtPainterName.text = PE._pictureData.painterData.Name;
-        txtRequiredGold.text = "" + PictureChangeRequiredAmount;
+        txtRequiredGold.text = "" + GameManager.instance.PictureChangeRequiredAmount;
 
         for (int i = 0; i < PE._pictureData.painterData.StarCount; i++)
         {
@@ -165,15 +165,15 @@ public class PicturesMenuController : MonoBehaviour
     {
         Debug.Log("Update Table CurrentPicture is null:" + (CurrentPicture == null));
         bool isFirst = true;
-        if (CurrentPicture != null && PictureChangeRequiredAmount <= MuseumManager.instance.GetCurrentGold())
+        if (CurrentPicture != null && GameManager.instance.PictureChangeRequiredAmount <= MuseumManager.instance.GetCurrentGold())
         {
-            MuseumManager.instance.SpendingGold(PictureChangeRequiredAmount);
+            MuseumManager.instance.SpendingGold(GameManager.instance.PictureChangeRequiredAmount);
             if (CurrentPicture._pictureData.isFirst)
             {
                 SetPictureUpdateButton(false, "Eklendi", Color.white);
                 CurrentPicture._pictureData.isActive = true;
                 //MuseumManager.instance.GetPictureElement(PictureChangeRequiredAmount = Mathf.RoundToInt(CurrentPicture._pictureData.RequiredGold * 0.5f);
-                txtRequiredGold.text = "Gerekli Altýn: " + PictureChangeRequiredAmount;
+                txtRequiredGold.text = "Gerekli Altýn: " + GameManager.instance.PictureChangeRequiredAmount;
             }
             else
             {
@@ -241,7 +241,7 @@ public class PicturesMenuController : MonoBehaviour
     private bool tableClicked = false;
     public void GoldControledButtonShape()
     {
-        if (PictureChangeRequiredAmount <= MuseumManager.instance.GetCurrentGold() && tableClicked)
+        if (GameManager.instance.PictureChangeRequiredAmount <= MuseumManager.instance.GetCurrentGold() && tableClicked)
         {
 
             if (imgPicture.sprite == null)
@@ -257,7 +257,7 @@ public class PicturesMenuController : MonoBehaviour
                 SetPictureUpdateButton(true, "Deðiþtir", Color.Lerp(Color.green, new Color(1, 1, 0, 0.5f), 0.5f));
             }
         }
-        else if (PictureChangeRequiredAmount <= MuseumManager.instance.GetCurrentGold() && !tableClicked)
+        else if (GameManager.instance.PictureChangeRequiredAmount <= MuseumManager.instance.GetCurrentGold() && !tableClicked)
         {
             SetPictureUpdateButton(false, "Tablo Seçin", Color.white);
         }
@@ -271,10 +271,10 @@ public class PicturesMenuController : MonoBehaviour
     {
         Debug.Log("SetPicture");
         imgPicture.sprite = CatchTheColors.instance.TextureToSprite(texture2D);
-        if (PictureChangeRequiredAmount <= MuseumManager.instance.GetCurrentGold())
+        if (GameManager.instance.PictureChangeRequiredAmount <= MuseumManager.instance.GetCurrentGold())
         {
             Debug.Log("Picture Ýçin para Yeterli.");
-            Debug.Log(PictureChangeRequiredAmount);
+            Debug.Log(GameManager.instance.PictureChangeRequiredAmount);
 
             if (CurrentPicture._pictureData.isFirst)
             {

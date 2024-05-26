@@ -222,6 +222,28 @@ public class WorkerManager : MonoBehaviour
     {
         WorkersInInventory.Add(_newWorker);
     }
+    public float BaseWorkerHiringPrice = 0;
+    public int GetBaseHiringWorkerWithMuseumLevel()
+    {
+        int museumLevel = MuseumManager.instance.GetCurrentCultureLevel();
+
+        if (museumLevel <= 5 && museumLevel < 10)
+        {
+            return (int)(1000 + BaseWorkerHiringPrice);
+        }
+        else if (museumLevel <= 10 && museumLevel < 15)
+        {
+            return (int)(2000 + BaseWorkerHiringPrice);
+        }
+        else if (museumLevel <= 15 && museumLevel < 20)
+        {
+            return (int)(3000 + BaseWorkerHiringPrice);
+        }
+        else
+        {
+            return (int)(4000 + BaseWorkerHiringPrice);
+        }
+    }
 }
 [System.Serializable]
 public class WorkerAndTasks

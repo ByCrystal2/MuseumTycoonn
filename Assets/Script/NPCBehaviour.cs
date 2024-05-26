@@ -90,7 +90,7 @@ public class NPCBehaviour : MonoBehaviour
         int length = transform.childCount;
         for (int i = 0; i < length; i++)
         {
-            if (transform.GetChild(i).CompareTag("NPCDefaultCamera"))            
+            if (transform.GetChild(i).CompareTag("NPCDefaultCamera"))
                 myDefaultCamera = transform.GetChild(i).GetComponent<Camera>();
             else if(transform.GetChild(i).CompareTag("NPCWorkCamera"))
                 myWorkCamera = transform.GetChild(i).GetComponent<Camera>();

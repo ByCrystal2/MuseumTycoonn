@@ -10,6 +10,10 @@ public class NPCUI : MonoBehaviour
     public Image StressFillerImage;
     public Transform EffectsParent;
 
+    [SerializeField] public Image EditModeGuiltyImage;
+    [SerializeField] public Image EditModeStressBackgroundImage;
+    [SerializeField] public Image EditModeStressFillerImage;
+
     public bool isGuiltyNow;
     private float _currentStress = 20;
     Coroutine UpdateVisualCoroutine;
@@ -20,6 +24,10 @@ public class NPCUI : MonoBehaviour
         GuiltyImage.gameObject.SetActive(_isGuilty);
         StressBackgroundImage.gameObject.SetActive(!_isGuilty);
         StressFillerImage.gameObject.SetActive(!_isGuilty);
+
+        EditModeGuiltyImage.gameObject.SetActive(_isGuilty);
+        EditModeStressBackgroundImage.gameObject.SetActive(!_isGuilty);
+        EditModeStressFillerImage.gameObject.SetActive(!_isGuilty);
     }
 
     public void UpdateStressBar(float _targetStress)
@@ -53,9 +61,13 @@ public class NPCUI : MonoBehaviour
                 StressFillerImage.color = col;
                 StressFillerImage.fillAmount = _currentStress / 100f;
 
+                EditModeStressFillerImage.color = col;
+                EditModeStressFillerImage.fillAmount = _currentStress / 100f;
+
                 int _emojiID = Mathf.FloorToInt(_currentStress / 17f);
                 //Debug.Log("_emojiID: " + _emojiID);
                 StressBackgroundImage.sprite = NpcManager.instance.StressEmojis[_emojiID];
+                EditModeStressBackgroundImage.sprite = NpcManager.instance.StressEmojis[_emojiID];
                 //StressFillerImage.sprite = NpcManager.instance.StressEmojis[_emojiID];
                 yield return new WaitForSeconds(0.1f);
             }
@@ -76,9 +88,12 @@ public class NPCUI : MonoBehaviour
                 StressFillerImage.color = col;
                 StressFillerImage.fillAmount = _currentStress / 100f;
 
+                EditModeStressFillerImage.color = col;
+                EditModeStressFillerImage.fillAmount = _currentStress / 100f;
+
                 int _emojiID = Mathf.RoundToInt(_currentStress / 17f);
                 //Debug.Log("_emojiID: " + _emojiID);
-                StressBackgroundImage.sprite = NpcManager.instance.StressEmojis[_emojiID];
+                EditModeStressBackgroundImage.sprite = NpcManager.instance.StressEmojis[_emojiID];
                 //StressFillerImage.sprite = NpcManager.instance.StressEmojis[_emojiID];
                 //Debug.Log("After = Decreasing => _currentStress: " + _currentStress + " / targetstress: " + _targetStress);
                 yield return new WaitForSeconds(0.1f);

@@ -254,6 +254,7 @@ public class MuseumManager : MonoBehaviour
         {
             Culture -= GetRequiredCultureExp();
             CurrentCultureLevel++;
+            WorkerManager.instance.BaseWorkerHiringPrice += 200;
             SkillPoint++;
             CultureLevelUP();
         }

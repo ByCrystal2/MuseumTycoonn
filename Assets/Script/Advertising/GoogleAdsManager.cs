@@ -51,9 +51,12 @@ public class GoogleAdsManager : MonoBehaviour
         ("ca-app-pub-1301273545593514/1211751457",10),
         ("ca-app-pub-1301273545593514/3867836392",10),
     };
-    const string _rewardedAdUnitId = "ca-app-pub-3940256099942544/5224354917"; //test id
-    const string _interstitialAdUnitId = "ca-app-pub-3940256099942544/1033173712";
-    const string _bannerViewAdId = "ca-app-pub-3940256099942544/6300978111";
+    //const string _rewardedAdUnitId = "ca-app-pub-3940256099942544/5224354917"; //test id
+    //const string _interstitialAdUnitId = "ca-app-pub-3940256099942544/1033173712"; // test id
+    //const string _bannerViewAdId = "ca-app-pub-3940256099942544/6300978111"; // test id
+
+    const string _interstitialAdUnitId = "ca-app-pub-1301273545593514/7020426654";
+    const string _bannerViewAdId = "ca-app-pub-1301273545593514/3164054074";
 #elif PLATFORM_ANDROID
     const string _rewardedAdUnitId = "";
     const string _interstitialAdUnitId = "";
@@ -68,8 +71,8 @@ public class GoogleAdsManager : MonoBehaviour
     private bool IsRewardAdShow = true;
     private bool IsBannerAdShow = true;
 
-    private float InterstitialAdWaitingTime = 20; // second
-    private float RewardAdWaitingTime = 10; // default: 60 second
+    private float InterstitialAdWaitingTime = 60; // second
+    private float RewardAdWaitingTime = 180; // default: 180 second
     private float BannerAdWaitingTime = 120; // second
 
     RewardAdData currentRewardAdData;
@@ -98,7 +101,7 @@ public class GoogleAdsManager : MonoBehaviour
             if (InterstitialAdWaitingTime <= 0)
             {
                 IsInterstitialAdShow = true;
-                InterstitialAdWaitingTime = 20;
+                InterstitialAdWaitingTime = 60;
                 LoadInterstitialAd();
             }
         }
@@ -109,7 +112,7 @@ public class GoogleAdsManager : MonoBehaviour
             if (RewardAdWaitingTime <= 0)
             {
                 IsRewardAdShow = true;
-                RewardAdWaitingTime = 60;
+                RewardAdWaitingTime = 180;
                 LoadRewardedAd();
                 StartCoroutine(DelayForRewardAdsShowing());
             }
@@ -492,6 +495,11 @@ public class GoogleAdsManager : MonoBehaviour
     public void RemoveAds()
     {
         adsData.RemovedAllAds = true;
+        _bannerView.Destroy();
+        _bannerView = null;
+        _interstitialAd.Destroy();
+        _interstitialAd = null;
+
     }
 }
 public sealed class AdverstingData

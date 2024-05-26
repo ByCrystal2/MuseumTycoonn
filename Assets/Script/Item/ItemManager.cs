@@ -32,17 +32,55 @@ public class ItemManager : MonoBehaviour
             Texture2D gemTexture = Resources.Load<Texture2D>("ItemPictures/ItemGem");
             Texture2D goldTexture = Resources.Load<Texture2D>("ItemPictures/ItemGold");
             #region Magaza Kismi
-            ItemData item1 = new ItemData(1000, "Gold", "", 10000, 5, Resources.Load<Texture2D>("ItemPictures/ItemGold10000x"), ItemType.Gold, ShoppingType.Gem, 0);
-            ItemData item2 = new ItemData(1001, "Leonardo da Vinci", "Þaþalý bir tablo", 1, 50, null, ItemType.Table, ShoppingType.Gold, 5, 5);
-            ItemData item3 = new ItemData(1002, "Vincent van Gogh", "1784'de resmedilen ünlü eser.", 1, 150, null, ItemType.Table, ShoppingType.Gem, 4, 1);
-            ItemData item4 = new ItemData(1003, "Gem", "", 100, 15.99f, Resources.Load<Sprite>("ItemPictures/ItemGem100x").texture, ItemType.Gem, ShoppingType.RealMoney, 0);
-            ItemData item5 = new ItemData(1004, "Gem", "", 50, 75000, Resources.Load<Sprite>("ItemPictures/ItemGem500x").texture, ItemType.Gem, ShoppingType.Gold, 0);
-            ItemData item6 = new ItemData(1005, "Leonardo da Vinci", "Þaþalý bir tablo", 1, 50, null, ItemType.Table, ShoppingType.Gem, 5, 4);
-            ItemData item7 = new ItemData(1006, "Leonardo da Vinci", "Þaþalý bir tablo", 1, 50, null, ItemType.Table, ShoppingType.Gem, 5, 3);
-            ItemData item8 = new ItemData(1007, "Vincent van Gogh", "Etkileyici Tablo", 1, 7.99f, null, ItemType.Table, ShoppingType.RealMoney, 5, 3);
+            //NoAds
+            ItemData item0 = new ItemData(9999, "No Ads", "Reklamlarý Kaldýr", 1, 49.99f, Resources.Load<Texture2D>("ItemPictures/No_Ads"), ItemType.Ads, ShoppingType.RealMoney, 0);
+            //NoAds
+            ItemData item1 = new ItemData(1000, "Gold", "", 8000, 50, Resources.Load<Texture2D>("ItemPictures/ItemGold10000x"), ItemType.Gold, ShoppingType.Gem, 0);
+            ItemData item2 = new ItemData(1001, "Gold", "", 16000, 85, Resources.Load<Texture2D>("ItemPictures/ItemGold10000x"), ItemType.Gold, ShoppingType.Gem, 0);
+            ItemData item3 = new ItemData(1002, "Gold", "", 30000, 150, Resources.Load<Texture2D>("ItemPictures/ItemGold10000x"), ItemType.Gold, ShoppingType.Gem, 0);
+            ItemData item4 = new ItemData(1003, "Gold", "", 100000, 500, Resources.Load<Texture2D>("ItemPictures/ItemGold10000x"), ItemType.Gold, ShoppingType.Gem, 0);
+            ItemData item5 = new ItemData(1004, "Gold", "", 250000, 1100, Resources.Load<Texture2D>("ItemPictures/ItemGold10000x"), ItemType.Gold, ShoppingType.Gem, 0);
+            
+            //Real Money
+            ItemData item1000 = new ItemData(10001, "Gem", "", 55, 16.99f, Resources.Load<Sprite>("ItemPictures/ItemGem100x").texture, ItemType.Gem, ShoppingType.RealMoney, 0);
+            ItemData item1001 = new ItemData(10002, "Gem", "", 130, 35.99f, Resources.Load<Sprite>("ItemPictures/ItemGem100x").texture, ItemType.Gem, ShoppingType.RealMoney, 0);
+            ItemData item1002 = new ItemData(10003, "Gem", "", 255, 69.99f, Resources.Load<Sprite>("ItemPictures/ItemGem100x").texture, ItemType.Gem, ShoppingType.RealMoney, 0);
+            ItemData item1003 = new ItemData(10004, "Gem", "", 520, 134.99f, Resources.Load<Sprite>("ItemPictures/ItemGem100x").texture, ItemType.Gem, ShoppingType.RealMoney, 0);
+            ItemData item1004 = new ItemData(10005, "Gem", "", 1100, 229.99f, Resources.Load<Sprite>("ItemPictures/ItemGem100x").texture, ItemType.Gem, ShoppingType.RealMoney, 0);
+            ItemData item1005 = new ItemData(10006, "Gem", "", 2700, 709.99f, Resources.Load<Sprite>("ItemPictures/ItemGem100x").texture, ItemType.Gem, ShoppingType.RealMoney, 0);
+            ItemData item1006 = new ItemData(10007, "Gem", "", 5500, 1449.99f, Resources.Load<Sprite>("ItemPictures/ItemGem100x").texture, ItemType.Gem, ShoppingType.RealMoney, 0);
+            //Real Money
+
+            //Star Count 1
+            ItemData item6 = new ItemData(1005, "Frida Kahlo", "Yýpranmýþ bir tablo", 1, 500, null, ItemType.Table, ShoppingType.Gold, 1, 4);
+            ItemData item7 = new ItemData(1006, "Käthe Kollwitz", "1985'te resmedilen bir tablo", 1, 1000, null, ItemType.Table, ShoppingType.Gold, 1, 3);
+            ItemData item8 = new ItemData(1007, "Gabriele Münter", "Kýzýl nehir tablo", 1, 1500, null, ItemType.Table, ShoppingType.Gold, 1, 1);
+            ItemData item9 = new ItemData(1008, "Michelangelo Buonarroti", "Eski bir tablo", 1, 2000, null, ItemType.Table, ShoppingType.Gold, 1, 2);
+            ItemData item10 = new ItemData(1009, "Georges Seurat", "Yýpranmýþ bir tablo", 1, 2500, null, ItemType.Table, ShoppingType.Gold, 1, 3);
+            //Star Count 2
+            ItemData item11 = new ItemData(1010, "Edgar Degas", "Yýpranmýþ bir tablo", 1, 2000, null, ItemType.Table, ShoppingType.Gold, 2, 2);
+            ItemData item12 = new ItemData(1011, "Sofonisba Anguissola", "1985'te resmedilen bir tablo", 1, 2500, null, ItemType.Table, ShoppingType.Gold, 2, 1);
+            ItemData item13 = new ItemData(1012, "Rembrandt van Rijn", "Kýzýl nehir tablo", 1, 3000, null, ItemType.Table, ShoppingType.Gold, 2, 4);
+            ItemData item14 = new ItemData(1013, "Michelangelo Buonarroti", "Eski bir tablo", 1, 3500, null, ItemType.Table, ShoppingType.Gold, 2, 2);
+            ItemData item15 = new ItemData(1014, "Paula Modersohn-Becker", "Yýpranmýþ bir tablo", 1, 4000, null, ItemType.Table, ShoppingType.Gold, 2, 1);
+            ItemData item16 = new ItemData(1015, "Georges Seurat", "Yýpranmýþ bir tablo", 1, 5000, null, ItemType.Table, ShoppingType.Gold, 2, 3);
+            //Star Count 3
+            ItemData item17 = new ItemData(1016, "Frida Kahlo", "Yýpranmýþ bir tablo", 1, 5000, null, ItemType.Table, ShoppingType.Gold, 3, 2);
+            ItemData item18 = new ItemData(1017, "Käthe Kollwitz", "1985'te resmedilen bir tablo", 1, 7000, null, ItemType.Table, ShoppingType.Gold, 3, 1);
+            ItemData item19 = new ItemData(1018, "Leonardo da Vinci", "Kýzýl nehir tablo", 1, 7500, null, ItemType.Table, ShoppingType.Gold, 3, 3);
+            ItemData item20 = new ItemData(1019, "Michelangelo Buonarroti", "Eski bir tablo", 1, 8000, null, ItemType.Table, ShoppingType.Gold, 3, 4);
+            ItemData item21 = new ItemData(1020, "Leonardo da Vinci", "Yýpranmýþ bir tablo", 1, 10000, null, ItemType.Table, ShoppingType.Gold, 3, 2);
+            //Star Count 4
+            ItemData item22 = new ItemData(1021, "Helen Frankenthaler", "Yýpranmýþ bir tablo", 1, 10000, null, ItemType.Table, ShoppingType.Gold, 4, 2);
+            ItemData item23 = new ItemData(1022, "Leonardo da Vinci", "1985'te resmedilen bir tablo", 1, 15000, null, ItemType.Table, ShoppingType.Gold, 4, 3);
+            ItemData item24 = new ItemData(1023, "Vincent van Gogh", "Kýzýl nehir tablo", 1, 20000, null, ItemType.Table, ShoppingType.Gold, 4, 1);
+            ItemData item25 = new ItemData(1024, "Michelangelo Buonarroti", "Eski bir tablo", 1, 25000, null, ItemType.Table, ShoppingType.Gold, 4, 3);
+            ItemData item26 = new ItemData(1025, "Vincent van Gogh", "Yýpranmýþ bir tablo", 1, 30000, null, ItemType.Table, ShoppingType.Gold, 4, 4);
+            //Star Count 5
+            ItemData item27 = new ItemData(1026, "Leonardo da Vinci", "Yýpranmýþ bir tablo", 1, 45000, null, ItemType.Table, ShoppingType.Gold, 5, 2);
+            ItemData item28 = new ItemData(1027, "Artemisia Gentileschi", "1985'te resmedilen bir tablo", 1, 60000, null, ItemType.Table, ShoppingType.Gold, 5, 1);
 
             //DailyItems
-            
             //Gem
             ItemData itemDaily1 = new ItemData(2000,"Gem","",15,0,gemTexture,ItemType.Gem,ShoppingType.DailyReward,0,0,"IAP Urunu Degil", false, 5);
             ItemData itemDaily2 = new ItemData(2001,"Gem","",20,0,gemTexture,ItemType.Gem,ShoppingType.DailyReward,0, 0, "IAP Urunu Degil", false, 5);
@@ -69,15 +107,15 @@ public class ItemManager : MonoBehaviour
 
             //Table
             ItemData itemDaily21 = new ItemData(2020, "Leonardo da Vinci", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,1,1, "IAP Urunu Degil", false, 5);
-            ItemData itemDaily22 = new ItemData(2021, "Leonardo da Vinci", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,1,2, "IAP Urunu Degil", false, 5);
-            ItemData itemDaily23 = new ItemData(2022, "Leonardo da Vinci", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,1,3, "IAP Urunu Degil", false, 5);
-            ItemData itemDaily24 = new ItemData(2023, "Leonardo da Vinci", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,2,4, "IAP Urunu Degil", false, 5);
-            ItemData itemDaily25 = new ItemData(2024, "Leonardo da Vinci", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,3,5, "IAP Urunu Degil", false, 5);
+            ItemData itemDaily22 = new ItemData(2021, "Henri Matisse", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,1,2, "IAP Urunu Degil", false, 5);
+            ItemData itemDaily23 = new ItemData(2022, "Paul Cezanne", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,1,3, "IAP Urunu Degil", false, 5);
+            ItemData itemDaily24 = new ItemData(2023, "Elisabeth Vigée Le Brun", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,2,4, "IAP Urunu Degil", false, 5);
+            ItemData itemDaily25 = new ItemData(2024, "Hilma af Klint", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,3,5, "IAP Urunu Degil", false, 5);
 
             ItemData itemDaily26 = new ItemData(2025, "Leonardo da Vinci", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,2,1, "IAP Urunu Degil", false, 10);
-            ItemData itemDaily27 = new ItemData(2026, "Leonardo da Vinci", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,2,2, "IAP Urunu Degil", false, 10);
-            ItemData itemDaily28 = new ItemData(2027, "Leonardo da Vinci", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,2,3, "IAP Urunu Degil", false, 10);
-            ItemData itemDaily29 = new ItemData(2028, "Leonardo da Vinci", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,3,4, "IAP Urunu Degil", false, 10);
+            ItemData itemDaily27 = new ItemData(2026, "Albrecht Durer", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,2,2, "IAP Urunu Degil", false, 10);
+            ItemData itemDaily28 = new ItemData(2027, "Vincent van Gogh", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,2,3, "IAP Urunu Degil", false, 10);
+            ItemData itemDaily29 = new ItemData(2028, "Claude Monet", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,3,4, "IAP Urunu Degil", false, 10);
             ItemData itemDaily30 = new ItemData(2029, "Leonardo da Vinci", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,4,5, "IAP Urunu Degil", false, 10);
 
             DailyRewardItems.Add(itemDaily1);
@@ -114,18 +152,57 @@ public class ItemManager : MonoBehaviour
             DailyRewardItems.Add(itemDaily30);
 
             Debug.Log("DailyRewardItems.Count => " + DailyRewardItems.Count);
-            //ItemData item5 = new ItemData(1004, "Gem", "Þok Fiyata!", 200, 29.99f, "", ItemType.Gem, ShoppingType.RealMoney);
-            //ItemData item6 = new ItemData(1005, "Gem", "Al-Ver", 5, 25000, "", ItemType.Gem, ShoppingType.Gold);
 
             //Add ItemDatas
+            //NoAds
+            ShopItemDatas.Add(item0);
+            //NoAds
+
+            //Gold
             ShopItemDatas.Add(item1);
             ShopItemDatas.Add(item2);
             ShopItemDatas.Add(item3);
             ShopItemDatas.Add(item4);
             ShopItemDatas.Add(item5);
+            //Gold
+
+            //RealMoneyShoppingItemsAdding
+            ShopItemDatas.Add(item1000);
+            ShopItemDatas.Add(item1001);
+            ShopItemDatas.Add(item1002);
+            ShopItemDatas.Add(item1003);
+            ShopItemDatas.Add(item1004);
+            ShopItemDatas.Add(item1005);
+            ShopItemDatas.Add(item1006);
+            //RealMoneyShoppingItemsAdding
+
+            //Normal Items
             ShopItemDatas.Add(item6);
             ShopItemDatas.Add(item7);
             ShopItemDatas.Add(item8);
+            ShopItemDatas.Add(item9);
+            ShopItemDatas.Add(item10);
+            ShopItemDatas.Add(item11);
+            ShopItemDatas.Add(item12);
+            ShopItemDatas.Add(item13);
+            ShopItemDatas.Add(item14);
+            ShopItemDatas.Add(item15);
+            ShopItemDatas.Add(item16);
+            ShopItemDatas.Add(item17);
+            ShopItemDatas.Add(item18);
+            ShopItemDatas.Add(item19);
+            ShopItemDatas.Add(item20);
+            ShopItemDatas.Add(item21);
+            ShopItemDatas.Add(item22);
+            ShopItemDatas.Add(item23);
+            ShopItemDatas.Add(item24);
+            ShopItemDatas.Add(item25);
+            ShopItemDatas.Add(item26);
+            ShopItemDatas.Add(item27);
+            ShopItemDatas.Add(item28);
+            //Normal Items
+
+
             #endregion
 
             #region Randomize Itemler
@@ -304,7 +381,8 @@ public enum ItemType
     Gem,
     Gold,
     Table,
-    All
+    All,
+    Ads
 }
 
 public enum ShoppingType

@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Purchasing;
 using UnityEngine.Purchasing.Extension;
+using static UnityEngine.Rendering.DebugUI;
 public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
 {
     IStoreController m_StoreController; // The Unity Purchasing system.
@@ -127,6 +128,10 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
                 {
                     AddTable(currentItem);
                 }
+                else if (currentItem.CurrentItemType == ItemType.Ads)
+                {
+                    AdsRemoveComplate(currentItem);
+                }
                 Debug.Log($"Purchase Complete - Product: {product.definition.id}");
                 Debug.Log($"Purchase Complete - Item: {currentItem.IAP_ID}");
 
@@ -180,12 +185,19 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
     {
         PictureData newInventoryItem = new PictureData();
         newInventoryItem.TextureID = _table.textureID;
-        newInventoryItem.RequiredGold = PicturesMenuController.instance.PictureChangeRequiredAmount;
+        newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
         newInventoryItem.painterData = new PainterData(_table.ID, _table.Description, _table.Name, _table.StarCount);
         MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
 
         ItemManager.instance.GetAllItemDatas().Remove(_table);
         ItemManager.instance.GetAllIAPItemDatas().Remove(_table);
+        ShopController.instance.GetCurrentShoppingTypeItems();
+    }
+    void AdsRemoveComplate(ItemData _ads)
+    {
+        GoogleAdsManager.instance.RemoveAds();
+        ItemManager.instance.GetAllItemDatas().Remove(_ads);
+        ItemManager.instance.GetAllIAPItemDatas().Remove(_ads);
         ShopController.instance.GetCurrentShoppingTypeItems();
     }
     void AddRoom(RoomData _room)

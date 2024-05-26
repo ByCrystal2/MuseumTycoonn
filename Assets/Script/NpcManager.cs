@@ -87,7 +87,7 @@ public class NpcManager : MonoBehaviour
             ItemData firstTableForPlayer = new ItemData(9999, "Vincent van Gogh", "Hediye Tablo", 1, 0, null, ItemType.Table, ShoppingType.Gold, 1, 3);
             PictureData newInventoryItem = new PictureData();
             newInventoryItem.TextureID = firstTableForPlayer.textureID;
-            newInventoryItem.RequiredGold = PicturesMenuController.instance.PictureChangeRequiredAmount;
+            newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount; ;
             newInventoryItem.painterData = new PainterData(firstTableForPlayer.ID, firstTableForPlayer.Description, firstTableForPlayer.Name, firstTableForPlayer.StarCount);
             MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
             int index = TimeManager.instance.WhatDay;

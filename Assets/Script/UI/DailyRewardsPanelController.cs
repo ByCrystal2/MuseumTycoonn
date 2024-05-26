@@ -120,7 +120,7 @@ public class DailyRewardsPanelController : MonoBehaviour
             }
             PictureData newInventoryItem = new PictureData();
             newInventoryItem.TextureID = _currentRewardItem.textureID;
-            newInventoryItem.RequiredGold = PicturesMenuController.instance.PictureChangeRequiredAmount;
+            newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount; ;
             newInventoryItem.painterData = new PainterData(_currentRewardItem.ID, _currentRewardItem.Description, _currentRewardItem.Name, _currentRewardItem.StarCount);
             MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
         }
