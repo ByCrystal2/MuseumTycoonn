@@ -38,6 +38,7 @@ public class NpcManager : MonoBehaviour
         GameManager.instance.rewardManager = FindObjectOfType<RewardManager>();
 
         GameManager.instance.LoadIsFirstGame();
+        UIController.instance.roomUISPanelController.InitializeRoomUIS();
         GameManager.instance.LoadRooms();
         RoomManager.instance.AddRooms(); // in app baglantisi kurulmadan once odalar yuklendi.
         GameManager.instance.LoadStatues();

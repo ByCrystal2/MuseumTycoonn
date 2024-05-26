@@ -209,7 +209,6 @@ public class UIController : MonoBehaviour
     private void Update()
     {
         isPointerOverUI = EventSystem.current.IsPointerOverGameObject();
-        Debug.Log("UI Mi var =??? => " + isPointerOverUI);
     }
     public void GetClickedPicture(bool active, PictureElement _lastSelectedPicture)
     {

@@ -6,8 +6,8 @@ using UnityEngine;
 public class RoomUISPanelController : MonoBehaviour
 {
     private List<RoomUIHandler> RoomUIS = new List<RoomUIHandler>();
-    private void Awake()
-    {        
+    public void InitializeRoomUIS()
+    {
         RoomUIS = FindObjectsOfType<RoomUIHandler>().ToList();
     }
     public List<RoomUIHandler> GetRoomUIS()

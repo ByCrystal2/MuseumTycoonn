@@ -10,6 +10,10 @@ public class Constant : MonoBehaviour
     private const string iAPIDGame = "museumofexcesses_";
     public string IAPIDGame { get { return iAPIDGame; } }
 
+    public List<string> NPCNames = new List<string>()
+    {
+
+    };
     public static Constant instance { get; set; }
     private void Awake()
     {
