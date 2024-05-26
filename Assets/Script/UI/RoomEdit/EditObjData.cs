@@ -30,7 +30,6 @@ public class EditObjData
     {
         ID = _id;
         Name = _name;
-        Debug.Log(_name + " => _resourcesTexture.name => " + _resourcesTexture.name);
         Price = _price;
         ImageSprite = CatchTheColors.instance.TextureToSprite(_resourcesTexture);
         EditType = _objType;
@@ -40,7 +39,6 @@ public class EditObjData
             int length = _Bonusses.Count;
             for (int i = 0; i < length; i++)
             {
-                Debug.Log("_Bonusses[i].BonussesType + _Bonusses[i].Value => " + _Bonusses[i].BonusType.ToString() +" "+ _Bonusses[i].Value.ToString());
                 Bonusses.Add(_Bonusses[i]);
             }            
         }

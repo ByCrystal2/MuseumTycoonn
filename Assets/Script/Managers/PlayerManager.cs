@@ -32,4 +32,8 @@ public class PlayerManager : MonoBehaviour
         player.JumpHeight = 1.2f;
         player.enabled = true;
     }
+    public ThirdPersonController GetPlayer()
+    {
+        return player;
+    }
 }

@@ -27,6 +27,7 @@ public class RoomUIHandler : MonoBehaviour, IPointerClickHandler
     }
     public void UpdateMyUI()
     {
+        Debug.Log("MyTargetRoom Infos => " + "Active => " + MyTargetRoom.isActive + " Room Cell => " + MyTargetRoom.availableRoomCell.CellLetter.ToString() + MyTargetRoom.availableRoomCell.CellNumber.ToString() + " / " + RoomCellCodeText);
         if (MyTargetRoom.isActive)
         {
             SetRoomCloudActivation(false);

@@ -11,7 +11,7 @@ public partial class RoomManager : MonoBehaviour
     public StatuesHandler statuesHandler;
     //Statues
 
-    public float activeRoomsRequiredMoney;
+    public float activeRoomsRequiredMoney = 1000;
     // Buy Room Panel Elements
 
     public GameObject PnlBuyRoom;

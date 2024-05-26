@@ -26,7 +26,7 @@ public class NPCBehaviour : MonoBehaviour
     public RoomData CurrentVisitedRoom;
 
     //UI
-    [SerializeField] string MyName = "Ahmet Burak"; // Default olarak Ahmet Burak atýldý. Deðiþtirilecek.
+    [SerializeField] string MyName = "Ahmet Burak"; // Default olarak Ahmet Burak atildi.
     private RawImage myRawImage;
     private Camera myDefaultCamera;
     private Camera myWorkCamera;
@@ -98,6 +98,8 @@ public class NPCBehaviour : MonoBehaviour
     }
     void Start()
     {
+        MyName = Constant.instance.GetNPCName(IsMale);
+        LikedArtist = Constant.instance.GetRandomFamousPaintersWithDesiredCount(Random.Range(1, 4));
         CurrentAudioSource = transform.GetChild(0).GetComponent<AudioSource>();
         AdditionalLuck = 1000;
         NpcCurrentSpeed = NpcSpeed + NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f); ;
@@ -453,6 +455,22 @@ public class NPCBehaviour : MonoBehaviour
                     NPCMaxScore -= Random.Range(1,4);
             }
         }
+
+        int length3 = LikedArtist.Count;
+        bool isIncludeMyArtist = false;
+        for (int i = 0; i < length3; i++)
+        {            
+            if (PE._pictureData.painterData.Description == LikedArtist[i])
+            {
+                isIncludeMyArtist = true;
+                Debug.Log("Tablonun ressami, Npcnin sevdigi bir ressam. => " + LikedArtist[i]);
+                break;
+            }
+        }
+        if (isIncludeMyArtist)
+            NPCMinScore++;
+        else
+            NPCMaxScore -= Random.Range(1, 4);
 
         NPCCurrentScore = Random.Range(NPCMinScore, NPCMaxScore + 1);
         MuseumManager.instance.AddCultureExp(NPCCurrentScore * 3);

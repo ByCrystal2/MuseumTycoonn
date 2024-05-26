@@ -172,9 +172,10 @@ public class RoomData : MonoBehaviour
 
     IEnumerator WaitForRoomUISHandler()
     {
-        while (UIController.instance.roomUISPanelController.GetRoomUIS().Count <= 0)
-            yield return new WaitForEndOfFrame();
-        RoomUIHandler _targetHandler = UIController.instance.roomUISPanelController.GetRoomUI(availableRoomCell);
+        //while (UIController.instance.roomUISPanelController.GetRoomUIS().Count <= 0)
+        //    yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        RoomUIHandler _targetHandler = GetComponentInChildren<RoomUIHandler>();
         _targetHandler.UpdateMyUI();
     }
     public void SetRoomBlockPanelActive(bool _isActive)

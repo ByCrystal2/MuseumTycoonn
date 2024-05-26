@@ -28,12 +28,12 @@ public class DailyRewardItemOptions : MonoBehaviour,IPointerClickHandler
         IsLocked = _isLocked;
         if (IsPurchased && !IsLocked)
         {
-            Debug.Log(this.gameObject + " is not clickable and this is purchased!");
+            //Debug.Log(this.gameObject + " is not clickable and this is purchased!");
             DailyRewardsPanelController.instance.CreatePnlReceived(transform.parent);
         }
         else if (!IsPurchased && IsLocked)
         {
-            Debug.Log(this.gameObject + " is not Purchased and this is UnLocked!");
+            //Debug.Log(this.gameObject + " is not Purchased and this is UnLocked!");
             DailyRewardsPanelController.instance.CreatePnlLocked(transform.parent);
         }
     }

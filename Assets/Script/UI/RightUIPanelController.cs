@@ -9,6 +9,7 @@ public class RightUIPanelController : MonoBehaviour
     [SerializeField] public GameObject EditModeObj;
     [SerializeField] GameObject FPSModeObj;
     [SerializeField] GameObject GhostModeObj;
+    [SerializeField] GameObject PlayerEditModeCanvas;
 
     [SerializeField] public GameObject EditObj;
     [SerializeField] GameObject VisibleUIObj;
@@ -56,6 +57,7 @@ public class RightUIPanelController : MonoBehaviour
                 VisibleUIObj.SetActive(false);
                 GameManager.instance.SetCurrenGameMode(GameMode.FPS);
                 PicturesMenuController.instance.ExitPicturePanel();
+                PlayerEditModeCanvas.SetActive(false);
                 btnDailyRewardObj.transform.position = fpsModeDailyRewardTransform.position;
                 break;
             case GameMode.FPS:
@@ -65,6 +67,9 @@ public class RightUIPanelController : MonoBehaviour
                 VisibleUIObj.SetActive(true);
                 UINotVisibleObj.SetActive(false);
                 GameManager.instance.SetCurrenGameMode(GameMode.MuseumEditing);
+                Vector3 _playerCurrentPos = PlayerManager.instance.GetPlayer().transform.position;
+                PlayerEditModeCanvas.transform.position = new Vector3(_playerCurrentPos.x,PlayerEditModeCanvas.transform.position.y,_playerCurrentPos.z);
+                PlayerEditModeCanvas.SetActive(true);
                 PicturesMenuController.instance.ExitPicturePanel();
                 btnDailyRewardObj.transform.position = defaultDailyRewardPos;
                 //GhostModeObj.SetActive(true);

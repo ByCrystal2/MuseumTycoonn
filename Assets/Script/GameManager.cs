@@ -57,9 +57,11 @@ public class GameManager : MonoBehaviour
         Init();
         Load();
         if (GameLanguage == "" || GameLanguage == null || GameLanguage == string.Empty)
-            SetGameLanguage("Turkish");
+            SetGameLanguage("English");
         else
             SetGameLanguage(CurrentSaveData.GameLanguage);
+
+        Debug.Log("CurrentSaveData.ActiveRoomsRequiredMoney => " + CurrentSaveData.ActiveRoomsRequiredMoney);
     }
     public void Init()
     {        
@@ -255,7 +257,9 @@ public class GameManager : MonoBehaviour
 
     public void LoadRooms()
     {
-        RoomManager.instance.activeRoomsRequiredMoney = CurrentSaveData.ActiveRoomsRequiredMoney;
+        if (CurrentSaveData.ActiveRoomsRequiredMoney > 0)
+            RoomManager.instance.activeRoomsRequiredMoney = CurrentSaveData.ActiveRoomsRequiredMoney;
+        
 
         List<RoomData> AllRooms = GameObject.FindObjectsOfType<RoomData>().ToList();
         //RoomLoad
@@ -278,7 +282,7 @@ public class GameManager : MonoBehaviour
                     room.MyRoomWorkersIDs.Add(currentRoomData.MyRoomWorkersIDs[i]);
                 }
             }
-            Debug.Log("Room name: " + room.transform.name + " / room.pictureDirections Count: " + room.pictureDirections.Count);
+            //Debug.Log("Room name: " + room.transform.name + " / room.pictureDirections Count: " + room.pictureDirections.Count);
             //PictureLoad
 
             room.LoadThisRoom();
@@ -338,7 +342,7 @@ public class GameManager : MonoBehaviour
             // => AfterDailyRewardTime => lastDailyRewardTime + dailyRewardInterval
             // => WhichDay++ => if dailyRewardInterval <= (lastDailyRewardTime + dailyRewardInterval) - CurrentTime;
             //08:00                //24               09:00
-           
+            CurrentSaveData.ActiveRoomsRequiredMoney = 1000;
             Save();
         }
     }
@@ -495,7 +499,7 @@ public class GameManager : MonoBehaviour
         //IsFirstGame
         public bool IsFirstGame = true;
         //RoomManager
-        public float ActiveRoomsRequiredMoney;
+        public float ActiveRoomsRequiredMoney = 1000;
 
         public List<PictureData> CurrentPictures = new List<PictureData>();
         public List<PictureData> InventoryPictures = new List<PictureData>();

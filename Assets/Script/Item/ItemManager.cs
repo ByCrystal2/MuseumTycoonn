@@ -33,13 +33,13 @@ public class ItemManager : MonoBehaviour
             Texture2D goldTexture = Resources.Load<Texture2D>("ItemPictures/ItemGold");
             #region Magaza Kismi
             ItemData item1 = new ItemData(1000, "Gold", "", 10000, 5, Resources.Load<Texture2D>("ItemPictures/ItemGold10000x"), ItemType.Gold, ShoppingType.Gem, 0);
-            ItemData item2 = new ItemData(1001, "Leonardo Da Vinci", "Þaþalý bir tablo", 1, 50, null, ItemType.Table, ShoppingType.Gold, 5, 5);
-            ItemData item3 = new ItemData(1002, "Vincent Van Gogh", "1784'de resmedilen ünlü eser.", 1, 150, null, ItemType.Table, ShoppingType.Gem, 4, 1);
+            ItemData item2 = new ItemData(1001, "Leonardo da Vinci", "Þaþalý bir tablo", 1, 50, null, ItemType.Table, ShoppingType.Gold, 5, 5);
+            ItemData item3 = new ItemData(1002, "Vincent van Gogh", "1784'de resmedilen ünlü eser.", 1, 150, null, ItemType.Table, ShoppingType.Gem, 4, 1);
             ItemData item4 = new ItemData(1003, "Gem", "", 100, 15.99f, Resources.Load<Sprite>("ItemPictures/ItemGem100x").texture, ItemType.Gem, ShoppingType.RealMoney, 0);
             ItemData item5 = new ItemData(1004, "Gem", "", 50, 75000, Resources.Load<Sprite>("ItemPictures/ItemGem500x").texture, ItemType.Gem, ShoppingType.Gold, 0);
-            ItemData item6 = new ItemData(1005, "Leonardo Da Vinci", "Þaþalý bir tablo", 1, 50, null, ItemType.Table, ShoppingType.Gem, 5, 4);
-            ItemData item7 = new ItemData(1006, "Leonardo Da Vinci", "Þaþalý bir tablo", 1, 50, null, ItemType.Table, ShoppingType.Gem, 5, 3);
-            ItemData item8 = new ItemData(1007, "Vincent Van Gogh", "Etkileyici Tablo", 1, 7.99f, null, ItemType.Table, ShoppingType.RealMoney, 5, 3);
+            ItemData item6 = new ItemData(1005, "Leonardo da Vinci", "Þaþalý bir tablo", 1, 50, null, ItemType.Table, ShoppingType.Gem, 5, 4);
+            ItemData item7 = new ItemData(1006, "Leonardo da Vinci", "Þaþalý bir tablo", 1, 50, null, ItemType.Table, ShoppingType.Gem, 5, 3);
+            ItemData item8 = new ItemData(1007, "Vincent van Gogh", "Etkileyici Tablo", 1, 7.99f, null, ItemType.Table, ShoppingType.RealMoney, 5, 3);
 
             //DailyItems
             
@@ -68,17 +68,17 @@ public class ItemManager : MonoBehaviour
             ItemData itemDaily20 = new ItemData(2019,"Gold","",50000,0,gemTexture,ItemType.Gold,ShoppingType.DailyReward,0, 0, "IAP Urunu Degil", false, 10);
 
             //Table
-            ItemData itemDaily21 = new ItemData(2020,"Leonardo Da Vinci","",1,0,null,ItemType.Table,ShoppingType.DailyReward,1,1, "IAP Urunu Degil", false, 5);
-            ItemData itemDaily22 = new ItemData(2021,"Leonardo Da Vinci","",1,0,null,ItemType.Table,ShoppingType.DailyReward,1,2, "IAP Urunu Degil", false, 5);
-            ItemData itemDaily23 = new ItemData(2022,"Leonardo Da Vinci","",1,0,null,ItemType.Table,ShoppingType.DailyReward,1,3, "IAP Urunu Degil", false, 5);
-            ItemData itemDaily24 = new ItemData(2023,"Leonardo Da Vinci","",1,0,null,ItemType.Table,ShoppingType.DailyReward,2,4, "IAP Urunu Degil", false, 5);
-            ItemData itemDaily25 = new ItemData(2024,"Leonardo Da Vinci","",1,0,null,ItemType.Table,ShoppingType.DailyReward,3,5, "IAP Urunu Degil", false, 5);
+            ItemData itemDaily21 = new ItemData(2020, "Leonardo da Vinci", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,1,1, "IAP Urunu Degil", false, 5);
+            ItemData itemDaily22 = new ItemData(2021, "Leonardo da Vinci", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,1,2, "IAP Urunu Degil", false, 5);
+            ItemData itemDaily23 = new ItemData(2022, "Leonardo da Vinci", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,1,3, "IAP Urunu Degil", false, 5);
+            ItemData itemDaily24 = new ItemData(2023, "Leonardo da Vinci", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,2,4, "IAP Urunu Degil", false, 5);
+            ItemData itemDaily25 = new ItemData(2024, "Leonardo da Vinci", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,3,5, "IAP Urunu Degil", false, 5);
 
-            ItemData itemDaily26 = new ItemData(2025,"Leonardo Da Vinci","",1,0,null,ItemType.Table,ShoppingType.DailyReward,2,1, "IAP Urunu Degil", false, 10);
-            ItemData itemDaily27 = new ItemData(2026,"Leonardo Da Vinci","",1,0,null,ItemType.Table,ShoppingType.DailyReward,2,2, "IAP Urunu Degil", false, 10);
-            ItemData itemDaily28 = new ItemData(2027,"Leonardo Da Vinci","",1,0,null,ItemType.Table,ShoppingType.DailyReward,2,3, "IAP Urunu Degil", false, 10);
-            ItemData itemDaily29 = new ItemData(2028,"Leonardo Da Vinci","",1,0,null,ItemType.Table,ShoppingType.DailyReward,3,4, "IAP Urunu Degil", false, 10);
-            ItemData itemDaily30 = new ItemData(2029,"Leonardo Da Vinci","",1,0,null,ItemType.Table,ShoppingType.DailyReward,4,5, "IAP Urunu Degil", false, 10);
+            ItemData itemDaily26 = new ItemData(2025, "Leonardo da Vinci", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,2,1, "IAP Urunu Degil", false, 10);
+            ItemData itemDaily27 = new ItemData(2026, "Leonardo da Vinci", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,2,2, "IAP Urunu Degil", false, 10);
+            ItemData itemDaily28 = new ItemData(2027, "Leonardo da Vinci", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,2,3, "IAP Urunu Degil", false, 10);
+            ItemData itemDaily29 = new ItemData(2028, "Leonardo da Vinci", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,3,4, "IAP Urunu Degil", false, 10);
+            ItemData itemDaily30 = new ItemData(2029, "Leonardo da Vinci", "",1,0,null,ItemType.Table,ShoppingType.DailyReward,4,5, "IAP Urunu Degil", false, 10);
 
             DailyRewardItems.Add(itemDaily1);
             DailyRewardItems.Add(itemDaily2);
@@ -206,19 +206,19 @@ public class ItemManager : MonoBehaviour
             if (item.CurrentItemType == ItemType.Gold && currentGoldItemCount < maxGoldItemCount  && !currentItems.Contains(item))
             {
                 currentItems.Add(item);
-                Debug.Log("Before" + item.ID);
+                //Debug.Log("Before" + item.ID);
                 currentGoldItemCount++;
             }
             else if (item.CurrentItemType == ItemType.Gem && currentGemItemCount < maxGemItemCount && !currentItems.Contains(item))
             {
                 currentItems.Add(item);
-                Debug.Log("Before" + item.ID);
+                //Debug.Log("Before" + item.ID);
                 currentGemItemCount++;
             }
             else if (item.CurrentItemType == ItemType.Table && currentTableItemCount < maxTabletemCount)
             {
                 currentItems.Add(item);
-                Debug.Log("Before" + item.ID);
+                //Debug.Log("Before" + item.ID);
                 currentTableItemCount++;
             }
 
@@ -281,20 +281,20 @@ public class ItemManager : MonoBehaviour
             {
                 var gold = Items.Golds[i];
                 CurrentDailyRewardItems.Add(gold);
-                Debug.Log($"{gold.ID} ID'li - {gold.CurrentItemType} item Turlu - {gold.CurrentShoppingType} item Shop turlu - {gold.Amount} - {gold.Name} Adli item eklendi!");
+                //Debug.Log($"{gold.ID} ID'li - {gold.CurrentItemType} item Turlu - {gold.CurrentShoppingType} item Shop turlu - {gold.Amount} - {gold.Name} Adli item eklendi!");
             }
 
             if (i < Items.Gems.Count)
             {
                 var gem = Items.Gems[i];
                 CurrentDailyRewardItems.Add(gem);
-                Debug.Log($"{gem.ID} ID'li - {gem.CurrentItemType} item Turlu - {gem.CurrentShoppingType} item Shop turlu - {gem.Amount} - {gem.Name} Adli item eklendi!");
+                //Debug.Log($"{gem.ID} ID'li - {gem.CurrentItemType} item Turlu - {gem.CurrentShoppingType} item Shop turlu - {gem.Amount} - {gem.Name} Adli item eklendi!");
             }
         }
         foreach (var item in Items.Tables)
         {
             CurrentDailyRewardItems.Add(item);
-            Debug.Log($"{item.ID} ID'li - {item.CurrentItemType} item Turlu - {item.CurrentShoppingType} item Shop turlu - {item.Amount} - {item.Name} Adli item eklendi!");
+            //Debug.Log($"{item.ID} ID'li - {item.CurrentItemType} item Turlu - {item.CurrentShoppingType} item Shop turlu - {item.Amount} - {item.Name} Adli item eklendi!");
         }
     }
 }

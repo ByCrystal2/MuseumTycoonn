@@ -38,6 +38,10 @@ public class NpcManager : MonoBehaviour
         GameManager.instance.rewardManager = FindObjectOfType<RewardManager>();
 
         GameManager.instance.LoadIsFirstGame();
+        if (IsFirstGame)
+        {
+            RoomManager.instance.activeRoomsRequiredMoney = 1000;
+        }
         UIController.instance.roomUISPanelController.InitializeRoomUIS();
         GameManager.instance.LoadRooms();
         RoomManager.instance.AddRooms(); // in app baglantisi kurulmadan once odalar yuklendi.
@@ -80,6 +84,12 @@ public class NpcManager : MonoBehaviour
 
             GameManager.instance.rewardManager.lastDailyRewardTime = TimeManager.instance.CurrentDateTime;
             MuseumManager.instance.OnNpcPaid(500);
+            ItemData firstTableForPlayer = new ItemData(9999, "Vincent van Gogh", "Hediye Tablo", 1, 0, null, ItemType.Table, ShoppingType.Gold, 1, 3);
+            PictureData newInventoryItem = new PictureData();
+            newInventoryItem.TextureID = firstTableForPlayer.textureID;
+            newInventoryItem.RequiredGold = PicturesMenuController.instance.PictureChangeRequiredAmount;
+            newInventoryItem.painterData = new PainterData(firstTableForPlayer.ID, firstTableForPlayer.Description, firstTableForPlayer.Name, firstTableForPlayer.StarCount);
+            MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
             int index = TimeManager.instance.WhatDay;
             // Eðer bulunduysa
             if (index != -1)

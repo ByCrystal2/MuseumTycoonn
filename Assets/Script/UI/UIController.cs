@@ -86,6 +86,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI txtToilet;
     [SerializeField] private TextMeshProUGUI txtEducation;
     [SerializeField] private List<Image> LikedColorImages;
+    [SerializeField] private List<Image> ArtistImages;
     [SerializeField] private List<TextMeshProUGUI> ArtistTexts;
 
     [Header("Worker Market Panel")]
@@ -734,6 +735,10 @@ public class UIController : MonoBehaviour
         else
             Debug.Log("NPC'nin Color Listesi Bos!");
 
+        for (int i = 0; i < ArtistImages.Count; i++)
+            ArtistImages[i].gameObject.SetActive(false);
+        for (int i = 0; i < ArtistTexts.Count; i++)
+            ArtistTexts[i].gameObject.SetActive(false);
 
         int length1 = ArtistTexts.Count;
         if (_LikedArtist != null && _LikedArtist.Count > 0)
@@ -744,6 +749,8 @@ public class UIController : MonoBehaviour
                 {
                     if (_LikedArtist[i] != null)
                     {
+                        ArtistTexts[i].gameObject.SetActive(true);
+                        ArtistImages[i].gameObject.SetActive(true);
                         ArtistTexts[i].text = _LikedArtist[i];
                     }
                 }
