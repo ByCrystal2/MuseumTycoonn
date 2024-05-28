@@ -162,6 +162,7 @@ public class RoomEditingPanelController : MonoBehaviour
         }
         if (ClickedEditObjBehaviour.data.Price > MuseumManager.instance.GetCurrentGold())
         {
+            UIController.instance.InsufficientGoldEffect();
             Debug.Log(ClickedEditObjBehaviour.data.Name + " Adli heykeli almaya paraniz yetmedi.");
             ClickedEditObjBehaviour = null;
             return;

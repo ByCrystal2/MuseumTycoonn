@@ -33,7 +33,7 @@ public class ItemManager : MonoBehaviour
             Texture2D goldTexture = Resources.Load<Texture2D>("ItemPictures/ItemGold");
             #region Magaza Kismi
             //NoAds
-            ItemData item0 = new ItemData(9999, "No Ads", "Reklamlarý Kaldýr", 1, 49.99f, Resources.Load<Texture2D>("ItemPictures/No_Ads"), ItemType.Ads, ShoppingType.RealMoney, 0);
+            ItemData item0 = new ItemData(10000, "No Ads", "Reklamlarý Kaldýr", 1, 39.99f, Resources.Load<Texture2D>("ItemPictures/No_Ads"), ItemType.Ads, ShoppingType.RealMoney, 0);
             //NoAds
             ItemData item1 = new ItemData(1000, "Gold", "", 8000, 50, Resources.Load<Texture2D>("ItemPictures/ItemGold10000x"), ItemType.Gold, ShoppingType.Gem, 0);
             ItemData item2 = new ItemData(1001, "Gold", "", 16000, 85, Resources.Load<Texture2D>("ItemPictures/ItemGold10000x"), ItemType.Gold, ShoppingType.Gem, 0);

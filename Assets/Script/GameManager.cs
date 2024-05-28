@@ -497,6 +497,14 @@ public class GameManager : MonoBehaviour
         TimeManager.instance.FirstOpen = true;
         Save();
     }
+    private void OnApplicationPause(bool pause)
+    {
+        if (pause)
+        {
+            Save();
+        }
+    }
+}
 
     [System.Serializable]
     public class PlayerSaveData
@@ -533,7 +541,7 @@ public class GameManager : MonoBehaviour
         public string LastDailyRewardTime = "";
         public byte WhatDay;
     }    
-}
+
 public enum GameMode
 {
     None,

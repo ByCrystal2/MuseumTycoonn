@@ -34,7 +34,7 @@ public class RightUIPanelController : MonoBehaviour
     }
     private void Start()
     {
-        GameManager.instance.SetCurrenGameMode(GameMode.Ghost);
+        GameManager.instance.SetCurrenGameMode(GameMode.MuseumEditing);
 
         EditModeButton.onClick.RemoveAllListeners();
         UIVisibleButton.onClick.RemoveAllListeners();

@@ -11,6 +11,7 @@ public class WorkerHiringButton : MonoBehaviour, IPointerClickHandler
         WorkerInfoUIs myWorkerInfoUIS = GetComponentInParent<WorkerInfoUIs>();
         if (myWorkerInfoUIS.GetMyPrice() > MuseumManager.instance.GetCurrentGold())
         {
+            UIController.instance.InsufficientGoldEffect();
             Debug.Log(myWorkerInfoUIS.txtFullName.text + " Adli npcyi ise alacak yeterli para bulunmamaktadir. (Extra gerekli Para => " + (myWorkerInfoUIS.GetMyPrice() - MuseumManager.instance.GetCurrentGold()).ToString());
             return;
         }

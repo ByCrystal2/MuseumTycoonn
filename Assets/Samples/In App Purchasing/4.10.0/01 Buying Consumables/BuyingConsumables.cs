@@ -29,7 +29,7 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
         {
             if (item.CurrentItemType == ItemType.Gold || item.CurrentItemType == ItemType.Gem)
                 builder.AddProduct(item.IAP_ID, ProductType.Consumable);
-            else if (item.CurrentItemType == ItemType.Table)
+            else if (item.CurrentItemType == ItemType.Table || item.CurrentItemType == ItemType.Ads)
                 builder.AddProduct(item.IAP_ID, ProductType.NonConsumable);
         }
         List<RoomData> IAPRooms = RoomManager.instance.RoomDatas.Where(x => x.CurrentShoppingType == ShoppingType.RealMoney).ToList();
@@ -111,6 +111,7 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
 
         ItemData currentItem = ItemManager.instance.GetAllIAPItemDatas().Where(x => x.IAP_ID == product.definition.id).SingleOrDefault();
         RoomData currentRoom = RoomManager.instance.RoomDatas.Where(x => x.IAP_ID == product.definition.id).SingleOrDefault();
+        Debug.Log("ProccesPurchase. Item => " + currentItem.IAP_ID);
         if (args.purchasedProduct != null && !currentItem.Equals(default(ItemData)))
         {
             //ItemData currentItem = ItemManager.instance.GetAllIAPItemDatas().Where(x => x.IAP_ID == product.definition.id).SingleOrDefault();
@@ -198,6 +199,7 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
         GoogleAdsManager.instance.RemoveAds();
         ItemManager.instance.GetAllItemDatas().Remove(_ads);
         ItemManager.instance.GetAllIAPItemDatas().Remove(_ads);
+        MuseumManager.instance.PurchasedItems.Add(_ads);
         ShopController.instance.GetCurrentShoppingTypeItems();
     }
     void AddRoom(RoomData _room)

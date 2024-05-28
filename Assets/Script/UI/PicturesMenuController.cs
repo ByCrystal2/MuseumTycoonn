@@ -22,6 +22,7 @@ public class PicturesMenuController : MonoBehaviour
     [SerializeField] GameObject[] OpenStars;
     [SerializeField] GameObject[] CloseStars;
     [SerializeField] public TextMeshProUGUI txtPainterName;
+    [SerializeField] public TextMeshProUGUI txtDescription;
     [SerializeField] public TextMeshProUGUI txtRequiredGold;
     [SerializeField] Image imgPicture;
     [SerializeField] Button PictureUpdateButton;
@@ -107,7 +108,8 @@ public class PicturesMenuController : MonoBehaviour
         }
 
         lastClickedIndex = _index;
-        txtPainterName.text = MuseumManager.instance.InventoryPictures[_index].painterData.Name;
+        txtPainterName.text = MuseumManager.instance.InventoryPictures[_index].painterData.Description;
+        txtDescription.text = MuseumManager.instance.InventoryPictures[_index].painterData.Name;
         txtRequiredGold.text =""+GameManager.instance.PictureChangeRequiredAmount;
 
         for (int i = 0; i < MuseumManager.instance.InventoryPictures[_index].painterData.StarCount; i++)
@@ -134,7 +136,8 @@ public class PicturesMenuController : MonoBehaviour
             OpenStars[i].SetActive(false);
         }
 
-        txtPainterName.text = PE._pictureData.painterData.Name;
+        txtPainterName.text = PE._pictureData.painterData.Description;
+        txtDescription.text = PE._pictureData.painterData.Name;
         txtRequiredGold.text = "" + GameManager.instance.PictureChangeRequiredAmount;
 
         for (int i = 0; i < PE._pictureData.painterData.StarCount; i++)
@@ -218,6 +221,10 @@ public class PicturesMenuController : MonoBehaviour
             UpdatePicture();
             CurrentPicture.SetImage(!CurrentPicture._pictureData.isLocked);
             StartCoroutine(nameof(WaitForSpendingGoldPicture));
+        }
+        else
+        {
+            UIController.instance.InsufficientGoldEffect();
         }
     }
     public IEnumerator WaitForSpendingGoldPicture()

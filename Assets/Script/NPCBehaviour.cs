@@ -472,9 +472,33 @@ public class NPCBehaviour : MonoBehaviour
         else
             NPCMaxScore -= Random.Range(1, 4);
 
+
         NPCCurrentScore = Random.Range(NPCMinScore, NPCMaxScore + 1);
         MuseumManager.instance.AddCultureExp(NPCCurrentScore * 3);
-        MuseumManager.instance.OnNpcPaid(NPCCurrentScore);
+        int multiplyScore = 0;
+        switch (PE._pictureData.painterData.StarCount)
+        {
+            case 0:
+            case 1:
+                multiplyScore = 2;
+                break;
+            case 2:
+                multiplyScore = 4;
+                break;
+            case 3:
+                multiplyScore = 6;
+                break;
+            case 4:
+                multiplyScore = 8;
+                break;
+            case 5:
+                multiplyScore = 10;
+                break;
+            default:
+                break;
+        }
+        MuseumManager.instance.OnNpcPaid(NPCCurrentScore * multiplyScore);
+        Debug.Log(name + " adli npc tablo yorumundan kazanilan para: " + "NPCCurrentScore * PE._pictureData.painterData.StarCount => " + NPCCurrentScore * multiplyScore);
         // MuseumManager.instance.AddTotalVisitorCommentCount(1);
         MuseumManager.instance.OnNpcCommentedPicture(this,PE, Mathf.Round(NPCCurrentScore)); // Þimdilik Current Score Göre Yýldýz Yorumu Yapýldý.
 

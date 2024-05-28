@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class RoomUIHandler : MonoBehaviour, IPointerClickHandler
+public class RoomUIHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
 {
     [SerializeField] public RoomCell MyRoomCellCode;
 
@@ -75,14 +75,35 @@ public class RoomUIHandler : MonoBehaviour, IPointerClickHandler
                 //GetComponent<BoxCollider>().enabled = false;
             }
         }
-    }
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        StopAllCoroutines();
-        StartCoroutine(WaitingForIsPointerOver());
+        //yield return null;
     }
     public void SetRoomCloudActivation(bool _active)
     {
         RoomCloud.SetActive(_active);
+    }            
+    private bool isClicked = false;
+    private bool isDragging = false;
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        isClicked = true;
+        isDragging = false;
     }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        if (!isDragging && isClicked)
+        {
+            Debug.Log("dokunuld");
+            StopAllCoroutines();
+            StartCoroutine(WaitingForIsPointerOver());
+        }
+        isClicked = false;
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        isDragging = true;
+    }
+
 }

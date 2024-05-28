@@ -105,6 +105,7 @@ public partial class RoomManager : MonoBehaviour
             }
             else
             {
+                UIController.instance.InsufficientGemEffect();
                 Debug.Log(purchasedRoom.availableRoomCell.CellLetter + purchasedRoom.availableRoomCell.CellNumber + "  Numaralý Odayý Satýn Almaya Paran Yetmedi.");
             }
         }
@@ -119,6 +120,7 @@ public partial class RoomManager : MonoBehaviour
             }
             else
             {
+                UIController.instance.InsufficientGoldEffect();
                 Debug.Log(purchasedRoom.availableRoomCell.CellLetter +""+ purchasedRoom.availableRoomCell.CellNumber + "  Numaralý Odayý Satýn Almaya Paran Yetmedi.");
             }
         }
@@ -311,7 +313,7 @@ public partial class RoomManager // Room Bonus Controller
             if ((n_letter == c_letter && n_number == c_number - 1) /* Mevcut Oda B3 ise */ || (n_letter == c_letter && n_number == c_number + 1) /* Mevcut Oda B5 ise */  || (n_letter == c_letter - 1 && n_number == c_number) /* Mevcut Oda A4 ise */  || (n_letter == c_letter + 1 && n_number == c_number) /* Mevcut Oda C4 ise */)
             {
                 desiredRooms.Add(room);
-                Debug.Log("Desired Neighbor Room Code => " + n_letter.ToString() + n_number + " Current Room Code => " + c_letter.ToString()+c_number.ToString());
+                //Debug.Log("Desired Neighbor Room Code => " + n_letter.ToString() + n_number + " Current Room Code => " + c_letter.ToString()+c_number.ToString());
             }
         }
         if (desiredRooms.Count > 0)

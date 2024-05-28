@@ -106,7 +106,7 @@ public class GoldStackHandler : MonoBehaviour
                 cc.a = 1;
 
             Panel.color = cc;
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSeconds(0.01f);
         }
 
         Color ccc = Panel.color;
@@ -124,7 +124,7 @@ public class GoldStackHandler : MonoBehaviour
                 cc.a = 0;
 
             Panel.color = cc;
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSeconds(0.01f);
         }
 
         Color ccc = Panel.color;

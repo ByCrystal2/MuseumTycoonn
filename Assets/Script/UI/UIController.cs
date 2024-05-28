@@ -27,6 +27,7 @@ public class UIController : MonoBehaviour
     [Header("MuseumTabs")]
     [SerializeField] Transform shopParent;
     [SerializeField] GameObject ShopPrefab;
+    [SerializeField] ScrollRect newShopParentScrollRect;
 
     [Header("General Infos")]
     //Left
@@ -168,6 +169,8 @@ public class UIController : MonoBehaviour
         GemText.text = "" + MuseumManager.instance.GetCurrentGem();
         CultureLevelText.text = "" + MuseumManager.instance.GetCurrentCultureLevel();
         WorkerPanelDefaultPos = WorkerContent.position;
+        defaultGemTextPos = GemText.transform.localPosition;
+        defaultGoldTextPos = GoldText.transform.localPosition;
     }
     private void Start()
     {
@@ -219,35 +222,70 @@ public class UIController : MonoBehaviour
     }
     private bool rightAnimOpen = false;
     private bool rightAnimOpenOverWrite = false;
+
+    bool leftUIArrowClickable = true;
     public void StartRightPanelUISBasePosAnim(bool _overWrite = false)
     {
-        DOTween.KillAll();
+        if (!leftUIArrowClickable) return;
         if (_overWrite)
         {
+            museumStatButton.enabled = false;
+            WorkerPanelOnButton.enabled = false;
+            WorkerAssignmentPanelOnButton.enabled = false;
+            DailyRewardPanelOnButton.enabled = false;
             if (!rightAnimOpenOverWrite)
             {
+                leftUIArrowClickable = false;
                 btnLeftUIOpen.gameObject.SetActive(false);
                 LeftUIArrow.DOLocalRotate(new Vector3(0, 0, 180), 0.2f);
                 LeftUISBackground.DOScaleX(1, 0.4f).SetEase(Ease.Linear).OnComplete(() =>
                 {
                     LeftUISBackground.gameObject.SetActive(false);
+                    leftUIArrowClickable = true;
+                    museumStatButton.enabled = true;
+                    WorkerPanelOnButton.enabled = true;
+                    WorkerAssignmentPanelOnButton.enabled = true;
+                    DailyRewardPanelOnButton.enabled = true;
                 });
-                LeftUISBackground.DOScaleY(1, 0.2f).SetEase(Ease.Linear);
+                LeftUISBackground.DOScaleY(1, 0.2f).SetEase(Ease.Linear).OnComplete(() =>
+                {
+                    
+                });
             }
             else
             {
+                leftUIArrowClickable = false;
                 btnLeftUIOpen.gameObject.SetActive(true);
                 LeftUISBackground.gameObject.SetActive(true);
                 LeftUISBackground.DOScaleX(14, 0.05f).SetEase(Ease.Linear);
-                LeftUISBackground.DOScaleY(50, 0.1f).SetEase(Ease.Linear);
+                LeftUISBackground.DOScaleY(50, 0.1f).OnUpdate(() =>
+                {
+                    museumStatButton.gameObject.SetActive(true);
+                    WorkerPanelOnButton.gameObject.SetActive(true);
+                    WorkerAssignmentPanelOnButton.gameObject.SetActive(true);
+                    DailyRewardPanelOnButton.gameObject.SetActive(true);
+                }).SetEase(Ease.Linear).OnComplete(() =>
+                {
+                    leftUIArrowClickable = true;
+                    museumStatButton.enabled = true;
+                    WorkerPanelOnButton.enabled = true;
+                    WorkerAssignmentPanelOnButton.enabled = true;
+                    DailyRewardPanelOnButton.enabled = true;
+                });
             }
             rightAnimOpen = !rightAnimOpen;
             LeftUIArrow.DOLocalRotate(new Vector3(0, 0, 0), 0.2f);
             rightAnimOpenOverWrite = !rightAnimOpenOverWrite;
             return;
         }
+        museumStatButton.enabled = false;
+        WorkerPanelOnButton.enabled = false;
+        WorkerAssignmentPanelOnButton.enabled = false;
+        DailyRewardPanelOnButton.enabled = false;
         if (!rightAnimOpen)
         {
+            leftUIArrowClickable = false;
+            btnLeftUIOpen.GetComponent<Button>().enabled = false;
             LeftUISBackground.gameObject.SetActive(true);
             LeftUIArrow.DOLocalRotate(new Vector3(0, 0, 0), 0.2f);
             LeftUISBackground.DOScaleX(14, 0.2f).SetEase(Ease.Linear).OnComplete(() =>
@@ -256,7 +294,16 @@ public class UIController : MonoBehaviour
                 {
                     museumStatButton.transform.DOMove(BaseBtnBookPos.position, 0.1f).SetEase(Ease.Linear);
                     WorkerPanelOnButton.transform.DOMove(BaseBtnWorkerMarketPos.position, 0.1f).SetEase(Ease.Linear);
-                    WorkerAssignmentPanelOnButton.transform.DOMove(BaseBtnWorkerAssignmentPos.position, 0.1f).SetEase(Ease.Linear);
+                    WorkerAssignmentPanelOnButton.transform.DOMove(BaseBtnWorkerAssignmentPos.position, 0.1f).SetEase(Ease.Linear).OnComplete(() =>
+                    {
+                        leftUIArrowClickable = true;
+                        btnLeftUIOpen.GetComponent<Button>().enabled = true;
+                        museumStatButton.enabled = true;
+                        WorkerPanelOnButton.enabled = true;
+                        WorkerAssignmentPanelOnButton.enabled = true;
+                        DailyRewardPanelOnButton.enabled = true;
+                    });
+                    
                 });
             });
 
@@ -264,6 +311,8 @@ public class UIController : MonoBehaviour
         }
         else
         {
+            leftUIArrowClickable = false;
+            btnLeftUIOpen.GetComponent<Button>().enabled = false;
             LeftUIArrow.DOLocalRotate(new Vector3(0, 0, 180), 0.2f);
             museumStatButton.transform.DOMove(defaultBtnBookPos, 0.05f).SetEase(Ease.Linear);
             WorkerPanelOnButton.transform.DOMove(defaultBtnWorkerMarketPos, 0.05f).SetEase(Ease.Linear);
@@ -272,10 +321,17 @@ public class UIController : MonoBehaviour
                 LeftUISBackground.DOScaleX(1, 0.4f).SetEase(Ease.Linear).OnComplete(() =>
                 {
                     LeftUISBackground.gameObject.SetActive(false);
+                    leftUIArrowClickable = true;
+                    btnLeftUIOpen.GetComponent<Button>().enabled = true;
+                    museumStatButton.enabled = true;
+                    WorkerPanelOnButton.enabled = true;
+                    WorkerAssignmentPanelOnButton.enabled = true;
+                    DailyRewardPanelOnButton.enabled = true;
                 });
                 LeftUISBackground.DOScaleY(1, 0.2f).SetEase(Ease.Linear);
             });
         }
+        
         rightAnimOpen = !rightAnimOpen;
     }    
 
@@ -295,6 +351,7 @@ public class UIController : MonoBehaviour
     }
 
     bool shopCreated = false;
+
     public void ShowTab(int tabIndex)
     {
         StopCoroutine("SetActiveFalseWaiter");
@@ -338,7 +395,7 @@ public class UIController : MonoBehaviour
 
                 ShopController.instance.GetAllItemsUpdate();
             }
-            newShop.GetComponentInParent<ScrollRect>().content = (RectTransform)newShop.transform.GetChild(2).transform;
+            newShopParentScrollRect.content = (RectTransform)newShop.transform.GetChild(2).transform;
             SpiderMove(newSpider);
         }
         else
@@ -507,6 +564,7 @@ public class UIController : MonoBehaviour
         }
         else
         {
+            InsufficientGoldEffect();
             Debug.Log($"Skill satin almak icin gerekli; paraniz ({MuseumManager.instance.GetCurrentGold()} => $:{currentSkill.SkillRequiredMoney}) ve/veya yetenek puaniniz ({MuseumManager.instance.GetCurrentSkillPoint()} => P:{currentSkill.SkillRequiredPoint} mevcut degildir.");
         }
         UIChangesControl();
@@ -667,7 +725,51 @@ public class UIController : MonoBehaviour
     {
         SkillPointText.text = _pointCount.ToString();
     }
+    Vector3 defaultGoldTextPos;
+    public void InsufficientGoldEffect()
+    {
 
+        GoldText.color = Color.red;
+
+        GoldText.transform.DOShakePosition(0.5f, new Vector3(10, 0, 0), 10, 90, false, true).OnComplete(() =>
+        {
+            string hexColor = "#FAE254";
+            Color color;
+            if (ColorUtility.TryParseHtmlString(hexColor, out color))
+            {
+                GoldText.color = color;
+            }
+            else
+            {
+                Debug.LogError("Geçersiz hexadecimal renk kodu: " + hexColor);
+            }
+
+            GoldText.transform.localPosition = defaultGoldTextPos;
+        });
+        AudioManager.instance.PlayDesiredSoundEffect(SoundEffectType.InsufficientGoldAndGem);
+    }
+
+    Vector3 defaultGemTextPos;
+    public void InsufficientGemEffect()
+    {
+        GemText.color = Color.red;
+
+        GemText.transform.DOShakePosition(0.5f, new Vector3(10, 0, 0), 10, 90, false, true).OnComplete(() =>
+        {
+            string hexColor = "#8FF871";
+            Color color;
+            if (ColorUtility.TryParseHtmlString(hexColor, out color))
+            {
+                GemText.color = color;
+            }
+            else
+            {
+                Debug.LogError("Geçersiz hexadecimal renk kodu: " + hexColor);
+            }
+            GemText.transform.localPosition = defaultGemTextPos;
+        });
+        AudioManager.instance.PlayDesiredSoundEffect(SoundEffectType.InsufficientGoldAndGem);
+    }
     public void CurrentTotalHappinessChanged(float _happiness)
     {
         TotalHappinessScore.text = "%" + _happiness.ToString();

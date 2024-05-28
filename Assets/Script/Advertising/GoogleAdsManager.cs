@@ -243,7 +243,6 @@ public class GoogleAdsManager : MonoBehaviour
 
     public void LoadRewardedAd()
     {
-        if (adsData.RemovedAllAds) return;
         // Clean up the old ad before loading a new one.
         if (_rewardedAd != null)
         {
@@ -314,8 +313,6 @@ public class GoogleAdsManager : MonoBehaviour
 
     public void ShowRewardedAd()
     {
-        if (adsData.RemovedAllAds) return;
-
         if (!IsRewardAdShow) return;
         if (_rewardedAd != null && _rewardedAd.CanShowAd())
         {
@@ -495,6 +492,10 @@ public class GoogleAdsManager : MonoBehaviour
     public void RemoveAds()
     {
         adsData.RemovedAllAds = true;
+        BannerAdWaitingTime = 120;
+        InterstitialAdWaitingTime = 60;
+        IsInterstitialAdShow = true;
+        IsBannerAdShow = true;
         _bannerView.Destroy();
         _bannerView = null;
         _interstitialAd.Destroy();
@@ -502,6 +503,7 @@ public class GoogleAdsManager : MonoBehaviour
 
     }
 }
+[System.Serializable]
 public sealed class AdverstingData
 {
     public bool RemovedAllAds = false;

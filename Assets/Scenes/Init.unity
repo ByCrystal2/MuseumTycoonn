@@ -2570,6 +2570,134 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &820712068
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 820712069}
+  - component: {fileID: 820712070}
+  m_Layer: 0
+  m_Name: SoundEffect (6)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &820712069
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820712068}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1557907651}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &820712070
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820712068}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 42754b5820584d042a3af7152bae4c58, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &823217890
 GameObject:
   m_ObjectHideFlags: 0
@@ -3238,6 +3366,7 @@ MonoBehaviour:
     CurrentCultureLevel: 0
     IsFirstGame: 1
     ActiveRoomsRequiredMoney: 0
+    baseWorkerHiringPrice: 0
     CurrentPictures: []
     InventoryPictures: []
     Rooms: []
@@ -3246,11 +3375,14 @@ MonoBehaviour:
     SkillNodes: []
     CurrentWorkerDatas: []
     InventoryWorkerDatas: []
+    adData:
+      RemovedAllAds: 0
     StatueDatas: []
     LastDailyRewardTime: 
     WhatDay: 0
   GameLanguage: Turkish
   rewardManager: {fileID: 0}
+  PictureChangeRequiredAmount: 250
 --- !u!4 &1202299727
 Transform:
   m_ObjectHideFlags: 0
@@ -3435,6 +3567,7 @@ MonoBehaviour:
   - {fileID: 80712747}
   - {fileID: 525828881}
   - {fileID: 1438540947}
+  - {fileID: 820712070}
   DialogsSources:
   - {fileID: 1225815657}
   - {fileID: 32584964}
@@ -3877,6 +4010,7 @@ Transform:
   - {fileID: 80712746}
   - {fileID: 525828880}
   - {fileID: 1438540946}
+  - {fileID: 820712069}
   m_Father: {fileID: 1276463174}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1575949067
@@ -4096,10 +4230,6 @@ MonoBehaviour:
   TotalVisitorCommentCount: 0
   TotalVisitorHappiness: 0
   DailyEarning: 0
-  CultureLevel: 
-  MaxVisitorPerCultureLevel: 
-  TicketPricePerCultureLevel: 
-  RequiredSkillPointExp: 
 --- !u!4 &1626886296
 Transform:
   m_ObjectHideFlags: 0
@@ -4246,12 +4376,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1 &1711952599
 GameObject:
   m_ObjectHideFlags: 0
@@ -4639,6 +4769,309 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31dab4249d07e3446b0024bfd6a3c736, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NPCNamesMale:
+  - John Smith
+  - Robert Brown
+  - Michael Miller
+  - William Moore
+  - David Anderson
+  - Richard Jackson
+  - Joseph Harris
+  - Thomas Thompson
+  - Charles Martinez
+  - Christopher Clark
+  - "Ahmet Y\u0131lmaz"
+  - Mehmet Demir
+  - "Mustafa \xC7elik"
+  - "Ali Y\u0131ld\u0131r\u0131m"
+  - "H\xFCseyin Arslan"
+  - Hasan Karaca
+  - "\u0130brahim Polat"
+  - "\u0130smail Yavuz"
+  - "Osman \u015Eim\u015Fek"
+  - Yusuf Kaplan
+  - Somchai Sukhumvit
+  - Wira Thongchai
+  - Prayut Thammarat
+  - Chuchart Sukhothai
+  - Anan Ayutthaya
+  - Preecha Bangna
+  - Sombun Klongtoey
+  - Chaiwat Din Daeng
+  - Pongsak Samutprakarn
+  - Wittaya Huaikhwang
+  - Carlos Garcia
+  - Jose Martinez
+  - Antonio Lopez
+  - Manuel Perez
+  - Francisco Ramirez
+  - Juan Flores
+  - Luis Diaz
+  - Javier Morales
+  - Miguel Cruz
+  - Pedro Castro
+  - Wang Wei
+  - Zhang Hua
+  - Chen Long
+  - Yang Lei
+  - Wu Jing
+  - Wang Lin
+  - Zhang Yu
+  - Chen Xi
+  - Yang Rui
+  - Wu Qiang
+  - Wang Jun
+  - Zhang Qiang
+  - Chen Jie
+  - Yang Ming
+  - Wu Dan
+  - Wang Yan
+  - Zhang Yu
+  - Chen Li
+  - Yang Lei
+  - Wu Jian
+  - Azad Baran
+  - Ciya Roj
+  - "Erdalan Hev\xEE"
+  - Firat Zana
+  - Hejar Welat
+  - Lorin Azadi
+  - Orhan Piroz
+  - "Sipan Serxweb\xFBn"
+  - "Teko\u015Fin Rojhat"
+  - "Zagros \u015Eiyar"
+  - Aleksandr Ivanov
+  - Dmitriy Sidorov
+  - Sergey Kuznetsov
+  - Andrey Vasiliev
+  - Ivan Fedorov
+  - Mikhail Nikitin
+  - Nikolay Pavlov
+  - Yuriy Lebedev
+  - Aleksey Soloviev
+  - Vladimir Zaitsev
+  - "Hans M\xFCller"
+  - Peter Schneider
+  - Thomas Weber
+  - Klaus Wagner
+  - Wolfgang Schulz
+  - "J\xFCrgen Bauer"
+  - Werner Richter
+  - Helmut Wolf
+  - "G\xFCnter Schwarz"
+  - Frank Braun
+  - Jean Martin
+  - Michel Dubois
+  - Pierre Robert
+  - Claude Petit
+  - Alain Leroy
+  - Philippe Simon
+  - Jacques Lefevre
+  - Bernard Dupont
+  - "Andr\xE9 Bonnet"
+  - Daniel Girard
+  - Takashi Tanaka
+  - Hiroshi Yamamoto
+  - Taro Kobayashi
+  - Kenji Kato
+  - Kazuya Hayashi
+  - Shigeru Mori
+  - Masahiro Kimura
+  - Kazuo Matsumoto
+  - Yoshio Ikeda
+  - Noboru Nishimura
+  - Kim Cheolsu
+  - Park Minsu
+  - Jung Junho
+  - Yoon Dohyun
+  - Jang Junhyuk
+  - Oh Jihoon
+  - Song Jihoon
+  - Baek Dusan
+  - Namgoong Min
+  - Cho Sungmin
+  - Ahmad Al-Farsi
+  - Muhammad Al-Rashid
+  - Ali Al-Nasser
+  - Hassan Al-Haj
+  - Yusuf Al-Tamimi
+  - Omar Al-Sadiq
+  - Khalid Al-Shami
+  - Ibrahim Al-Faraj
+  - Mahmoud Al-Masri
+  - Abdullah Al-Harthi
+  NPCNamesFemale:
+  - Alice Johnson
+  - Mary Davis
+  - Jennifer Wilson
+  - Linda Taylor
+  - Elizabeth Thomas
+  - Susan White
+  - Margaret Martin
+  - Jessica Garcia
+  - Sarah Robinson
+  - Karen Rodriguez
+  - "Ay\u015Fe Kaya"
+  - "Fatma \u015Eahin"
+  - "Emine \xD6z"
+  - "Zeynep Ayd\u0131n"
+  - "Hatice Ko\xE7"
+  - "Elif \xC7ak\u0131r"
+  - Meryem Tekin
+  - Sultan Aksoy
+  - Aysel Kurt
+  - "G\xFCl Sar\u0131"
+  - Somying Charoen
+  - Mali Rattanakosin
+  - Wipa Chaiyaphum
+  - Prapa Pathumwan
+  - Jaruwan Laksi
+  - Patcharee Thonburi
+  - Kanchana Bangkapi
+  - Chitra Bangrak
+  - Nipaporn Ratchada
+  - Nipapan Bangmod
+  - Maria Rodriguez
+  - Carmen Hernandez
+  - Ana Gonzalez
+  - Isabel Sanchez
+  - Dolores Torres
+  - Pilar Rivera
+  - Luisa Ortiz
+  - Teresa Fernandez
+  - Rosa Gutierrez
+  - Elena Ramos
+  - Li Na
+  - Liu Fang
+  - Zhao Min
+  - Zhou Feng
+  - Zheng Ming
+  - Li Mei
+  - Liu Xin
+  - Zhao Yue
+  - Zhou Yi
+  - Zheng Hua
+  - Li Jie
+  - Liu Yan
+  - Zhao Wei
+  - Zhou Li
+  - Zheng Hui
+  - Li Xin
+  - Liu Wei
+  - Zhao Xue
+  - Zhou Peng
+  - Zheng Feng
+  - "Berfin \xC7i\xE7ek"
+  - "Dil\u015Fad Botan"
+  - Gulbahar Dilan
+  - "Jiyan Z\xEElan"
+  - Kurdistan Dilovan
+  - "Medya \u015Eore\u015F"
+  - Nalin Derya
+  - Perwin Serhed
+  - Rojin Newroz
+  - Viyan Asmin
+  - Mariya Petrova
+  - Anna Smirnova
+  - Ekaterina Popova
+  - Natalya Mikhailova
+  - Olga Morozova
+  - Tatyana Zakharova
+  - Elena Novikova
+  - Lyudmila Kozlova
+  - Marina Vinogradova
+  - Galina Maximova
+  - Anna Schmidt
+  - Maria Fischer
+  - Ursula Meyer
+  - Monika Becker
+  - Ingrid Hoffmann
+  - Sabine Koch
+  - Renate Klein
+  - Petra Neumann
+  - Heike Zimmermann
+  - Susanne Hartmann
+  - Marie Bernard
+  - Nathalie Thomas
+  - Isabelle Richard
+  - Sophie Durand
+  - Martine Moreau
+  - Christine Laurent
+  - Catherine Fournier
+  - "Val\xE9rie Lambert"
+  - "Sandrine Fran\xE7ois"
+  - "H\xE9l\xE8ne Roux"
+  - Yuko Suzuki
+  - Keiko Nakamura
+  - Akiko Saito
+  - Yumi Yamada
+  - Naoko Shimizu
+  - Haruka Inoue
+  - Emi Sasaki
+  - Miyuki Shibata
+  - Reiko Okada
+  - Aiko Fukuda
+  - Lee Younghee
+  - Choi Jiyoung
+  - Kang Suji
+  - Cho Sumin
+  - Im Haneul
+  - Shin Yuri
+  - Hong Gildong
+  - Hanra
+  - Seo Jisoo
+  - Ahn Hyojin
+  - Fatima Al-Shehri
+  - Aisha Al-Mansour
+  - Khadija Al-Haddad
+  - Zaynab Al-Dabbagh
+  - Maryam Al-Farsi
+  - Salma Al-Qadi
+  - Noura Al-Bassam
+  - Hind Al-Hamad
+  - Sarah Al-Mutairi
+  - Reem Al-Ali
+  FamousPainterNames:
+  - Leonardo da Vinci
+  - Michelangelo Buonarroti
+  - Vincent van Gogh
+  - Pablo Picasso
+  - Claude Monet
+  - Rembrandt van Rijn
+  - Henri Matisse
+  - Salvador Dali
+  - Edgar Degas
+  - Paul Cezanne
+  - Edouard Manet
+  - Gustav Klimt
+  - Eugene Delacroix
+  - Jackson Pollock
+  - Wassily Kandinsky
+  - Joan Miro
+  - Francisco Goya
+  - Albrecht Durer
+  - Georges Seurat
+  - Pierre-Auguste Renoir
+  - Frida Kahlo
+  - Georgia O'Keeffe
+  - Mary Cassatt
+  - Artemisia Gentileschi
+  - Berthe Morisot
+  - Hilma af Klint
+  - Sofonisba Anguissola
+  - "K\xE4the Kollwitz"
+  - Tamara de Lempicka
+  - Judith Leyster
+  - Lee Krasner
+  - Marie Bracquemond
+  - Angelica Kauffman
+  - "Elisabeth Vig\xE9e Le Brun"
+  - "Gabriele M\xFCnter"
+  - Joan Mitchell
+  - Paula Modersohn-Becker
+  - Louise Elisabeth Vigee Le Brun
+  - Helen Frankenthaler
+  - Suzanne Valadon
 --- !u!4 &1915641231
 Transform:
   m_ObjectHideFlags: 0

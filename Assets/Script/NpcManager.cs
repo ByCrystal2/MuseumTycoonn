@@ -87,7 +87,7 @@ public class NpcManager : MonoBehaviour
             ItemData firstTableForPlayer = new ItemData(9999, "Vincent van Gogh", "Hediye Tablo", 1, 0, null, ItemType.Table, ShoppingType.Gold, 1, 3);
             PictureData newInventoryItem = new PictureData();
             newInventoryItem.TextureID = firstTableForPlayer.textureID;
-            newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount; ;
+            newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
             newInventoryItem.painterData = new PainterData(firstTableForPlayer.ID, firstTableForPlayer.Description, firstTableForPlayer.Name, firstTableForPlayer.StarCount);
             MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
             int index = TimeManager.instance.WhatDay;
@@ -180,13 +180,13 @@ public class NpcManager : MonoBehaviour
             foreach (var room in myRooms)
             {
                 List<RoomData> neighborRooms = RoomManager.instance.GetDesiredNeighborRooms(room);
-                string x = "My room id: " + room.ID + "\n";
+                //string x = "My room id: " + room.ID + "\n";
                 foreach (var neighborRoom in neighborRooms)
                 {
-                    x += "Neighbor room ID => " + neighborRoom.ID + "\n";
+                    //x += "Neighbor room ID => " + neighborRoom.ID + "\n";
                     nearRoomsToMyArea.Add(neighborRoom);
                 }   
-                Debug.Log(x);
+                //Debug.Log(x);
             }
             int length2 = NPCMessParent.GetChild(0).childCount;
             for (int i = 0; i < length2; i++)

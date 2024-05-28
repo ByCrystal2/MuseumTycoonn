@@ -119,6 +119,7 @@ public class AudioManager : MonoBehaviour
         SoundData sd4 = new SoundData(3, SoundEffectsSources[3],SoundEffectType.GoldBoxOpen);
         SoundData sd5 = new SoundData(4, SoundEffectsSources[4],SoundEffectType.Victory);
         SoundData sd6 = new SoundData(5, SoundEffectsSources[5],SoundEffectType.Writing);
+        SoundData sd7 = new SoundData(6, SoundEffectsSources[6],SoundEffectType.InsufficientGoldAndGem);
 
         //Adding
         SoundEffects.Add(sd1);
@@ -127,6 +128,7 @@ public class AudioManager : MonoBehaviour
         SoundEffects.Add(sd4);
         SoundEffects.Add(sd5);
         SoundEffects.Add(sd6);
+        SoundEffects.Add(sd7);
     }
     public void AddingDialogs()
     {
@@ -211,12 +213,17 @@ public class AudioManager : MonoBehaviour
     {
         return _dialogDatas.Select(x => x.MyClip).ToList();
     }
-
+    public void PlayDesiredSoundEffect(SoundEffectType _soundEffectType)
+    {
+        int soundEffectCount = SoundEffects.Where(x => x.EffectType == _soundEffectType).ToList().Count;
+        SoundEffectsSources[Random.Range(0, SoundEffectsSources.Count)].PlayOneShot(SoundEffects.Where(x => x.EffectType == _soundEffectType).ToList()[Random.Range(0,soundEffectCount)].MyClip);
+    }
 }
 public enum SoundEffectType
 {   
     ComeToKing,
     EarnGold,
+    InsufficientGoldAndGem,
     Punch,
     Victory,
     GoldBoxOpen,

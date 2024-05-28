@@ -284,6 +284,7 @@ public class ShopController : MonoBehaviour
             }
             else
             {
+                UIController.instance.InsufficientGemEffect();
                 Debug.Log("Mevcut olan " + MuseumManager.instance.GetCurrentGem() + " miktarýnýz, gerekli olan " + _item.RequiredMoney + " miktarýndan daha az.");
             }
         }
@@ -308,6 +309,7 @@ public class ShopController : MonoBehaviour
             }
             else
             {
+                UIController.instance.InsufficientGoldEffect();
                 Debug.Log("Mevcut olan " + MuseumManager.instance.GetCurrentGold() + " miktarýnýz, gerekli olan " + _item.RequiredMoney + " miktarýndan daha az.");
             }
 
