@@ -107,9 +107,7 @@ public class RightUIPanelController : MonoBehaviour
         if (GameManager.instance.GetCurrentGameMode() == GameMode.MuseumEditing || GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
         {
             if (_uIVisible)
-            {
-                UINotVisibleObj.SetActive(true);
-                EditObj.SetActive(false);
+            {                
                 PicturesMenuController.instance.ExitPicturePanel();
                 //if (GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
                 //    UIController.instance.SetActivationRoomEditingPanel(true);
@@ -123,6 +121,8 @@ public class RightUIPanelController : MonoBehaviour
                 UIController.instance.CloseLeftUIsPanel(true);
                 UIController.instance.CloseMoneysObj(true);
                 btnDailyRewardObj.SetActive(false);
+                UINotVisibleObj.SetActive(true);
+                EditObj.SetActive(false);
                 _uIVisible = false;
             }
             else
@@ -144,9 +144,9 @@ public class RightUIPanelController : MonoBehaviour
     {
         if (_forceVisible)
         {
+            PicturesMenuController.instance.ExitPicturePanel();
             UINotVisibleObj.SetActive(true);
             EditObj.SetActive(false);
-            PicturesMenuController.instance.ExitPicturePanel();
 
             UIController.instance.CloseNPCInformationPanel();
             UIController.instance.CloseWorkerShopPanel(true);

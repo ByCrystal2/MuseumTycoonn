@@ -71,9 +71,9 @@ public class GoogleAdsManager : MonoBehaviour
     private bool IsRewardAdShow = true;
     private bool IsBannerAdShow = true;
 
-    private float InterstitialAdWaitingTime = 60; // second
+    private float InterstitialAdWaitingTime = 3; // default: 60 second
     private float RewardAdWaitingTime = 180; // default: 180 second
-    private float BannerAdWaitingTime = 120; // second
+    private float BannerAdWaitingTime = 3; // default: 120 second
 
     RewardAdData currentRewardAdData;
     private void Awake()
@@ -125,7 +125,7 @@ public class GoogleAdsManager : MonoBehaviour
             {
                 IsBannerAdShow = true;
                 BannerAdWaitingTime = 120;
-                _bannerView = null;
+                //_bannerView = null;
                 LoadBannerAd();
             }
         }
@@ -133,6 +133,14 @@ public class GoogleAdsManager : MonoBehaviour
     public void StartRewardAdBool(bool _start)
     {
         IsRewardAdShow = !_start;
+    }
+    public void StartInterstatialAdBool(bool _start)
+    {
+        IsInterstitialAdShow = !_start;
+    }
+    public void StartBannerAdBool(bool _start)
+    {
+        IsBannerAdShow = !_start;
     }
     IEnumerator DelayForRewardAdsShowing()
     {
@@ -151,14 +159,6 @@ public class GoogleAdsManager : MonoBehaviour
     {
         if (adsData.RemovedAllAds) return;
         Debug.Log("Creating banner view");
-
-        // If we already have a banner, destroy the old one.
-        if (_bannerView != null)
-        {
-            _bannerView.Destroy();
-            _bannerView = null;
-        }
-
         // Create a 320x50 banner at top of the screen
         _bannerView = new BannerView(_bannerViewAdId, AdSize.Banner, AdPosition.Bottom);
     }
@@ -220,16 +220,17 @@ public class GoogleAdsManager : MonoBehaviour
     {
         if (adsData.RemovedAllAds) return;
 
-
-        // create an instance of a banner view first.
+        // Eðer _bannerView daha önce oluþturulmamýþsa, oluþtur.
         if (_bannerView == null)
         {
             CreateBannerView();
         }
         else
         {
+            // Eðer _bannerView varsa, sadece mevcut reklamý yok et ve yeniden yükle.
             _bannerView.Destroy();
             _bannerView = null;
+            CreateBannerView();
         }
 
         // create our request used to load the ad.
@@ -496,11 +497,16 @@ public class GoogleAdsManager : MonoBehaviour
         InterstitialAdWaitingTime = 60;
         IsInterstitialAdShow = true;
         IsBannerAdShow = true;
-        _bannerView.Destroy();
-        _bannerView = null;
-        _interstitialAd.Destroy();
-        _interstitialAd = null;
-
+        if (_bannerView != null)
+        {
+            _bannerView.Destroy();
+            _bannerView = null;
+        }
+        if (_interstitialAd != null)
+        {
+            _interstitialAd.Destroy();
+            _interstitialAd = null;
+        }
     }
 }
 [System.Serializable]

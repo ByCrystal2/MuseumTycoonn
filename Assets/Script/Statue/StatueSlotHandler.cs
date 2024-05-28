@@ -30,6 +30,7 @@ public class StatueSlotHandler : MonoBehaviour
             UIController.instance.SetActivationRoomEditingPanel(true);
             RoomManager.instance.CurrentEditedRoom = RoomManager.instance.RoomDatas.Where(x => (x.availableRoomCell.CellLetter.ToString() + x.availableRoomCell.CellNumber.ToString()) == MyRoomCode).SingleOrDefault();
             RightUIPanelController.instance.UIVisibleClose(true);
+            RightUIPanelController.instance.CloseEditObj(true);
             UIController.instance.CloseJoystickObj(true);
         }
         
