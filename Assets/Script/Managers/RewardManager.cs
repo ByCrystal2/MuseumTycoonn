@@ -186,7 +186,7 @@ public class RewardManager : MonoBehaviour
         //Debug.Log("Kalan Zaman => " + ((lastDailyRewardTime + dailyRewardInterval) - currentTime) + " <= " + TimeSpan.Zero.ToString());
         if ((lastDailyRewardTime + dailyRewardInterval) - currentTime <= TimeSpan.Zero/* || TimeManager.instance.WhatDay == 0*/)
         {
-            TimeManager.instance.FirstOpen = false;
+            //TimeManager.instance.FirstOpen = false;
             return true;
         }
         else

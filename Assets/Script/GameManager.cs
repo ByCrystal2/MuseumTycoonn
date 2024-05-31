@@ -494,8 +494,8 @@ public class GameManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        TimeManager.instance.FirstOpen = true;
-        Save();
+        //TimeManager.instance.FirstOpen = true;
+        //Save();
     }
     private void OnApplicationPause(bool pause)
     {

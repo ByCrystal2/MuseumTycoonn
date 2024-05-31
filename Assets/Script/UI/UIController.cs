@@ -207,6 +207,9 @@ public class UIController : MonoBehaviour
         DailyRewardPanelOnButton.onClick.AddListener(() => ActiveInHierarchyDailyRewardPanelControl());
 
         MuseumManager.instance.CalculateAndAddTextAllInfos();
+
+        GPGamesManager.instance._achievements.ShowAchievementsUI();
+        GPGamesManager.instance._achievements.ShowAchievementInSentId("CgkIzoLC7dsGEAIQAw");
     }
 
     private bool isPointerOverUI;
