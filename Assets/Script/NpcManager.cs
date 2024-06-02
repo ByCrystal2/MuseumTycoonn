@@ -115,14 +115,8 @@ public class NpcManager : MonoBehaviour
         GameManager.instance.LoadRemoveAds();
         if (GoogleAdsManager.instance.adsData == null)
             GoogleAdsManager.instance.adsData = new AdverstingData();
-
-        if (!GoogleAdsManager.instance.adsData.RemovedAllAds)
-        {
-            GoogleAdsManager.instance.StartInterstatialAdBool(true);
-            GoogleAdsManager.instance.StartBannerAdBool(true);
-        }
-        //GoogleAdsManager.instance.LoadBannerAd();
-        //GoogleAdsManager.instance.LoadInterstitialAd();
+        GoogleAdsManager.instance.LoadBannerAd();
+        GoogleAdsManager.instance.LoadInterstitialAd();
         //GoogleAdsManager.instance.LoadRewardedAd();
         GoogleAdsManager.instance.StartRewardAdBool(true);
     }
