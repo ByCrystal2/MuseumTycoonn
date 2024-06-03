@@ -3,11 +3,11 @@
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="com.google.android.gms.permission.AD_ID" />
-	<application android:allowBackup="true" android:icon="@mipmap/ic_launcher" android:label="@string/app_name" android:roundIcon="@mipmap/ic_launcher_round" android:supportsRtl="true" android:theme="@style/UnityThemeSelector">
+	<application android:allowBackup="true" android:supportsRtl="true" android:theme="@style/UnityThemeSelector">
 		<!-- Firebase Initialization -->
-		<meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_notification" />
-		<meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/colorAccent" />
-		<meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="your-admob-app-id" />
+		<meta-data android:name="com.google.firebase.messaging.default_notification_icon" />
+		<meta-data android:name="com.google.firebase.messaging.default_notification_color" />
+		<!--<meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="your-admob-app-id" />-->
 		<service android:name="com.google.firebase.messaging.FirebaseMessagingService" android:exported="true">
 			<intent-filter>
 				<action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -25,16 +25,16 @@
 		</activity>
 	</application>
 	<!--Google Play game services IDs. Save this file as res/values/games-ids.xml in your project.-->
-	<resources>
+	<!--<resources>-->
 		<!--app_id-->
-		<string name="app_id" translatable="false">230815727950</string>
+		<!--<string name="app_id" translatable="false">230815727950</string>-->
 		<!--package_name-->
-		<string name="package_name" translatable="false">com.KosippyStudio.MuseumofExcesses</string>
+		<!--<string name="package_name" translatable="false">com.KosippyStudio.MuseumofExcesses</string>-->
 		<!--achievement Buy Your First Room-->
-		<string name="achievement_buy_your_first_room" translatable="false">CgkIzoLC7dsGEAIQAw</string>
+		<!--<string name="achievement_buy_your_first_room" translatable="false">CgkIzoLC7dsGEAIQAw</string>-->
 		<!--achievement Place Your First Painting-->
-		<string name="achievement_place_your_first_painting" translatable="false">CgkIzoLC7dsGEAIQAg</string>
+		<!--<string name="achievement_place_your_first_painting" translatable="false">CgkIzoLC7dsGEAIQAg</string>-->
 		<!--achievement Buy Your First Worker-->
-		<string name="achievement_buy_your_first_worker" translatable="false">CgkIzoLC7dsGEAIQBA</string>
-	</resources>
+		<!--<string name="achievement_buy_your_first_worker" translatable="false">CgkIzoLC7dsGEAIQBA</string>-->
+	<!--</resources>-->
 </manifest>
