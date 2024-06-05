@@ -1,3 +1,4 @@
+using GooglePlayGames;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +17,7 @@ public class GPGamesManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
+        
         _achievements = new GPGAchievement();
     }
     private void Start()

@@ -13,6 +13,7 @@ public class FirebaseAuthManager : MonoBehaviour
     FirebaseAuth auth;
     FirebaseUser currentUser;
     public static FirebaseAuthManager instance { get; private set; }
+
     private void Awake()
     {
         if (instance)
@@ -23,95 +24,76 @@ public class FirebaseAuthManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
     }
-    
+
     void Start()
     {
-        //CreateNewLoading();
+        PlayGamesPlatform.Activate();
         PlayGamesPlatform.Instance.Authenticate(ProcessAuthentication);
     }
+
     internal void ProcessAuthentication(SignInStatus status)
     {
         if (status == SignInStatus.Success)
         {
-            // Continue with Play Games Services
+            Debug.Log("ProcessAuthentication(SignInStatus status) Status success!");
             try
             {
-                PlayGamesPlatform.Instance.Authenticate(status =>
+                PlayGamesPlatform.Instance.RequestServerSideAccess(true, code =>
                 {
-
-                    if (status == SignInStatus.Success)
-                    {
-                        try
-                        {
-                            PlayGamesPlatform.Instance.RequestServerSideAccess(true, code =>
-                            {
-                                auth = FirebaseAuth.DefaultInstance;
-                                Credential credential = PlayGamesAuthProvider.GetCredential(code);
-
-                                StartCoroutine(AuthGet());
-
-                                IEnumerator AuthGet()
-                                {
-                                    System.Threading.Tasks.Task<FirebaseUser> task = auth.SignInWithCredentialAsync(credential);
-
-                                    while (task.IsCompleted)
-                                    {
-                                        yield return null;
-                                    }
-
-                                    if (task.IsCanceled)
-                                    {
-                                        //Cancel
-                                        textMeshPro.text += "Auth Cancelled";
-                                    }
-                                    else if (task.IsFaulted)
-                                    {
-                                        //task.exeption
-                                        textMeshPro.text += "Fauled => " + task.Exception.ToString();
-                                    }
-                                    else
-                                    {
-                                        currentUser = task.Result;
-                                        textMeshPro.text += currentUser.ToString();
-                                        CreateNewLoading();
-                                    }
-                                }
-                            });
-                        }
-                        catch (System.Exception e)
-                        {
-
-                            textMeshPro.text += "Exception => " + e.Message;
-                        }
-
-
-                    }
-                    else
-                    {
-                        textMeshPro.text = "Auth Failed!";
-                    }
+                    auth = FirebaseAuth.DefaultInstance;
+                    Credential credential = PlayGamesAuthProvider.GetCredential(code);
+                    StartCoroutine(AuthGet(credential));
                 });
             }
             catch (System.Exception e)
             {
-                textMeshPro.text += e.Message;
-                throw;
+                HandleException(e);
             }
         }
         else
         {
-            // Disable your integration with Play Games Services or show a login button
-            // to ask users to sign-in. Clicking it should call
-            // PlayGamesPlatform.Instance.ManuallyAuthenticate(ProcessAuthentication).
 #if UNITY_EDITOR
             CreateNewLoading();
 #endif
+            textMeshPro.text = "Auth Failed!";
             Debug.Log("Auth Failed! result => " + status.ToString());
         }
     }
+
+    private IEnumerator AuthGet(Credential credential)
+    {
+        var task = auth.SignInWithCredentialAsync(credential);
+
+        yield return new WaitUntil(() => task.IsCompleted);
+
+        if (task.IsCanceled)
+        {
+            textMeshPro.text += "Auth Cancelled";
+            Debug.Log("Auth Cancelled!");
+        }
+        else if (task.IsFaulted)
+        {
+            HandleException(task.Exception);
+            Debug.Log("Auth Faulted!");
+        }
+        else
+        {
+            currentUser = task.Result;
+            textMeshPro.text += currentUser.ToString();
+            Debug.Log("Auth Success => " + currentUser.UserId);
+            CreateNewLoading();
+        }
+    }
+
+    private void HandleException(System.Exception e)
+    {
+        textMeshPro.text += "Exception => " + e.Message;
+        Debug.Log("Exception => " + e.Message);
+    }
+
     public void CreateNewLoading()
-    {       
-        Transform canvas = FindObjectOfType<Canvas>().gameObject.transform;
-        Instantiate(LoadingPanel,canvas);        
+    {
+        Transform canvas = FindObjectOfType<Canvas>().transform;
+        Instantiate(LoadingPanel, canvas);
     }
 }
