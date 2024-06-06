@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class SettingsController : MonoBehaviour
 {
+    [SerializeField] Button _achievementButton;
+
     public Slider musicVolumeSlider;
     public Slider soundEffectSlider;
     public Slider dialogVolumeSlider;
@@ -16,6 +18,10 @@ public class SettingsController : MonoBehaviour
     public UniversalRenderPipelineAsset highFidelityURPAsset;
     public UniversalRenderPipelineAsset balancedURPAsset;
     public UniversalRenderPipelineAsset performantURPAsset;
+    private void Awake()
+    {
+        _achievementButton.onClick.AddListener(ShowAchievementUIS);
+    }
     void Start()
     {
         musicVolumeSlider.maxValue = 100f;
@@ -98,5 +104,9 @@ public class SettingsController : MonoBehaviour
             resolution = new Vector2Int(1920, 1080);
 
         Screen.SetResolution(resolution.x, resolution.y, true);
+    }
+    public void ShowAchievementUIS() //pnlContent/mask/Settings/pnlMiddle => btnShowAchievement.onClick event~
+    {
+        GPGamesManager.instance.achievementController.ShowAchievements();
     }
 }

@@ -10,6 +10,7 @@ public class GPGAchievement{
         if (PlayGamesPlatform.Instance.localUser.authenticated)
         {
             PlayGamesPlatform.Instance.ShowAchievementsUI();
+            Debug.Log("Showing Achievements...");
         }
         else
         {

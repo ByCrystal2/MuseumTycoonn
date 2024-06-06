@@ -536,10 +536,10 @@ namespace TouchScript.Gestures
         }
 
         /// <summary>
-        /// Determines whether gesture controls a pointer.
+        /// Determines whether gesture Controls a pointer.
         /// </summary>
         /// <param name="pointer"> The pointer. </param>
-        /// <returns> <c>true</c> if gesture controls the pointer point; <c>false</c> otherwise. </returns>
+        /// <returns> <c>true</c> if gesture Controls the pointer point; <c>false</c> otherwise. </returns>
         public bool HasPointer(Pointer pointer)
         {
             return activePointers.Contains(pointer);

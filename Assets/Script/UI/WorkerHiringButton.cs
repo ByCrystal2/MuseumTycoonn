@@ -17,6 +17,8 @@ public class WorkerHiringButton : MonoBehaviour, IPointerClickHandler
         }
         else
             MuseumManager.instance.SpendingGold(myWorkerInfoUIS.GetMyPrice());
+        WorkerBehaviour wb = WorkerManager.instance.GetAllWorkers().Where(x => x.ID == myWorkerInfoUIS.workerID).SingleOrDefault();
+        GPGamesManager.instance.achievementController.IncreaseWorkerHiringCount(wb.workerType);
         int MyWorkerID = myWorkerInfoUIS.workerID;
         int length = WorkerManager.instance.GetWorkersInMarket().Count;
         for (int i = 0; i < length; i++)
@@ -32,6 +34,6 @@ public class WorkerHiringButton : MonoBehaviour, IPointerClickHandler
                 break;
             }
         }
-        
+        GPGamesManager.instance.achievementController.WorkerHiringControl(wb.workerType);
     }
 }

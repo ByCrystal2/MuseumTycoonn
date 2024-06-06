@@ -257,6 +257,10 @@ public class NPCBehaviour : MonoBehaviour
                             OnDecidedEnterMuseum();
                             return;
                         }
+                        else
+                        {
+                            
+                        }
                     }
                     index = 0;
                 }
@@ -277,6 +281,10 @@ public class NPCBehaviour : MonoBehaviour
                             Debug.Log("Npc decided to enter museum.");
                             OnDecidedEnterMuseum();
                             return;
+                        }
+                        else
+                        {
+                            
                         }
                     }
                     index = 0;
@@ -328,11 +336,12 @@ public class NPCBehaviour : MonoBehaviour
             }
             else
             {
+                
                 LocationData newTargetLocation = NpcManager.instance.Locations[Random.Range(0, length)];
                 if (!InvestigatedAreas.Contains(newTargetLocation))
                     InvestigatedAreas.Add(newTargetLocation);
                 TargetPosition = newTargetLocation.transform;
-                CurrentState = NPCState.Move;
+                CurrentState = NPCState.Move;                
             }
         } 
         else if (CurrentTarget == NpcTargets.EnterWay)
@@ -539,6 +548,7 @@ public class NPCBehaviour : MonoBehaviour
 
     public void NpcArrivedTheEnterGate()
     {
+        
         NpcVisittingArtAmount = Random.Range(2, 5);
         int LikedColorsAmount = Random.Range(2, 5);
         LikedColors = new List<MyColors>();
@@ -559,7 +569,8 @@ public class NPCBehaviour : MonoBehaviour
 
         CurrentTarget = NpcTargets.Inside;
         CurrentState = NPCState.Move;
-        CreateTarget();        
+        CreateTarget();
+        
     }
 
     void OnExitWayMuseum(float _multiplier = 1)

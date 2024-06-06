@@ -170,6 +170,7 @@ public class RoomEditingPanelController : MonoBehaviour
         else
             MuseumManager.instance.SpendingGold(ClickedEditObjBehaviour.data.Price);
 
+        GPGamesManager.instance.achievementController.IncreaseNumberOfStatuesPlaced();
         ClickedEditObjBehaviour.data._currentRoomCell = RoomManager.instance.CurrentEditedRoom.availableRoomCell;
         ClickedEditObjBehaviour.data.SetIsPurchased();
         StatueSlotHandler currentStateContent = FindObjectsOfType<StatueSlotHandler>().Where(x => x.MyRoomCode == (ClickedEditObjBehaviour.data._currentRoomCell.CellLetter.ToString() + ClickedEditObjBehaviour.data._currentRoomCell.CellNumber.ToString())).SingleOrDefault();
@@ -198,6 +199,7 @@ public class RoomEditingPanelController : MonoBehaviour
         UIController.instance.SetActivationRoomEditingPanel(false);
         RightUIPanelController.instance.UIVisibleClose(false);
         UIController.instance.CloseJoystickObj(false);
+        GPGamesManager.instance.achievementController.StatuesPlacedCountControl();
         GameManager.instance.Save();
     }
 

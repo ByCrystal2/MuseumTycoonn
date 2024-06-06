@@ -123,9 +123,9 @@ public class MuseumManager : MonoBehaviour
 
     public void OnNpcEnteredMuseum(NPCBehaviour _newNpc)
     {
+        
         if(!CurrentNpcs.Contains(_newNpc))
             CurrentNpcs.Add(_newNpc);
-        
         //Kac adet npc var buraya guncellenicek.
     }
 
@@ -205,7 +205,7 @@ public class MuseumManager : MonoBehaviour
     {
         if (CurrentNpcs.Contains(_oldNpc))
             CurrentNpcs.Remove(_oldNpc);
-        UIController.instance.InMuseumCurrentNPCCountChanged(GetInMuseumVisitorCount());
+        UIController.instance.InMuseumCurrentNPCCountChanged(GetInMuseumVisitorCount());        
         CalculateTotalVisitorHappiness();
         Debug.Log("An npc left Museum.");
         

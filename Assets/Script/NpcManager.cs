@@ -107,6 +107,7 @@ public class NpcManager : MonoBehaviour
                 ItemManager.instance.CurrentDailyRewardItems[index] = updatedItem;
             }
             //GameManager.instance.rewardManager.CheckRewards(true);
+            GPGamesManager.instance.achievementController.FirstGameAchievement();
         }
         else
         {

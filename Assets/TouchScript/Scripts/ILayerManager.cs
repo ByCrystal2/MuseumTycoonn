@@ -12,7 +12,7 @@ using UnityEngine;
 namespace TouchScript
 {
     /// <summary>
-    /// Core manager which controls TouchLayers.
+    /// Core manager which Controls TouchLayers.
     /// </summary>
     public interface ILayerManager
     {

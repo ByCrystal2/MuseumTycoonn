@@ -24,9 +24,26 @@
 
 public static class GPGSIds
 {
-        public const string achievement_buy_your_first_room = "CgkIzoLC7dsGEAIQAw"; // <GPGSID>
+        public const string achievement_test_basarim_10_adet_guvenlikci_alin = "CgkIzoLC7dsGEAIQBg"; // <GPGSID>
+        public const string achievement_grand_opening = "CgkIzoLC7dsGEAIQFA"; // <GPGSID>
+        public const string achievement_museum_boss = "CgkIzoLC7dsGEAIQCQ"; // <GPGSID>
+        public const string achievement_first_entry = "CgkIzoLC7dsGEAIQBQ"; // <GPGSID>
+        public const string achievement_art_lover = "CgkIzoLC7dsGEAIQCA"; // <GPGSID>
+        public const string achievement_start_mission = "CgkIzoLC7dsGEAIQEQ"; // <GPGSID>
+        public const string achievement_first_visitor = "CgkIzoLC7dsGEAIQBw"; // <GPGSID>
+        public const string achievement_art_collector = "CgkIzoLC7dsGEAIQDg"; // <GPGSID>
+        public const string achievement_the_first_step_the_birth_of_art = "CgkIzoLC7dsGEAIQAw"; // <GPGSID>
+        public const string achievement_crowd_management = "CgkIzoLC7dsGEAIQEA"; // <GPGSID>
+        public const string achievement_statue_lover = "CgkIzoLC7dsGEAIQDw"; // <GPGSID>
         public const string achievement_buy_your_first_worker = "CgkIzoLC7dsGEAIQBA"; // <GPGSID>
-        public const string achievement_place_your_first_painting = "CgkIzoLC7dsGEAIQAg"; // <GPGSID>
+        public const string achievement_let_workers_work = "CgkIzoLC7dsGEAIQEg"; // <GPGSID>
+        public const string achievement_worker_boss = "CgkIzoLC7dsGEAIQDQ"; // <GPGSID>
+        public const string achievement_guitar_strum = "CgkIzoLC7dsGEAIQFQ"; // <GPGSID>
+        public const string achievement_security_manager = "CgkIzoLC7dsGEAIQCw"; // <GPGSID>
+        public const string achievement_cleaning_chief = "CgkIzoLC7dsGEAIQCg"; // <GPGSID>
+        public const string achievement_introducing_art = "CgkIzoLC7dsGEAIQAg"; // <GPGSID>
+        public const string achievement_housekeepers_active = "CgkIzoLC7dsGEAIQEw"; // <GPGSID>
+        public const string achievement_the_power_of_music = "CgkIzoLC7dsGEAIQDA"; // <GPGSID>
 
 }
 

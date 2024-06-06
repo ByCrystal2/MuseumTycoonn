@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class GPGamesManager : MonoBehaviour
 {
-    public GPGAchievement _achievements;
-
+    
+    [SerializeField] public AchievementController achievementController;
     public static GPGamesManager instance { get; private set; }
     private void Awake()
     {
@@ -17,11 +17,6 @@ public class GPGamesManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
-        
-        _achievements = new GPGAchievement();
     }
-    private void Start()
-    {
-        
-    }
+
 }

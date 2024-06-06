@@ -146,6 +146,7 @@ public partial class RoomManager : MonoBehaviour
         purchasedRoom.isLock = false;
         purchasedRoom.isActive = true;
         purchasedRoom.IsPurchased(true);
+        GPGamesManager.instance.achievementController.IncreasePurchasedRoomCount();
         RoomUIHandler _purchasedHandler= UIController.instance.roomUISPanelController.GetRoomUI(purchasedRoom.availableRoomCell);
         _purchasedHandler.UpdateMyUI();
         int purchasedRoomCellNumber = purchasedRoom.availableRoomCell.CellNumber;
@@ -201,6 +202,7 @@ public partial class RoomManager : MonoBehaviour
             }
             Debug.Log("aktif odalarin fiyatlari guncellendi => " + activeRoomsRequiredMoney);
         }
+        GPGamesManager.instance.achievementController.PurchasedRoomControl();
     }
 
     

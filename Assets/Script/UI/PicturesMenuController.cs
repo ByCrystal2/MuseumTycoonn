@@ -169,10 +169,11 @@ public class PicturesMenuController : MonoBehaviour
         Debug.Log("Update Table CurrentPicture is null:" + (CurrentPicture == null));
         bool isFirst = true;
         if (CurrentPicture != null && GameManager.instance.PictureChangeRequiredAmount <= MuseumManager.instance.GetCurrentGold())
-        {
+        {            
             MuseumManager.instance.SpendingGold(GameManager.instance.PictureChangeRequiredAmount);
             if (CurrentPicture._pictureData.isFirst)
             {
+                GPGamesManager.instance.achievementController.IncreaseNumberOfTablesPlaced();
                 SetPictureUpdateButton(false, "Eklendi", Color.white);
                 CurrentPicture._pictureData.isActive = true;
                 //MuseumManager.instance.GetPictureElement(PictureChangeRequiredAmount = Mathf.RoundToInt(CurrentPicture._pictureData.RequiredGold * 0.5f);
@@ -221,6 +222,8 @@ public class PicturesMenuController : MonoBehaviour
             UpdatePicture();
             CurrentPicture.SetImage(!CurrentPicture._pictureData.isLocked);
             StartCoroutine(nameof(WaitForSpendingGoldPicture));
+
+            GPGamesManager.instance.achievementController.PlacedTableControl();
         }
         else
         {
