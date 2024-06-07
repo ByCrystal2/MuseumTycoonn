@@ -8,32 +8,89 @@ public class FpsCameraController : MonoBehaviour
     public Transform character; // Karakteri Unity Editor'da sürükleyip buraya býrakýn
     public float maxDistance = 100f; // Ray'in maksimum mesafesi
     public float transparencyLevel = 0f; // Þeffaflýk deðeri (0.0 - 1.0)
+    public float rayStartOffset = 0.5f; // Ray'in baþlangýç noktasýný kameranýn önüne taþýmak için offset
+    [SerializeField] LayerMask targetLayer;
+
+    private Ray ray;
+    private GameObject previousHitObject; // Önceki çarpýlan obje
+
     void Update()
     {
-        //// Kamera yönüne doðru ray gönderme
-        //Ray ray = new Ray(character.position, camera.transform.forward);
-        //RaycastHit hit;
+        // Kamera pozisyonundan karaktere doðru ray gönderme
+        Vector3 direction = (character.position - camera.transform.position).normalized;
+        Vector3 rayStartPoint = camera.transform.position + direction * rayStartOffset;
+        ray = new Ray(rayStartPoint, direction);
 
-        //// Eðer ray bir objeye çarparsa
-        //if (Physics.Raycast(ray, out hit, maxDistance))
-        //{
-        //    // Çarpýlan objeye eriþme
-        //    GameObject hitObject = hit.collider.gameObject;
-        //    Debug.Log("Çarpýlan obje: " + hitObject.name);
+        RaycastHit hit;
+        if (Physics.Raycast(rayStartPoint, direction, out hit, maxDistance, targetLayer, QueryTriggerInteraction.Ignore))
+        {
+            GameObject hitObject = hit.collider.gameObject;
+            BoxCollider boxCollider = hitObject.GetComponent<BoxCollider>();
+            // Eðer çarpýlan obje "Wall" katmanýndaysa
+            if (LayerMask.LayerToName(hitObject.layer) == "Wall")
+            {
+                Debug.Log("Carpilan duvar: " + hitObject.name);
 
-        //    if (LayerMask.LayerToName(hitObject.layer) == "Wall")
-        //    {
-        //        // Çarpýlan objeyi tamamen þeffaf hale getirme
-        //        SetObjectTransparency(hitObject, transparencyLevel);
+                // Çarpýlan objeyi tamamen þeffaf hale getirme
+                SetObjectTransparency(hitObject, transparencyLevel);
 
-        //        // Collider'ý devre dýþý býrakma
-        //        hitObject.GetComponent<Collider>().enabled = false;
+                // Çarpýlan objenin BoxCollider'ýný devre dýþý býrak
+                if (boxCollider != null)
+                {
+                    boxCollider.enabled = false;
+                }
 
-        //        // Belirli bir süre sonra collider'ý tekrar etkinleþtirme
-        //        StartCoroutine(EnableCollider(hitObject.GetComponent<Collider>(), 2f));
-        //    }            
-        //}
+                // Ýþlemi sonlandýr
+                return;
+            }
+            else
+            {
+                // Eðer çarpýlan obje bir duvar deðilse ve üzerinde BoxCollider varsa, BoxCollider'ý etkinleþtir
+                if (boxCollider != null)
+                {
+                    boxCollider.enabled = true;
+                }
+            }
+        }
+
+        // Duvarla temas olmadýðýnda önceki çarpýlan objenin BoxCollider'ýný tekrar etkinleþtir
+        ResetPreviousHitObjectCollider();
     }
+
+    private void OnDrawGizmos()
+    {
+        // Ray'i sahnede çizmek için gizmoslarý kullan
+        if (camera != null && character != null)
+        {
+            Vector3 direction = (character.position - camera.transform.position).normalized;
+            Vector3 rayStartPoint = camera.transform.position + direction * rayStartOffset;
+            ray = new Ray(rayStartPoint, direction);
+
+            // Raycast iþlemi
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, maxDistance, targetLayer, QueryTriggerInteraction.Ignore))
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawRay(ray.origin, ray.direction * maxDistance);
+
+                // Çarpma noktasýný göster
+                Gizmos.color = Color.green;
+                Gizmos.DrawSphere(hit.point, 0.1f);
+
+                // Eðer çarpýlan obje "Wall" katmanýndaysa
+                GameObject hitObject = hit.collider.gameObject;
+                if (LayerMask.LayerToName(hitObject.layer) == "Wall")
+                {
+                    return;
+                }
+            }
+
+            // Ray'in maksimum mesafeye kadar çizilmesi
+            Gizmos.color = Color.red;
+            Gizmos.DrawRay(ray.origin, ray.direction * maxDistance);
+        }
+    }
+
     void SetObjectTransparency(GameObject obj, float transparency)
     {
         Renderer renderer = obj.GetComponent<Renderer>();
@@ -61,9 +118,20 @@ public class FpsCameraController : MonoBehaviour
             }
         }
     }
-    System.Collections.IEnumerator EnableCollider(Collider collider, float delay)
+
+    void ResetPreviousHitObjectCollider()
     {
-        yield return new WaitForSeconds(delay);
-        collider.enabled = true;
+        // Eðer önceki çarpýlan obje varsa ve bir duvar deðilse, BoxCollider'ýný tekrar etkinleþtir
+        if (previousHitObject != null && LayerMask.LayerToName(previousHitObject.layer) != "Wall")
+        {
+            BoxCollider previousBoxCollider = previousHitObject.GetComponent<BoxCollider>();
+            if (previousBoxCollider != null)
+            {
+                previousBoxCollider.enabled = true;
+            }
+
+            // Önceki çarpýlan objeyi sýfýrla
+            previousHitObject = null;
+        }
     }
 }
