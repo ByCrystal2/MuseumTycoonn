@@ -723,7 +723,7 @@ Animator:
   m_GameObject: {fileID: 1852961785423706731}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: c9a34c70f1c0d00409f41fcfbb2a6871, type: 3}
-  m_Controller: {fileID: 9100000, guid: bc3a9605c9557504dbb8f954be11173b, type: 2}
+  m_Controller: {fileID: 9100000, guid: aeaea97aec6582c4c902f6d4ef90bc08, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -828,6 +828,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91660cb5c88989041a6aa84e344f35c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Name: 
+  helpers:
+  - Dialogs:
+    - Sentence: "Merhaba! Krall\u0131\u011F\u0131ma ho\u015F geldin!"
+    - Sentence: "M\xFCzeyi y\xF6netmek i\xE7in en iyi aday olarak seni g\xF6rd\xFCk!"
+    - Sentence: "Senin buna haz\u0131r oldu\u011Fundan eminiz."
+    - Sentence: "Fakat \xF6ncesinde y\xF6netimin nas\u0131l olaca\u011F\u0131n\u0131
+        sana \xF6\u011Fretmem gerek."
+    WhichStep: 0
 --- !u!1 &1892092349705135014
 GameObject:
   m_ObjectHideFlags: 0

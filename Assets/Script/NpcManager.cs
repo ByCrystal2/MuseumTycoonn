@@ -79,6 +79,11 @@ public class NpcManager : MonoBehaviour
 
         if (IsFirstGame)
         {
+            DialogueTrigger firstDialog = GameObject.FindWithTag("TutorialNPC").GetComponent<DialogueTrigger>();
+            if (firstDialog != null)
+            {
+                firstDialog.TriggerDialog(Steps.Step1);
+            }
             ItemManager.instance.SetCalculatedDailyRewardItems();
             IsFirstGame = false;
 

@@ -617,7 +617,7 @@ namespace I2.Loc
                     else if (lettersFinal[i] != 0xFFFF)
                         list.Add(lettersFinal[i]);
                 }
-                // For cases where english words and arabic are mixed. This allows for using arabic, english and numbers in one sentence.
+                // For cases where english words and arabic are mixed. This allows for using arabic, english and numbers in one Sentence.
                 else if (lettersFinal[i] == ' ' && i > 0 && i < lettersFinal.Length - 1 &&
                         (char.IsLower(lettersFinal[i - 1]) || char.IsUpper(lettersFinal[i - 1]) || char.IsNumber(lettersFinal[i - 1])) &&
                         (char.IsLower(lettersFinal[i + 1]) || char.IsUpper(lettersFinal[i + 1]) || char.IsNumber(lettersFinal[i + 1])))

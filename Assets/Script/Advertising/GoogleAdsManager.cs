@@ -73,7 +73,7 @@ public class GoogleAdsManager : MonoBehaviour
 
     private float InterstitialAdWaitingTime = 3; // second
     private float RewardAdWaitingTime = 180; // default: 180 second
-    private float BannerAdWaitingTime = 3; // second
+    private float BannerAdWaitingTime = 10; // second
 
     RewardAdData currentRewardAdData;
     private void Awake()

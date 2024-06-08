@@ -1,0 +1,101 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AI;
+
+public class TutorialNPCBehaviour : MonoBehaviour
+{
+    Animator anim;
+    Animator playerAnim;
+    NavMeshAgent agent;
+    [SerializeField] Transform followPlayer;
+    [SerializeField] NavMeshAgent playerAgent;
+    [SerializeField] List<GameObject> MovePoints = new List<GameObject>();
+    Transform targetPoint;
+    public  TutorialNPCState state = TutorialNPCState.Sit;
+
+    private void Awake()
+    {
+        anim = GetComponent<Animator>();
+        playerAnim = playerAgent.GetComponent<Animator>();
+        agent = GetComponent<NavMeshAgent>();
+    }
+
+    int waitTime = 3;
+    float currentTime = 0;
+
+    private void Update()
+    {
+        switch (state)
+        {
+            case TutorialNPCState.Sit:
+                // Oturma animasyonu veya iþlemleri burada
+                ProcessAnim("Sit",false);
+                break;
+            case TutorialNPCState.Stand:
+                ProcessAnim("Stand", true);
+
+                currentTime += Time.deltaTime;
+                if (currentTime >= waitTime)
+                {
+                    state = TutorialNPCState.Move;
+                    currentTime = 0;
+                }
+                break;
+            case TutorialNPCState.Move:
+                ProcessAnim("Walk", true);
+                playerAnim.SetBool("Walk", true);
+                if (MovePoints.Count > 0)
+                {
+                    targetPoint = MovePoints[0].transform;
+                    agent.SetDestination(targetPoint.position);
+                    playerAgent.SetDestination(followPlayer.position);
+                    if (Vector3.Distance(transform.position, targetPoint.position) <= 0.5f)
+                    {
+                        MovePoints.RemoveAt(0);
+                    }
+                }
+
+                if (MovePoints.Count <= 0)
+                {
+                    // Kapýya ulaþýldý
+                    Debug.Log("From Door.");
+                    ProcessAnim("Idle", true);
+                    currentTime += Time.deltaTime;
+                    if (currentTime >= waitTime)
+                    {
+                        playerAnim.SetBool("Walk", false);
+                        DialogueManager.instance.SceneTransPanelActivation(true);
+                        this.enabled = false;
+                    }
+                }
+                break;
+        }
+    }
+
+    private void ProcessAnim(string _animName, bool _go)
+    {
+        anim.SetBool(_animName, _go);
+    }
+
+    public void SetState(int _step) // DialogueTrigger UnityEvents.
+    {
+        // _step'in geçerli bir enum deðeri olup olmadýðýný kontrol ediyoruz
+        if (_step >= 0 && _step < System.Enum.GetValues(typeof(TutorialNPCState)).Length)
+        {
+            state = (TutorialNPCState)_step;
+        }
+        else
+        {
+            // Geçersiz bir _step deðeri verildiðinde hata mesajý veya baþka bir iþlem
+            throw new ArgumentOutOfRangeException(nameof(_step), "Invalid step index");
+        }
+    }
+}
+public enum TutorialNPCState
+{
+    Sit,
+    Stand,
+    Move
+}

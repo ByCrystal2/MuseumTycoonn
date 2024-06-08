@@ -175,10 +175,10 @@ namespace HeneGames.DialogueSystem
                 dialogueTrigger.startDialogueEvent.Invoke();
             }
 
-            //Reset sentence index
+            //Reset Sentence index
             currentSentence = 0;
 
-            //Show first sentence in dialogue UI
+            //Show first Sentence in dialogue UI
             ShowCurrentSentence();
 
             //Play dialogue sound
@@ -190,17 +190,17 @@ namespace HeneGames.DialogueSystem
 
         public void NextSentence(out bool lastSentence)
         {
-            //The next sentence cannot be changed immediately after starting
+            //The next Sentence cannot be changed immediately after starting
             if (coolDownTimer > 0f)
             {
                 lastSentence = false;
                 return;
             }
 
-            //Add one to sentence index
+            //Add one to Sentence index
             currentSentence++;
 
-            //Next sentence event
+            //Next Sentence event
             if (dialogueTrigger != null)
             {
                 dialogueTrigger.nextSentenceDialogueEvent.Invoke();
@@ -208,7 +208,7 @@ namespace HeneGames.DialogueSystem
 
             nextSentenceDialogueEvent.Invoke();
 
-            //If last sentence stop dialogue and return
+            //If last Sentence stop dialogue and return
             if (currentSentence > sentences.Count - 1)
             {
                 StopDialogue();
@@ -218,13 +218,13 @@ namespace HeneGames.DialogueSystem
                 return;
             }
 
-            //If not last sentence continue...
+            //If not last Sentence continue...
             lastSentence = false;
 
             //Play dialogue sound
             PlaySound(sentences[currentSentence].sentenceSound);
 
-            //Show next sentence in dialogue UI
+            //Show next Sentence in dialogue UI
             ShowCurrentSentence();
 
             //Cooldown timer
@@ -261,10 +261,10 @@ namespace HeneGames.DialogueSystem
             if (_audioClip == null || audioSource == null)
                 return;
 
-            //Stop the audioSource so that the new sentence does not overlap with the old one
+            //Stop the audioSource so that the new Sentence does not overlap with the old one
             audioSource.Stop();
 
-            //Play sentence sound
+            //Play Sentence sound
             audioSource.PlayOneShot(_audioClip);
         }
 
@@ -272,10 +272,10 @@ namespace HeneGames.DialogueSystem
         {
             if (sentences[currentSentence].dialogueCharacter != null)
             {
-                //Show sentence on the screen
+                //Show Sentence on the screen
                 DialogueUI.instance.ShowSentence(sentences[currentSentence].dialogueCharacter, sentences[currentSentence].sentence);
 
-                //Invoke sentence event
+                //Invoke Sentence event
                 sentences[currentSentence].sentenceEvent.Invoke();
             }
             else
@@ -286,7 +286,7 @@ namespace HeneGames.DialogueSystem
 
                 DialogueUI.instance.ShowSentence(_dialogueCharacter, sentences[currentSentence].sentence);
 
-                //Invoke sentence event
+                //Invoke Sentence event
                 sentences[currentSentence].sentenceEvent.Invoke();
             }
         }

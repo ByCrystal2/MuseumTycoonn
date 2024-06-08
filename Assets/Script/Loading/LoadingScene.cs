@@ -64,7 +64,10 @@ public class LoadingScene : MonoBehaviour
                 case Scenes.Init:
                     return Scenes.Menu;
                 case Scenes.Menu:
-                    return Scenes.Game;
+                    if (GameManager.instance.CurrentSaveData.IsFirstGame)
+                        return Scenes.TutorialLevel;
+                    else
+                        return Scenes.Game;
                 // Diðer durumlar için gerekli geçiþleri ekleyin
                 // ...
                 default:
@@ -84,5 +87,6 @@ public enum Scenes
     Auth,
     Game,
     Menu,
-    Init
+    Init,
+    TutorialLevel
 }

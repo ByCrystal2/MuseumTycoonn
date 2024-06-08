@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,7 +10,8 @@ public class DialogueManager : MonoBehaviour
 {
     [SerializeField] GameObject PlayerCinemachineBrain;
     [SerializeField] GameObject TutorialCinemachineBrain;
-
+    [SerializeField] Transform sceneTransPanel;
+    [SerializeField] Text tutorialEndMessage;
     // UI
     [SerializeField] GameObject DialoguePanel;
     public Text nameText;
@@ -18,7 +20,7 @@ public class DialogueManager : MonoBehaviour
     // UI
 
     private Queue<string> sentences;
-
+    private DialogHelper currentHelper;
     public static DialogueManager instance { get; private set; }
     private void Awake()
     {
@@ -28,31 +30,35 @@ public class DialogueManager : MonoBehaviour
             return;
         }
         instance = this;
-        DontDestroyOnLoad(gameObject);
-    }
-    private void Start()
-    {
         sentences = new Queue<string>();
-        Dialog d1 = GameObject.FindWithTag("TutorialNPC").GetComponent<DialogueTrigger>().dialog;
-        StartTutorialDialogue(d1);
     }
-    public void StartTutorialDialogue(Dialog _dialog)
+    public void SetCurrentDialogs(DialogHelper _helper)
     {
+        currentHelper = _helper;
+    }
+    public void StartTutorial()
+    {
+        StartCoroutine(StartTutorialDialogue(currentHelper.Dialogs));
+    }
+    private IEnumerator StartTutorialDialogue(List<Dialog> _dialogs)
+    {
+        Debug.Log("Dialog Starting... First Dialog Message => " + _dialogs[0].Sentence);
+        yield return new WaitForEndOfFrame();
         CinemachineTransition(true);
         StartCoroutine(HoldAnimation(4, 1f,"startDialog",true));
         PlayerManager.instance.LockPlayer();
         UIController.instance.CloseJoystickObj(true);
-        StartCoroutine(WaitForTutorialBrainTranstionEnding(_dialog));
+        StartCoroutine(WaitForTutorialBrainTranstionEnding(_dialogs));
     }
-    IEnumerator WaitForTutorialBrainTranstionEnding(Dialog _dialog)
+    IEnumerator WaitForTutorialBrainTranstionEnding(List<Dialog> _dialogs)
     {
         yield return new WaitForSeconds(3);
         SetActivationDialoguePanel(true);
 
         sentences.Clear();
-        foreach (string sentence in _dialog.sentences)
+        foreach (Dialog dialog in _dialogs)
         {
-            sentences.Enqueue(sentence);
+            sentences.Enqueue(dialog.Sentence);
         }
 
         DisplayNextSentence();
@@ -70,7 +76,7 @@ public class DialogueManager : MonoBehaviour
         TutorialCinemachineBrain.SetActive(_goTutorial);
         PlayerCinemachineBrain.SetActive(!_goTutorial);
     }
-    private void SetActivationDialoguePanel(bool _active)
+    public void SetActivationDialoguePanel(bool _active)
     {
         if (_active)
         {
@@ -100,6 +106,10 @@ public class DialogueManager : MonoBehaviour
             string sentence = sentences.Dequeue();
             StartCoroutine(TypeSentence(sentence));
         }
+        yield return new WaitUntil(() => !waitFirstSentence);
+        currentHelper.EventEndingCovered.Invoke();
+        yield return new WaitForSeconds(1f);
+        SetActivationDialoguePanel(false);
         //EndTutorialDialogue();
     }
     IEnumerator HoldAnimation(int _duration, float _transitDuration, string _animString, bool _animStart)
@@ -122,17 +132,60 @@ public class DialogueManager : MonoBehaviour
         }
         waitFirstSentence = false;
     }
+    public void SceneTransPanelActivation(bool _active)
+    {
+        if (_active)
+        {
+            sceneTransPanel.gameObject.SetActive(true);
+            string message = tutorialEndMessage.text;
+            tutorialEndMessage.text = "";
+            sceneTransPanel.DOLocalMove(new Vector3(169, 2383, 0),5).OnComplete(() =>
+            {
+                tutorialEndMessage.GetComponent<CanvasGroup>().DOFade(1, 1.4f).OnComplete(() =>
+                {
+                    StartCoroutine(textWaiting(message, tutorialEndMessage));
+                });
+            });
+        }
+        else
+        {
+            sceneTransPanel.gameObject.SetActive(false);
+        }
+    }
+    private IEnumerator textWaiting(string sentence, Text text)
+    {
+        foreach (char letter in sentence.ToCharArray())
+        {
+            text.text += letter;
+            yield return new WaitForEndOfFrame();
+        }
+    }
 }
 [System.Serializable]
 public class Dialog
 {
-    public string name;
     [TextArea(3, 10)]
-    public string[] sentences;
-
-    public Dialog(string _name, string[] _sentences)
+    public string Sentence;
+    public Dialog(string _sentence)
     {
-        name = _name;
-        sentences = _sentences;
+        Sentence = _sentence;
     }
+}
+public enum Steps
+{
+    Step1,
+    Step2,
+    Step3,
+    Step4,
+    Step5,
+    Step6,
+    Step7,
+    Step8,
+    Step9,
+    Step10,
+    Step11,
+    Step12,
+    Step13,
+    Step14,
+    Step15
 }

@@ -49,7 +49,7 @@ namespace HeneGames.DialogueSystem
         [Range(0.1f, 1f)]
         [SerializeField] private float textAnimationSpeed = 0.5f;
 
-        [Header("Next sentence input")]
+        [Header("Next Sentence input")]
         public KeyCode actionInput = KeyCode.Space;
 
         private void Update()
@@ -73,8 +73,8 @@ namespace HeneGames.DialogueSystem
         }
 
         /// <summary>
-        /// If a sentence is being written and this function is called, the sentence is completed instead of immediately moving to the next sentence.
-        /// This function needs to be called twice if you want to switch to a new sentence.
+        /// If a Sentence is being written and this function is called, the Sentence is completed instead of immediately moving to the next Sentence.
+        /// This function needs to be called twice if you want to switch to a new Sentence.
         /// </summary>
         public void NextSentenceSoft()
         {
@@ -94,7 +94,7 @@ namespace HeneGames.DialogueSystem
         }
 
         /// <summary>
-        /// Even if a sentence is being written, with this function immediately moves to the next sentence.
+        /// Even if a Sentence is being written, with this function immediately moves to the next Sentence.
         /// </summary>
         public void NextSentenceHard()
         {
@@ -102,10 +102,10 @@ namespace HeneGames.DialogueSystem
             if (currentDialogueManager == null)
                 return;
 
-            //Tell the current dialogue manager to display the next sentence. This function also gives information if we are at the last sentence
+            //Tell the current dialogue manager to display the next Sentence. This function also gives information if we are at the last Sentence
             currentDialogueManager.NextSentence(out bool lastSentence);
 
-            //If last sentence remove current dialogue manager
+            //If last Sentence remove current dialogue manager
             if (lastSentence)
             {
                 currentDialogueManager = null;
