@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Purchasing;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 public class UIController : MonoBehaviour
 {
@@ -162,6 +163,7 @@ public class UIController : MonoBehaviour
             return;
         }
         instance = this;
+        if (SceneManager.GetActiveScene().name == Scenes.TutorialLevel.ToString()) return;
         DontDestroyOnLoad(this);
         GemText.text = "0";
         SkillRequiredInfoPanel.SetActive(false);
@@ -174,6 +176,7 @@ public class UIController : MonoBehaviour
     }
     private void Start()
     {
+        if (SceneManager.GetActiveScene().name == Scenes.TutorialLevel.ToString()) return;
         LeftUISBackground.gameObject.SetActive(false);
         defaultBtnBookPos = museumStatButton.transform.position;
         defaultBtnWorkerMarketPos = WorkerPanelOnButton.transform.position;

@@ -81,14 +81,12 @@ public class TutorialNPCBehaviour : MonoBehaviour
 
     public void SetState(int _step) // DialogueTrigger UnityEvents.
     {
-        // _step'in geçerli bir enum değeri olup olmadığını kontrol ediyoruz
         if (_step >= 0 && _step < System.Enum.GetValues(typeof(TutorialNPCState)).Length)
         {
             state = (TutorialNPCState)_step;
         }
         else
         {
-            // Geçersiz bir _step değeri verildiğinde hata mesajı veya başka bir işlem
             throw new ArgumentOutOfRangeException(nameof(_step), "Invalid step index");
         }
     }

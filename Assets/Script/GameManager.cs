@@ -119,6 +119,11 @@ public class GameManager : MonoBehaviour
             CurrentSaveData.IsFirstGame = NpcManager.instance.IsFirstGame;
         }
 
+        if (TutorialLevelManager.instance != null)
+        {
+            CurrentSaveData.IsWatchTutorial = TutorialLevelManager.instance.IsWatchTutorial;
+        }
+
         if (rewardManager != null)
         {
             CurrentSaveData.LastDailyRewardTime =  rewardManager.lastDailyRewardTime.ToString("yyyy-MM-dd HH:mm:ss");
@@ -374,6 +379,13 @@ public class GameManager : MonoBehaviour
             NpcManager.instance.IsFirstGame = CurrentSaveData.IsFirstGame;
         }
     }
+    public void LoadIsWatchTutorial()
+    {
+        if(TutorialLevelManager.instance != null)
+        {
+            TutorialLevelManager.instance.IsWatchTutorial = CurrentSaveData.IsWatchTutorial;
+        }
+    }
     public void LoadPurchasedItems()
     {
         MuseumManager.instance.PurchasedItems = CurrentSaveData.PurchasedItems;
@@ -506,41 +518,43 @@ public class GameManager : MonoBehaviour
     }
 }
 
-    [System.Serializable]
-    public class PlayerSaveData
-    {
-        public string SaveName;
-        public string GameLanguage;
+[System.Serializable]
+public class PlayerSaveData
+{
+    public string SaveName;
+    public string GameLanguage;
 
-        public float Gold;
-        public float Culture;
-        public float Gem;
-        public float SkillPoint;
-        public int CurrentCultureLevel;
+    public float Gold;
+    public float Culture;
+    public float Gem;
+    public float SkillPoint;
+    public int CurrentCultureLevel;
 
-        //IsFirstGame
-        public bool IsFirstGame = true;
-        //RoomManager
-        public float ActiveRoomsRequiredMoney = 1000;
-        //WorkerManager
-        public float baseWorkerHiringPrice;
+    //IsFirstGame
+    public bool IsFirstGame = true;
+    //isWatchTutorial
+    public bool IsWatchTutorial = false;
+    //RoomManager
+    public float ActiveRoomsRequiredMoney = 1000;
+    //WorkerManager
+    public float baseWorkerHiringPrice;
 
-        public List<PictureData> CurrentPictures = new List<PictureData>();
-        public List<PictureData> InventoryPictures = new List<PictureData>();
-        public List<RoomSaveData> Rooms = new List<RoomSaveData>();
-        public List<ItemData> PurchasedItems = new List<ItemData>();
-        public List<ItemData> DailyRewardItems = new List<ItemData>();
-        public List<SkillNode> SkillNodes = new List<SkillNode>();
-        public List<WorkerData> CurrentWorkerDatas = new List<WorkerData>();
-        public List<WorkerData> InventoryWorkerDatas = new List<WorkerData>();
-        public AdverstingData adData; //ADS SISTEMI KURULDUKTAN SONRA EKLENECEK.
+    public List<PictureData> CurrentPictures = new List<PictureData>();
+    public List<PictureData> InventoryPictures = new List<PictureData>();
+    public List<RoomSaveData> Rooms = new List<RoomSaveData>();
+    public List<ItemData> PurchasedItems = new List<ItemData>();
+    public List<ItemData> DailyRewardItems = new List<ItemData>();
+    public List<SkillNode> SkillNodes = new List<SkillNode>();
+    public List<WorkerData> CurrentWorkerDatas = new List<WorkerData>();
+    public List<WorkerData> InventoryWorkerDatas = new List<WorkerData>();
+    public AdverstingData adData; //ADS SISTEMI KURULDUKTAN SONRA EKLENECEK.
 
-        public List<EditObjData> StatueDatas = new List<EditObjData>();
+    public List<EditObjData> StatueDatas = new List<EditObjData>();
 
-        //DailyReward
-        public string LastDailyRewardTime = "";
-        public byte WhatDay;
-    }    
+    //DailyReward
+    public string LastDailyRewardTime = "";
+    public byte WhatDay;
+}    
 
 public enum GameMode
 {

@@ -2,6 +2,7 @@ using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class PlayerManager : MonoBehaviour
             return;
         }
         instance = this;
+        if (SceneManager.GetActiveScene().name == Scenes.TutorialLevel.ToString()) return;
         DontDestroyOnLoad(gameObject);
         UnLockPlayer();
     }

@@ -36,7 +36,7 @@ public class DialogueManager : MonoBehaviour
     {
         currentHelper = _helper;
     }
-    public void StartTutorial()
+    public void StartTutorial()//DialogueTrigger UnityEvents...
     {
         StartCoroutine(StartTutorialDialogue(currentHelper.Dialogs));
     }
@@ -159,6 +159,8 @@ public class DialogueManager : MonoBehaviour
             text.text += letter;
             yield return new WaitForEndOfFrame();
         }
+        yield return new WaitForEndOfFrame();
+        FirebaseAuthManager.instance.CreateNewLoading();        
     }
 }
 [System.Serializable]
