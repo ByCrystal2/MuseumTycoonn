@@ -36,7 +36,10 @@ public class TutorialLevelManager : MonoBehaviour
 
     public void OnEndFlyCutscene()
     {
+        if (AudioManager.instance != null)
+        AudioManager.instance.TutorialSource.Stop();
         DialogueTrigger kingTrigger = GameObject.FindWithTag("TutorialNPC").GetComponent<DialogueTrigger>();
         kingTrigger.TriggerDialog(Steps.Step1);
+        kingTrigger.GetComponent<TutorialNPCBehaviour>().ProcessAnim("Sit", false);
     }
 }

@@ -22,7 +22,7 @@ public class TutorialNPCBehaviour : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
     }
 
-    int waitTime = 3;
+    float waitTime = 2f;
     float currentTime = 0;
 
     private void Update()
@@ -30,8 +30,7 @@ public class TutorialNPCBehaviour : MonoBehaviour
         switch (state)
         {
             case TutorialNPCState.Sit:
-                // Oturma animasyonu veya iþlemleri burada
-                ProcessAnim("Sit",false);
+                // Oturma animasyonu veya iþlemleri burada                
                 break;
             case TutorialNPCState.Stand:
                 ProcessAnim("Stand", true);
@@ -63,7 +62,7 @@ public class TutorialNPCBehaviour : MonoBehaviour
                     Debug.Log("From Door.");
                     ProcessAnim("Idle", true);
                     currentTime += Time.deltaTime;
-                    if (currentTime >= waitTime)
+                    if (currentTime >= 0.7f)
                     {
                         playerAnim.SetBool("Walk", false);
                         DialogueManager.instance.SceneTransPanelActivation(true);
@@ -74,7 +73,7 @@ public class TutorialNPCBehaviour : MonoBehaviour
         }
     }
 
-    private void ProcessAnim(string _animName, bool _go)
+    public void ProcessAnim(string _animName, bool _go)
     {
         anim.SetBool(_animName, _go);
     }

@@ -8,7 +8,7 @@ public class AudioManager : MonoBehaviour
 {
     [SerializeField] private List<AudioSource> MenuSources;
     [SerializeField] private List<AudioSource> GameSources;
-
+    [SerializeField] public AudioSource TutorialSource;
     [SerializeField] private List<AudioSource> SoundEffectsSources;
     [SerializeField] private List<AudioSource> DialogsSources;
 
@@ -43,9 +43,21 @@ public class AudioManager : MonoBehaviour
         List<AudioClip> Sources = GetSoundEffects(SoundEffectType.Punch).Select(x => x.MyClip).ToList();
         _npcSource.PlayOneShot(Sources[Random.Range(0, Sources.Count)]);
     }
-
+    public void PlayMusicOfTutorial()
+    {
+        if (MenuSources.Find(x => x.isPlaying == true) != null)
+        {
+            MenuSources.Find(x => x.isPlaying == true).Stop();
+        }
+        if (GameSources.Find(x => x.isPlaying == true) != null)
+        {
+            GameSources.Find(x => x.isPlaying == true).Stop();
+        }
+        TutorialSource.Play();
+    }
     public void PlayMusicOfMenu()
     {
+        TutorialSource.Stop();
         int randomIndex = Random.Range(0, MenuSources.Count);
         if (GameSources.Find(x => x.isPlaying == true) != null)
         {
@@ -55,6 +67,7 @@ public class AudioManager : MonoBehaviour
     }
     public void PlayMusicOfGame()
     {
+        TutorialSource.Stop();
         int randomIndex = Random.Range(0, GameSources.Count);
         if (MenuSources.Find(x => x.isPlaying == true) != null)
         {
