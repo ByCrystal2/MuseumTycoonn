@@ -13,6 +13,7 @@ public class UIController : MonoBehaviour
     private PictureElement _LastSelectedPicture;
     [SerializeField] public pnlRewardAdController RewardAdController;
     [SerializeField] public RoomUISPanelController roomUISPanelController;
+    [SerializeField] public TutorialUISPanel tutorialUISPanel;
     [SerializeField] List<GameObject> IsGameObjectOverPanels;
     [Header("MuseumInfos")]
     [SerializeField] GameObject pnlMuseumStats;

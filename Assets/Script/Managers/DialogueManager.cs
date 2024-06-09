@@ -45,7 +45,7 @@ public class DialogueManager : MonoBehaviour
         Debug.Log("Dialog Starting... First Dialog Message => " + _dialogs[0].Sentence);
         yield return new WaitForEndOfFrame();
         CinemachineTransition(true);
-        StartCoroutine(HoldAnimation(4, 1f,"startDialog",true));
+        //StartCoroutine(HoldAnimation(4, 1f,"startDialog",true));
         PlayerManager.instance.LockPlayer();
         UIController.instance.CloseJoystickObj(true);
         StartCoroutine(WaitForTutorialBrainTranstionEnding(_dialogs));
