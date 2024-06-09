@@ -27,12 +27,16 @@ public class TutorialLevelManager : MonoBehaviour
             Debug.LogError("Tutorial zaten izlenmis!");
             return;
         }
-        DialogueTrigger kingTrigger = GameObject.FindWithTag("TutorialNPC").GetComponent<DialogueTrigger>();
-        kingTrigger.TriggerDialog(Steps.Step1);
     }
     public AnimationClip GetRandomAnim()
     {
         int index = Random.Range(0, RandomAnimations.Length);
         return RandomAnimations[index];
+    }
+
+    public void OnEndFlyCutscene()
+    {
+        DialogueTrigger kingTrigger = GameObject.FindWithTag("TutorialNPC").GetComponent<DialogueTrigger>();
+        kingTrigger.TriggerDialog(Steps.Step1);
     }
 }
