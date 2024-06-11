@@ -76,14 +76,15 @@ public class NpcManager : MonoBehaviour
         GameManager.instance.LoadSkills();
         GameManager.instance.LoadLastDailyRewardTime();
 
-
+        if (TutorialLevelManager.instance != null)
+            if (!TutorialLevelManager.instance.IsWatchTutorial)
+            {
+                DialogueTrigger firstDialog = GameObject.FindWithTag("TutorialNPC").GetComponent<DialogueTrigger>();
+                if (firstDialog != null)
+                    firstDialog.TriggerDialog(Steps.Step1);
+            }
         if (IsFirstGame)
         {
-            DialogueTrigger firstDialog = GameObject.FindWithTag("TutorialNPC").GetComponent<DialogueTrigger>();
-            if (firstDialog != null)
-            {
-                firstDialog.TriggerDialog(Steps.Step1);
-            }
             ItemManager.instance.SetCalculatedDailyRewardItems();
             IsFirstGame = false;
 

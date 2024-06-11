@@ -13,14 +13,16 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] Transform sceneTransPanel;
     [SerializeField] Text tutorialEndMessage;
     // UI
-    [SerializeField] GameObject DialoguePanel;
-    public Text nameText;
-    public Text dialogText;
+    [SerializeField] public GameObject DialoguePanel;
     public Animator tutorialNPCanimator;
     // UI
+    private DialoguePanelVController currentDialogPanel;
 
     private Queue<string> sentences;
-    private DialogHelper currentHelper;
+    public DialogueTrigger currentTrigger;
+    public DialogHelper currentHelper;
+
+
     public static DialogueManager instance { get; private set; }
     private void Awake()
     {
@@ -32,9 +34,19 @@ public class DialogueManager : MonoBehaviour
         instance = this;
         sentences = new Queue<string>();
     }
-    public void SetCurrentDialogs(DialogHelper _helper)
+    public void SetCurrentDialogTrigger(DialogueTrigger _trigger)
+    {
+        currentTrigger = _trigger;
+    }
+    public void SetCurrentDialogs(DialogHelper _helper, int value /*deger max dialogpanel objesinin cocuk sayisi kadar girilmeli.*/, string _name = "Anonymous")
     {
         currentHelper = _helper;
+        int length = DialoguePanel.transform.childCount;
+        for (int i = 0; i < length; i++)
+            DialoguePanel.transform.GetChild(i).gameObject.SetActive(false);
+        currentDialogPanel = DialoguePanel.transform.GetChild(value).GetComponent<DialoguePanelVController>();
+        currentDialogPanel.nameText.text = _name;
+        currentDialogPanel.gameObject.SetActive(true);
     }
     public void StartTutorial()//DialogueTrigger UnityEvents...
     {
@@ -124,10 +136,10 @@ public class DialogueManager : MonoBehaviour
     IEnumerator TypeSentence(string sentence)
     {
         waitFirstSentence = true;
-        dialogText.text = "";
+        currentDialogPanel.dialogText.text = "";
         foreach (char letter in sentence.ToCharArray())
         {
-            dialogText.text += letter;
+            currentDialogPanel.dialogText.text += letter;
             yield return new WaitForEndOfFrame();
         }
         waitFirstSentence = false;
@@ -160,7 +172,7 @@ public class DialogueManager : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         yield return new WaitForEndOfFrame();
-        FirebaseAuthManager.instance.CreateNewLoading();        
+        FirebaseAuthManager.instance.CreateNewLoading();
     }
 }
 [System.Serializable]

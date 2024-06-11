@@ -718,7 +718,7 @@ public class TutoSceneTimeLine : MonoBehaviour
             return;
 
         double currentTime = videoPlayer.time;
-        if(!endVideo && currentTime > 49.7f)
+        if(!endVideo && currentTime > 5) // Yayinlanmadan once kod defulta cekilmeli => DefaultValue: 49.7f
         {
             endVideo = true;
             OnVideoEnd(null);
