@@ -24,7 +24,7 @@ public class TutorialNPCBehaviour : MonoBehaviour
 
     float waitTime = 2f;
     float currentTime = 0;
-
+    float helper = 0;
     private void Update()
     {
         switch (state)
@@ -44,12 +44,16 @@ public class TutorialNPCBehaviour : MonoBehaviour
                 break;
             case TutorialNPCState.Move:
                 ProcessAnim("Walk", true);
-                playerAnim.SetBool("Walk", true);
                 if (MovePoints.Count > 0)
                 {
                     targetPoint = MovePoints[0].transform;
                     agent.SetDestination(targetPoint.position);
-                    playerAgent.SetDestination(followPlayer.position);
+                    helper += Time.deltaTime;
+                    if (helper >= 2f)
+                    {
+                        playerAnim.SetBool("Walk", true);
+                        playerAgent.SetDestination(followPlayer.position);
+                    }
                     if (Vector3.Distance(transform.position, targetPoint.position) <= 0.5f)
                     {
                         MovePoints.RemoveAt(0);

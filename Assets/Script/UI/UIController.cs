@@ -128,7 +128,7 @@ public class UIController : MonoBehaviour
     [Header("Daily Reward Panel")]
     [SerializeField] GameObject DailyRewardPanel;
     [SerializeField] Button DailyRewardPanelOnButton;
-    [SerializeField] Transform[] DailyRewardContents;
+    [SerializeField] public Transform[] DailyRewardContents;
     [SerializeField] GameObject DailyRewardGemPrefab;
     [SerializeField] GameObject DailyRewardGoldPrefab;
     [SerializeField] GameObject DailyRewardTablePrefab;
@@ -507,6 +507,54 @@ public class UIController : MonoBehaviour
         SkillUnLockButtonControl(selectedSkill);
         UpdateSkillInfos(selectedSkill);
     }
+    public void ForTutorialUnityEventSkillInfoShow(GameObject _selectedSkillObj)
+    {
+        skillInfoPanel.SetActive(false);
+
+        SkillNode selectedSkill = SkillTreeManager.instance.GetSelectedSkillNode(0);
+
+
+        SkillTreeManager.instance.SelectedSkill = selectedSkill;
+        SkillTreeManager.instance.SelectedSkillGameObject = _selectedSkillObj;
+        Debug.Log("Selected Skill Gameobject => " + SkillTreeManager.instance.SelectedSkillGameObject.gameObject);
+        if (SkillTreeManager.instance.SelectedSkillGameObject != null)
+        {
+            int point = (int)SkillTreeManager.instance.SelectedSkillGameObject.GetComponent<BaseSkillOptions>().MyPoint;
+            foreach (GameObject pointUI in InfoPointerUIs)
+            {
+                pointUI.SetActive(false);
+            }
+            InfoPointerUIs[point].SetActive(true);
+            // InfoPointers[point].position;
+            skillInfoPanel.transform.position = SkillTreeManager.instance.SelectedSkillGameObject.GetComponent<BaseSkillOptions>().GetMyCurrentPointTransform().position;
+        }
+        // Yetenek adi, aciklama ve etkiyi guncelle
+        skillNameText.text = selectedSkill.SkillName;
+        skillDescriptionText.text = selectedSkill.SkillDescription;
+        skillEffectText.text = selectedSkill.SkillEffect;
+        if (selectedSkill.SkillCurrentLevel < selectedSkill.SkillMaxLevel)
+        {
+            skillRequiredPointText.text = "Requires Point: " + selectedSkill.SkillRequiredPoint;
+            skillRequiredMoneyText.text = "$" + selectedSkill.SkillRequiredMoney;
+        }
+        else
+        {
+            skillRequiredPointText.text = "";
+            skillRequiredMoneyText.text = "";
+        }
+
+        SkillTreeManager.instance.CalculateForCurrentSkillEnoughLevelAndMoney(selectedSkill);
+        // Kilidi açýlabilir veya açýlamazsa düðmeyi güncelle
+        skillInfoPanel.SetActive(true);
+        if (selectedSkill.IsPurchased && selectedSkill.SkillCurrentLevel == selectedSkill.SkillMaxLevel)
+        {
+            ChangedUnlockButton(false, "Max Seviye", Color.white);
+            SkillRequiredInfoPanel.SetActive(false);
+            return;
+        }
+        SkillUnLockButtonControl(selectedSkill);
+        UpdateSkillInfos(selectedSkill);
+    }
     public void SkillInfoPanelActivation(bool _active)
     {
         skillInfoPanel.SetActive(_active);
@@ -574,7 +622,6 @@ public class UIController : MonoBehaviour
         }
         UIChangesControl();
     }
-
     private void SkillRequiredPointAndMoneyController(SkillNode _skill)
     {
         _skill.SkillRequiredPoint += SkillCurrentLevelControl(_skill.SkillCurrentLevel).skillPoint; // Base Value => 1
@@ -789,7 +836,7 @@ public class UIController : MonoBehaviour
         Debug.Log("Global Stats'a Yorum Eklendi.");
     }
     private bool museumStatActive = false, workerHirinActive = false, workerAssigmentActive = false, dailyRewardActive = false;
-    private void ShowMuseumStatsPanel()
+    public void ShowMuseumStatsPanel()
     {
         if (!museumStatActive)
         {

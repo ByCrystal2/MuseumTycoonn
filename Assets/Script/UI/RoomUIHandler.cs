@@ -43,7 +43,7 @@ public class RoomUIHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
         
     }
 
-    IEnumerator WaitingForIsPointerOver()
+    public IEnumerator WaitingForIsPointerOver()
     {
         for (int i = 0; i < 3; i++)
             yield return new WaitForEndOfFrame();
@@ -76,6 +76,16 @@ public class RoomUIHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
             }
         }
         //yield return null;
+    }
+    public void ForTutorialUnityEvent()
+    {
+        Debug.Log("Oda Aktif Ve Kilitli Degil!");
+        Debug.Log("Oda Duzenleme Moduna Giris Yapildi. Oda Hucre No =>" + MyTargetRoom.availableRoomCell.CellLetter + MyTargetRoom.availableRoomCell.CellNumber);
+        RightUIPanelController.instance.EditModeObj.SetActive(false);
+        MyTargetRoom.SetActivationMyRoomEditingCamera(true);
+        GameManager.instance.SetCurrenGameMode(GameMode.RoomEditing);
+        RoomManager.instance.CurrentEditedRoom = MyTargetRoom;
+        UIController.instance.CloseEditModeCanvas(true);
     }
     public void SetRoomCloudActivation(bool _active)
     {

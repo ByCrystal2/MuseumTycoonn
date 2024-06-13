@@ -126,4 +126,9 @@ public class DailyRewardsPanelController : MonoBehaviour
         }
         GameManager.instance.Save();
     }
+    public void ForTutorialUnityEvent()
+    {
+        DailyRewardItemOptions giftReward = UIController.instance.DailyRewardContents[0].GetChild(0).GetComponent<DailyRewardItemOptions>();
+        WinReward(giftReward);
+    }
 }

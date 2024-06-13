@@ -52,6 +52,7 @@ public class ItemManager : MonoBehaviour
             //Real Money
 
             //Star Count 1
+            ItemData itemTutorialGift = new ItemData(9999, "King of The Museum", "Kral'ýn hediyesi", 1, 0, null, ItemType.Table, ShoppingType.Gold, 2, 2);
             ItemData item6 = new ItemData(1005, "Frida Kahlo", "Yýpranmýþ bir tablo", 1, 500, null, ItemType.Table, ShoppingType.Gold, 1, 4);
             ItemData item7 = new ItemData(1006, "Käthe Kollwitz", "1985'te resmedilen bir tablo", 1, 1000, null, ItemType.Table, ShoppingType.Gold, 1, 3);
             ItemData item8 = new ItemData(1007, "Gabriele Münter", "Kýzýl nehir tablo", 1, 1500, null, ItemType.Table, ShoppingType.Gold, 1, 1);
@@ -177,6 +178,7 @@ public class ItemManager : MonoBehaviour
             //RealMoneyShoppingItemsAdding
 
             //Normal Items
+            ShopItemDatas.Add(itemTutorialGift);
             ShopItemDatas.Add(item6);
             ShopItemDatas.Add(item7);
             ShopItemDatas.Add(item8);

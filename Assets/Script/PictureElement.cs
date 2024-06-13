@@ -85,6 +85,16 @@ public class PictureElement : MonoBehaviour
     {
 
     }
+    public void ForTutorialUnityEvent()
+    {
+        RightUIPanelController.instance.UIVisibleClose(true);
+        UIController.instance.CloseJoystickObj(true);
+        PicturesMenuController.instance.AddPicture(this);
+        if (GameManager.instance.GetCurrentGameMode() == GameMode.FPS)
+        {
+            PlayerManager.instance.LockPlayer();
+        }
+    }
 }
 
 [System.Serializable]

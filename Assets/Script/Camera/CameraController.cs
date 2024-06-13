@@ -28,6 +28,7 @@ public class CameraController1 : MonoBehaviour
 
     private void Update()
     {
+        if (TutorialLevelManager.instance != null && !TutorialLevelManager.instance.IsWatchTutorial) return;
         if (Input.touchCount == 1)
         {
             Touch touch = Input.GetTouch(0);

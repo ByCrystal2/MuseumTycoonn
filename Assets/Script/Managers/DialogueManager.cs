@@ -46,7 +46,7 @@ public class DialogueManager : MonoBehaviour
             DialoguePanel.transform.GetChild(i).gameObject.SetActive(false);
         currentDialogPanel = DialoguePanel.transform.GetChild(value).GetComponent<DialoguePanelVController>();
         currentDialogPanel.nameText.text = _name;
-        currentDialogPanel.gameObject.SetActive(true);
+        
     }
     public void StartTutorial()//DialogueTrigger UnityEvents...
     {
@@ -54,13 +54,24 @@ public class DialogueManager : MonoBehaviour
     }
     private IEnumerator StartTutorialDialogue(List<Dialog> _dialogs)
     {
+        if (_dialogs.Count > 0)
         Debug.Log("Dialog Starting... First Dialog Message => " + _dialogs[0].Sentence);
+
         yield return new WaitForEndOfFrame();
         CinemachineTransition(true);
         //StartCoroutine(HoldAnimation(4, 1f,"startDialog",true));
         PlayerManager.instance.LockPlayer();
         UIController.instance.CloseJoystickObj(true);
-        StartCoroutine(WaitForTutorialBrainTranstionEnding(_dialogs));
+        if (_dialogs.Count <= 0)
+        {
+            currentHelper.EventEndingCovered.Invoke();
+            Debug.Log("Mevcut dialog sayisi 0'dir. Helperin EndingCovered Eventi devreye girdi.");
+        }
+        else
+        {
+            currentDialogPanel.gameObject.SetActive(true);
+            StartCoroutine(WaitForTutorialBrainTranstionEnding(_dialogs));
+        }        
     }
     IEnumerator WaitForTutorialBrainTranstionEnding(List<Dialog> _dialogs)
     {
@@ -103,7 +114,7 @@ public class DialogueManager : MonoBehaviour
     public void DisplayNextSentence()
     {
         if (sentences.Count == 0)
-        {
+        {            
             return;
         }
         StopAllCoroutines();
@@ -119,10 +130,14 @@ public class DialogueManager : MonoBehaviour
             StartCoroutine(TypeSentence(sentence));
         }
         yield return new WaitUntil(() => !waitFirstSentence);
-        currentHelper.EventEndingCovered.Invoke();
-        yield return new WaitForSeconds(1f);
         SetActivationDialoguePanel(false);
+        yield return new WaitForSeconds(0.6f);
+        currentHelper.EventEndingCovered.Invoke();
         //EndTutorialDialogue();
+    }
+    public void NextDialogueTriggerOverride()
+    {
+        currentTrigger.TriggerDialog(currentTrigger.currentStep + 1);
     }
     IEnumerator HoldAnimation(int _duration, float _transitDuration, string _animString, bool _animStart)
     {
@@ -201,5 +216,40 @@ public enum Steps
     Step12,
     Step13,
     Step14,
-    Step15
+    Step15,
+    Step16,
+    Step17,
+    Step18,
+    Step19,
+    Step20,
+    Step21,
+    Step22,
+    Step23,
+    Step24,
+    Step25,
+    Step26,
+    Step27,
+    Step28,
+    Step29,
+    Step30,
+    Step31,
+    Step32,
+    Step33,
+    Step34,
+    Step35,
+    Step36,
+    Step37,
+    Step38,
+    Step39,
+    Step40,
+    Step41,
+    Step42,
+    Step43,
+    Step44,
+    Step45,
+    Step46,
+    Step47,
+    Step48,
+    Step49,
+    Step50,
 }

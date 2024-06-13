@@ -23,6 +23,7 @@ public class DialogueTrigger : MonoBehaviour
 [System.Serializable]
 public struct DialogHelper
 {
+    public Vector3 TargetPos;
     [SerializeField] [Range(0, 2)] public int versionOfDiaPnl;
 
     public List<Dialog> Dialogs;

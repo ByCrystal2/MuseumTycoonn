@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
@@ -118,7 +119,32 @@ public class PicturesMenuController : MonoBehaviour
         }
         GoldControledButtonShape();
     }
+    public void ForTutorialUnityEvent()
+    {
+        PictureElementData _ped = MuseumManager.instance.GetPictureElementData(TextureIds[0]);
+        tableClicked = true;
+        Debug.Log("CurrentPicture is => " + CurrentPicture._pictureData.painterData.Name);
+        //CurrentPicture = new PictureElement();
+        //CurrentPicture._pictureData = MuseumManager.instance.InventoryPictures[0];
+        SetPicture(_ped.texture);
 
+        for (int i = 0; i < CloseStars.Length; i++)
+        {
+            CloseStars[i].SetActive(true);
+            OpenStars[i].SetActive(false);
+        }
+
+        lastClickedIndex = 0;
+        txtPainterName.text = MuseumManager.instance.InventoryPictures[0].painterData.Description;
+        txtDescription.text = MuseumManager.instance.InventoryPictures[0].painterData.Name;
+        txtRequiredGold.text = "" + GameManager.instance.PictureChangeRequiredAmount;
+
+        for (int i = 0; i < MuseumManager.instance.InventoryPictures[0].painterData.StarCount; i++)
+        {
+            OpenStars[i].SetActive(true);
+        }
+        GoldControledButtonShape();
+    }
     public void AddPicture(PictureElement PE)
     {
         //if (!PE._pictureData.isActive)
@@ -177,7 +203,7 @@ public class PicturesMenuController : MonoBehaviour
                 SetPictureUpdateButton(false, "Eklendi", Color.white);
                 CurrentPicture._pictureData.isActive = true;
                 //MuseumManager.instance.GetPictureElement(PictureChangeRequiredAmount = Mathf.RoundToInt(CurrentPicture._pictureData.RequiredGold * 0.5f);
-                txtRequiredGold.text = "Gerekli Altın: " + GameManager.instance.PictureChangeRequiredAmount;
+                txtRequiredGold.text = ""+ GameManager.instance.PictureChangeRequiredAmount;
             }
             else
             {

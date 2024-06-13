@@ -188,6 +188,8 @@ public class ShopController : MonoBehaviour
     }
     public void SetButtonsAlphaValue()
     {
+        if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == null)
+            return;
         Button clickedButton = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
         Debug.Log("mevcut button namesi " + clickedButton.name);
         if (clickedButton.transform.GetChild(0).TryGetComponent(out CanvasGroup currentButtonCGroup))
@@ -343,6 +345,11 @@ public class ShopController : MonoBehaviour
         };
 
         return _currentIcon;
+    }
+    public void ForTutorialUnityEvent()
+    {
+        ItemData tutorialItem = ItemManager.instance.GetItemTypeItems(ItemType.Table).Where(x => x.ID == 9999).FirstOrDefault();
+        BuyItem(tutorialItem);
     }
 }
 public enum ShopUIType
