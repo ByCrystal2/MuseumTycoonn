@@ -38,6 +38,7 @@ public class NpcManager : MonoBehaviour
         GameManager.instance.rewardManager = FindObjectOfType<RewardManager>();
 
         GameManager.instance.LoadIsFirstGame();
+        
         if (IsFirstGame)
         {
             RoomManager.instance.activeRoomsRequiredMoney = 1000;
@@ -77,12 +78,21 @@ public class NpcManager : MonoBehaviour
         GameManager.instance.LoadLastDailyRewardTime();
 
         if (TutorialLevelManager.instance != null)
+        {
             if (!TutorialLevelManager.instance.IsWatchTutorial)
             {
                 DialogueTrigger firstDialog = GameObject.FindWithTag("TutorialNPC").GetComponent<DialogueTrigger>();
                 if (firstDialog != null)
                     firstDialog.TriggerDialog(Steps.Step1);
             }
+            else
+            {
+                DialogueManager.instance.SetActivationDialoguePanel(false);
+                GameObject.FindWithTag("TutorialNPC").SetActive(false); // Destroyda edilebilirdi fakat lazim olabilir ilerde.
+                UIController.instance.tutorialUISPanel.gameObject.SetActive(false);
+            }
+        }
+        ItemData firstTableForPlayer = new ItemData(99999, "Vincent van Gogh", "Hediye Tablo", 1, 0, null, ItemType.Table, ShoppingType.Gold, 1, 3);
         if (IsFirstGame)
         {
             ItemManager.instance.SetCalculatedDailyRewardItems();
@@ -90,12 +100,13 @@ public class NpcManager : MonoBehaviour
 
             GameManager.instance.rewardManager.lastDailyRewardTime = TimeManager.instance.CurrentDateTime;
             MuseumManager.instance.OnNpcPaid(500);
-            ItemData firstTableForPlayer = new ItemData(9999, "Vincent van Gogh", "Hediye Tablo", 1, 0, null, ItemType.Table, ShoppingType.Gold, 1, 3);
+            
             PictureData newInventoryItem = new PictureData();
             newInventoryItem.TextureID = firstTableForPlayer.textureID;
             newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
             newInventoryItem.painterData = new PainterData(firstTableForPlayer.ID, firstTableForPlayer.Description, firstTableForPlayer.Name, firstTableForPlayer.StarCount);
             MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
+            FirestoreManager.instance.firestoreItemsManager.AddPictureIdWithUserId("ahmet123", newInventoryItem);
             int index = TimeManager.instance.WhatDay;
             // Eðer bulunduysa
             if (index != -1)

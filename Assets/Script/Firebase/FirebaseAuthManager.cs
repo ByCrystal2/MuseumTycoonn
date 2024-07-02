@@ -53,6 +53,7 @@ public class FirebaseAuthManager : MonoBehaviour
         else
         {
 #if UNITY_EDITOR
+            StartCoroutine(FirestoreManager.instance.CheckIfUserExists("ahmet123", "ahmetburak04.ab@gmail.com","+905456984055","ByCrystal"));
             CreateNewLoading();
 #endif
             textMeshPro.text = "Auth Failed!";
@@ -79,6 +80,7 @@ public class FirebaseAuthManager : MonoBehaviour
         else
         {
             currentUser = task.Result;
+            StartCoroutine(FirestoreManager.instance.CheckIfUserExists());
             textMeshPro.text += currentUser.ToString();
             Debug.Log("Auth Success => " + currentUser.UserId);
             CreateNewLoading();
@@ -95,5 +97,13 @@ public class FirebaseAuthManager : MonoBehaviour
     {
         Transform canvas = FindObjectOfType<Canvas>().transform;
         Instantiate(LoadingPanel, canvas);
+    }
+    public FirebaseAuth GetAuth()
+    {
+        return auth;
+    }
+    public FirebaseUser GetCurrentUser()
+    {
+        return currentUser;
     }
 }

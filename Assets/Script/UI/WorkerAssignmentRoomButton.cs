@@ -24,6 +24,10 @@ public class WorkerAssignmentRoomButton : MonoBehaviour,IPointerClickHandler
     }
     public void OnPointerClick(PointerEventData eventData)
     {
+        AssignmentRoom();
+    }
+    public void AssignmentRoom()
+    {
         if (Interactable)
         {
             WorkerBehaviour currentBehaviour = WorkerManager.instance.GetAllWorkers().Where(x => x.ID == CurrentWorkerID).SingleOrDefault();
@@ -33,11 +37,11 @@ public class WorkerAssignmentRoomButton : MonoBehaviour,IPointerClickHandler
             currentWorkerData.WorkRoomsIDs.Add(CurrentRoomID);
             currentWorker.IWorkRoomsIDs.Add(CurrentRoomID);
 
-            RoomData currentRoom = RoomManager.instance.RoomDatas.Where(x=> x.ID == CurrentRoomID).SingleOrDefault();
+            RoomData currentRoom = RoomManager.instance.RoomDatas.Where(x => x.ID == CurrentRoomID).SingleOrDefault();
             currentRoom.MyRoomWorkersIDs.Add(CurrentWorkerID);
             Debug.Log("Interectable => " + Interactable + " Current Worker is => " + currentWorker.Name);
             WorkerManager.instance.GetWorkersInInventory().Remove(WorkerManager.instance.GetAllWorkers().Where(x => x.ID == currentWorker.ID).SingleOrDefault());
-            WorkerManager.instance.GetCurrentWorkers().Add(WorkerManager.instance.GetAllWorkers().Where(x=> x.ID == currentWorker.ID).SingleOrDefault());
+            WorkerManager.instance.GetCurrentWorkers().Add(WorkerManager.instance.GetAllWorkers().Where(x => x.ID == currentWorker.ID).SingleOrDefault());
             UIController.instance.ClearAssignmentRoomsButtonContent();
             UIController.instance.GetDesiredInventoryWorkersInContent(currentWorker.WorkerType);
 

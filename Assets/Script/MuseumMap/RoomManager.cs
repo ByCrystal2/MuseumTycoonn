@@ -360,4 +360,20 @@ public partial class RoomManager // Room Bonus Controller
             return null;
         }
     }
+    public IEnumerator UpdateAndActivatePictureElement(RoomData _room, PictureElement pe, bool activateRoom)
+    {
+        pe.UpdateVisual(true);
+
+        // Coroutine'in tamamlanmasýný bekleyin
+        yield return StartCoroutine(pe.IEUpdateVisual(true));
+
+        if (!_room.isLock && pe._pictureData.TextureID > 0)
+        {
+            pe.SetImage(true);
+            if (activateRoom)
+            {
+                ActivateRoomLocations(_room);
+            }
+        }
+    }
 }

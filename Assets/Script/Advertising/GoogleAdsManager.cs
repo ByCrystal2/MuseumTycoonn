@@ -95,6 +95,7 @@ public class GoogleAdsManager : MonoBehaviour
     }
     private void Update()
     {
+        if(TutorialLevelManager.instance != null && !TutorialLevelManager.instance.IsWatchTutorial) { return; }
         if (!IsInterstitialAdShow)
         {
             InterstitialAdWaitingTime -= Time.deltaTime;

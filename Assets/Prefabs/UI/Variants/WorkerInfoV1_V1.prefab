@@ -154,7 +154,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Age:'
+  m_Text: "Ya\u015F:"
 --- !u!114 &8948073553042398225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -269,6 +269,125 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &2505327458469771107
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4334110684074458143}
+  - component: {fileID: 4217648998274549047}
+  - component: {fileID: 7749939405438489342}
+  - component: {fileID: 8164913576793783488}
+  m_Layer: 5
+  m_Name: Text (Legacy) (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &4334110684074458143
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2505327458469771107}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2703877275440098759}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: -63.556183, y: -4.2575}
+  m_SizeDelta: {x: 81.8921, y: 41.485}
+  m_Pivot: {x: 0, y: 0.5}
+--- !u!222 &4217648998274549047
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2505327458469771107}
+  m_CullTransparentMesh: 1
+--- !u!114 &7749939405438489342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2505327458469771107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 20
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 2
+    m_MaxSize: 40
+    m_Alignment: 5
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 'Boy:'
+--- !u!114 &8164913576793783488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2505327458469771107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 344445a89b4f74a0e9a0a766903df87e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mTerm: WorkerInfoV1_V1_Heigth_Text
+  mTermSecondary: 
+  PrimaryTermModifier: 0
+  SecondaryTermModifier: 0
+  TermPrefix: 
+  TermSuffix: ':'
+  LocalizeOnAwake: 1
+  IgnoreRTL: 0
+  MaxCharactersInRTL: 0
+  IgnoreNumbersInRTL: 1
+  CorrectAlignmentForRTL: 1
+  AddSpacesToJoinedLanguages: 0
+  AllowLocalizedParameters: 1
+  AllowParameters: 1
+  TranslatedObjects: []
+  LocalizeEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  AlwaysForceLocalize: 0
+  LocalizeCallBack:
+    Target: {fileID: 0}
+    MethodName: 
+  mGUI_ShowReferences: 0
+  mGUI_ShowTems: 1
+  mGUI_ShowCallback: 0
+  mLocalizeTarget: {fileID: 0}
+  mLocalizeTargetName: I2.Loc.LocalizeTarget_UnityUI_Text
 --- !u!1 &4111683005999953394
 GameObject:
   m_ObjectHideFlags: 0
@@ -565,7 +684,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Heigth:'
+  m_Text: 'Boy:'
 --- !u!114 &7502710546158276471
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -911,7 +1030,7 @@ PrefabInstance:
     - target: {fileID: 1941459352387034520, guid: 19bb8cb2df3c88e42ab19cc11fd47f9f,
         type: 3}
       propertyPath: m_Text
-      value: Select Room
+      value: "Oda Se\xE7"
       objectReference: {fileID: 0}
     - target: {fileID: 1941459352387034520, guid: 19bb8cb2df3c88e42ab19cc11fd47f9f,
         type: 3}
@@ -1010,7 +1129,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3616660637546108466, guid: 19bb8cb2df3c88e42ab19cc11fd47f9f,
         type: 3}
-      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      propertyPath: m_ActiveFontFeatures.Array.data[0]
       value: 1801810542
       objectReference: {fileID: 0}
     - target: {fileID: 3648234634833744178, guid: 19bb8cb2df3c88e42ab19cc11fd47f9f,
@@ -1035,7 +1154,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3860693472020072888, guid: 19bb8cb2df3c88e42ab19cc11fd47f9f,
         type: 3}
-      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      propertyPath: m_ActiveFontFeatures.Array.data[0]
       value: 1801810542
       objectReference: {fileID: 0}
     - target: {fileID: 4257801799484101468, guid: 19bb8cb2df3c88e42ab19cc11fd47f9f,
@@ -1065,7 +1184,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4769806077726198638, guid: 19bb8cb2df3c88e42ab19cc11fd47f9f,
         type: 3}
-      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      propertyPath: m_ActiveFontFeatures.Array.data[0]
       value: 1801810542
       objectReference: {fileID: 0}
     - target: {fileID: 5112935694748342646, guid: 19bb8cb2df3c88e42ab19cc11fd47f9f,
@@ -1130,7 +1249,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6033254350922304096, guid: 19bb8cb2df3c88e42ab19cc11fd47f9f,
         type: 3}
-      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      propertyPath: m_ActiveFontFeatures.Array.data[0]
       value: 1801810542
       objectReference: {fileID: 0}
     - target: {fileID: 6161945646945045999, guid: 19bb8cb2df3c88e42ab19cc11fd47f9f,
@@ -1160,7 +1279,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6217014911453852600, guid: 19bb8cb2df3c88e42ab19cc11fd47f9f,
         type: 3}
-      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      propertyPath: m_ActiveFontFeatures.Array.data[0]
       value: 1801810542
       objectReference: {fileID: 0}
     - target: {fileID: 6763391520439645352, guid: 19bb8cb2df3c88e42ab19cc11fd47f9f,
@@ -1210,6 +1329,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 7460259647020575275}
+    - targetCorrespondingSourceObject: {fileID: 6763391520439645352, guid: 19bb8cb2df3c88e42ab19cc11fd47f9f,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4334110684074458143}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5704418611447658890, guid: 19bb8cb2df3c88e42ab19cc11fd47f9f,
         type: 3}
@@ -1327,6 +1450,7 @@ MonoBehaviour:
   txtFullName: {fileID: 3161546812304118543}
   txtAge: {fileID: 5605167945602240727}
   txtHeight: {fileID: 4209668926402236929}
+  txtPrice: {fileID: 7749939405438489342}
   imgAvatar: {fileID: 3752247601285493196}
   CloseStarsObj: {fileID: 7692023778227788621}
   OpenStarsObj: {fileID: 5941950902066606080}

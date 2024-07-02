@@ -8,6 +8,10 @@ public class WorkerHiringButton : MonoBehaviour, IPointerClickHandler
 {
     public void OnPointerClick(PointerEventData eventData)
     {
+        Hiring();
+    }
+    public void Hiring()
+    {
         WorkerInfoUIs myWorkerInfoUIS = GetComponentInParent<WorkerInfoUIs>();
         if (myWorkerInfoUIS.GetMyPrice() > MuseumManager.instance.GetCurrentGold())
         {

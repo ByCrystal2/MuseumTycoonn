@@ -18,7 +18,7 @@ public class FocusedObjClickHandler : MonoBehaviour, IPointerClickHandler
         else
         {
             DialogueManager.instance.currentTrigger.TriggerDialog(DialogueManager.instance.currentTrigger.currentStep + 1);
-            Debug.Log("Siradaki step calisiyor: " + DialogueManager.instance.currentTrigger.currentStep + 1);
+            Debug.Log("Siradaki step calisiyor: Step" + (int)(DialogueManager.instance.currentTrigger.currentStep + 1));
         }
         Destroy(destroyComp);
     }

@@ -44,11 +44,14 @@ public class PictureElement : MonoBehaviour
 
     public void UpdateVisual(bool _isLoadGame = false)
     {
+        Debug.Log("Update Visual. PElement.id => " + _pictureData.id);
         StartCoroutine(IEUpdateVisual(_isLoadGame));
+        Debug.Log("Update Visual after . PElement.id => " + _pictureData.id);
     }
-
-    IEnumerator IEUpdateVisual(bool _isLoadGame)
+    
+    public IEnumerator IEUpdateVisual(bool _isLoadGame)
     {
+        Debug.Log("IEUpdateVisual before => " + _pictureData.id);
         int stack = 100;
         while (_pictureData.TextureID == 0)
         {
@@ -57,7 +60,7 @@ public class PictureElement : MonoBehaviour
             if (stack < 0)
                 break;  
         }
-
+        Debug.Log("IEUpdateVisual after => " + _pictureData.id);
         Image im = transform.GetChild(0).GetChild(0).GetComponent<Image>();
         Debug.Log("_pictureData.TextureID : " + _pictureData.TextureID);
         PictureElementData ped = MuseumManager.instance.GetPictureElementData(_pictureData.TextureID);

@@ -374,6 +374,7 @@ public class UIController : MonoBehaviour
 
         if (tabIndex == 1)
         {
+            tabContents[tabIndex].transform.localPosition = Vector3.zero; 
             skillInfoPanel.SetActive(false);
             SkillRequiredInfoPanel.SetActive(false);
         }
@@ -1039,6 +1040,30 @@ public class UIController : MonoBehaviour
             newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(worker.ID, worker.MyScript.Name, worker.MyScript.Age, worker.MyScript.Height, worker.MyScript.Level);
         }
         Debug.Log($"Worker Turu => {_wType} olan Isciler Listelendi.");
+    }
+    public void ForTutorialWorkerShopUnityEvent()
+    {
+        GetDesiredWorkersInContent(WorkerType.Housekeeper, btnHouseKeeperTab);
+    }
+    public void ForTutorialWorkerHiring()
+    {
+        WorkerHiringButton worker = WorkerContent.GetChild(0).GetComponentInChildren<WorkerHiringButton>();
+        worker.Hiring();
+    }
+    public void ForTutorialWorkerAssignmentInventoryHouseKeeper()
+    {
+        Debug.Log("ForTutorialWorkerAssignmentInventoryHouseKeeper");
+        GetDesiredInventoryWorkersInContent(WorkerType.Housekeeper,W_InventoryTabHouseKeeper);
+    }
+    public void ForTutorialWorkerAssignmentForHouseKeeper()
+    {
+        WorkerInventoryChooseRoomsButton worker = WorkerInventoryContent.GetChild(0).GetComponentInChildren<WorkerInventoryChooseRoomsButton>();
+        worker.ChooseRoom();
+    }
+    public void ForTutorialWorkerAssignmentChoose()
+    {
+        WorkerAssignmentRoomButton worker = WorkerAssignContent.GetChild(4).GetComponent<WorkerAssignmentRoomButton>();
+        worker.AssignmentRoom();
     }
     public void GeneralButtonActivation(bool _buttonActive, Button _activePnlButton = null)
     {

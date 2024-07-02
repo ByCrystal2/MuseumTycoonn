@@ -189,6 +189,7 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
         newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
         newInventoryItem.painterData = new PainterData(_table.ID, _table.Description, _table.Name, _table.StarCount);
         MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
+        FirestoreManager.instance.firestoreItemsManager.AddPictureIdWithUserId("ahmet123", newInventoryItem);
 
         ItemManager.instance.GetAllItemDatas().Remove(_table);
         ItemManager.instance.GetAllIAPItemDatas().Remove(_table);

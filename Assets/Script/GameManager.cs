@@ -64,7 +64,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("CurrentSaveData.ActiveRoomsRequiredMoney => " + CurrentSaveData.ActiveRoomsRequiredMoney);
     }
     public void Init()
-    {        
+    {
         FirebaseAuthManager.instance.CreateNewLoading();
         TableCommentEvaluationManager.instance.AddAllNPCComments();
         SkillTreeManager.instance.AddSkillsForSkillTree();
@@ -339,6 +339,7 @@ public class GameManager : MonoBehaviour
             //MuseumManager.instance.CurrentActivePictures = CurrentSaveData.CurrentPictures;
             //MuseumManager.instance.InventoryPictures = CurrentSaveData.InventoryPictures;
             LoadGameLanguage();
+            LoadIsWatchTutorial();
             MuseumManager.instance.SetSaveData(CurrentSaveData.Gold, CurrentSaveData.Culture, CurrentSaveData.Gem, CurrentSaveData.SkillPoint, CurrentSaveData.CurrentCultureLevel);
         }
         else
@@ -381,15 +382,28 @@ public class GameManager : MonoBehaviour
     }
     public void LoadIsWatchTutorial()
     {
-        if(TutorialLevelManager.instance != null)
-        {
             TutorialLevelManager.instance.IsWatchTutorial = CurrentSaveData.IsWatchTutorial;
-        }
     }
     public void LoadPurchasedItems()
     {
         MuseumManager.instance.PurchasedItems = CurrentSaveData.PurchasedItems;
+        //FirestoreManager.instance.firestoreItemsManager.GetPicturesIdsInDatabase("ahmet123")
+        //.ContinueWith(task =>
+        //{
+        //    if (task.IsCompleted && !task.IsFaulted)
+        //    {
+        //        List<int> databasePictureIds = task.Result;
 
+        //        foreach (int pictureId in databasePictureIds)
+        //        {
+        //            Debug.Log("ahmet123 idli kullanýcýnýn, " + pictureId + " id'li tablosu veritabanýnda tespit edildi.");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Debug.LogError("Hata oluþtu: " + task.Exception);
+        //    }
+        //});
         //for (int i = 0; i < MuseumManager.instance.PurchasedItems.Count; i++) => Fatmagul'un kodu
         //{
         //    for (int k = 0; i < ItemManager.instance.GetAllItemDatas().Count; k++)

@@ -9,6 +9,11 @@ public class WorkerInventoryChooseRoomsButton : MonoBehaviour,IPointerClickHandl
     public void OnPointerClick(PointerEventData eventData)
     {
         Debug.Log("Oda Sec Butonuna Tiklandi."); // Girdi.
+        ChooseRoom();
+    }
+    public void ChooseRoom()
+    {
+
         UIController.instance.ClearAssignmentRoomsButtonContent();
         Worker MyWorker = WorkerManager.instance.GetAllWorkers().Where(x => x.ID == GetComponentInParent<WorkerInfoUIs>().workerID).SingleOrDefault().MyScript; // 
 
@@ -32,7 +37,7 @@ public class WorkerInventoryChooseRoomsButton : MonoBehaviour,IPointerClickHandl
                             if (WorkerManager.instance.GetAllWorkers().Where(x => x.ID == room.MyRoomWorkersIDs[i]).SingleOrDefault().workerType == WorkerManager.instance.GetAllWorkers().Where(x => x.ID == MyWorker.ID).SingleOrDefault().workerType)
                             {
                                 Debug.Log("Bu turde bir isci, bu odaya baglý. Oda Kodu => " + room.availableRoomCell.CellLetter + "" + room.availableRoomCell.CellNumber);
-                                UIController.instance.AddDesiredChooseRoomsInContent(room.ID,MyWorker.ID, Color.red, room.availableRoomCell.CellLetter + "" + room.availableRoomCell.CellNumber, false);
+                                UIController.instance.AddDesiredChooseRoomsInContent(room.ID, MyWorker.ID, Color.red, room.availableRoomCell.CellLetter + "" + room.availableRoomCell.CellNumber, false);
                                 break;
                             }
 
@@ -65,10 +70,5 @@ public class WorkerInventoryChooseRoomsButton : MonoBehaviour,IPointerClickHandl
                 UIController.instance.AddDesiredChooseRoomsInContent(room.ID, MyWorker.ID, Color.black, room.availableRoomCell.CellLetter + "" + room.availableRoomCell.CellNumber, false);
             }
         }
-
-    
-}
-
-  
-        
+    }
 }

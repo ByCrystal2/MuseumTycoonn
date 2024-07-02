@@ -12,6 +12,8 @@ public class ItemManager : MonoBehaviour
     public List<ItemData> RItems = new List<ItemData>(); //Random items
     public List<ItemData> DailyRewardItems = new List<ItemData>(); // 30 adet gunluk odul ogesi iceren liste.
     public List<ItemData> CurrentDailyRewardItems = new List<ItemData>(); // mevcut gunluk odul ogesi listesi (max 7)
+
+    public List<ItemData> AllItems = new List<ItemData>();
     public static ItemManager instance { get; set; }
     private void Awake()
     {
@@ -249,7 +251,11 @@ public class ItemManager : MonoBehaviour
 
     public void AddItemInShop(ItemData _item)
     {
-        GetAllItemDatas().Add(_item);
+        ShopItemDatas.Add(_item);
+    }
+    public void AddItemInAllItemDatas(ItemData _item)
+    {
+        AllItems.Add(_item);
     }
     public List<ItemData> GetShoppingTypeItems(ShoppingType _shoppingType)
     {
@@ -339,6 +345,16 @@ public class ItemManager : MonoBehaviour
     public List<ItemData> GetAllItemDatas()
     {
         return ShopItemDatas;
+    }
+    public ItemData GetItemDataWithID(int _id)
+    {
+        return AllItems.Where(x => x.ID == _id).SingleOrDefault();
+    }
+    public PainterData GetPainterDataWithID(int _itemId)
+    {
+        ItemData item = AllItems.Where(x => x.ID == _itemId).SingleOrDefault();
+        PainterData pd = new PainterData(item.ID, item.Name, item.Description, item.StarCount);
+        return pd;
     }
     public List<ItemData> GetAllIAPItemDatas()
     {

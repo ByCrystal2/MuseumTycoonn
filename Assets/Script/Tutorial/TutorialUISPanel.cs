@@ -14,6 +14,7 @@ public class TutorialUISPanel : MonoBehaviour
     // Referans çözünürlük
     private Vector2 referenceResolution = new Vector2(1920, 1080);
     Vector3 targetPos;
+    RectTransform target;
     private void Start()
     {
         // Tutorial baþladýðýnda tüm UI elemanlarýný gizle
@@ -22,9 +23,19 @@ public class TutorialUISPanel : MonoBehaviour
         highlightText.gameObject.SetActive(false);
     }
 
+    public void SetTarget(RectTransform _target)//UnityEvent addlistener.
+    {
+        if (_target != null)
+            target = _target;
+        EventSending();
+    }
     public void SetTarget()//UnityEvent addlistener.
     {
         targetPos = DialogueManager.instance.currentHelper.TargetPos;
+        EventSending();
+    }
+    private void EventSending()
+    {
         UnityEngine.Events.UnityEvent targetEvent = DialogueManager.instance.currentHelper.EventForFocusedObjClickHandler;
         if (targetEvent != null) SetMethodInTargetEvent(targetEvent);
         else Debug.Log("TargetEvent Null.");
@@ -48,16 +59,27 @@ public class TutorialUISPanel : MonoBehaviour
         // Hedef UI elemanýnýn dünya koordinatlarýný ekran koordinatlarýna çevir
 
         // Hedef pozisyonu mevcut ekran çözünürlüðüne göre ayarlayýn
-        Vector2 adjustedPos = AdjustPositionForCurrentResolution(targetPos);
+        if (target == null)
+        {
+            Debug.Log("Highlight target is null!");
+            Vector2 adjustedPos = AdjustPositionForCurrentResolution(targetPos);
 
-        highlightImage.GetComponent<RectTransform>().anchoredPosition = adjustedPos;
-        arrow.GetComponent<RectTransform>().anchoredPosition = new Vector2(adjustedPos.x - 125, adjustedPos.y);
-        highlightImage.GetComponent<RectTransform>().sizeDelta = new Vector2(130, 130);
-        highlightText.GetComponent<RectTransform>().anchoredPosition = new Vector3(adjustedPos.x, adjustedPos.y - 110, 0);
-        
+            highlightImage.GetComponent<RectTransform>().anchoredPosition = adjustedPos;
+            arrow.GetComponent<RectTransform>().anchoredPosition = new Vector2(adjustedPos.x - 125, adjustedPos.y);
+            highlightImage.GetComponent<RectTransform>().sizeDelta = new Vector2(130, 130);
+            highlightText.GetComponent<RectTransform>().anchoredPosition = new Vector3(adjustedPos.x, adjustedPos.y - 110, 0);        
+        }
+        else
+        {
+            Debug.Log("Highlight target is not null!");
+            highlightImage.GetComponent<RectTransform>().position = target.position;
+            arrow.GetComponent<RectTransform>().position = new Vector2(target.position.x - 48, target.position.y);
+            highlightImage.GetComponent<RectTransform>().sizeDelta = new Vector2(130, 130);
+            highlightText.GetComponent<RectTransform>().position = new Vector3(target.position.x, target.position.y - 40, 0);
+        }
         highlightText.text = message;
         StartCoroutine(WaitForHidingHighLight());
-        // Highlight elemanýna animasyon ekleyin (örneðin bir parlamasý için)
+        target = null;
     }
     IEnumerator WaitForHidingHighLight()
     {
@@ -68,7 +90,7 @@ public class TutorialUISPanel : MonoBehaviour
         arrow.SetActive(true);
         highlightImage.GetComponent<CanvasGroup>().alpha = 0.2f;
         hightLightTweener = highlightImage.GetComponent<CanvasGroup>().DOFade(1, 0.5f).SetLoops(-1, LoopType.Yoyo);
-        arrowTween = arrow.transform.DOLocalMoveX(arrow.GetComponent<RectTransform>().anchoredPosition.x - 35, 0.7f).SetLoops(-1, LoopType.Yoyo);
+        arrowTween = arrow.transform.DOLocalMoveX(arrow.GetComponent<RectTransform>().position.x - 15, 0.7f).SetLoops(-1, LoopType.Yoyo);
     }
     private Vector2 AdjustPositionForCurrentResolution(Vector3 originalPosition)
     {

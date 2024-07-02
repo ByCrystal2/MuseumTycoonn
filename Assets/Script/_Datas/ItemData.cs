@@ -57,6 +57,8 @@ public struct ItemData
         IsPurchased = _isPurchased;
         FocusedLevel = _focusedLevel;
         IsLocked = _isLocked;
+
+        ItemManager.instance.AddItemInAllItemDatas(this);
     }    
     public void UnLock()
     { // For DailyRewardItems.

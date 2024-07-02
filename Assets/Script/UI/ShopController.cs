@@ -281,6 +281,7 @@ public class ShopController : MonoBehaviour
                     newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
                     newInventoryItem.painterData = new PainterData(_item.ID, _item.Description, _item.Name, _item.StarCount);
                     MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
+                    FirestoreManager.instance.firestoreItemsManager.AddPictureIdWithUserId("ahmet123", newInventoryItem);
                     ItemsBuyingUpdate(_item);
                 }
             }
@@ -306,6 +307,7 @@ public class ShopController : MonoBehaviour
                     newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
                     newInventoryItem.painterData = new PainterData(_item.ID,_item.Description,_item.Name, _item.StarCount);
                     MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
+                    FirestoreManager.instance.firestoreItemsManager.AddPictureIdWithUserId("ahmet123", newInventoryItem);
                     ItemsBuyingUpdate(_item);
                 }
             }

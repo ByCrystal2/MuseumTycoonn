@@ -86,13 +86,15 @@ public class DialogueManager : MonoBehaviour
 
         DisplayNextSentence();
     }
-    public void EndTutorialDialogue()
+    public void EndTutorialDialogue() // unity event
     {
+        TutorialLevelManager.instance.IsWatchTutorial = true;
         SetActivationDialoguePanel(false);
-        CinemachineTransition(false);
-        StartCoroutine(HoldAnimation(1, 1f, "startDialog", false));
+        currentTrigger.gameObject.SetActive(false);
         PlayerManager.instance.UnLockPlayer();
         UIController.instance.CloseJoystickObj(false);
+        CinemachineTransition(false);
+        GameManager.instance.Save();
     }
     private void CinemachineTransition(bool _goTutorial)
     {
@@ -131,12 +133,13 @@ public class DialogueManager : MonoBehaviour
         }
         yield return new WaitUntil(() => !waitFirstSentence);
         SetActivationDialoguePanel(false);
-        yield return new WaitForSeconds(0.6f);
+        yield return new WaitForSeconds(0.4f);
         currentHelper.EventEndingCovered.Invoke();
         //EndTutorialDialogue();
     }
     public void NextDialogueTriggerOverride()
     {
+        Debug.Log("NextDialogueTriggerOverride => " + currentTrigger.currentStep + 1);
         currentTrigger.TriggerDialog(currentTrigger.currentStep + 1);
     }
     IEnumerator HoldAnimation(int _duration, float _transitDuration, string _animString, bool _animStart)

@@ -5,7 +5,7 @@ using UnityEngine;
 public class TutorialLevelManager : MonoBehaviour
 {
     public bool IsWatchTutorial = false;
-    [SerializeField] AnimationClip[] RandomAnimations;
+    //[SerializeField] AnimationClip[] RandomAnimations;
     public static TutorialLevelManager instance { get; private set; }
     private void Awake()
     {
@@ -17,22 +17,11 @@ public class TutorialLevelManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
     }
-    private void Start()
-    {
-        if (GameManager.instance != null)
-            GameManager.instance.LoadIsWatchTutorial();            
-        
-        if (IsWatchTutorial)
-        {
-            Debug.LogError("Tutorial zaten izlenmis!");
-            return;
-        }
-    }
-    public AnimationClip GetRandomAnim()
-    {
-        int index = Random.Range(0, RandomAnimations.Length);
-        return RandomAnimations[index];
-    }
+    //public AnimationClip GetRandomAnim()
+    //{
+    //    int index = Random.Range(0, RandomAnimations.Length);
+    //    return RandomAnimations[index];
+    //}
 
     public void OnEndFlyCutscene()
     {

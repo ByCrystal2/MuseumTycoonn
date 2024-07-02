@@ -64,7 +64,7 @@ public class LoadingScene : MonoBehaviour
                 case Scenes.Init:
                     return Scenes.Menu;
                 case Scenes.Menu:
-                    if (!GameManager.instance.CurrentSaveData.IsWatchTutorial)
+                    if (!TutorialLevelManager.instance.IsWatchTutorial)
                         return Scenes.TutorialLevel;
                     else
                         return Scenes.Game;

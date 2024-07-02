@@ -45,6 +45,11 @@ public class PainterData
         }
     }
 
+    public PainterData()
+    {
+        
+    }
+
     public void AddPainterNPCComments(List<NpcComment> npcCommentsList)
     {
         if (this.npcComments == null)

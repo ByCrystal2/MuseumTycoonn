@@ -1,3 +1,4 @@
+using Firebase.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -140,34 +141,63 @@ public class RoomData : MonoBehaviour
             RoofLock.SetActive(false);
             NotPurchasedBlok.SetActive(false);
             StartCoroutine(WaitForRoomUISHandler());
-        }
-
-        foreach (DoorDirection pictureDirection in pictureDirections)
-        {
-            //Debug.Log("DoorDirection ForEach Start!");
-            int length3 = DirectionPictures[(int)pictureDirection].transform.childCount;
-            for (int i = 0; i < length3; i++)
+            foreach (DoorDirection pictureDirection in pictureDirections)
             {
-                //Debug.Log("room.DirectionPictures[(int)pictureDirection].transform name: " + DirectionPictures[(int)pictureDirection].transform.name);
-                if (DirectionPictures[(int)pictureDirection].transform.GetChild(i).TryGetComponent(out PictureElement pe))
+                //Debug.Log("DoorDirection ForEach Start!");
+                int length3 = DirectionPictures[(int)pictureDirection].transform.childCount;
+                for (int i = 0; i < length3; i++)
                 {
-                    //Debug.Log(availableRoomCell.CellLetter + availableRoomCell.CellNumber + " Hucreli odanin " + DirectionPictures[(int)pictureDirection].name + " Yonlu Resimler contentinin " + DirectionPictures[(int)pictureDirection].transform.GetChild(i).name + " Adli tablosu bulunmaktadir.");
-                    PictureData currentPictureData = GameManager.instance.CurrentSaveData.CurrentPictures.Where(x => x.id == pe._pictureData.id).SingleOrDefault();
-                    //Debug.Log("currentPictureData is null =? " + (currentPictureData == null));
-                    if (currentPictureData != null)
+                    //Debug.Log("room.DirectionPictures[(int)pictureDirection].transform name: " + DirectionPictures[(int)pictureDirection].transform.name);
+                    if (DirectionPictures[(int)pictureDirection].transform.GetChild(i).TryGetComponent(out PictureElement pe))
                     {
-                        pe._pictureData = currentPictureData;
-                        pe.UpdateVisual(true);
-                        if (!isLock)
+                        //Debug.Log(availableRoomCell.CellLetter + availableRoomCell.CellNumber + " Hucreli odanin " + DirectionPictures[(int)pictureDirection].name + " Yonlu Resimler contentinin " + DirectionPictures[(int)pictureDirection].transform.GetChild(i).name + " Adli tablosu bulunmaktadir.");
+
+                        //PictureData currentPictureData = GameManager.instance.CurrentSaveData.CurrentPictures.Where(x => x.id == pe._pictureData.id).SingleOrDefault();
+                        Debug.Log("RoomCode => " + availableRoomCell.CellLetter.ToString() + availableRoomCell.CellNumber.ToString() + " pe.name => " + pe.name + " and pe._pictureData.id => " + pe._pictureData.id);
+                        FirestoreManager.instance.firestoreItemsManager.GetPictureInDatabase("ahmet123", pe._pictureData.id)
+                        .ContinueWithOnMainThread(task =>
                         {
-                            if(pe._pictureData.TextureID > 0)
-                                pe.SetImage(true);
-                            RoomManager.instance.ActivateRoomLocations(this);
-                        }
+                            if (task.IsCompleted && !task.IsFaulted)
+                            {
+                                PictureData databasePicture = task.Result;
+                                if (databasePicture != null)
+                                {
+                                    Debug.Log("databasePicture.painterData.ID => " + databasePicture.painterData.ID + "databasePicture.isActive => " + databasePicture.isActive + "databasePicture.TextureID => " + databasePicture.TextureID);
+
+                                    if (databasePicture.isActive)
+                                    {
+                                        pe._pictureData = databasePicture;
+                                        Debug.Log("pe._pictureData after => " + pe._pictureData);
+                                        //StartCoroutine(RoomManager.instance.UpdateAndActivatePictureElement(this, pe, true));
+                                        pe.UpdateVisual(true);
+                                        Debug.Log("pe.UpdateVisual(true); after.");
+                                        if (!isLock)
+                                        {
+                                            if (pe._pictureData.TextureID > 0)
+                                                pe.SetImage(true);
+                                            RoomManager.instance.ActivateRoomLocations(this);
+                                        }
+                                        Debug.Log("!isLock after in room");
+                                    }
+                                    else
+                                    {
+                                        //Eger mevcut PictureElement'in Picture ID'si ile Database PictureDatas dokumani TabloID eslesiyorsa ve bu eslesmeden gelen pictureData'nin isActivesi false ise buraya girer.
+                                    }
+                                
+                                }
+                            }
+                            else
+                            {
+                                Debug.LogError("Hata olustu: " + task.Exception);
+                            }
+                        });
+
+                    
                     }
                 }
             }
         }
+
     }
 
     IEnumerator WaitForRoomUISHandler()
@@ -299,4 +329,10 @@ public struct RoomCell
 {
     public CellLetter CellLetter;
     public int CellNumber;
+
+    public RoomCell(CellLetter _letter, int _number)
+    {
+        CellLetter = _letter;
+        CellNumber = _number;
+    }
 }

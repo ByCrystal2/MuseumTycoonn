@@ -146,7 +146,7 @@ public class RightUIPanelController : MonoBehaviour
         {
             UINotVisibleObj.SetActive(true);
             EditObj.SetActive(false);
-            PicturesMenuController.instance.ExitPicturePanel();
+            //PicturesMenuController.instance.ExitPicturePanel();
 
             UIController.instance.CloseNPCInformationPanel();
             UIController.instance.CloseWorkerShopPanel(true);
