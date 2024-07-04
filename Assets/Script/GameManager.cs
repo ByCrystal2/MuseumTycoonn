@@ -1,3 +1,4 @@
+using Firebase.Extensions;
 using I2.Loc;
 using System;
 using System.Collections;
@@ -240,7 +241,7 @@ public class GameManager : MonoBehaviour
         }
 
         CurrentSaveData.CurrentPictures = currentActivePictures;
-        CurrentSaveData.InventoryPictures = inventoryPictures;
+        //CurrentSaveData.InventoryPictures = inventoryPictures;
         CurrentSaveData.PurchasedItems = inventoryItems;
         CurrentSaveData.DailyRewardItems = dailyRewardItems;
         CurrentSaveData.SkillNodes = skillNodes;
@@ -295,7 +296,7 @@ public class GameManager : MonoBehaviour
 
             room.LoadThisRoom();
         }
-        MuseumManager.instance.InventoryPictures = CurrentSaveData.InventoryPictures;
+        //MuseumManager.instance.InventoryPictures = CurrentSaveData.InventoryPictures;
 
         //int adet = 0;
         //int length = RoomManager.instance.transform.childCount;
@@ -383,6 +384,29 @@ public class GameManager : MonoBehaviour
     public void LoadIsWatchTutorial()
     {
             TutorialLevelManager.instance.IsWatchTutorial = CurrentSaveData.IsWatchTutorial;
+    }
+    public void LoadInventoryPictures()
+    {
+        List<PictureData> pictureDatas = new List<PictureData>();
+        FirestoreManager.instance.firestoreItemsManager.GetAllPictureInDatabase("ahmet123").ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCompleted && !task.IsFaulted)
+            {
+                List<PictureData> databasePictures = task.Result;
+                foreach (PictureData picture in databasePictures)
+                {
+                    if (!picture.isActive)
+                    {
+                        pictureDatas.Add(picture);
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogError("Hata olustu: " + task.Exception);
+            }
+        });
+        MuseumManager.instance.InventoryPictures = pictureDatas;
     }
     public void LoadPurchasedItems()
     {

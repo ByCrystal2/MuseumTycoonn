@@ -165,6 +165,117 @@ public sealed class FirestoreItemsManager
     {
         db = FirebaseFirestore.DefaultInstance;
     }
+    public void AddRoomWithUserId(string userId, RoomData _roomData)
+    {
+        // Kullanýcý ID'si ile belgeyi sorgula
+        Query query = db.Collection("Rooms").WhereEqualTo("userID", userId);
+
+        query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCompleted)
+            {
+                QuerySnapshot snapshot = task.Result;
+                DocumentReference documentReference;
+
+                if (snapshot.Documents.Count() > 0)
+                {
+                    DocumentSnapshot documentSnapshot = snapshot.Documents.FirstOrDefault();
+                    documentReference = documentSnapshot.Reference;
+
+                    // Belge varsa, alt koleksiyon olan PictureDatas'a yeni belge ekle
+                    CheckAndAddRoomData(documentReference, _roomData);
+                }
+                else
+                {
+                    // Belge yoksa yeni belge oluþtur ve alt koleksiyon ekle
+
+                    Dictionary<string, object> newDocument = new Dictionary<string, object>
+                    {
+                        { "userID", userId }
+                    };
+
+                    db.Collection("Rooms").AddAsync(newDocument).ContinueWithOnMainThread(addTask =>
+                    {
+                        if (addTask.IsCompleted)
+                        {
+                            documentReference = addTask.Result;
+                            Debug.Log($"User document created for user {userId}");
+                            CheckAndAddRoomData(documentReference, _roomData);
+                        }
+                        else if (addTask.IsFaulted)
+                        {
+                            Debug.LogError($"Failed to add new document: {addTask.Exception}");
+                        }
+                    });
+                }
+            }
+            else
+            {
+                Debug.LogError($"Error querying documents: {task.Exception}");
+            }
+        });
+    }
+    private void CheckAndAddRoomData(DocumentReference documentReference, RoomData _roomData)
+    {
+        // Alt koleksiyon olan PictureDatas'ý sorgula
+        CollectionReference roomDatasRef = documentReference.Collection("RoomDatas");
+        Query query = roomDatasRef.WhereEqualTo("ID", _roomData.ID);
+
+        query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCompleted)
+            {
+                QuerySnapshot snapshot = task.Result;
+                Debug.Log(_roomData.name + " adli check ediliyor...(for Firebase)");
+                if (snapshot.Documents.Count() > 0)
+                {
+                    Debug.Log($"Picture with ID {_roomData.ID} already exists for user.");
+                }
+                else
+                {
+                    /*
+                    public string availableRoomCell;
+                    public bool isLock = true;
+                    public bool isActive = false;
+                    public float RequiredMoney;
+                    public bool IsHasStatue = false;
+                    public EditObjData MyStatue;
+                    public List<int> MyRoomWorkersIDs = new List<int>();
+                    */
+                    // Belge yoksa yeni belge ekle
+                    Debug.Log(_roomData.name + " adli oda verileri databaseye aktariliyor...");
+                    Dictionary<string, object> roomData = new Dictionary<string, object>
+                    {
+                        { "RoomCell", _roomData.availableRoomCell.CellLetter.ToString() + _roomData.availableRoomCell.CellNumber },
+                        { "IsActive", _roomData.isActive },
+                        { "IsLock", _roomData.isLock },
+                        { "ID", _roomData.ID },
+                        { "IsHasStatue", _roomData.isHasStatue },
+                        { "StatueID", _roomData.GetMyStatueInTheMyRoom().ID },
+                        { "RequiredMoney", _roomData.RequiredMoney },
+                        { "RoomWorkersIDs", _roomData.MyRoomWorkersIDs },
+                        { "Timestamp", FieldValue.ServerTimestamp }
+                    };
+
+                    roomDatasRef.AddAsync(roomData).ContinueWithOnMainThread(addTask =>
+                    {
+                        if (addTask.IsCompleted)
+                        {
+                            Debug.Log($"Picture data with ID {_roomData.ID} successfully added.");
+                        }
+                        else if (addTask.IsFaulted)
+                        {
+                            Debug.LogError($"Failed to add picture data: {addTask.Exception}");
+                        }
+                    });
+                }
+            }
+            else
+            {
+                Debug.LogError($"Error querying picture data: {task.Exception}");
+            }
+        });
+    }
     public void AddPictureIdWithUserId(string userId, PictureData pictureElement)
     {
         // Kullanýcý ID'si ile belgeyi sorgula
@@ -341,6 +452,52 @@ public sealed class FirestoreItemsManager
                 Debug.LogError($"Error querying documents: {task.Exception}");
             }
         });
+    }
+    public async Task<List<PictureData>> GetAllPictureInDatabase(string _userId)
+    {
+        List<PictureData> foundPictures = new List<PictureData>();
+        Query query = db.Collection("Pictures").WhereEqualTo("userID", _userId);
+        QuerySnapshot querySnapshot = await query.GetSnapshotAsync();
+
+        foreach (DocumentSnapshot documentSnapshot in querySnapshot.Documents)
+        {
+            if (documentSnapshot.Exists)
+            {
+                CollectionReference pictureIdsRef = documentSnapshot.Reference.Collection("PictureDatas");
+                QuerySnapshot pictureQuerySnapshot = await pictureIdsRef.GetSnapshotAsync();
+                foreach (DocumentSnapshot pictureRef in pictureQuerySnapshot.Documents)
+                {
+                    if (pictureRef.Exists)
+                    {
+                        var pictureData = pictureRef.ToDictionary();
+                        PainterData pd = new PainterData();
+                        int painterId = pictureData.ContainsKey("ID") ? Convert.ToInt32(pictureData["ID"]) : 0;
+                        pd = ItemManager.instance.GetPainterDataWithID(painterId);
+                        PictureData foundPicture = new PictureData
+                        {
+                            painterData = pd,
+                            id = pictureData.ContainsKey("TabloID") ? Convert.ToInt32(pictureData["TabloID"]) : 0,
+                            isActive = pictureData.ContainsKey("IsActive") && Convert.ToBoolean(pictureData["IsActive"]),
+                            isFirst = pictureData.ContainsKey("IsFirst") && Convert.ToBoolean(pictureData["IsFirst"]),
+                            isLocked = pictureData.ContainsKey("IsLocked") && Convert.ToBoolean(pictureData["IsLocked"]),
+                            RoomID = pictureData.ContainsKey("RoomID") ? Convert.ToInt32(pictureData["RoomID"]) : 0,
+                            TextureID = pictureData.ContainsKey("TextureID") ? Convert.ToInt32(pictureData["TextureID"]) : 0
+                        };
+                        foundPictures.Add(foundPicture);
+                    }
+                }
+            }
+        }
+        if (foundPictures.Count <= 0)
+        {
+            Debug.Log(_userId + " ID'li kullanicinin tablolari veritabaninda bulunmamaktadir.");
+            return new List<PictureData>();
+        }
+        else
+        {
+            Debug.Log(_userId + " ID'li kullanicinin veritabaninda " + foundPictures.Count + " adedince tablo bulunmaktadir.");
+            return foundPictures;
+        }
     }
     public async Task<PictureData> GetPictureInDatabase(string userId, int pictureId)
     {

@@ -183,8 +183,9 @@ public partial class RoomManager : MonoBehaviour
                             Debug.Log("CurrentRoom => " + currentRoom.availableRoomCell.CellLetter.ToString() + currentRoom.availableRoomCell.CellNumber.ToString());                            
                         }
                     }
+                    FirestoreManager.instance.firestoreItemsManager.AddRoomWithUserId("ahmet123", currentRoom);
                 }
-                // B3 - B5 - A4 - C4 => 2500
+                // B3 - B5 - A4 - C4 => 2500                
             }
         }
         if (purchasedRoom.CurrentShoppingType != ShoppingType.RealMoney)
@@ -202,6 +203,7 @@ public partial class RoomManager : MonoBehaviour
             }
             Debug.Log("aktif odalarin fiyatlari guncellendi => " + activeRoomsRequiredMoney);
         }
+        FirestoreManager.instance.firestoreItemsManager.AddRoomWithUserId("ahmet123", purchasedRoom);
         GPGamesManager.instance.achievementController.PurchasedRoomControl();
     }
 

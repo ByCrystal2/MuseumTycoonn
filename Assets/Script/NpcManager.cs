@@ -46,6 +46,7 @@ public class NpcManager : MonoBehaviour
         UIController.instance.roomUISPanelController.InitializeRoomUIS();
         GameManager.instance.LoadRooms();
         RoomManager.instance.AddRooms(); // in app baglantisi kurulmadan once odalar yuklendi.
+        GameManager.instance.LoadInventoryPictures();
         GameManager.instance.LoadStatues();
         WorkerManager.instance.BaseAllWorkerOptions();
         GameManager.instance.LoadWorkers();

@@ -167,21 +167,18 @@ public class RoomData : MonoBehaviour
                                     if (databasePicture.isActive)
                                     {
                                         pe._pictureData = databasePicture;
-                                        Debug.Log("pe._pictureData after => " + pe._pictureData);
-                                        //StartCoroutine(RoomManager.instance.UpdateAndActivatePictureElement(this, pe, true));
                                         pe.UpdateVisual(true);
-                                        Debug.Log("pe.UpdateVisual(true); after.");
                                         if (!isLock)
                                         {
                                             if (pe._pictureData.TextureID > 0)
                                                 pe.SetImage(true);
                                             RoomManager.instance.ActivateRoomLocations(this);
                                         }
-                                        Debug.Log("!isLock after in room");
                                     }
                                     else
                                     {
                                         //Eger mevcut PictureElement'in Picture ID'si ile Database PictureDatas dokumani TabloID eslesiyorsa ve bu eslesmeden gelen pictureData'nin isActivesi false ise buraya girer.
+                                        
                                     }
                                 
                                 }

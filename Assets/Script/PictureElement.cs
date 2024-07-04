@@ -44,14 +44,11 @@ public class PictureElement : MonoBehaviour
 
     public void UpdateVisual(bool _isLoadGame = false)
     {
-        Debug.Log("Update Visual. PElement.id => " + _pictureData.id);
         StartCoroutine(IEUpdateVisual(_isLoadGame));
-        Debug.Log("Update Visual after . PElement.id => " + _pictureData.id);
     }
     
     public IEnumerator IEUpdateVisual(bool _isLoadGame)
     {
-        Debug.Log("IEUpdateVisual before => " + _pictureData.id);
         int stack = 100;
         while (_pictureData.TextureID == 0)
         {
