@@ -5,11 +5,13 @@ using Firebase.Auth;
 using UnityEngine.SceneManagement;
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
+using System.Linq;
 
 public class FirebaseAuthManager : MonoBehaviour
 {
     [SerializeField] TMPro.TextMeshProUGUI textMeshPro;
     [SerializeField] GameObject LoadingPanel;
+    [SerializeField] string[] loadingCanvasIgnoringTags;
     FirebaseAuth auth;
     FirebaseUser currentUser;
     public static FirebaseAuthManager instance { get; private set; }
@@ -95,8 +97,16 @@ public class FirebaseAuthManager : MonoBehaviour
 
     public void CreateNewLoading()
     {
-        Transform canvas = FindObjectOfType<Canvas>().transform;
-        Instantiate(LoadingPanel, canvas);
+        Canvas[] canvases = FindObjectsOfType<Canvas>();
+        Transform canvas = transform;
+        foreach (Canvas c in canvases)
+            if (!loadingCanvasIgnoringTags.Contains(c.tag)){canvas = c.transform; break;}
+        if (canvas != null)
+        {
+            Instantiate(LoadingPanel, canvas);
+        }
+        else
+            Debug.Log("Mevcut sahnede canvas bulunmamaktadir veya tum canvaslar engellenenler listesindedir. Mevcut sahne:"+SceneManager.GetActiveScene().name);
     }
     public FirebaseAuth GetAuth()
     {

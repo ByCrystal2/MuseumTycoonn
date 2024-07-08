@@ -217,7 +217,7 @@ public class UIController : MonoBehaviour
     private bool isPointerOverUI;
     private void Update()
     {
-        isPointerOverUI = EventSystem.current.IsPointerOverGameObject();
+        isPointerOverUI = EventSystem.current.IsPointerOverGameObject();        
     }
     public void GetClickedPicture(bool active, PictureElement _lastSelectedPicture)
     {
@@ -1021,6 +1021,10 @@ public class UIController : MonoBehaviour
     public void CloseEditModeCanvas(bool _close)
     {
         //EditModeCanvas.SetActive(!_close);
+    }
+    public void CloseSkillInfoPanel(bool _close) //unity event
+    {
+        skillInfoPanel.SetActive(!_close);
     }
     public void GetDesiredWorkersInContent(WorkerType _wType, Button _clikedButton = null)
     {

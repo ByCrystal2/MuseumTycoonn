@@ -39,8 +39,8 @@ public class RoomData : MonoBehaviour
     public Transform CenterPoint;
     private void Start()
     {
-        if (CurrentShoppingType == ShoppingType.RealMoney)
-            IAP_ID = Constant.instance.IAPIDCompany + Constant.instance.IAPIDGame + CurrentRoomType.ToString().ToLower() + "x" + 1 + "_" + CurrentShoppingType.ToString().ToLower() + "_" + ((int)RequiredMoney).ToString(); //com_kosippysudio_museumtycoon_gold5000x_realmoney_10
+        
+        
     }
     public List<NPCBehaviour> GetNpcsInTheMyRoom()
     {
@@ -54,8 +54,52 @@ public class RoomData : MonoBehaviour
     {
         MyStatue = _newStatue;
     }
-    public void LoadThisRoom()
+    public async System.Threading.Tasks.Task LoadThisRoom()
     {
+        await FirestoreManager.instance.roomDatasHandler.GetRoomInDatabase("ahmet123", this.ID).ContinueWithOnMainThread(async (getTask) =>
+        {
+            try
+            {
+                if (getTask.IsCompleted && !getTask.IsFaulted)
+                {
+                    RoomData databaseRoom = getTask.Result;
+                    Debug.Log("Database room data retrieval completed.");
+
+                    if (databaseRoom != null)
+                    {
+                        Debug.Log($"databaseRoom.ID => {databaseRoom.ID} databaseRoom.isActive => {databaseRoom.isActive} databaseRoom.StatueID => {databaseRoom.GetMyStatueInTheMyRoom()?.ID}");
+
+                        RoomData myRoom = GetComponent<RoomData>();
+                        myRoom = databaseRoom;
+                        Debug.Log("myRoom.ID is " + myRoom.ID + " databaseRoom.ID is " + databaseRoom.ID);
+                        if (myRoom.GetMyStatueInTheMyRoom() != null)
+                        {
+                            Debug.Log($"before myRoom.GetMyStatueInTheMyRoom().IsPurchased => {myRoom.GetMyStatueInTheMyRoom().IsPurchased}");
+                            var myStatue = myRoom.GetMyStatueInTheMyRoom();
+                            Debug.Log($"myStatue Infos: ID:{myStatue.ID} + Name:{myStatue.Name} + RoomCell:{myStatue._currentRoomCell.CellLetter.ToString() + myStatue._currentRoomCell.CellNumber} + Bonusses.Count:{myStatue.Bonusses.Count}");
+                            myStatue.SetIsPurchased();
+                            Debug.Log($"myStatue Infos: FocusedLevel:{myStatue.FocusedLevel}");
+                            RoomManager.instance.AddSavedStatues(myStatue);
+                            RoomManager.instance.statuesHandler.activeEditObjs.Add(myStatue);
+                            Debug.Log($"after myRoom.GetMyStatueInTheMyRoom().IsPurchased => {myRoom.GetMyStatueInTheMyRoom().IsPurchased}");
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Error occurred: " + getTask.Exception + " Room code => " + this.availableRoomCell.CellLetter.ToString() + this.availableRoomCell.CellNumber.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("Room Database Loading Error:"+ex.Message + " Room code => " + this.availableRoomCell.CellLetter.ToString() + this.availableRoomCell.CellNumber.ToString());
+            }
+            
+        });
+
+        if (CurrentShoppingType == ShoppingType.RealMoney)
+            IAP_ID = Constant.instance.IAPIDCompany + Constant.instance.IAPIDGame + CurrentRoomType.ToString().ToLower() + "x" + 1 + "_" + CurrentShoppingType.ToString().ToLower() + "_" + ((int)RequiredMoney).ToString(); //com_kosippysudio_museumtycoon_gold5000x_realmoney_10
+
         RoomBlok = gameObject.GetComponentInChildren<RoomBlokClickHandler>().gameObject;
         RoofLock = gameObject.GetComponentInChildren<PanelClickHandler>().gameObject.GetComponentInParent<Canvas>().gameObject;
 
@@ -97,7 +141,7 @@ public class RoomData : MonoBehaviour
             {
                 SetMyRequiredTexts(RoomManager.instance.activeRoomsRequiredMoney);
                 StartCoroutine(WaitForRoomUISHandler());
-                
+
                 Debug.Log("Oda Aktif Ve activeRoomsRequiredMoney 0'dan buyuk" + RoomManager.instance.activeRoomsRequiredMoney);
             }
             else
@@ -154,15 +198,15 @@ public class RoomData : MonoBehaviour
 
                         //PictureData currentPictureData = GameManager.instance.CurrentSaveData.CurrentPictures.Where(x => x.id == pe._pictureData.id).SingleOrDefault();
                         Debug.Log("RoomCode => " + availableRoomCell.CellLetter.ToString() + availableRoomCell.CellNumber.ToString() + " pe.name => " + pe.name + " and pe._pictureData.id => " + pe._pictureData.id);
-                        FirestoreManager.instance.firestoreItemsManager.GetPictureInDatabase("ahmet123", pe._pictureData.id)
-                        .ContinueWithOnMainThread(task =>
+                        await FirestoreManager.instance.pictureDatasHandler.GetPictureInDatabase("ahmet123", pe._pictureData.id)
+                        .ContinueWithOnMainThread(async (task) =>
                         {
                             if (task.IsCompleted && !task.IsFaulted)
                             {
                                 PictureData databasePicture = task.Result;
                                 if (databasePicture != null)
                                 {
-                                    Debug.Log("databasePicture.painterData.ID => " + databasePicture.painterData.ID + "databasePicture.isActive => " + databasePicture.isActive + "databasePicture.TextureID => " + databasePicture.TextureID);
+                                    Debug.Log("databaseRoom.painterData.ID => " + databasePicture.painterData.ID + " databaseRoom.isActive => " + databasePicture.isActive + " databaseRoom.TextureID => " + databasePicture.TextureID);
 
                                     if (databasePicture.isActive)
                                     {
@@ -178,9 +222,9 @@ public class RoomData : MonoBehaviour
                                     else
                                     {
                                         //Eger mevcut PictureElement'in Picture ID'si ile Database PictureDatas dokumani TabloID eslesiyorsa ve bu eslesmeden gelen pictureData'nin isActivesi false ise buraya girer.
-                                        
+
                                     }
-                                
+
                                 }
                             }
                             else
@@ -189,13 +233,14 @@ public class RoomData : MonoBehaviour
                             }
                         });
 
-                    
+
                     }
                 }
             }
         }
 
     }
+
 
     IEnumerator WaitForRoomUISHandler()
     {

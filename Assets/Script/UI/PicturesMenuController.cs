@@ -245,11 +245,11 @@ public class PicturesMenuController : MonoBehaviour
             if(!isFirst)
                 MuseumManager.instance.InventoryPictures.Add(inventoryData);
             MuseumManager.instance.GetPictureElement(CurrentPicture._pictureData.id).UpdateVisual();
-            FirestoreManager.instance.firestoreItemsManager.UpdatePictureData("ahmet123", wallData.painterData.ID, inventoryData);
-            FirestoreManager.instance.firestoreItemsManager.UpdatePictureData("ahmet123", inventoryData.painterData.ID, wallData);
+            FirestoreManager.instance.pictureDatasHandler.UpdatePictureData("ahmet123", wallData.painterData.ID, inventoryData);
+            FirestoreManager.instance.pictureDatasHandler.UpdatePictureData("ahmet123", inventoryData.painterData.ID, wallData);
             Debug.Log("inventoryData.painterData.ID => " + inventoryData.painterData.ID + " wallData.painterData.ID => " + wallData.painterData.ID);
             Debug.Log("inventoryData.isActive => " + inventoryData.isActive + " wallData.isActive => " + wallData.isActive);
-            //FirestoreManager.instance.firestoreItemsManager.AddPictureIdWithUserId(FirebaseAuthManager.instance.GetCurrentUser().UserId,CurrentPicture._pictureData.id); // asil kod bu. Testten sonra buna gecilmeli!
+            //FirestoreManager.instance.firestoreItemsManager.AddStatueWithUserId(FirebaseAuthManager.instance.GetCurrentUser().UserId,CurrentPicture._pictureData.id); // asil kod bu. Testten sonra buna gecilmeli!
             UpdatePicture();
             CurrentPicture.SetImage(!CurrentPicture._pictureData.isLocked);
             StartCoroutine(nameof(WaitForSpendingGoldPicture));

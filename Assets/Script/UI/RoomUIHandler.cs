@@ -104,7 +104,6 @@ public class RoomUIHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     {
         if (!isDragging && isClicked)
         {
-            Debug.Log("dokunuld");
             StopAllCoroutines();
             StartCoroutine(WaitingForIsPointerOver());
         }

@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -265,66 +266,86 @@ public class ShopController : MonoBehaviour
         Debug.Log(_item.CurrentItemType + " Item tipinde ki " + _item.Amount + " miktarda  ürün " + _item.RequiredMoney + " " + _item.CurrentShoppingType + " karþýlýðýnda satýlmak istendi.");
         if (_item.CurrentShoppingType == ShoppingType.Gem)
         {
-            if (MuseumManager.instance.GetCurrentGem() >= _item.RequiredMoney)
-            {
-                MuseumManager.instance.SpendingGem(_item.RequiredMoney);
-                if (_item.CurrentItemType == ItemType.Gold)
-                {
-                    MuseumManager.instance.AddGold(_item.Amount);
-                }
-                else if (_item.CurrentItemType == ItemType.Table)
-                {
-                    // Gemle satýn alýnan tablo
-                    //Tablo satýlýnca marketten kaldýrýlmayacak fakat satýn alýndý yazýsý çýkacak.
-                    PictureData newInventoryItem = new PictureData();
-                    newInventoryItem.TextureID = _item.textureID;
-                    newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
-                    newInventoryItem.painterData = new PainterData(_item.ID, _item.Description, _item.Name, _item.StarCount);
-                    MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
-                    FirestoreManager.instance.firestoreItemsManager.AddPictureIdWithUserId("ahmet123", newInventoryItem);
-                    ItemsBuyingUpdate(_item);
-                }
-            }
-            else
-            {
-                UIController.instance.InsufficientGemEffect();
-                Debug.Log("Mevcut olan " + MuseumManager.instance.GetCurrentGem() + " miktarýnýz, gerekli olan " + _item.RequiredMoney + " miktarýndan daha az.");
-            }
+             UIInteractHandler.instance.AskQuestion(_item.CurrentItemType.ToString() + " Satýn Alma Ýþlemi", $"Satýn alma iþlemini onaylýyor musunuz?\n(Mevcut Gem:{MuseumManager.instance.GetCurrentGem()} ürün ücreti:{_item.RequiredMoney} Gem)", (x) =>
+             {//Satin alma islemi onaylandiysa. (yes tusuna basildiysa)
+                 if (MuseumManager.instance.GetCurrentGem() >= _item.RequiredMoney)
+                 {                    
+                     MuseumManager.instance.SpendingGem(_item.RequiredMoney);
+                     if (_item.CurrentItemType == ItemType.Gold)
+                     {
+                         MuseumManager.instance.AddGold(_item.Amount);
+                     }
+                     else if (_item.CurrentItemType == ItemType.Table)
+                     {
+                         // Gemle satýn alýnan tablo
+                         //Tablo satýlýnca marketten kaldýrýlmayacak fakat satýn alýndý yazýsý çýkacak.
+                         PictureData newInventoryItem = new PictureData();
+                         newInventoryItem.TextureID = _item.textureID;
+                         newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
+                         newInventoryItem.painterData = new PainterData(_item.ID, _item.Description, _item.Name, _item.StarCount);
+                         MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
+                         FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId("ahmet123", newInventoryItem);
+                         ItemsBuyingUpdate(_item);
+                     }
+                 }
+                 else
+                 {
+                     UIController.instance.InsufficientGemEffect();
+                     Debug.Log("Mevcut olan " + MuseumManager.instance.GetCurrentGem() + " miktarýnýz, gerekli olan " + _item.RequiredMoney + " miktarýndan daha az.");
+                 }
+             }
+             , (y) =>
+             {//Satin alma islemi iptalse. (no tusuna basildiysa)
+
+             }, null, null, null, null);
+            
+            
         }
         else if (_item.CurrentShoppingType == ShoppingType.Gold)
         {
-            if (MuseumManager.instance.GetCurrentGold() >= _item.RequiredMoney)
-            {
-                MuseumManager.instance.SpendingGold(_item.RequiredMoney);
-                if (_item.CurrentItemType == ItemType.Gem)
+            UIInteractHandler.instance.AskQuestion(_item.CurrentItemType.ToString() + " Satýn Alma Ýþlemi", $"Satýn alma iþlemini onaylýyor musunuz?\n(Mevcut Gold:{MuseumManager.instance.GetCurrentGold()} ürün ücreti:{_item.RequiredMoney} Gold)", (x) =>
+            {//Satin alma islemi onaylandiysa. (yes tusuna basildiysa)
+                if (MuseumManager.instance.GetCurrentGold() >= _item.RequiredMoney)
                 {
-                    MuseumManager.instance.AddGem(_item.Amount);
+                    MuseumManager.instance.SpendingGold(_item.RequiredMoney);
+                    if (_item.CurrentItemType == ItemType.Gem)
+                    {
+                        MuseumManager.instance.AddGem(_item.Amount);
+                    }
+                    else if (_item.CurrentItemType == ItemType.Table)
+                    {
+                        PictureData newInventoryItem = new PictureData();
+                        newInventoryItem.TextureID = _item.textureID;
+                        newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
+                        newInventoryItem.painterData = new PainterData(_item.ID, _item.Description, _item.Name, _item.StarCount);
+                        MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
+                        FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId("ahmet123", newInventoryItem);
+                        ItemsBuyingUpdate(_item);
+                    }
                 }
-                else if (_item.CurrentItemType == ItemType.Table)
+                else
                 {
-                    PictureData newInventoryItem = new PictureData();
-                    newInventoryItem.TextureID = _item.textureID;
-                    newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
-                    newInventoryItem.painterData = new PainterData(_item.ID,_item.Description,_item.Name, _item.StarCount);
-                    MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
-                    FirestoreManager.instance.firestoreItemsManager.AddPictureIdWithUserId("ahmet123", newInventoryItem);
-                    ItemsBuyingUpdate(_item);
+                    UIController.instance.InsufficientGoldEffect();
+                    Debug.Log("Mevcut olan " + MuseumManager.instance.GetCurrentGold() + " miktarýnýz, gerekli olan " + _item.RequiredMoney + " miktarýndan daha az.");
                 }
             }
-            else
-            {
-                UIController.instance.InsufficientGoldEffect();
-                Debug.Log("Mevcut olan " + MuseumManager.instance.GetCurrentGold() + " miktarýnýz, gerekli olan " + _item.RequiredMoney + " miktarýndan daha az.");
-            }
+             , (y) =>
+             {//Satin alma islemi iptalse. (no tusuna basildiysa)
 
+             }, null, null, null, null);
         }
         else if (_item.CurrentShoppingType == ShoppingType.RealMoney)
         {
-            _item.IsPurchased = true;
-            //BuyingConsumables.instance.BuyItemFromStore(_item);
+            UIInteractHandler.instance.AskQuestion("Ücretli" + " Satýn Alma Ýþlemi", $"Satýn alma iþlemini onaylýyor musunuz?\n(Ürün ücreti:{_item.RequiredMoney})", (x) =>
+            {//Satin alma islemi onaylandiysa. (yes tusuna basildiysa)
+                BuyingConsumables.instance.BuyItemFromStore(_item);
+                GameManager.instance.Save();
+            }
+             , (y) =>
+             {//Satin alma islemi iptalse. (no tusuna basildiysa)
+
+             }, null, null, null, null);
             
-            BuyingConsumables.instance.BuyItemFromStore(_item);
-            GameManager.instance.Save();
         }
 
     }

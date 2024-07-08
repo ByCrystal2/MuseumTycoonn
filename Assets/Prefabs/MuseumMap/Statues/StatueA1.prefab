@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8640407711353807572}
   - component: {fileID: 799268638439071670}
   - component: {fileID: -2529033168181898654}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: StatueA1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,5 +155,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a3dff4cab97991488098217ef6cab46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MyStatue: {fileID: 0}
+  MyStatue:
+    ID: 0
+    Name: 
+    Price: 0
+    IsPurchased: 0
+    IsLocked: 0
+    FocusedLevel: 0
+    ImageSprite: {fileID: 0}
+    EditType: 0
+    Bonusses: []
+    _currentRoomCell:
+      CellLetter: 0
+      CellNumber: 0
+    myStatueIndex: 0
+    isClickable: 0
   MyRoomCode: 

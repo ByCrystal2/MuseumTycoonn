@@ -44,8 +44,8 @@ public class NpcManager : MonoBehaviour
             RoomManager.instance.activeRoomsRequiredMoney = 1000;
         }
         UIController.instance.roomUISPanelController.InitializeRoomUIS();
-        GameManager.instance.LoadRooms();
         RoomManager.instance.AddRooms(); // in app baglantisi kurulmadan once odalar yuklendi.
+        GameManager.instance.LoadRooms();
         GameManager.instance.LoadInventoryPictures();
         GameManager.instance.LoadStatues();
         WorkerManager.instance.BaseAllWorkerOptions();
@@ -107,7 +107,7 @@ public class NpcManager : MonoBehaviour
             newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
             newInventoryItem.painterData = new PainterData(firstTableForPlayer.ID, firstTableForPlayer.Description, firstTableForPlayer.Name, firstTableForPlayer.StarCount);
             MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
-            FirestoreManager.instance.firestoreItemsManager.AddPictureIdWithUserId("ahmet123", newInventoryItem);
+            FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId("ahmet123", newInventoryItem);
             int index = TimeManager.instance.WhatDay;
             // Eðer bulunduysa
             if (index != -1)

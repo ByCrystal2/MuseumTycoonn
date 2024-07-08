@@ -15,7 +15,7 @@ public class EditObjData
     public bool IsLocked;
     public int FocusedLevel;
     public Sprite ImageSprite;
-    public EditObjType EditType;
+    public EditObjType EditType = EditObjType.Statue;
     public List<Bonus> Bonusses = new List<Bonus>();
     public RoomCell _currentRoomCell;
     public int myStatueIndex;
@@ -72,19 +72,28 @@ public class EditObjData
     {
         if (EditType == EditObjType.None) return;
         IsPurchased = true;
+        RoomData myTargetRoom = RoomManager.instance.GetRoomWithRoomCell(_currentRoomCell);
         if (EditType == EditObjType.Statue)
         {
-            RoomManager.instance.GetRoomWithRoomCell(_currentRoomCell).isHasStatue = true;
-            int length = Bonusses.Count;
-            for (int i = 0; i < length; i++)
+            if (myTargetRoom != null)
             {
-                Debug.Log(Bonusses[i].BonusType.ToString());
+                Debug.Log("myTargetRoom is not null. this.Statue ID => " + ID);
+                myTargetRoom.isHasStatue = true;
             }
-            RoomManager.instance.statuesHandler.AddAndBonusCalculator(this);
+            else
+            {
+                Debug.LogError("myTargetRoom is null! this.Statue ID => " + ID);
+            }
+            //int length = Bonusses.Count;
+            //for (int i = 0; i < length; i++)
+            //{
+            //    Debug.Log("Bonusses[i].BonusType => " + Bonusses[i].BonusType.ToString());
+            //}
+            RoomManager.instance.statuesHandler.AddAndBonusCalculator(this,myTargetRoom.availableRoomCell);
         }
         else if (EditType == EditObjType.Decoration)
         {
-            RoomManager.instance.statuesHandler.AddAndBonusCalculator(this);
+            RoomManager.instance.statuesHandler.AddAndBonusCalculator(this, myTargetRoom.availableRoomCell);
         }
     }
     public bool GetIsPurchased()
@@ -97,10 +106,12 @@ public class EditObjData
 [System.Serializable]
 public class Bonus
 {
+    public int ID;
     public EditObjBonusType BonusType;
     public int Value;
-    public Bonus(EditObjBonusType _bonusType, int _value)
+    public Bonus(int _id, EditObjBonusType _bonusType, int _value)
     {
+        ID = _id;
         BonusType = _bonusType;
         Value = _value;
     }

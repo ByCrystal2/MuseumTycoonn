@@ -94,6 +94,7 @@ public class DialogueManager : MonoBehaviour
         PlayerManager.instance.UnLockPlayer();
         UIController.instance.CloseJoystickObj(false);
         CinemachineTransition(false);
+        FirestoreManager.instance.UpdateGameData("ahmet123");
         GameManager.instance.Save();
     }
     private void CinemachineTransition(bool _goTutorial)

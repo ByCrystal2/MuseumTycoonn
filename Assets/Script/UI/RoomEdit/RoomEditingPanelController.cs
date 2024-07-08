@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class RoomEditingPanelController : MonoBehaviour
 {
     
+    [SerializeField] public GameObject EditObjPanel;
     [SerializeField] Transform EditObjsContent;
     [SerializeField] GameObject EditObj_StatueVariant;
     [SerializeField] GameObject EditObj_DecorationVariant;    
@@ -107,6 +108,7 @@ public class RoomEditingPanelController : MonoBehaviour
             }
             _newStatue.transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = _newData.ImageSprite;
         }
+        EditObjPanel.SetActive(true);
     }
     public void AddDecorationInContent() // pnlRoomEditing / pnlRoomObjs / btnDecoration
     {
@@ -153,7 +155,7 @@ public class RoomEditingPanelController : MonoBehaviour
             _newStatue.transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = _newData.ImageSprite;            
         }
     }
-    public void AddBonusActivation() // pnlRoomEditing / pnlBuyTheEditObj / btnBuyEditObj ~onClick
+    public async void AddBonusActivation() // pnlRoomEditing / pnlBuyTheEditObj / btnBuyEditObj ~onClick
     {
         if (ClickedEditObjBehaviour.data.GetIsPurchased())
         {
@@ -192,7 +194,8 @@ public class RoomEditingPanelController : MonoBehaviour
 
         RoomManager.instance.statuesHandler.currentEditObjs.Remove(ClickedEditObjBehaviour.data);
 
-
+        await FirestoreManager.instance.roomDatasHandler.IERoomDataProcces("ahmet123", RoomManager.instance.CurrentEditedRoom);
+        FirestoreManager.instance.statueDatasHandler.AddStatueWithUserId("ahmet123", ClickedEditObjBehaviour.data);
         ClickedEditObjBehaviour = null;
         //UIController.instance.SetActivationRoomEditingPanel(false);
         AddStatuesInContent();

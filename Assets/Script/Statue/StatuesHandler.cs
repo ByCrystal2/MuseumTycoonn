@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
@@ -10,6 +11,8 @@ public class StatuesHandler
     public List<EditObjData> editObjs = new List<EditObjData>();
     public List<EditObjData> currentEditObjs = new List<EditObjData>();
     public List<EditObjData> activeEditObjs = new List<EditObjData>(); // Databaseden cekilmeli
+
+    public List<Bonus> allStatueBonusses = new List<Bonus>();
 
     private const string statuesResourcesPath = "Statues";
 
@@ -26,8 +29,10 @@ public class StatuesHandler
 
 
         List<Bonus> bonuss = new List<Bonus>();
-        Bonus bonus1 = new Bonus(EditObjBonusType.IncreaseNPCHappiness, 10);
+        Bonus bonus1 = new Bonus(1,EditObjBonusType.IncreaseNPCHappiness, 10);
         bonuss.Add(bonus1); // EXAMPLE!!!
+        allStatueBonusses.Add(bonus1);
+
         EditObjData objData = new EditObjData(1, "Statue1", 1000, (Texture2D)statueResults[0], EditObjType.Statue, bonuss, 0, 0);
         EditObjData objData1 = new EditObjData(2, "Statue2", 2000, (Texture2D)statueResults[1], EditObjType.Statue, bonuss, 5, 1);
         EditObjData objData2 = new EditObjData(3, "Statue3", 3000, (Texture2D)statueResults[2], EditObjType.Statue, bonuss, 10, 2);
@@ -65,7 +70,7 @@ public class StatuesHandler
         }
     }
 
-    public void AddAndBonusCalculator(EditObjData _addingBonusEditObj)
+    public void AddAndBonusCalculator(EditObjData _addingBonusEditObj, RoomCell _targetRoomCell)
     {
         List<Bonus> Bonusses = new List<Bonus>();
         Debug.Log(" _addingBonusEditObj.Bonusses[0] Before =>" + _addingBonusEditObj.Bonusses[0].BonusType + _addingBonusEditObj.Bonusses[0].Value);
@@ -73,12 +78,12 @@ public class StatuesHandler
         Bonusses = _addingBonusEditObj.Bonusses;
         Debug.Log(" _addingBonusEditObj.Bonusses[0] After =>" + Bonusses[0].BonusType + Bonusses[0].Value);
 
-        _addingBonusEditObj._currentRoomCell = RoomManager.instance.CurrentEditedRoom.availableRoomCell;
+        _addingBonusEditObj._currentRoomCell = _targetRoomCell;
 
         RoomData bonusStatueRoom = RoomManager.instance.GetRoomWithRoomCell(_addingBonusEditObj._currentRoomCell);
         bonusStatueRoom.SetMyStatue(_addingBonusEditObj);
         List<NPCBehaviour> _npcsInTheRoom = bonusStatueRoom.GetNpcsInTheMyRoom();
-        foreach (var currentBonus in Bonusses)
+        foreach (var currentBonus in Bonusses)//
         {
             Debug.Log("_npcsInTheRoom.Count => " + _npcsInTheRoom.Count + " CurrentBonus => " + currentBonus.BonusType);
             foreach (var npc in _npcsInTheRoom)
@@ -193,5 +198,14 @@ public class StatuesHandler
         }
     }
 
+    public EditObjData GetStatueWithID(int _statueId)
+    {
+        return editObjs.Where(x => x.ID == _statueId).SingleOrDefault();
+    }
+
+    public Bonus GetStatueBonusInAllBonusWithId(int _statueId)
+    {
+        return allStatueBonusses.Where(x=> x.ID  == _statueId).SingleOrDefault();
+    }
     
 }

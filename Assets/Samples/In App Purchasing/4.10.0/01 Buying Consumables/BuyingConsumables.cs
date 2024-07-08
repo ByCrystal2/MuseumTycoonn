@@ -135,7 +135,7 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
                 }
                 Debug.Log($"Purchase Complete - Product: {product.definition.id}");
                 Debug.Log($"Purchase Complete - Item: {currentItem.IAP_ID}");
-
+                currentItem.IsPurchased = true;
                 //We return Complete, informing IAP that the processing on our side is done and the transaction can be closed.
                 return PurchaseProcessingResult.Complete;
             }
@@ -189,7 +189,7 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
         newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
         newInventoryItem.painterData = new PainterData(_table.ID, _table.Description, _table.Name, _table.StarCount);
         MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
-        FirestoreManager.instance.firestoreItemsManager.AddPictureIdWithUserId("ahmet123", newInventoryItem);
+        FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId("ahmet123", newInventoryItem);
 
         ItemManager.instance.GetAllItemDatas().Remove(_table);
         ItemManager.instance.GetAllIAPItemDatas().Remove(_table);

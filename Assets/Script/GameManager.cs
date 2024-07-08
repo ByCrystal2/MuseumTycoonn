@@ -274,27 +274,7 @@ public class GameManager : MonoBehaviour
         //RoomLoad
         foreach (var room in AllRooms)
         {
-            RoomSaveData currentRoomData = CurrentSaveData.Rooms.Where(x=> x.availableRoomCell == room.availableRoomCell.CellLetter.ToString() + room.availableRoomCell.CellNumber.ToString()).SingleOrDefault();
-            if (currentRoomData != null)
-            {
-                Debug.Log("Current checkID: " + currentRoomData.availableRoomCell);
-                room.isActive = currentRoomData.isActive;
-                room.isLock = currentRoomData.isLock;
-                room.RequiredMoney = currentRoomData.RequiredMoney;
-                room.isHasStatue = currentRoomData.IsHasStatue;
-                room.SetMyStatue(currentRoomData.MyStatue);
-
-                room.MyRoomWorkersIDs.Clear();
-                int length = currentRoomData.MyRoomWorkersIDs.Count;
-                for (int i = 0; i < length; i++)
-                {
-                    room.MyRoomWorkersIDs.Add(currentRoomData.MyRoomWorkersIDs[i]);
-                }
-            }
-            //Debug.Log("Room name: " + room.transform.name + " / room.pictureDirections Count: " + room.pictureDirections.Count);
-            //PictureLoad
-
-            room.LoadThisRoom();
+              room.LoadThisRoom();
         }
         //MuseumManager.instance.InventoryPictures = CurrentSaveData.InventoryPictures;
 
@@ -378,6 +358,7 @@ public class GameManager : MonoBehaviour
     {
         if (NpcManager.instance != null)
         {
+            
             NpcManager.instance.IsFirstGame = CurrentSaveData.IsFirstGame;
         }
     }
@@ -388,7 +369,7 @@ public class GameManager : MonoBehaviour
     public void LoadInventoryPictures()
     {
         List<PictureData> pictureDatas = new List<PictureData>();
-        FirestoreManager.instance.firestoreItemsManager.GetAllPictureInDatabase("ahmet123").ContinueWithOnMainThread(task =>
+        FirestoreManager.instance.pictureDatasHandler.GetAllPictureInDatabase("ahmet123").ContinueWithOnMainThread(task =>
         {
             if (task.IsCompleted && !task.IsFaulted)
             {
@@ -534,12 +515,12 @@ public class GameManager : MonoBehaviour
 
     public void LoadStatues()
     {
-        RoomManager.instance.statuesHandler.activeEditObjs = CurrentSaveData.StatueDatas;
+        //RoomManager.instance.statuesHandler.activeEditObjs = CurrentSaveData.StatueDatas;
 
-        foreach (var statue in RoomManager.instance.statuesHandler.activeEditObjs)
-        {
-            RoomManager.instance.AddSavedStatues(statue);
-        }
+        //foreach (var statue in RoomManager.instance.statuesHandler.activeEditObjs)
+        //{
+        //    RoomManager.instance.AddSavedStatues(statue);
+        //}
     }
 
     private void OnApplicationQuit()

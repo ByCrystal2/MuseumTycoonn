@@ -28,6 +28,8 @@ public class StatueSlotHandler : MonoBehaviour
                 PlayerManager.instance.LockPlayer();
             }
             UIController.instance.SetActivationRoomEditingPanel(true);
+            RoomEditingPanelController.instance.BuyEditObjPanel.SetActive(false);
+            RoomEditingPanelController.instance.EditObjPanel.SetActive(false);
             RoomManager.instance.CurrentEditedRoom = RoomManager.instance.RoomDatas.Where(x => (x.availableRoomCell.CellLetter.ToString() + x.availableRoomCell.CellNumber.ToString()) == MyRoomCode).SingleOrDefault();
             RightUIPanelController.instance.UIVisibleClose(true);
             UIController.instance.CloseJoystickObj(true);

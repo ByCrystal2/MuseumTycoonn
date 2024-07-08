@@ -67,7 +67,7 @@ public class TutorialUISPanel : MonoBehaviour
             highlightImage.GetComponent<RectTransform>().anchoredPosition = adjustedPos;
             arrow.GetComponent<RectTransform>().anchoredPosition = new Vector2(adjustedPos.x - 125, adjustedPos.y);
             highlightImage.GetComponent<RectTransform>().sizeDelta = new Vector2(130, 130);
-            highlightText.GetComponent<RectTransform>().anchoredPosition = new Vector3(adjustedPos.x, adjustedPos.y - 110, 0);        
+            highlightText.GetComponent<RectTransform>().anchoredPosition = new Vector3(adjustedPos.x, adjustedPos.y - 100, 0);        
         }
         else
         {
@@ -75,7 +75,7 @@ public class TutorialUISPanel : MonoBehaviour
             highlightImage.GetComponent<RectTransform>().position = target.position;
             arrow.GetComponent<RectTransform>().position = new Vector2(target.position.x - 48, target.position.y);
             highlightImage.GetComponent<RectTransform>().sizeDelta = new Vector2(130, 130);
-            highlightText.GetComponent<RectTransform>().position = new Vector3(target.position.x, target.position.y - 40, 0);
+            highlightText.GetComponent<RectTransform>().position = new Vector3(target.position.x, target.position.y - 100, 0);
         }
         highlightText.text = message;
         StartCoroutine(WaitForHidingHighLight());
@@ -90,7 +90,7 @@ public class TutorialUISPanel : MonoBehaviour
         arrow.SetActive(true);
         highlightImage.GetComponent<CanvasGroup>().alpha = 0.2f;
         hightLightTweener = highlightImage.GetComponent<CanvasGroup>().DOFade(1, 0.5f).SetLoops(-1, LoopType.Yoyo);
-        arrowTween = arrow.transform.DOLocalMoveX(arrow.GetComponent<RectTransform>().position.x - 15, 0.7f).SetLoops(-1, LoopType.Yoyo);
+        arrowTween = arrow.transform.DOLocalMoveX(highlightImage.GetComponent<RectTransform>().position.x - 15, 0.7f).SetLoops(-1, LoopType.Yoyo);
     }
     private Vector2 AdjustPositionForCurrentResolution(Vector3 originalPosition)
     {
