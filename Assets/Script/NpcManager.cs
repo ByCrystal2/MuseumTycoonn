@@ -37,8 +37,12 @@ public class NpcManager : MonoBehaviour
         DontDestroyOnLoad(this);
         GameManager.instance.rewardManager = FindObjectOfType<RewardManager>();
 
-        GameManager.instance.LoadIsFirstGame();
-        
+        AwakeLoadingProcesses();
+    }
+    public async void AwakeLoadingProcesses()
+    {
+        await GameManager.instance.LoadIsFirstGame();
+
         if (IsFirstGame)
         {
             RoomManager.instance.activeRoomsRequiredMoney = 1000;
@@ -56,14 +60,8 @@ public class NpcManager : MonoBehaviour
         //Gaming Services Activation
 
         BuyingConsumables.instance.InitializePurchasing();
-        //UnityAdsManager.instance.Initialize();
-        //UnityAdsManager.instance.CreateBannerView();
 
-        //UnityAdsManager.instance.ShowBannerAd();
-    }
-
-    private void Start()
-    {
+        //Start Method
         AudioManager.instance.PlayMusicOfGame();
         Transform skillsContentTransform = UIController.instance.skillsContent.transform;
         int length = skillsContentTransform.childCount;
@@ -96,12 +94,13 @@ public class NpcManager : MonoBehaviour
         ItemData firstTableForPlayer = new ItemData(99999, "Vincent van Gogh", "Hediye Tablo", 1, 0, null, ItemType.Table, ShoppingType.Gold, 1, 3);
         if (IsFirstGame)
         {
+            Debug.Log("NpcManager IsFirstGame True. And First Game Process Starting...");
             ItemManager.instance.SetCalculatedDailyRewardItems();
             IsFirstGame = false;
 
             GameManager.instance.rewardManager.lastDailyRewardTime = TimeManager.instance.CurrentDateTime;
             MuseumManager.instance.OnNpcPaid(500);
-            
+
             PictureData newInventoryItem = new PictureData();
             newInventoryItem.TextureID = firstTableForPlayer.textureID;
             newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
@@ -146,6 +145,12 @@ public class NpcManager : MonoBehaviour
             GoogleAdsManager.instance.StartBannerAdBool(true);
         }
         GoogleAdsManager.instance.StartRewardAdBool(true);
+        //Start Method
+    }
+
+    private void Start()
+    {
+       
     }
 
     #region Npc Mess

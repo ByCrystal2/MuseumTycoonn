@@ -128,18 +128,18 @@ public class FirestoreManager : MonoBehaviour
                     DocumentReference documentReference = documentSnapshot.Reference;
 
                     // Belge varsa, alt koleksiyon olan PictureDatas'ta tabloyu bul ve güncelle
-                    CollectionReference pictureDatasRef = documentReference.Collection("GameDatas");
+                    CollectionReference gameDatasRef = documentReference.Collection("GameDatas");
 
-                    pictureDatasRef.GetSnapshotAsync().ContinueWithOnMainThread(pictureDataTask =>
+                    gameDatasRef.GetSnapshotAsync().ContinueWithOnMainThread(gameDataTask =>
                     {
-                        if (pictureDataTask.IsCompleted)
+                        if (gameDataTask.IsCompleted)
                         {
-                            QuerySnapshot pictureDataSnapshot = pictureDataTask.Result;
+                            QuerySnapshot gameDataSnapshot = gameDataTask.Result;
 
-                            if (pictureDataSnapshot.Documents.Count() > 0)
+                            if (gameDataSnapshot.Documents.Count() > 0)
                             {
-                                DocumentSnapshot pictureDataDocument = pictureDataSnapshot.Documents.FirstOrDefault();
-                                DocumentReference pictureDataRef = pictureDataDocument.Reference;
+                                DocumentSnapshot gameDataDocument = gameDataSnapshot.Documents.FirstOrDefault();
+                                DocumentReference gameDataRef = gameDataDocument.Reference;
 
                                 Dictionary<string, object> updates = new Dictionary<string, object>
                             {
@@ -147,15 +147,15 @@ public class FirestoreManager : MonoBehaviour
                                 { "IsFirstGame", NpcManager.instance.IsFirstGame },
                             };
 
-                                pictureDataRef.UpdateAsync(updates).ContinueWithOnMainThread(updateTask =>
+                                gameDataRef.UpdateAsync(updates).ContinueWithOnMainThread(updateTask =>
                                 {
                                     if (updateTask.IsCompleted)
                                     {
-                                        Debug.Log($"Picture data successfully updated for user {userId}");
+                                        Debug.Log($"Game data successfully updated for user {userId}");
                                     }
                                     else if (updateTask.IsFaulted)
                                     {
-                                        Debug.LogError($"Failed to update picture data: {updateTask.Exception}");
+                                        Debug.LogError($"Failed to update game data: {updateTask.Exception}");
                                     }
                                 });
                             }
@@ -166,7 +166,7 @@ public class FirestoreManager : MonoBehaviour
                         }
                         else
                         {
-                            Debug.LogError($"Error querying picture data: {pictureDataTask.Exception}");
+                            Debug.LogError($"Error querying game data: {gameDataTask.Exception}");
                         }
                     });
                 }
@@ -180,6 +180,38 @@ public class FirestoreManager : MonoBehaviour
                 Debug.LogError($"Error querying documents: {task.Exception}");
             }
         });
+    }
+    public async Task<Dictionary<string, object>> GetGameDataInDatabase(string userId)
+    {
+        var gameDataDictonary = new Dictionary<string, object>();
+        try
+        {
+            // Kullanýcýya ait belgeleri sorgula
+            Query query = db.Collection("Users").WhereEqualTo("userID", userId);
+            QuerySnapshot querySnapshot = await query.GetSnapshotAsync();
+
+            foreach (DocumentSnapshot documentSnapshot in querySnapshot.Documents)
+            {
+                if (documentSnapshot.Exists)
+                {
+                    CollectionReference gameDataRef = documentSnapshot.Reference.Collection("GameDatas");
+                    QuerySnapshot gameDataQuerySnapshot = await gameDataRef.GetSnapshotAsync();
+
+                    foreach (DocumentSnapshot gameDataDocumentSnapshot in gameDataQuerySnapshot.Documents)
+                    {
+                        if (gameDataDocumentSnapshot.Exists)
+                        {
+                            gameDataDictonary = gameDataDocumentSnapshot.ToDictionary();
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error getting statue data: {ex.Message}");
+        }
+        return gameDataDictonary;
     }
     public async void AddNewPlayerGameDataToDatabase(DocumentReference _documentReference)
     {
@@ -203,7 +235,7 @@ public class FirestoreManager : MonoBehaviour
             DocumentReference addTask = await collectionReference.AddAsync(userGameData);
 
             if (addTask != null)
-                Debug.Log($"Game data with user ID {FirebaseAuthManager.instance.GetCurrentUser().UserId} successfully added.");
+                Debug.Log($"Game data with user ID {FirebaseAuthManager.instance.GetCurrentUser()?.UserId} successfully added.");
             else
                 Debug.LogError("Failed to add game data.");
         }

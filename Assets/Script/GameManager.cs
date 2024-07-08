@@ -57,6 +57,7 @@ public class GameManager : MonoBehaviour
         }
         Init();
         Load();
+        LoadIsWatchTutorial();
         if (GameLanguage == "" || GameLanguage == null || GameLanguage == string.Empty)
             SetGameLanguage("English");
         else
@@ -320,7 +321,6 @@ public class GameManager : MonoBehaviour
             //MuseumManager.instance.CurrentActivePictures = CurrentSaveData.CurrentPictures;
             //MuseumManager.instance.InventoryPictures = CurrentSaveData.InventoryPictures;
             LoadGameLanguage();
-            LoadIsWatchTutorial();
             MuseumManager.instance.SetSaveData(CurrentSaveData.Gold, CurrentSaveData.Culture, CurrentSaveData.Gem, CurrentSaveData.SkillPoint, CurrentSaveData.CurrentCultureLevel);
         }
         else
@@ -354,17 +354,36 @@ public class GameManager : MonoBehaviour
         if (GoogleAdsManager.instance != null)
             GoogleAdsManager.instance.adsData = CurrentSaveData.adData;        
     }
-    public void LoadIsFirstGame()
+    public async System.Threading.Tasks.Task LoadIsFirstGame()
     {
         if (NpcManager.instance != null)
         {
-            
-            NpcManager.instance.IsFirstGame = CurrentSaveData.IsFirstGame;
+            bool firstGameResult = false;
+            await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").ContinueWithOnMainThread(getTask =>
+            {
+                if (getTask.IsCompleted)
+                {
+                    Dictionary<string, object> gameDatas = getTask.Result;
+                    firstGameResult = gameDatas.ContainsKey("IsFirstGame") ? Convert.ToBoolean(gameDatas["IsFirstGame"]) : false;
+                }
+            });
+            Debug.Log("Is First Game ? = " + firstGameResult);
+            NpcManager.instance.IsFirstGame = firstGameResult;
         }
     }
-    public void LoadIsWatchTutorial()
+    public async void LoadIsWatchTutorial()
     {
-            TutorialLevelManager.instance.IsWatchTutorial = CurrentSaveData.IsWatchTutorial;
+        bool watchTutorialResult = false;
+        await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").ContinueWithOnMainThread(getTask =>
+        {
+            if (getTask.IsCompleted)
+            {
+                Dictionary<string, object> gameDatas = getTask.Result;
+                watchTutorialResult = gameDatas.ContainsKey("IsWatchTutorial") ? Convert.ToBoolean(gameDatas["IsWatchTutorial"]) : false;
+            }
+        });
+        Debug.Log("Is Watch Tutorial ? = " + watchTutorialResult);
+        TutorialLevelManager.instance.IsWatchTutorial = watchTutorialResult;
     }
     public void LoadInventoryPictures()
     {
@@ -392,38 +411,7 @@ public class GameManager : MonoBehaviour
     public void LoadPurchasedItems()
     {
         MuseumManager.instance.PurchasedItems = CurrentSaveData.PurchasedItems;
-        //FirestoreManager.instance.firestoreItemsManager.GetPicturesIdsInDatabase("ahmet123")
-        //.ContinueWith(task =>
-        //{
-        //    if (task.IsCompleted && !task.IsFaulted)
-        //    {
-        //        List<int> databasePictureIds = task.Result;
 
-        //        foreach (int pictureId in databasePictureIds)
-        //        {
-        //            Debug.Log("ahmet123 idli kullanýcýnýn, " + pictureId + " id'li tablosu veritabanýnda tespit edildi.");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        Debug.LogError("Hata oluþtu: " + task.Exception);
-        //    }
-        //});
-        //for (int i = 0; i < MuseumManager.instance.PurchasedItems.Count; i++) => Fatmagul'un kodu
-        //{
-        //    for (int k = 0; i < ItemManager.instance.GetAllItemDatas().Count; k++)
-        //    {
-        //        Debug.Log($"Silinecek Item: {MuseumManager.instance.PurchasedItems[i].ID}:{MuseumManager.instance.PurchasedItems[i].Name}");
-        //        if (ItemManager.instance.GetAllItemDatas()[k].ID == MuseumManager.instance.PurchasedItems[i].ID)
-        //        {
-        //            if (ItemManager.instance.GetAllItemDatas()[k].CurrentItemType == ItemType.Table)
-        //            {
-        //                ItemManager.instance.GetAllItemDatas().Remove(ItemManager.instance.GetAllItemDatas()[k]);
-        //                break;
-        //            }
-        //        }
-        //    }
-        //}
         foreach (ItemData item in MuseumManager.instance.PurchasedItems)
         {
             ItemData removeItem = ItemManager.instance.GetAllItemDatas().Where(x => x.ID == item.ID).SingleOrDefault();

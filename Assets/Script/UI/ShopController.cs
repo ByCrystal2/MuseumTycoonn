@@ -374,6 +374,17 @@ public class ShopController : MonoBehaviour
         ItemData tutorialItem = ItemManager.instance.GetItemTypeItems(ItemType.Table).Where(x => x.ID == 9999).FirstOrDefault();
         BuyItem(tutorialItem);
     }
+    public void ForTutorialUnityEvent2()
+    {
+        ItemData _item = ItemManager.instance.GetItemTypeItems(ItemType.Table).Where(x => x.ID == 9999).FirstOrDefault();
+        PictureData newInventoryItem = new PictureData();
+        newInventoryItem.TextureID = _item.textureID;
+        newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
+        newInventoryItem.painterData = new PainterData(_item.ID, _item.Description, _item.Name, _item.StarCount);
+        MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
+        FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId("ahmet123", newInventoryItem);
+        ItemsBuyingUpdate(_item);
+    }
 }
 public enum ShopUIType
 {

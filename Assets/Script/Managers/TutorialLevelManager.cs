@@ -17,6 +17,11 @@ public class TutorialLevelManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
     }
+
+    private void Start()
+    {
+        
+    }
     //public AnimationClip GetRandomAnim()
     //{
     //    int index = Random.Range(0, RandomAnimations.Length);
