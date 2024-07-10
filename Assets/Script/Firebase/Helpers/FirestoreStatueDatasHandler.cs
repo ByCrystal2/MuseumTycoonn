@@ -18,6 +18,7 @@ public class FirestoreStatueDatasHandler : MonoBehaviour
     public void AddStatueWithUserId(string userId, EditObjData _statue)
     {
         // Kullanýcý ID'si ile belgeyi sorgula
+        if (GameManager.instance != null) if (!GameManager.instance.IsWatchTutorial) return;
         Query query = db.Collection("Statues").WhereEqualTo("userID", userId);
 
         query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
@@ -78,22 +79,11 @@ public class FirestoreStatueDatasHandler : MonoBehaviour
 
                 if (snapshot.Documents.Count() > 0)
                 {
-                    Debug.Log($"Picture with ID {_statue.ID} already exists for user.");
+                    Debug.Log($"Skill with ID {_statue.ID} already exists for user.");
                 }
                 else
                 {
                     // Belge yoksa yeni belge ekle
-                    //foundStatue = helperStatueData;
-                    //foundStatue.IsPurchased = statueData.ContainsKey("IsPurchased") && Convert.ToBoolean(statueData["IsPurchased"]);
-                    //foundStatue.IsLocked = statueData.ContainsKey("IsLocked") && Convert.ToBoolean(statueData["IsLocked"]);
-                    //List<int> statueBonusIds = statueData.ContainsKey("BonusIDs") ? (List<int>)statueData["BonusIDs"] : new List<int>();
-                    //foundStatue.myStatueIndex = statueData.ContainsKey("StatueIndex") ? Convert.ToInt32(statueData["StatueIndex"]) : -1;
-
-                    //foreach (int id in statueBonusIds)
-                    //{
-                    //    Bonus databaseBonus = RoomManager.instance.statuesHandler.GetStatueBonusInAllBonusWithId(id);
-                    //    foundStatue.Bonusses.Add(databaseBonus);
-                    //}
                     List<int> bonusIds = new List<int>();
                     int length = _statue.Bonusses.Count;
                     for (int i = 0; i < length; i++)
@@ -126,7 +116,7 @@ public class FirestoreStatueDatasHandler : MonoBehaviour
             }
             else
             {
-                Debug.LogError($"Error querying picture data: {task.Exception}");
+                Debug.LogError($"Error querying skill data: {task.Exception}");
             }
         });
     }

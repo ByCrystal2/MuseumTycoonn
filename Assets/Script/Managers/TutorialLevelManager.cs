@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class TutorialLevelManager : MonoBehaviour
 {
-    public bool IsWatchTutorial = false;
     //[SerializeField] AnimationClip[] RandomAnimations;
     public static TutorialLevelManager instance { get; private set; }
     private void Awake()

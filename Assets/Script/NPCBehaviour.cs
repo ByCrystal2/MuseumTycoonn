@@ -284,7 +284,7 @@ public class NPCBehaviour : MonoBehaviour
                         }
                         else
                         {
-                            
+                            Debug.Log("Museum is full.");
                         }
                     }
                     index = 0;

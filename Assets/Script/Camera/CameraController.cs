@@ -28,7 +28,7 @@ public class CameraController1 : MonoBehaviour
 
     private void Update()
     {
-        if (TutorialLevelManager.instance != null && !TutorialLevelManager.instance.IsWatchTutorial || UIController.instance.IsPointerOverAnyUI())return;
+        if (GameManager.instance != null && !GameManager.instance.IsWatchTutorial || UIController.instance.IsPointerOverAnyUI())return;
         if (Input.touchCount == 1)
         {
             Touch touch = Input.GetTouch(0);

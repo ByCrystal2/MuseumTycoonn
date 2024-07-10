@@ -1,7 +1,7 @@
 using Firebase.Extensions;
 using Firebase.Firestore;
-using System;
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,12 +14,13 @@ public class FirestorePictureDatasHandler : MonoBehaviour
     {
         db = FirebaseFirestore.DefaultInstance;
     }
-    public void AddPictureIdWithUserId(string userId, PictureData pictureElement)
+    public async System.Threading.Tasks.Task AddPictureIdWithUserId(string userId, PictureData pictureElement)
     {
+        if (GameManager.instance != null) if (!GameManager.instance.IsWatchTutorial) return;
         // Kullanýcý ID'si ile belgeyi sorgula
         Query query = db.Collection("Pictures").WhereEqualTo("userID", userId);
 
-        query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        await query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsCompleted)
             {
@@ -65,13 +66,13 @@ public class FirestorePictureDatasHandler : MonoBehaviour
         });
     }
 
-    private void CheckAndAddPictureData(DocumentReference documentReference, PictureData pictureElement)
+    private void CheckAndAddPictureData(DocumentReference documentReference, PictureData pictureData)
     {
         // Alt koleksiyon olan PictureDatas'ý sorgula
         CollectionReference pictureDatasRef = documentReference.Collection("PictureDatas");
-        Query query = pictureDatasRef.WhereEqualTo("ID", pictureElement.painterData.ID);
+        Query query = pictureDatasRef.WhereEqualTo("ID", pictureData.painterData.ID);
 
-        query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        query.GetSnapshotAsync().ContinueWithOnMainThread((Action<Task<QuerySnapshot>>)(task =>
         {
             if (task.IsCompleted)
             {
@@ -79,47 +80,48 @@ public class FirestorePictureDatasHandler : MonoBehaviour
 
                 if (snapshot.Documents.Count() > 0)
                 {
-                    Debug.Log($"Picture with ID {pictureElement.painterData.ID} already exists for user.");
+                    Debug.Log($"Picture with ID {pictureData.painterData.ID} already exists for user.");
                 }
                 else
                 {
                     // Belge yoksa yeni belge ekle
-                    Dictionary<string, object> pictureData = new Dictionary<string, object>
+                    Dictionary<string, object> pictureDatas = new Dictionary<string, object>
                     {
-                        { "IsActive", pictureElement.isActive },
-                        { "IsFirst", pictureElement.isFirst },
-                        { "IsLocked", pictureElement.isLocked },
-                        { "RoomID", pictureElement.RoomID },
-                        { "TextureID", pictureElement.TextureID },
-                        { "ID", pictureElement.painterData.ID },
-                        { "TabloID", pictureElement.id },
+                        { "IsActive", pictureData.isActive },
+                        { "IsFirst", pictureData.isFirst },
+                        { "IsLocked", pictureData.isLocked },
+                        { "RoomID", pictureData.RoomID },
+                        { "TextureID", pictureData.TextureID },
+                        { "ID", pictureData.painterData.ID },
+                        { "TabloID", pictureData.id },
                         { "Timestamp", FieldValue.ServerTimestamp }
                     };
 
-                    pictureDatasRef.AddAsync(pictureData).ContinueWithOnMainThread(addTask =>
+                    pictureDatasRef.AddAsync(pictureDatas).ContinueWithOnMainThread((Action<Task<DocumentReference>>)(addTask =>
                     {
                         if (addTask.IsCompleted)
                         {
-                            Debug.Log($"Picture data with ID {pictureElement.painterData.ID} successfully added.");
+                            Debug.Log($"Picture data with ID {pictureData.painterData.ID} successfully added.");
                         }
                         else if (addTask.IsFaulted)
                         {
                             Debug.LogError($"Failed to add picture data: {addTask.Exception}");
                         }
-                    });
+                    }));
                 }
             }
             else
             {
                 Debug.LogError($"Error querying picture data: {task.Exception}");
             }
-        });
+        }));
     }
 
 
 
     public void UpdatePictureData(string userId, int pictureDataId, PictureData updatedData)
     {
+        if (GameManager.instance != null) if (!GameManager.instance.IsWatchTutorial) return;
         // Kullanýcý ID'si ile belgeyi sorgula
         Query query = db.Collection("Pictures").WhereEqualTo("userID", userId);
 

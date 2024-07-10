@@ -32,6 +32,21 @@ public class UIInteractHandler : MonoBehaviour
 
     public void AskQuestion(string header, string explanation, QuestionAction yesAction = null, QuestionAction noAction = null, QuestionAction okayAction = null, object parameterYes = null, object parameterNo = null, object parameterOkay = null)
     {
+        Canvas gameSceneCanvas = FindObjectOfType<PicturesMenuController>().GetComponent<Canvas>();
+        if (gameSceneCanvas != null)
+        {
+            int childCount = gameSceneCanvas.transform.childCount;
+            for (int i = 0; i < childCount; i++)
+            {
+                if (i==childCount-1)
+                {
+                    Panel.transform.SetParent(gameSceneCanvas.transform);
+                    Panel.transform.SetSiblingIndex(i-1);
+                }
+            }
+        }
+
+
         headerText.text = header;
         explanationText.text = explanation;
 

@@ -512,7 +512,7 @@ public class UIController : MonoBehaviour
     {
         skillInfoPanel.SetActive(false);
 
-        SkillNode selectedSkill = SkillTreeManager.instance.GetSelectedSkillNode(0);
+        SkillNode selectedSkill = SkillTreeManager.instance.GetSelectedSkillNode(_selectedSkillObj.GetComponent<BaseSkillOptions>().SkillID);
 
 
         SkillTreeManager.instance.SelectedSkill = selectedSkill;
@@ -607,6 +607,9 @@ public class UIController : MonoBehaviour
                 }
 
                 currentSkill.Purchased(true);
+
+                //Database skill Adding
+                FirestoreManager.instance.skillDatasHandler.AddSkillWithUserId("ahmet123", currentSkill);
 
                 SkillTreeManager.instance.RefreshSkillBonuses();
                 GoogleAdsManager.instance.ShowInterstitialAd();
@@ -1026,6 +1029,7 @@ public class UIController : MonoBehaviour
     {
         skillInfoPanel.SetActive(!_close);
     }
+    private bool tutorialControl = false;
     public void GetDesiredWorkersInContent(WorkerType _wType, Button _clikedButton = null)
     {
         if (_clikedButton != null)
@@ -1037,11 +1041,24 @@ public class UIController : MonoBehaviour
         ClearWorkerContent(WorkerContent);
 
         List<WorkerBehaviour> workers = WorkerManager.instance.GetWorkersInMarket().Where(x => x.workerType == _wType).OrderBy(x => x.MyScript.Level).ToList();
-        foreach (WorkerBehaviour worker in workers)
+        int length = workers.Count;
+        for (int i = 0; i < length; i++)
         {
             GameObject newSecurityObj = Instantiate(WorkerPrefabV2_V1, WorkerContent);
-            Debug.Log("worker.MyScript.Level => " + worker.MyScript.Level);
-            newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(worker.ID, worker.MyScript.Name, worker.MyScript.Age, worker.MyScript.Height, worker.MyScript.Level);
+            Debug.Log("worker.MyScript.Level => " + workers[i].MyScript.Level);
+            if (i == 0 && _wType == WorkerType.Housekeeper && !tutorialControl)
+            {
+                if (GameManager.instance != null && !GameManager.instance.IsWatchTutorial)
+                {
+                    newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(workers[i].ID, workers[i].MyScript.Name, workers[i].MyScript.Age, workers[i].MyScript.Height, workers[i].MyScript.Level);
+                    newSecurityObj.GetComponent<WorkerInfoUIs>().SetMyPrice(0);
+                    newSecurityObj.GetComponent<WorkerInfoUIs>().txtPrice.text = "0";
+
+                    tutorialControl = true;
+                }
+            }
+            else
+                newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(workers[i].ID, workers[i].MyScript.Name, workers[i].MyScript.Age, workers[i].MyScript.Height, workers[i].MyScript.Level);
         }
         Debug.Log($"Worker Turu => {_wType} olan Isciler Listelendi.");
     }
@@ -1214,7 +1231,7 @@ public class UIController : MonoBehaviour
         }
         ClearWorkerContent(WorkerInventoryContent);
 
-        List<WorkerBehaviour> workers = WorkerManager.instance.GetWorkersInInventory().Where(x => x.workerType == _wType).OrderBy(x => x.MyScript.Level).ToList();
+        List<WorkerBehaviour> workers = MuseumManager.instance.WorkersInInventory.Where(x => x.workerType == _wType).OrderBy(x => x.MyScript.Level).ToList();
         foreach (WorkerBehaviour worker in workers)
         {
             GameObject newSecurityObj = Instantiate(InventoryWorkerPrefab_V1, WorkerInventoryContent);

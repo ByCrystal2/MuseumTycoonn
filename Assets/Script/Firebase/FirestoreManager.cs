@@ -15,6 +15,7 @@ public class FirestoreManager : MonoBehaviour
     public FirestoreRoomDatasHandler roomDatasHandler;
     public FirestorePictureDatasHandler pictureDatasHandler;
     public FirestoreStatueDatasHandler statueDatasHandler;
+    public FirestoreSkillDatasHandler skillDatasHandler;
     public static FirestoreManager instance { get; private set;}
     private void Awake()
     {
@@ -111,12 +112,16 @@ public class FirestoreManager : MonoBehaviour
             }
         });
     }
-    public void UpdateGameData(string userId)
+    public async System.Threading.Tasks.Task UpdateGameData(string userId, bool _overwrite = false)
     {
+        if (GameManager.instance != null) if (!GameManager.instance.IsWatchTutorial && !_overwrite) return;
         // Kullanýcý ID'si ile belgeyi sorgula
         Query query = db.Collection("Users").WhereEqualTo("userID", userId);
+        Debug.Log("UpdateGameData method is starting...");
+        try
+        {
 
-        query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            await query.GetSnapshotAsync().ContinueWithOnMainThread(async task =>
         {
             if (task.IsCompleted)
             {
@@ -130,7 +135,7 @@ public class FirestoreManager : MonoBehaviour
                     // Belge varsa, alt koleksiyon olan PictureDatas'ta tabloyu bul ve güncelle
                     CollectionReference gameDatasRef = documentReference.Collection("GameDatas");
 
-                    gameDatasRef.GetSnapshotAsync().ContinueWithOnMainThread(gameDataTask =>
+                    await gameDatasRef.GetSnapshotAsync().ContinueWithOnMainThread(async gameDataTask =>
                     {
                         if (gameDataTask.IsCompleted)
                         {
@@ -138,26 +143,47 @@ public class FirestoreManager : MonoBehaviour
 
                             if (gameDataSnapshot.Documents.Count() > 0)
                             {
+                                Debug.Log("GameData is exits with " + userId + " userId");
                                 DocumentSnapshot gameDataDocument = gameDataSnapshot.Documents.FirstOrDefault();
                                 DocumentReference gameDataRef = gameDataDocument.Reference;
-
-                                Dictionary<string, object> updates = new Dictionary<string, object>
-                            {
-                                { "IsWatchTutorial", TutorialLevelManager.instance.IsWatchTutorial },
-                                { "IsFirstGame", NpcManager.instance.IsFirstGame },
-                            };
-
-                                gameDataRef.UpdateAsync(updates).ContinueWithOnMainThread(updateTask =>
+                                var museumDatas = MuseumManager.instance.GetSaveData();
+                                try
                                 {
-                                    if (updateTask.IsCompleted)
+                                    Dictionary<string, object> updates = new Dictionary<string, object>
                                     {
-                                        Debug.Log($"Game data successfully updated for user {userId}");
-                                    }
-                                    else if (updateTask.IsFaulted)
+                                        { "IsWatchTutorial",  GameManager.instance.IsWatchTutorial},
+                                        { "IsFirstGame", GameManager.instance.IsFirstGame },
+                                        { "Gold", museumDatas._gold },
+                                        { "Culture", museumDatas._Culture },
+                                        { "Gem", museumDatas._Gem },
+                                        { "SkillPoint", museumDatas._SkillPoint },
+                                        { "CurrentCultureLevel", museumDatas._CurrentCultureLevel },
+                                        { "GameLanguage", GameManager.instance.GetGameLanguage() },
+                                        { "ActiveRoomsRequiredMoney", GameManager.instance.ActiveRoomsRequiredMoney },
+                                        { "BaseWorkerHiringPrice", GameManager.instance.BaseWorkerHiringPrice },
+                                        { "PurchasedItemIDs", MuseumManager.instance.PurchasedItems.Select(x=> x.ID).ToList() },
+                                        { "DailyRewardItemIDs", ItemManager.instance.CurrentDailyRewardItems.Select(x=> x.ID).ToList() },
+                                        { "Timestamp", FieldValue.ServerTimestamp }
+
+                                    };
+
+                                    await gameDataRef.UpdateAsync(updates).ContinueWithOnMainThread(updateTask =>
                                     {
-                                        Debug.LogError($"Failed to update game data: {updateTask.Exception}");
-                                    }
-                                });
+                                        if (updateTask.IsCompleted)
+                                        {
+                                            Debug.Log($"Game data successfully updated for user {userId}");
+                                        }
+                                        else if (updateTask.IsFaulted)
+                                        {
+                                            Debug.LogError($"Failed to update game data: {updateTask.Exception}");
+                                        }
+                                    });
+                                }
+                                catch (Exception _ex)
+                                {
+                                    Debug.LogError($"Error updating game data: {_ex}");
+                                }
+                                
                             }
                             else
                             {
@@ -180,6 +206,11 @@ public class FirestoreManager : MonoBehaviour
                 Debug.LogError($"Error querying documents: {task.Exception}");
             }
         });
+        }
+        catch (Exception _ex)
+        {
+            Debug.LogError($"UpdateGameData method error cathing. Error: " + _ex.Message);
+        }
     }
     public async Task<Dictionary<string, object>> GetGameDataInDatabase(string userId)
     {
@@ -229,8 +260,23 @@ public class FirestoreManager : MonoBehaviour
             bool watchTutorial = false;
             bool firstGame = true;
 
+            float gold = 0f, culture = 0f, gem = 0f, skillPoint = 0f;
+            int currentCultureLevel = 0;
             userGameData.Add("IsWatchTutorial", watchTutorial);
             userGameData.Add("IsFirstGame", firstGame);
+            userGameData.Add("Gold", gold);
+            userGameData.Add("Culture", culture);
+            userGameData.Add("Gem", gem);
+            userGameData.Add("SkillPoint", skillPoint);
+            userGameData.Add("CurrentCultureLevel", currentCultureLevel);
+            userGameData.Add("GameLanguage", "English");
+            userGameData.Add("ActiveRoomsRequiredMoney", GameManager.instance.ActiveRoomsRequiredMoney);
+            userGameData.Add("BaseWorkerHiringPrice", GameManager.instance.BaseWorkerHiringPrice);
+            userGameData.Add("PurchasedItemIDs", MuseumManager.instance.PurchasedItems.Select(x=> x.ID).ToList());
+            userGameData.Add("DailyRewardItemIDs", ItemManager.instance.CurrentDailyRewardItems.Select(x=> x.ID).ToList());
+            userGameData.Add("WorkersInInventoryIDs", MuseumManager.instance.WorkersInInventory.Select(x=> x.ID).ToList());
+            userGameData.Add("CurrentActiveWorkersIDs", MuseumManager.instance.CurrentActiveWorkers.Select(x=> x.ID).ToList());
+            userGameData.Add( "Timestamp", FieldValue.ServerTimestamp);
 
             DocumentReference addTask = await collectionReference.AddAsync(userGameData);
 
@@ -240,10 +286,6 @@ public class FirestoreManager : MonoBehaviour
                 Debug.LogError("Failed to add game data.");
         }
 
-    }
-    public bool GetGameDataValue(bool _isFirstGame)
-    {
-        return _isFirstGame; //burdan devam edilecek.
     }
     public IEnumerator CheckIfUserExists(string _overrideUserID, string _overrideUserEmail, string _overrideUserTelNo, string _overrideUserName)
     {

@@ -63,16 +63,16 @@ public class PictureElement : MonoBehaviour
         PictureElementData ped = MuseumManager.instance.GetPictureElementData(_pictureData.TextureID);
         if (ped != null)
         {
-            if (!MuseumManager.instance.CurrentActivePictures.Contains(this))
-                MuseumManager.instance.CurrentActivePictures.Add(this);
+            if (!MuseumManager.instance.AllPictureElements.Contains(this))
+                MuseumManager.instance.AllPictureElements.Add(this);
 
             Debug.Log("ped null degil!");
             im.sprite = CatchTheColors.instance.TextureToSprite(ped.texture);
         }
         else
         {
-            if (MuseumManager.instance.CurrentActivePictures.Contains(this))
-                MuseumManager.instance.CurrentActivePictures.Remove(this);
+            if (MuseumManager.instance.AllPictureElements.Contains(this))
+                MuseumManager.instance.AllPictureElements.Remove(this);
             im.sprite = MuseumManager.instance.EmptyPictureSprite;
             Debug.Log("ped null!");
         }

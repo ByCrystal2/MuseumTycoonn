@@ -32,7 +32,7 @@ public class WorkerHiringButton : MonoBehaviour, IPointerClickHandler
                 WorkerManager.instance.GetWorkersInMarket().Remove(WorkerManager.instance.GetWorkersInMarket().Where(x => x.ID == MyWorkerID).SingleOrDefault());
                 WorkerManager.instance.AddWorkerToInventory(WorkerManager.instance.GetAllWorkers().Where(x => x.ID == MyWorkerID).SingleOrDefault());
                 Destroy(myWorkerInfoUIS.gameObject);
-                UIController.instance.GetDesiredWorkersInContent(WorkerManager.instance.GetWorkersInInventory().Where(x => x.ID == MyWorkerID).SingleOrDefault().workerType);
+                UIController.instance.GetDesiredWorkersInContent(MuseumManager.instance.WorkersInInventory.Where(x => x.ID == MyWorkerID).SingleOrDefault().workerType);
 
                 GameManager.instance.Save();
                 break;

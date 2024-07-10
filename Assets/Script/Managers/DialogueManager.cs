@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using Unity.Entities;
 using UnityEngine;
@@ -57,6 +58,7 @@ public class DialogueManager : MonoBehaviour
         if (_dialogs.Count > 0)
         Debug.Log("Dialog Starting... First Dialog Message => " + _dialogs[0].Sentence);
 
+        currentDialogPanel.dialogText.text = "";
         yield return new WaitForEndOfFrame();
         CinemachineTransition(true);
         //StartCoroutine(HoldAnimation(4, 1f,"startDialog",true));
@@ -75,7 +77,7 @@ public class DialogueManager : MonoBehaviour
     }
     IEnumerator WaitForTutorialBrainTranstionEnding(List<Dialog> _dialogs)
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(2);
         SetActivationDialoguePanel(true);
 
         sentences.Clear();
@@ -88,14 +90,36 @@ public class DialogueManager : MonoBehaviour
     }
     public void EndTutorialDialogue() // unity event
     {
-        TutorialLevelManager.instance.IsWatchTutorial = true;
+        GameManager.instance.IsWatchTutorial = true;
+        GameManager.instance.IsFirstGame = false;
         SetActivationDialoguePanel(false);
+        UIController.instance.tutorialUISPanel.gameObject.SetActive(false);
         currentTrigger.gameObject.SetActive(false);
         PlayerManager.instance.UnLockPlayer();
         UIController.instance.CloseJoystickObj(false);
         CinemachineTransition(false);
-        FirestoreManager.instance.UpdateGameData("ahmet123");
+        DatabaseWaitingDatas();
         GameManager.instance.Save();
+    }
+    private async void DatabaseWaitingDatas()
+    {
+        ItemData firstTableForPlayer = new ItemData(99999, "Vincent van Gogh", "Hediye Tablo", 1, 0, null, ItemType.Table, ShoppingType.Gold, 1, 3);
+        PictureData newDatabaseItem = new PictureData();
+        newDatabaseItem.TextureID = firstTableForPlayer.textureID;
+        newDatabaseItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
+        newDatabaseItem.painterData = new PainterData(firstTableForPlayer.ID, firstTableForPlayer.Description, firstTableForPlayer.Name, firstTableForPlayer.StarCount);
+        newDatabaseItem.isActive = true;
+        newDatabaseItem.isFirst = false;
+        newDatabaseItem.isLocked = false;
+        newDatabaseItem.id = 208;
+
+        await FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId("ahmet123", newDatabaseItem);
+        await FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId("ahmet123", MuseumManager.instance.InventoryPictures.Where(x => x.painterData.ID == 9999).SingleOrDefault());
+        List<RoomData> activeRoomDatas = RoomManager.instance.RoomDatas.Where(x => x.isActive).ToList();
+        await FirestoreManager.instance.skillDatasHandler.AddSkillWithUserId("ahmet123", SkillTreeManager.instance.skillNodes.Where(x=> x.ID == 0).SingleOrDefault());
+        await FirestoreManager.instance.skillDatasHandler.AddSkillWithUserId("ahmet123", SkillTreeManager.instance.skillNodes.Where(x=> x.ID == 1).SingleOrDefault());
+        await FirestoreManager.instance.roomDatasHandler.AddRoomsWithUserId("ahmet123", activeRoomDatas);
+        await FirestoreManager.instance.UpdateGameData("ahmet123");
     }
     private void CinemachineTransition(bool _goTutorial)
     {
@@ -133,6 +157,7 @@ public class DialogueManager : MonoBehaviour
             StartCoroutine(TypeSentence(sentence));
         }
         yield return new WaitUntil(() => !waitFirstSentence);
+        yield return new WaitForSeconds(0.8f);
         SetActivationDialoguePanel(false);
         yield return new WaitForSeconds(0.4f);
         currentHelper.EventEndingCovered.Invoke();
@@ -140,7 +165,7 @@ public class DialogueManager : MonoBehaviour
     }
     public void NextDialogueTriggerOverride()
     {
-        Debug.Log("NextDialogueTriggerOverride => " + currentTrigger.currentStep + 1);
+        Debug.Log("NextDialogueTriggerOverride Step => " + ((int)currentTrigger.currentStep + 1));
         currentTrigger.TriggerDialog(currentTrigger.currentStep + 1);
     }
     IEnumerator HoldAnimation(int _duration, float _transitDuration, string _animString, bool _animStart)

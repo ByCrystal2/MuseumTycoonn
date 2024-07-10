@@ -137,17 +137,17 @@ public class RoomData : MonoBehaviour
             RoomBlok.SetActive(true);
             NotPurchasedBlok.SetActive(true);
             RoofLock.SetActive(true);
-            if (CurrentShoppingType != ShoppingType.RealMoney && isActive && RoomManager.instance.activeRoomsRequiredMoney > 0)
+            if (CurrentShoppingType != ShoppingType.RealMoney && isActive && GameManager.instance.ActiveRoomsRequiredMoney> 0)
             {
-                SetMyRequiredTexts(RoomManager.instance.activeRoomsRequiredMoney);
+                SetMyRequiredTexts(GameManager.instance.ActiveRoomsRequiredMoney);
                 StartCoroutine(WaitForRoomUISHandler());
 
-                Debug.Log("Oda Aktif Ve activeRoomsRequiredMoney 0'dan buyuk" + RoomManager.instance.activeRoomsRequiredMoney);
+                Debug.Log("Oda Aktif Ve activeRoomsRequiredMoney 0'dan buyuk" + GameManager.instance.ActiveRoomsRequiredMoney);
             }
             else
             {
                 SetMyRequiredTexts("Not Purchased");
-                Debug.Log("Oda Aktif deðil Ve activeRoomsRequiredMoney 0'dan kucuk => " + RoomManager.instance.activeRoomsRequiredMoney + "|| My Required Money => " + RequiredMoney);
+                Debug.Log("Oda Aktif deðil Ve activeRoomsRequiredMoney 0'dan kucuk => " + GameManager.instance.ActiveRoomsRequiredMoney + "|| My Required Money => " + RequiredMoney);
             }
         }
         else

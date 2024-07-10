@@ -22,8 +22,8 @@ public class WorkerInfoUIs : MonoBehaviour
         txtFullName.text = _fullName;
         txtAge.text = _age.ToString();
         txtHeight.text = _height.ToString("000");
-        myPrice = (WorkerManager.instance.BaseWorkerHiringPrice * _level) + WorkerManager.instance.GetBaseHiringWorkerWithMuseumLevel();
-        Debug.Log("MyPrice => " + (WorkerManager.instance.BaseWorkerHiringPrice * _level).ToString() + WorkerManager.instance.GetBaseHiringWorkerWithMuseumLevel().ToString());
+        myPrice = (GameManager.instance.BaseWorkerHiringPrice * _level) + WorkerManager.instance.GetBaseHiringWorkerWithMuseumLevel();
+        Debug.Log("MyPrice => " + (GameManager.instance.BaseWorkerHiringPrice * _level).ToString() + WorkerManager.instance.GetBaseHiringWorkerWithMuseumLevel().ToString());
         txtPrice.text = myPrice.ToString();
         if (_level != 0)
         {
@@ -45,5 +45,9 @@ public class WorkerInfoUIs : MonoBehaviour
     public float GetMyPrice()
     {
         return myPrice;
+    }
+    public void SetMyPrice(float _price)
+    {
+        myPrice = _price;
     }
 }

@@ -11,7 +11,7 @@ public partial class RoomManager : MonoBehaviour
     public StatuesHandler statuesHandler;
     //Statues
 
-    public float activeRoomsRequiredMoney = 1000;
+    //public float activeRoomsRequiredMoney = 1000;
     // Buy Room Panel Elements
 
     public GameObject PnlBuyRoom;
@@ -192,17 +192,17 @@ public partial class RoomManager : MonoBehaviour
         if (purchasedRoom.CurrentShoppingType != ShoppingType.RealMoney)
         {
             List<RoomData> activeRoomDatas = roomDatas.Where(x => x.isActive && x.isLock).ToList();
-        activeRoomsRequiredMoney = purchasedRoom.RequiredMoney + (activeRoomDatas.Count * 500);
+        GameManager.instance.ActiveRoomsRequiredMoney = purchasedRoom.RequiredMoney + (activeRoomDatas.Count * 500);
             foreach (var _activeRoom in activeRoomDatas)
             {
                 if (!(_activeRoom.CurrentShoppingType == ShoppingType.RealMoney))
                 {
-                    _activeRoom.RequiredMoney = activeRoomsRequiredMoney;
-                    _activeRoom.SetMyRequiredTexts(activeRoomsRequiredMoney);
+                    _activeRoom.RequiredMoney = GameManager.instance.ActiveRoomsRequiredMoney;
+                    _activeRoom.SetMyRequiredTexts(GameManager.instance.ActiveRoomsRequiredMoney);
                 }
 
             }
-            Debug.Log("aktif odalarin fiyatlari guncellendi => " + activeRoomsRequiredMoney);
+            Debug.Log("aktif odalarin fiyatlari guncellendi => " + GameManager.instance.ActiveRoomsRequiredMoney);
         }
         forDatabaseRoomDatas.Add(purchasedRoom);
         FirestoreManager.instance.roomDatasHandler.AddRoomsWithUserId("ahmet123", forDatabaseRoomDatas);

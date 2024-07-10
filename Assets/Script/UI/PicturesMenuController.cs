@@ -26,6 +26,7 @@ public class PicturesMenuController : MonoBehaviour
     [SerializeField] public TextMeshProUGUI txtDescription;
     [SerializeField] public TextMeshProUGUI txtRequiredGold;
     [SerializeField] Image imgPicture;
+    [SerializeField] Sprite defaultPicture;
     [SerializeField] Button PictureUpdateButton;
     [SerializeField] Button ExitPanelButton;
 
@@ -249,7 +250,7 @@ public class PicturesMenuController : MonoBehaviour
             FirestoreManager.instance.pictureDatasHandler.UpdatePictureData("ahmet123", inventoryData.painterData.ID, wallData);
             Debug.Log("inventoryData.painterData.ID => " + inventoryData.painterData.ID + " wallData.painterData.ID => " + wallData.painterData.ID);
             Debug.Log("inventoryData.isActive => " + inventoryData.isActive + " wallData.isActive => " + wallData.isActive);
-            //FirestoreManager.instance.firestoreItemsManager.AddStatueWithUserId(FirebaseAuthManager.instance.GetCurrentUser().UserId,CurrentPicture._pictureData.id); // asil kod bu. Testten sonra buna gecilmeli!
+            //FirestoreManager.instance.firestoreItemsManager.AddSkillWithUserId(FirebaseAuthManager.instance.GetCurrentUser().UserId,CurrentPicture._pictureData.id); // asil kod bu. Testten sonra buna gecilmeli!
             UpdatePicture();
             CurrentPicture.SetImage(!CurrentPicture._pictureData.isLocked);
             StartCoroutine(nameof(WaitForSpendingGoldPicture));
@@ -274,9 +275,14 @@ public class PicturesMenuController : MonoBehaviour
         {
             Debug.Log("ID: " + PE._pictureData.TextureID);
             PictureElementData ped = MuseumManager.instance.GetPictureElementData(PE._pictureData.TextureID);
+            Debug.Log("ped.texture.activeMipmapLimit => " + ped.texture.activeMipmapLimit);
             imgPicture.sprite = CatchTheColors.instance.TextureToSprite(ped.texture);
         }
-        SetPictureUpdateButton(false, "Tablo Seçin", Color.white);
+        else
+        {
+            imgPicture.sprite = defaultPicture;
+        }
+        SetPictureUpdateButton(false, "Tablo Seç", Color.white);
 
     }
     private bool tableClicked = false;
@@ -300,7 +306,7 @@ public class PicturesMenuController : MonoBehaviour
         }
         else if (GameManager.instance.PictureChangeRequiredAmount <= MuseumManager.instance.GetCurrentGold() && !tableClicked)
         {
-            SetPictureUpdateButton(false, "Tablo Seçin", Color.white);
+            SetPictureUpdateButton(false, "Tablo Seç", Color.white);
         }
         else
         {

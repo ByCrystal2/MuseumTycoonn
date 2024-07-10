@@ -8,7 +8,7 @@ public class WorkerManager : MonoBehaviour
 {
     [SerializeField] public List<WorkerBehaviour> AllWorkers = new List<WorkerBehaviour>();
     [SerializeField] public List<WorkerBehaviour> WorkersInMarket = new List<WorkerBehaviour>();
-    [SerializeField] public List<WorkerBehaviour> WorkersInInventory = new List<WorkerBehaviour>();
+    //[SerializeField] public List<WorkerBehaviour> WorkersInInventory = new List<WorkerBehaviour>();
     [SerializeField] public List<WorkerBehaviour> CurrentActiveWorkers = new List<WorkerBehaviour>();
 
     [SerializeField] public List<WorkerAndTasks> WorkersAndTasks = new List<WorkerAndTasks>();
@@ -77,15 +77,15 @@ public class WorkerManager : MonoBehaviour
 
     public void CreateWorkersToMarket()
     {
-        int length = WorkersInInventory.Count;
-        int length1 = CurrentActiveWorkers.Count;
+        int length = MuseumManager.instance.WorkersInInventory.Count;
+        int length1 = MuseumManager.instance.CurrentActiveWorkers.Count;
         foreach (var worker in AllWorkers)
         {
             bool isInventory = false;
             bool isActiveWorker = false;
             for (int j = 0; j < length; j++)
             {
-                if (worker.ID == WorkersInInventory[j].ID)
+                if (worker.ID == MuseumManager.instance.WorkersInInventory[j].ID)
                 {
                     isInventory = true;
                     break;
@@ -93,7 +93,7 @@ public class WorkerManager : MonoBehaviour
             }
             for (int k = 0; k < length1; k++)
             {
-                if (worker.ID == CurrentActiveWorkers[k].ID)
+                if (worker.ID == MuseumManager.instance.CurrentActiveWorkers[k].ID)
                 {
                     isActiveWorker = true;
                     break;
@@ -207,41 +207,41 @@ public class WorkerManager : MonoBehaviour
     }
     public void AddWorkersTasks()
     {
-        foreach (WorkerBehaviour worker in CurrentActiveWorkers)
+        foreach (WorkerBehaviour worker in MuseumManager.instance.CurrentActiveWorkers)
         {
             WorkersAndTasks.Add(new WorkerAndTasks(worker));
         }
     }
     public List<WorkerBehaviour> GetAllWorkers(){ return AllWorkers; }
     public List<WorkerBehaviour> GetWorkersInMarket() {  return WorkersInMarket; }
-    public List<WorkerBehaviour> GetWorkersInInventory() { return WorkersInInventory; }
+    //public List<WorkerBehaviour> GetWorkersInInventory() { return WorkersInInventory; }
     public List<WorkerBehaviour> GetCurrentWorkers() { return CurrentActiveWorkers; }
     public List<WorkerAndTasks> GetWorkersAndWorkersTasksy() { return WorkersAndTasks; }
 
     public void AddWorkerToInventory(WorkerBehaviour _newWorker)
     {
-        WorkersInInventory.Add(_newWorker);
+        MuseumManager.instance.WorkersInInventory.Add(_newWorker);
+        FirestoreManager.instance.UpdateGameData("ahmet123");
     }
-    public float BaseWorkerHiringPrice = 0;
     public int GetBaseHiringWorkerWithMuseumLevel()
     {
         int museumLevel = MuseumManager.instance.GetCurrentCultureLevel();
 
         if (museumLevel <= 5 && museumLevel < 10)
         {
-            return (int)(1000 + BaseWorkerHiringPrice);
+            return (int)(1000 + GameManager.instance.BaseWorkerHiringPrice);
         }
         else if (museumLevel <= 10 && museumLevel < 15)
         {
-            return (int)(2000 + BaseWorkerHiringPrice);
+            return (int)(2000 + GameManager.instance.BaseWorkerHiringPrice);
         }
         else if (museumLevel <= 15 && museumLevel < 20)
         {
-            return (int)(3000 + BaseWorkerHiringPrice);
+            return (int)(3000 + GameManager.instance.BaseWorkerHiringPrice);
         }
         else
         {
-            return (int)(4000 + BaseWorkerHiringPrice);
+            return (int)(4000 + GameManager.instance.BaseWorkerHiringPrice);
         }
     }
 }

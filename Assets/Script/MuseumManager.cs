@@ -8,11 +8,15 @@ public class MuseumManager : MonoBehaviour
 {
     public static MuseumManager instance { get; private set; }
     public List<PictureElementData> PictureDatabase = new List<PictureElementData>();
-    public List<PictureElement> CurrentActivePictures = new List<PictureElement>();
+    public List<PictureElement> AllPictureElements = new List<PictureElement>();
     public List<PictureData> InventoryPictures = new List<PictureData>();
     public List<ItemData> PurchasedItems = new List<ItemData>();
     public List<NPCBehaviour> CurrentNpcs = new List<NPCBehaviour>();
 
+    //workers
+    [SerializeField] public List<WorkerBehaviour> WorkersInInventory = new List<WorkerBehaviour>();
+    [SerializeField] public List<WorkerBehaviour> CurrentActiveWorkers = new List<WorkerBehaviour>();
+    //workers
     public Sprite EmptyPictureSprite;
 
     protected float Gold, Culture, Gem, SkillPoint;
@@ -133,11 +137,9 @@ public class MuseumManager : MonoBehaviour
     {
         float targetGold = _score * GetTicketPrice();
         UIController.instance.GoldText.GetComponent<GoldStackHandler>().AddTempGold(targetGold);
-        Gold += targetGold;
-        Debug.Log("Earned: " + targetGold + " by npc paid for an image. New gold: " + Gold);
-        DailyEarning = Gold;
+        AddGold(targetGold);
+        Debug.Log("Earned: " + targetGold + " by npc paid for an image. New gold: " + Gold + " _score => " + _score);
         UIController.instance.InMuseumCurrentNPCCountChanged(GetInMuseumVisitorCount());
-        UIController.instance.InMuseumDailyEarningChanged(DailyEarning);
         UIController.instance.DailyVisitorCountChanged(AddAndGetDailyNPCCount());
         UIController.instance.UIChangesControl();
         if (PicturesMenuController.instance.CurrentPicture != null)
@@ -156,12 +158,14 @@ public class MuseumManager : MonoBehaviour
         Debug.Log(" New gold: " + Gold);
         DailyEarning += Gold;
         UIController.instance.InMuseumDailyEarningChanged(DailyEarning);
+        FirestoreManager.instance.UpdateGameData("ahmet123");
     }
     public void AddGem(float _gem)
     {
         Gem += _gem;
         UIController.instance.GemText.text = "" + Gem;
         Debug.Log("New Gem: " + Gem);
+        FirestoreManager.instance.UpdateGameData("ahmet123");
     }
     public void AddSkillPoint(int _point) // TEHLIKELI KOD! TESTTEN SONRA SILINMELIDIR!
     {
@@ -177,6 +181,7 @@ public class MuseumManager : MonoBehaviour
         SkillPoint -= _point;
         UIController.instance.SkillPointCountChanged(SkillPoint);
         Debug.Log("Spending Successful. New Point: " + SkillPoint);
+        FirestoreManager.instance.UpdateGameData("ahmet123");
     }
     public void SpendingGold(float _gold)
     {
@@ -188,6 +193,7 @@ public class MuseumManager : MonoBehaviour
         Gold -= _gold;
         UIController.instance.GoldText.text = "" + Gold;
         Debug.Log("Spending Successful. New gold: " + Gold);
+        FirestoreManager.instance.UpdateGameData("ahmet123");
     }
 
     public void SpendingGem(float _gem)
@@ -200,6 +206,7 @@ public class MuseumManager : MonoBehaviour
         Gem -= _gem;
         UIController.instance.GemText.text = "" + Gem;
         Debug.Log("Spending Successful. New gem: " + Gem);
+        FirestoreManager.instance.UpdateGameData("ahmet123");
     }
     public void OnNpcExitedMuseum(NPCBehaviour _oldNpc)
     {
@@ -254,13 +261,14 @@ public class MuseumManager : MonoBehaviour
         {
             Culture -= GetRequiredCultureExp();
             CurrentCultureLevel++;
-            WorkerManager.instance.BaseWorkerHiringPrice += 200;
+            GameManager.instance.BaseWorkerHiringPrice += 200;
             SkillPoint++;
             CultureLevelUP();
         }
         UIController.instance.CultureLevelCountChanged(CurrentCultureLevel);
         UIController.instance.SkillPointCountChanged(SkillPoint);
-        UIController.instance.UIChangesControl();      
+        UIController.instance.UIChangesControl();
+        FirestoreManager.instance.UpdateGameData("ahmet123");
     }
 
     public void AddPictureTable(PictureElement PE)
@@ -351,13 +359,19 @@ public class MuseumManager : MonoBehaviour
 
     public float GetMuseumCurrentCapacity()
     {
-        return SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorCapacity] + MaxVisitorPerCultureLevel[CurrentCultureLevel];
+        float capasity = SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorCapacity] + MaxVisitorPerCultureLevel[CurrentCultureLevel];
+        Debug.Log("GetMuseumCurrentCapacity => " + capasity);
+        return capasity;
     }
 
     public float GetTicketPrice()
     {
         Debug.Log("Ticket price: " + (SkillTreeManager.instance.CurrentBuffs[(int)eStat.MuseumEnterPrice] + TicketPricePerCultureLevel[CurrentCultureLevel]));
-        return SkillTreeManager.instance.CurrentBuffs[(int)eStat.MuseumEnterPrice] + TicketPricePerCultureLevel[CurrentCultureLevel];
+        int result = SkillTreeManager.instance.CurrentBuffs[(int)eStat.MuseumEnterPrice] + TicketPricePerCultureLevel[CurrentCultureLevel];
+        if (result <= 0)
+            return 1;
+        else
+            return result;
     }
 
     public int GetRequiredSkillPointExp()
@@ -373,9 +387,9 @@ public class MuseumManager : MonoBehaviour
     {
         Debug.Log("Onemli! get itemid: " + _id);
         PictureElement[] pictureElements = FindObjectsOfType<PictureElement>();
-        CurrentActivePictures = pictureElements.Where(x=> x._pictureData.isLocked == false).ToList();
-        Debug.Log("CurrentActivePictures.count: " + CurrentActivePictures.Count);
-        PictureElement pe = CurrentActivePictures.Find(x => x._pictureData.id == _id);
+        AllPictureElements = pictureElements.Where(x=> x._pictureData.isLocked == false).ToList();
+        Debug.Log("AllPictureElements.count: " + AllPictureElements.Count);
+        PictureElement pe = AllPictureElements.Find(x => x._pictureData.id == _id);
         Debug.Log(pe == null ? "Pe null" : "pe id: " + (pe._pictureData != null ? pe._pictureData.id.ToString() : "Picture data is null"));
         return pe;
     }

@@ -136,6 +136,8 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
                 Debug.Log($"Purchase Complete - Product: {product.definition.id}");
                 Debug.Log($"Purchase Complete - Item: {currentItem.IAP_ID}");
                 currentItem.IsPurchased = true;
+                if (currentItem.CurrentItemType == ItemType.Table || currentItem.CurrentItemType == ItemType.Ads)
+                    FirestoreManager.instance.UpdateGameData("ahmet123");
                 //We return Complete, informing IAP that the processing on our side is done and the transaction can be closed.
                 return PurchaseProcessingResult.Complete;
             }

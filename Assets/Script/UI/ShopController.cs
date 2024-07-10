@@ -354,7 +354,7 @@ public class ShopController : MonoBehaviour
         ItemManager.instance.ShopItemDatas.Remove(_item);
         MuseumManager.instance.PurchasedItems.Add(_item);
         //ItemManager.instance.AddItemInShop(ItemManager.instance.RItems[Random.Range(0, ItemManager.instance.RItems.Count)]);
-        GameManager.instance.Save();
+        FirestoreManager.instance.UpdateGameData("ahmet123");
         GetCurrentShoppingTypeItems();
     }
     public Sprite SetAndControlItemIcon(ShoppingType _shoppingType)
@@ -382,8 +382,9 @@ public class ShopController : MonoBehaviour
         newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
         newInventoryItem.painterData = new PainterData(_item.ID, _item.Description, _item.Name, _item.StarCount);
         MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
-        FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId("ahmet123", newInventoryItem);
+        //FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId("ahmet123", newInventoryItem);
         ItemsBuyingUpdate(_item);
+        UIInteractHandler.instance.FadeOut();
     }
 }
 public enum ShopUIType

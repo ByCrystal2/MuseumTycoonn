@@ -14,9 +14,10 @@ public class FirestoreRoomDatasHandler : MonoBehaviour
     {
         db = FirebaseFirestore.DefaultInstance;
     }
-    public async void AddRoomsWithUserId(string userId, List<RoomData> _roomDatas)
+    public async System.Threading.Tasks.Task AddRoomsWithUserId(string userId, List<RoomData> _roomDatas)
     {
         // Kullanýcý ID'si ile belgeyi sorgula
+        if (GameManager.instance != null) if (!GameManager.instance.IsWatchTutorial) return;
         foreach (var _roomData in _roomDatas)
         {
             await IERoomDataProcces(userId, _roomData);
@@ -25,6 +26,7 @@ public class FirestoreRoomDatasHandler : MonoBehaviour
 
     public async System.Threading.Tasks.Task IERoomDataProcces(string userId, RoomData _roomData)
     {
+        if (GameManager.instance != null) if (!GameManager.instance.IsWatchTutorial) return;
         Query query = db.Collection("Rooms").WhereEqualTo("userID", userId);
         QuerySnapshot snapshot = await query.GetSnapshotAsync();
 
@@ -57,6 +59,7 @@ public class FirestoreRoomDatasHandler : MonoBehaviour
 
     private async System.Threading.Tasks.Task IECheckAndAddRoomData(DocumentReference documentReference, RoomData _roomData, string _userId)
     {
+        if (GameManager.instance != null) if (!GameManager.instance.IsWatchTutorial) return;
         // Alt koleksiyon olan RoomDatas'ý sorgula
         CollectionReference roomDatasRef = documentReference.Collection("RoomDatas");
         Query query = roomDatasRef.WhereEqualTo("ID", _roomData.ID);
@@ -98,6 +101,7 @@ public class FirestoreRoomDatasHandler : MonoBehaviour
 
     private async System.Threading.Tasks.Task IEUpdateRoomData(string userId, int roomDataId)
     {
+        if (GameManager.instance != null) if (!GameManager.instance.IsWatchTutorial) return;
         RoomData currentRoom = RoomManager.instance.RoomDatas.SingleOrDefault(x => x.ID == roomDataId);
         if (currentRoom == null)
         {

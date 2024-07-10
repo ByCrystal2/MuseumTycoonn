@@ -64,8 +64,8 @@ public class LoadingScene : MonoBehaviour
                 case Scenes.Init:
                     return Scenes.Menu;
                 case Scenes.Menu:
-                    Debug.Log("TutorialLevelManager.instance.IsWatchTutorial => " + TutorialLevelManager.instance.IsWatchTutorial);
-                    if (!TutorialLevelManager.instance.IsWatchTutorial)
+                    Debug.Log("GameManager.instance.IsWatchTutorial => " + GameManager.instance.IsWatchTutorial);
+                    if (!GameManager.instance.IsWatchTutorial)
                         return Scenes.TutorialLevel;
                     else
                         return Scenes.Game;

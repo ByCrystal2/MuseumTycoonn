@@ -40,8 +40,8 @@ public class WorkerAssignmentRoomButton : MonoBehaviour,IPointerClickHandler
             RoomData currentRoom = RoomManager.instance.RoomDatas.Where(x => x.ID == CurrentRoomID).SingleOrDefault();
             currentRoom.MyRoomWorkersIDs.Add(CurrentWorkerID);
             Debug.Log("Interectable => " + Interactable + " Current Worker is => " + currentWorker.Name);
-            WorkerManager.instance.GetWorkersInInventory().Remove(WorkerManager.instance.GetAllWorkers().Where(x => x.ID == currentWorker.ID).SingleOrDefault());
-            WorkerManager.instance.GetCurrentWorkers().Add(WorkerManager.instance.GetAllWorkers().Where(x => x.ID == currentWorker.ID).SingleOrDefault());
+            MuseumManager.instance.WorkersInInventory.Remove(WorkerManager.instance.GetAllWorkers().Where(x => x.ID == currentWorker.ID).SingleOrDefault());
+            MuseumManager.instance.CurrentActiveWorkers.Add(WorkerManager.instance.GetAllWorkers().Where(x => x.ID == currentWorker.ID).SingleOrDefault());
             UIController.instance.ClearAssignmentRoomsButtonContent();
             UIController.instance.GetDesiredInventoryWorkersInContent(currentWorker.WorkerType);
 

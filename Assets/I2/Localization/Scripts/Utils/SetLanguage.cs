@@ -21,6 +21,7 @@ namespace I2.Loc
 			if( LocalizationManager.HasLanguage(_Language))
 			{
 				LocalizationManager.CurrentLanguage = _Language;
+				GameManager.instance.SetGameLanguage(_Language);
 			}
 		}
     }

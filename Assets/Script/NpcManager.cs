@@ -24,8 +24,6 @@ public class NpcManager : MonoBehaviour
     [SerializeField] private Transform NPCMessParent;
     [SerializeField] private List<NPCBehaviour> GuiltyNpcs = new List<NPCBehaviour>();
     [SerializeField] private List<NPCBehaviour> TargetGuiltyNpcs = new List<NPCBehaviour>();
-
-    public bool IsFirstGame = true;
     private void Awake()
     {
         if (instance)
@@ -41,21 +39,21 @@ public class NpcManager : MonoBehaviour
     }
     public async void AwakeLoadingProcesses()
     {
-        await GameManager.instance.LoadIsFirstGame();
-
-        if (IsFirstGame)
+        if (GameManager.instance.IsFirstGame)
         {
-            RoomManager.instance.activeRoomsRequiredMoney = 1000;
+            GameManager.instance.ActiveRoomsRequiredMoney = 1000;
+            GameManager.instance.BaseWorkerHiringPrice = 500;
+
+            await FirestoreManager.instance.UpdateGameData("ahmet123",true);
         }
         UIController.instance.roomUISPanelController.InitializeRoomUIS();
         RoomManager.instance.AddRooms(); // in app baglantisi kurulmadan once odalar yuklendi.
         GameManager.instance.LoadRooms();
-        GameManager.instance.LoadInventoryPictures();
+        //GameManager.instance.LoadInventoryPictures();
         GameManager.instance.LoadStatues();
         WorkerManager.instance.BaseAllWorkerOptions();
         GameManager.instance.LoadWorkers();
         WorkerManager.instance.CreateWorkersToMarket();
-        GameManager.instance.LoadPurchasedItems();
         GameManager.instance.LoadDailyRewardItems();
         //Gaming Services Activation
 
@@ -76,9 +74,9 @@ public class NpcManager : MonoBehaviour
         GameManager.instance.LoadSkills();
         GameManager.instance.LoadLastDailyRewardTime();
 
-        if (TutorialLevelManager.instance != null)
+        if (GameManager.instance != null)
         {
-            if (!TutorialLevelManager.instance.IsWatchTutorial)
+            if (!GameManager.instance.IsWatchTutorial)
             {
                 DialogueTrigger firstDialog = GameObject.FindWithTag("TutorialNPC").GetComponent<DialogueTrigger>();
                 if (firstDialog != null)
@@ -92,21 +90,20 @@ public class NpcManager : MonoBehaviour
             }
         }
         ItemData firstTableForPlayer = new ItemData(99999, "Vincent van Gogh", "Hediye Tablo", 1, 0, null, ItemType.Table, ShoppingType.Gold, 1, 3);
-        if (IsFirstGame)
+        if (GameManager.instance.IsFirstGame)
         {
-            Debug.Log("NpcManager IsFirstGame True. And First Game Process Starting...");
+            Debug.Log("GameManager IsFirstGame True. And First Game Process Starting...");
             ItemManager.instance.SetCalculatedDailyRewardItems();
-            IsFirstGame = false;
 
             GameManager.instance.rewardManager.lastDailyRewardTime = TimeManager.instance.CurrentDateTime;
-            MuseumManager.instance.OnNpcPaid(500);
+            MuseumManager.instance.OnNpcPaid(2500);
 
             PictureData newInventoryItem = new PictureData();
             newInventoryItem.TextureID = firstTableForPlayer.textureID;
             newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
             newInventoryItem.painterData = new PainterData(firstTableForPlayer.ID, firstTableForPlayer.Description, firstTableForPlayer.Name, firstTableForPlayer.StarCount);
             MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
-            FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId("ahmet123", newInventoryItem);
+            
             int index = TimeManager.instance.WhatDay;
             // Eðer bulunduysa
             if (index != -1)
