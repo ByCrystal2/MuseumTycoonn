@@ -84,9 +84,13 @@ public class NPCBehaviour : MonoBehaviour
     public bool IsBusy; //Mesgul mu?
     public bool IsMale; //Erkek mi?
     public NpcDialogState npcDialogState;
-    
+    public List<Renderer> npcRenderers = new();
+    public List<Canvas> myCanvasses = new();
+
     private void Awake()
     {
+        npcRenderers = GetComponentsInChildren<Renderer>().ToList();
+        myCanvasses = GetComponentsInChildren<Canvas>().ToList();
         int length = transform.childCount;
         for (int i = 0; i < length; i++)
         {
@@ -96,6 +100,7 @@ public class NPCBehaviour : MonoBehaviour
                 myWorkCamera = transform.GetChild(i).GetComponent<Camera>();
         }
     }
+
     void Start()
     {
         MyName = Constant.instance.GetNPCName(IsMale);
@@ -116,26 +121,39 @@ public class NPCBehaviour : MonoBehaviour
         if (x == 0)
         {
             TargetPosition = NpcManager.instance.GidisListe[Random.Range(0, NpcManager.instance.GidisListe.Count)];
-            spawnPoint = TargetPosition.position + new Vector3(Random.Range(-29, 30) * 0.1f, 0, Random.Range(-29, 30) * 0.1f);
+            //spawnPoint = TargetPosition.position + new Vector3(Random.Range(-29, 30) * 0.1f, 0, Random.Range(-29, 30) * 0.1f);
+            spawnPoint = TargetPosition.position;
             isGidis = true;
         }
         else
         {
             TargetPosition = NpcManager.instance.GelisListe[Random.Range(0, NpcManager.instance.GelisListe.Count)];
-            spawnPoint = TargetPosition.position + new Vector3(Random.Range(-29, 30) * 0.1f, 0, Random.Range(-29, 30) * 0.1f);
+            //spawnPoint = TargetPosition.position + new Vector3(Random.Range(-29, 30) * 0.1f, 0, Random.Range(-29, 30) * 0.1f);
+            spawnPoint = TargetPosition.position;
             isGidis = false;
         }
 
-        NavMeshHit hit;
-        if (NavMesh.SamplePosition(spawnPoint, out hit, 10, NavMesh.AllAreas))
-            spawnPoint = hit.position;
+        //NavMeshHit hit;
+        //if (NavMesh.SamplePosition(spawnPoint, out hit, 10, NavMesh.AllAreas))
+        //    spawnPoint = hit.position;
 
         transform.position = spawnPoint;
+    }
+
+    private void FixedUpdate()
+    {
+        bool visible = npcRenderers[0].isVisible;
+            foreach (var item in myCanvasses)
+                item.gameObject.SetActive(visible);
+        anim.enabled = visible;
+        if (!visible)
+            ResetAnimations(false);
     }
 
     // Update is called once per frame
     void Update()
     {
+
         if (TargetPosition == null)
         {
             if (IsBusy)
@@ -201,6 +219,7 @@ public class NPCBehaviour : MonoBehaviour
             if(DialogTarget != null)
                 Debug.Log("dialog targeti olmasina ragmen Move a gecti.");
             Agent.SetDestination(target);
+            ResetAnimations(true);
             SetCurrentAnimationState("Walk", (int)NpcWalkType, "Dialog", 0);
         }
     }
@@ -221,7 +240,13 @@ public class NPCBehaviour : MonoBehaviour
 
         CurrentInvestigate = InvestigateState.Look;
         SetCurrentAnimationState("Look", 1);
+        Invoke(nameof(LookEndManualChecker), 3);
         //IdleTimer = Time.time + IdleLength;
+    }
+
+    void LookEndManualChecker()
+    {
+        OnEndInvestigatePicture();
     }
 
     public void Move()
@@ -291,11 +316,12 @@ public class NPCBehaviour : MonoBehaviour
                 }
                 TargetPosition = NpcManager.instance.GelisListe[index];
             }
-            OutsidePosition = TargetPosition.position + new Vector3(Random.Range(-29, 30) * 0.1f, 0, Random.Range(-29, 30) * 0.1f);
+            //OutsidePosition = TargetPosition.position + new Vector3(Random.Range(-29, 30) * 0.1f, 0, Random.Range(-29, 30) * 0.1f);
+            OutsidePosition = TargetPosition.position;
 
-            NavMeshHit hit;
-            if (NavMesh.SamplePosition(OutsidePosition, out hit, 10, NavMesh.AllAreas))
-                OutsidePosition = hit.position;
+            //NavMeshHit hit;
+            //if (NavMesh.SamplePosition(OutsidePosition, out hit, 10, NavMesh.AllAreas))
+            //    OutsidePosition = hit.position;
             
             CurrentState = NPCState.Move;
         }
@@ -586,11 +612,12 @@ public class NPCBehaviour : MonoBehaviour
         Agent.speed = NpcCurrentSpeed;
         TargetPosition = NpcManager.instance.GidisListe[Random.Range(0, NpcManager.instance.GidisListe.Count)];
 
-        OutsidePosition = TargetPosition.position + new Vector3(Random.Range(-29, 30) * 0.1f, 0, Random.Range(-29, 30) * 0.1f);
+        //OutsidePosition = TargetPosition.position + new Vector3(Random.Range(-29, 30) * 0.1f, 0, Random.Range(-29, 30) * 0.1f);
+        OutsidePosition = TargetPosition.position;
 
-        NavMeshHit hit;
-        if (NavMesh.SamplePosition(OutsidePosition, out hit, 10, NavMesh.AllAreas))
-            OutsidePosition = hit.position;
+        //NavMeshHit hit;
+        //if (NavMesh.SamplePosition(OutsidePosition, out hit, 10, NavMesh.AllAreas))
+        //    OutsidePosition = hit.position;
 
         SetCurrentAnimationState("Walk", _multiplier == 1 ? (int)NpcWalkType : 102, "Dialog", 0);
         MuseumManager.instance.OnNpcExitedMuseum(this);
@@ -615,9 +642,31 @@ public class NPCBehaviour : MonoBehaviour
             anim.SetInteger(thirdState, thirdInt);
     }
 
+    void ResetAnimations(bool _exceptWalk)
+    {
+        anim.SetInteger("Liked", 0);
+        anim.SetInteger("NoLiked", 0);
+        int currentDialog = anim.GetInteger("Dialog");
+        if (currentDialog == 3)
+            anim.SetInteger("Dialog", -101);
+        else if (currentDialog == 1 || currentDialog == 2)
+            anim.SetInteger("Dialog", -1);
+        else if (currentDialog == -1)
+            anim.SetInteger("Dialog", 0);
+        if(!_exceptWalk)
+            anim.SetInteger("Walk", 0);
+        anim.SetInteger("Hit", 0);
+        anim.SetInteger("GetHit", 0);
+        anim.SetInteger("Fall", 0);
+        anim.SetInteger("inFight", 0);
+        anim.SetInteger("Look", 0);
+        anim.SetInteger("MakeMess", 0);
+    }
+
     public void OnEndInvestigatePicture()
     { // Tabloya bakma animasyonu (Looking) bitisinde cagirilan method.
         Debug.Log("Looking end.");
+        CancelInvoke(nameof(LookEndManualChecker));
         SetCurrentAnimationState("Look", 0);
         if (DialogTarget != null)
             return;
@@ -736,6 +785,13 @@ public class NPCBehaviour : MonoBehaviour
         StartCoroutine(StartFight(_IWillBeat));
     }
 
+    bool AnimActive()
+    {
+        Debug.Log("Npc gorus alaninda degil, aniamsyon oynamayacak.");
+        OnDialogEnd();
+        ResetAnimations(false);
+        return anim.enabled;
+    }
     IEnumerator StartFight(bool _IWillBeat)
     {
         if (_IWillBeat)
@@ -745,6 +801,9 @@ public class NPCBehaviour : MonoBehaviour
             while (anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "Kick" + kickid)
             {
                 Debug.Log("Anim.GetCurrentAnimatorClipInfo(0)[0].clip.name: " + anim.GetCurrentAnimatorClipInfo(0)[0].clip.name);
+                if(!AnimActive())
+                    break;
+                
                 yield return new WaitForEndOfFrame();
             }
             AudioManager.instance.PlayPunchSound(CurrentAudioSource);
@@ -753,6 +812,8 @@ public class NPCBehaviour : MonoBehaviour
             //AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcByeBye, CurrentAudioSource);
             while (timer > 0)
             {
+                if (!AnimActive())
+                    break;
                 if (DialogTarget != null)
                     LookAtOptimal(DialogTarget.transform);
                 timer -= Time.deltaTime;
@@ -764,6 +825,8 @@ public class NPCBehaviour : MonoBehaviour
             SetCurrentAnimationState("Dialog", -1);
             while (anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "AfterKick")
             {
+                if (!AnimActive())
+                    break;
                 Debug.Log("Anim.GetCurrentAnimatorClipInfo(0)[0].clip.name: " + anim.GetCurrentAnimatorClipInfo(0)[0].clip.name);
                 yield return new WaitForEndOfFrame();
             }
@@ -772,6 +835,8 @@ public class NPCBehaviour : MonoBehaviour
             //AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcByeBye, CurrentAudioSource);
             while (timer > 0)
             {
+                if (!AnimActive())
+                    break;
                 if (DialogTarget != null)
                     LookAtOptimal(DialogTarget.transform);
                 timer -= Time.deltaTime;
@@ -798,6 +863,8 @@ public class NPCBehaviour : MonoBehaviour
             SetCurrentAnimationState("Dialog", -2);
             while (anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "FallAnimation")
             {
+                if (!AnimActive())
+                    break;
                 Debug.Log("Anim.GetCurrentAnimatorClipInfo(0)[0].clip.name: " + anim.GetCurrentAnimatorClipInfo(0)[0].clip.name);
                 yield return new WaitForEndOfFrame();
             }
@@ -806,6 +873,8 @@ public class NPCBehaviour : MonoBehaviour
             //AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcByeBye, CurrentAudioSource);
             while (timer > 0)
             {
+                if (!AnimActive())
+                    break;
                 if (DialogTarget != null)
                     LookAtOptimal(DialogTarget.transform);
                 timer -= Time.deltaTime;
@@ -820,6 +889,8 @@ public class NPCBehaviour : MonoBehaviour
 
             while (anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "StandUp")
             {
+                if (!AnimActive())
+                    break;
                 Debug.Log("Anim.GetCurrentAnimatorClipInfo(0)[0].clip.name: " + anim.GetCurrentAnimatorClipInfo(0)[0].clip.name);
                 yield return new WaitForEndOfFrame();
             }
@@ -828,6 +899,8 @@ public class NPCBehaviour : MonoBehaviour
             //AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcByeBye, CurrentAudioSource);
             while (timer > 0)
             {
+                if (!AnimActive())
+                    break;
                 if (DialogTarget != null)
                     LookAtOptimal(DialogTarget.transform);
                 timer -= Time.deltaTime;
@@ -889,6 +962,8 @@ public class NPCBehaviour : MonoBehaviour
         SetCurrentAnimationState("Dialog", -2, "Walk", 0);
         while (anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "FallAnimation")
         {
+            if (!AnimActive())
+                break;
             Debug.Log("Anim.GetCurrentAnimatorClipInfo(0)[0].clip.name: " + anim.GetCurrentAnimatorClipInfo(0)[0].clip.name);
             yield return new WaitForEndOfFrame();
         }
@@ -897,6 +972,8 @@ public class NPCBehaviour : MonoBehaviour
         //AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcByeBye, CurrentAudioSource);
         while (timer > 0)
         {
+            if (!AnimActive())
+                break;
             if (DialogTarget != null)
                 LookAtOptimal(DialogTarget.transform);
             timer -= Time.deltaTime;
@@ -911,6 +988,8 @@ public class NPCBehaviour : MonoBehaviour
 
         while (anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "StandUp")
         {
+            if (!AnimActive())
+                break;
             Debug.Log("Anim.GetCurrentAnimatorClipInfo(0)[0].clip.name: " + anim.GetCurrentAnimatorClipInfo(0)[0].clip.name);
             yield return new WaitForEndOfFrame();
         }
@@ -919,6 +998,8 @@ public class NPCBehaviour : MonoBehaviour
         //AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcByeBye, CurrentAudioSource);
         while (timer > 0)
         {
+            if (!AnimActive())
+                break;
             if (DialogTarget != null)
                 LookAtOptimal(DialogTarget.transform);
             timer -= Time.deltaTime;
@@ -942,6 +1023,8 @@ public class NPCBehaviour : MonoBehaviour
         Debug.Log("First enter => anim.GetCurrentAnimatorClipInfo(0)[0].clip.name: " + anim.GetCurrentAnimatorClipInfo(0)[0].clip.name);
         while (anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "Farewell")
         {
+            if (!AnimActive())
+                break;
             Debug.Log("Anim.GetCurrentAnimatorClipInfo(0)[0].clip.name: " + anim.GetCurrentAnimatorClipInfo(0)[0].clip.name);
             yield return new WaitForEndOfFrame();
         }
@@ -950,6 +1033,8 @@ public class NPCBehaviour : MonoBehaviour
         //AudioManager.instance.GetDialogAudios(MySources, DialogType.NpcByeBye, CurrentAudioSource);
         while (timer > 0)
         {
+            if (!AnimActive())
+                break;
             if (DialogTarget != null)
                 LookAtOptimal(DialogTarget.transform);
             timer -= Time.deltaTime;
