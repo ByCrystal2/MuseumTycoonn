@@ -16,6 +16,7 @@ public class FirestoreManager : MonoBehaviour
     public FirestorePictureDatasHandler pictureDatasHandler;
     public FirestoreStatueDatasHandler statueDatasHandler;
     public FirestoreSkillDatasHandler skillDatasHandler;
+    public FirestoreWorkerDatasHandler workerDatasHandler;
     public static FirestoreManager instance { get; private set;}
     private void Awake()
     {
@@ -87,8 +88,7 @@ public class FirestoreManager : MonoBehaviour
     private void AddNewPlayerToDataBase()
     {
         Firebase.Auth.FirebaseUser user = FirebaseAuthManager.instance.GetCurrentUser();
-        var userRegistration = new Dictionary<string, object>();
-
+        var userRegistration = new Dictionary<string, object>();        
         string id = user.UserId;
         string email = user.Email;
         string telNo = user.PhoneNumber;
@@ -137,18 +137,18 @@ public class FirestoreManager : MonoBehaviour
 
                     await gameDatasRef.GetSnapshotAsync().ContinueWithOnMainThread(async gameDataTask =>
                     {
-                        if (gameDataTask.IsCompleted)
-                        {
-                            QuerySnapshot gameDataSnapshot = gameDataTask.Result;
+                    if (gameDataTask.IsCompleted)
+                    {
+                        QuerySnapshot gameDataSnapshot = gameDataTask.Result;
 
-                            if (gameDataSnapshot.Documents.Count() > 0)
+                        if (gameDataSnapshot.Documents.Count() > 0)
+                        {
+                            Debug.Log("GameData is exits with " + userId + " userId");
+                            DocumentSnapshot gameDataDocument = gameDataSnapshot.Documents.FirstOrDefault();
+                            DocumentReference gameDataRef = gameDataDocument.Reference;
+                            var museumDatas = MuseumManager.instance.GetSaveData();
+                            try
                             {
-                                Debug.Log("GameData is exits with " + userId + " userId");
-                                DocumentSnapshot gameDataDocument = gameDataSnapshot.Documents.FirstOrDefault();
-                                DocumentReference gameDataRef = gameDataDocument.Reference;
-                                var museumDatas = MuseumManager.instance.GetSaveData();
-                                try
-                                {
                                     Dictionary<string, object> updates = new Dictionary<string, object>
                                     {
                                         { "IsWatchTutorial",  GameManager.instance.IsWatchTutorial},
@@ -163,6 +163,20 @@ public class FirestoreManager : MonoBehaviour
                                         { "BaseWorkerHiringPrice", GameManager.instance.BaseWorkerHiringPrice },
                                         { "PurchasedItemIDs", MuseumManager.instance.PurchasedItems.Select(x=> x.ID).ToList() },
                                         { "DailyRewardItemIDs", ItemManager.instance.CurrentDailyRewardItems.Select(x=> x.ID).ToList() },
+                                        { "WorkersInInventoryIDs", MuseumManager.instance.WorkersInInventory.Select(x=> x.ID).ToList()},
+                                        { "LastDailyRewardTime", MuseumManager.instance.lastDailyRewardTime.ToString("yyyy-MM-dd HH:mm:ss") },
+                                        { "WhatDay", TimeManager.instance.WhatDay },
+                                        { "RemoveAllAds", GoogleAdsManager.instance.adsData.RemovedAllAds },
+
+                                    //Achievements
+                                    { "PurchasedRoomCount", GPGamesManager.instance.achievementController.PurchasedRoomCount },
+                                    { "NumberOfTablesPlaced", GPGamesManager.instance.achievementController.NumberOfTablesPlaced },
+                                    { "NumberOfVisitors", GPGamesManager.instance.achievementController.NumberOfVisitors },
+                                    { "NumberOfStatuesPlaced", GPGamesManager.instance.achievementController.NumberOfStatuesPlaced },
+                                    { "TotalNumberOfMuseumVisitors", GPGamesManager.instance.achievementController.TotalNumberOfMuseumVisitors },
+                                    { "TotalWorkerHiringCount", GPGamesManager.instance.achievementController.TotalWorkerHiringCount },
+                                    { "TotalWorkerAssignCount", GPGamesManager.instance.achievementController.TotalWorkerAssignCount },
+                                        //Achievements
                                         { "Timestamp", FieldValue.ServerTimestamp }
 
                                     };
@@ -206,6 +220,93 @@ public class FirestoreManager : MonoBehaviour
                 Debug.LogError($"Error querying documents: {task.Exception}");
             }
         });
+        }
+        catch (Exception _ex)
+        {
+            Debug.LogError($"UpdateGameData method error cathing. Error: " + _ex.Message);
+        }
+    }
+    public async System.Threading.Tasks.Task UpdateGameLanguageInGameDatas(string userId)
+    {
+        // Kullanýcý ID'si ile belgeyi sorgula
+        Query query = db.Collection("Users").WhereEqualTo("userID", userId);
+        Debug.Log("UpdateGameLanguageInGameDatas method is starting...");
+        try
+        {
+            await query.GetSnapshotAsync().ContinueWithOnMainThread(async task =>
+            {
+                if (task.IsCompleted)
+                {
+                    QuerySnapshot snapshot = task.Result;
+
+                    if (snapshot.Documents.Count() > 0)
+                    {
+                        DocumentSnapshot documentSnapshot = snapshot.Documents.FirstOrDefault();
+                        DocumentReference documentReference = documentSnapshot.Reference;
+
+                        // Belge varsa, alt koleksiyon olan PictureDatas'ta tabloyu bul ve güncelle
+                        CollectionReference gameDatasRef = documentReference.Collection("GameDatas");
+
+                        await gameDatasRef.GetSnapshotAsync().ContinueWithOnMainThread(async gameDataTask =>
+                        {
+                            if (gameDataTask.IsCompleted)
+                            {
+                                QuerySnapshot gameDataSnapshot = gameDataTask.Result;
+
+                                if (gameDataSnapshot.Documents.Count() > 0)
+                                {
+                                    Debug.Log("GameData is exits with " + userId + " userId");
+                                    DocumentSnapshot gameDataDocument = gameDataSnapshot.Documents.FirstOrDefault();
+                                    DocumentReference gameDataRef = gameDataDocument.Reference;
+                                    var museumDatas = MuseumManager.instance.GetSaveData();
+                                    try
+                                    {
+                                        Dictionary<string, object> updates = new Dictionary<string, object>
+                                    {
+                                        { "GameLanguage", GameManager.instance.GetGameLanguage() },                                 
+                                        { "Timestamp", FieldValue.ServerTimestamp }
+
+                                    };
+
+                                        await gameDataRef.UpdateAsync(updates).ContinueWithOnMainThread(updateTask =>
+                                        {
+                                            if (updateTask.IsCompleted)
+                                            {
+                                                Debug.Log($"Game data successfully updated for user {userId}");
+                                            }
+                                            else if (updateTask.IsFaulted)
+                                            {
+                                                Debug.LogError($"Failed to update game data: {updateTask.Exception}");
+                                            }
+                                        });
+                                    }
+                                    catch (Exception _ex)
+                                    {
+                                        Debug.LogError($"Error updating game data: {_ex}");
+                                    }
+
+                                }
+                                else
+                                {
+
+                                }
+                            }
+                            else
+                            {
+                                Debug.LogError($"Error querying game data: {gameDataTask.Exception}");
+                            }
+                        });
+                    }
+                    else
+                    {
+                        Debug.LogError($"No document found for user ID: {userId}");
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"Error querying documents: {task.Exception}");
+                }
+            });
         }
         catch (Exception _ex)
         {
@@ -275,7 +376,18 @@ public class FirestoreManager : MonoBehaviour
             userGameData.Add("PurchasedItemIDs", MuseumManager.instance.PurchasedItems.Select(x=> x.ID).ToList());
             userGameData.Add("DailyRewardItemIDs", ItemManager.instance.CurrentDailyRewardItems.Select(x=> x.ID).ToList());
             userGameData.Add("WorkersInInventoryIDs", MuseumManager.instance.WorkersInInventory.Select(x=> x.ID).ToList());
-            userGameData.Add("CurrentActiveWorkersIDs", MuseumManager.instance.CurrentActiveWorkers.Select(x=> x.ID).ToList());
+            userGameData.Add("LastDailyRewardTime", MuseumManager.instance.lastDailyRewardTime.ToString("yyyy-MM-dd HH:mm:ss"));
+            userGameData.Add("WhatDay", TimeManager.instance.WhatDay);
+            userGameData.Add("RemoveAllAds", GoogleAdsManager.instance.adsData.RemovedAllAds);
+            //Achievements
+            userGameData.Add("PurchasedRoomCount", GPGamesManager.instance.achievementController.PurchasedRoomCount);
+            userGameData.Add("NumberOfTablesPlaced", GPGamesManager.instance.achievementController.NumberOfTablesPlaced );
+            userGameData.Add("NumberOfVisitors", GPGamesManager.instance.achievementController.NumberOfVisitors);
+            userGameData.Add("NumberOfStatuesPlaced", GPGamesManager.instance.achievementController.NumberOfStatuesPlaced);
+            userGameData.Add("TotalNumberOfMuseumVisitors", GPGamesManager.instance.achievementController.TotalNumberOfMuseumVisitors);
+            userGameData.Add("TotalWorkerHiringCount", GPGamesManager.instance.achievementController.TotalWorkerHiringCount);
+            userGameData.Add("TotalWorkerAssignCount", GPGamesManager.instance.achievementController.TotalWorkerAssignCount);
+            //Achievements
             userGameData.Add( "Timestamp", FieldValue.ServerTimestamp);
 
             DocumentReference addTask = await collectionReference.AddAsync(userGameData);

@@ -101,7 +101,7 @@ public class NPCBehaviour : MonoBehaviour
         MyName = Constant.instance.GetNPCName(IsMale);
         LikedArtist = Constant.instance.GetRandomFamousPaintersWithDesiredCount(Random.Range(1, 4));
         CurrentAudioSource = transform.GetChild(0).GetComponent<AudioSource>();
-        AdditionalLuck = 1000;
+        AdditionalLuck = 20;
         NpcCurrentSpeed = NpcSpeed + NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f); ;
         NpcRotationSpeed = 5;
         anim = GetComponent<Animator>();

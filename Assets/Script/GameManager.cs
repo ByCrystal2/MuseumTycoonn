@@ -59,9 +59,15 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
         Init();
-        Load();
-        LoadIsFirstGame();
+        //Load();
+        System.Threading.Tasks.Task task1 = LoadIsFirstGame();
+        yield return new WaitUntil(() => task1.IsCompleted);
+        if (IsFirstGame)
+            ItemManager.instance.SetCalculatedDailyRewardItems();
         LoadIsWatchTutorial();
+        LoadDailyRewardItems();
+        LoadGooglePlayAchievements();
+        LoadLastDailyRewardTime();
         LoadMuseumNumeralDatas();
         LanguageControlInDatabase();
         LoadInventoryPictures();
@@ -90,6 +96,8 @@ public class GameManager : MonoBehaviour
     public async void LanguageControlInDatabase()
     {
         string databaseLanguage = "";
+
+#if UNITY_EDITOR
         await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").ContinueWithOnMainThread(getTask =>
         {
             if (getTask.IsCompleted)
@@ -98,6 +106,16 @@ public class GameManager : MonoBehaviour
                 databaseLanguage = gameDatas["GameLanguage"].ToString();
             }
         });
+#else
+        await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).ContinueWithOnMainThread(getTask =>
+                {
+                    if (getTask.IsCompleted)
+                    {
+                        Dictionary<string, object> gameDatas = getTask.Result;
+                        databaseLanguage = gameDatas["GameLanguage"].ToString();
+                    }
+                });
+#endif
 
         if (databaseLanguage == "" || databaseLanguage == null || databaseLanguage == string.Empty)
         {
@@ -118,7 +136,11 @@ public class GameManager : MonoBehaviour
     {
         GameLanguage = _language;
         LocalizationManager.CurrentLanguage = _language;
-        FirestoreManager.instance.UpdateGameData("ahmet123", true);
+#if UNITY_EDITOR
+        FirestoreManager.instance.UpdateGameLanguageInGameDatas("ahmet123");
+#else
+                    FirestoreManager.instance.UpdateGameLanguageInGameDatas(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
     }
     public GameMode GetCurrentGameMode()
     {
@@ -130,172 +152,178 @@ public class GameManager : MonoBehaviour
     }
     public void Save()
     {
-        if (CurrentSaveData.SaveName == "")
-            CurrentSaveData.SaveName = _GameSave;
+        //if (CurrentSaveData.SaveName == "")
+        //    CurrentSaveData.SaveName = _GameSave;
 
-        CurrentSaveData.GameLanguage = GameLanguage;
+        //CurrentSaveData.GameLanguage = GameLanguage;
 
-        var a = MuseumManager.instance.GetSaveData();
-        CurrentSaveData.Gold = a._gold;
-        CurrentSaveData.Culture = a._Culture;
-        CurrentSaveData.Gem = a._Gem;
-        CurrentSaveData.SkillPoint = a._SkillPoint;
-        CurrentSaveData.CurrentCultureLevel = a._CurrentCultureLevel;
+        //var a = MuseumManager.instance.GetSaveData();
+        //CurrentSaveData.Gold = a._gold;
+        //CurrentSaveData.Culture = a._Culture;
+        //CurrentSaveData.Gem = a._Gem;
+        //CurrentSaveData.SkillPoint = a._SkillPoint;
+        //CurrentSaveData.CurrentCultureLevel = a._CurrentCultureLevel;
 
-        if (GameManager.instance != null)
-        {
-            CurrentSaveData.IsFirstGame = GameManager.instance.IsFirstGame;
-        }
+        //if (GameManager.instance != null)
+        //{
+        //    CurrentSaveData.IsFirstGame = GameManager.instance.IsFirstGame;
+        //}
 
-        if (GameManager.instance != null)
-        {
-            CurrentSaveData.IsWatchTutorial = GameManager.instance.IsWatchTutorial;
-        }
+        //if (GameManager.instance != null)
+        //{
+        //    CurrentSaveData.IsWatchTutorial = GameManager.instance.IsWatchTutorial;
+        //}
 
-        if (rewardManager != null)
-        {
-            CurrentSaveData.LastDailyRewardTime =  rewardManager.lastDailyRewardTime.ToString("yyyy-MM-dd HH:mm:ss");
-            CurrentSaveData.WhatDay = TimeManager.instance.WhatDay;
-        }
+        ////if (rewardManager != null)
+        ////{
+        ////    CurrentSaveData.LastDailyRewardTime =  rewardManager.lastDailyRewardTime.ToString("yyyy-MM-dd HH:mm:ss");
+        ////    CurrentSaveData.WhatDay = TimeManager.instance.WhatDay;
+        ////}
         
 
-        Debug.Log("CurrentSaveData.LastDailyRewardTime => " + CurrentSaveData.LastDailyRewardTime);
-        Debug.Log("CurrentSaveData.WhatDay => " + CurrentSaveData.WhatDay);
-        List<RoomData> currentRooms = new List<RoomData>();
-        if (RoomManager.instance != null)
-        {
-            List<RoomData> AllActiveRooms = RoomManager.instance.RoomDatas.Where(x=> (x.isActive && !x.isLock) || x.isActive).ToList();
-            foreach (var room in AllActiveRooms)
-                currentRooms.Add(room);
-            Debug.Log("currentRooms.count: " + currentRooms.Count);
-        }
-
-        List<PictureData> currentActivePictures = new List<PictureData>();
-        foreach (var item in MuseumManager.instance.AllPictureElements)
-            currentActivePictures.Add(item._pictureData);
-        Debug.Log("currentActivePictures.count: " + currentActivePictures.Count);
-
-        List<PictureData> inventoryPictures = new List<PictureData>();
-        foreach (var item in MuseumManager.instance.InventoryPictures)
-            inventoryPictures.Add(item);
-        Debug.Log("inventoryPictures.count: " + inventoryPictures.Count);
-
-        List<ItemData> inventoryItems = new List<ItemData>();
-        foreach (var item in MuseumManager.instance.PurchasedItems)
-        {
-            inventoryItems.Add(item);
-        }
-        Debug.Log("inventoryItems.count: " + inventoryItems.Count);
-
-        List<ItemData> dailyRewardItems = new List<ItemData>();
-        foreach (var item in ItemManager.instance.CurrentDailyRewardItems)
-        {
-            dailyRewardItems.Add(item);
-        }
-        Debug.Log("dailyRewardItems.count: " + dailyRewardItems.Count);
-
-        List<SkillNode> skillNodes = new List<SkillNode>();
-        foreach (var skill in SkillTreeManager.instance.skillNodes)
-        {
-            skillNodes.Add(skill);
-        }
-
-        List<EditObjData> statueDatas = new List<EditObjData>();
-        if (RoomManager.instance != null)
-        {
-            foreach (var statueData in RoomManager.instance.statuesHandler.activeEditObjs)
-            {
-                statueDatas.Add(statueData);
-            }
-        }
-        List<WorkerData> currentWorkerDatas = new List<WorkerData>();
-        List<WorkerData> inventoryWorkerDatas = new List<WorkerData>();
-        Debug.Log("skillNodes.count: " + skillNodes.Count);
-        if (WorkerManager.instance != null)
-        {
-            
-            foreach (var currentWorker in MuseumManager.instance.CurrentActiveWorkers)
-            {
-                currentWorkerDatas.Add(currentWorker.MyDatas);
-            }
-            Debug.Log("currentWorkerDatas.count: " + currentWorkerDatas.Count);
-            
-            //foreach (var inventoryWorker in WorkerManager.instance.GetWorkersInInventory())
-            //{
-            //    inventoryWorkerDatas.Add(inventoryWorker.MyDatas);
-            //}
-            //Debug.Log("inventoryWorkerDatas.count: " + inventoryWorkerDatas.Count);
-        }
-
-        HashSet<string> savedRoomCells = new HashSet<string>(CurrentSaveData.Rooms.Select(r => r.availableRoomCell));
-        foreach (var room in currentRooms)
-        {
-            string roomCell = room.availableRoomCell.CellLetter.ToString() + room.availableRoomCell.CellNumber.ToString();
-            if (!savedRoomCells.Contains(roomCell))//
-            {
-                RoomSaveData newSaveData = new RoomSaveData();
-                newSaveData.availableRoomCell = roomCell;
-                newSaveData.isLock = room.isLock;
-                newSaveData.isActive = room.isActive;
-                newSaveData.RequiredMoney = room.RequiredMoney;
-                newSaveData.IsHasStatue = room.isHasStatue;
-                newSaveData.MyStatue = room.GetMyStatueInTheMyRoom();
-
-                newSaveData.MyRoomWorkersIDs.Clear();
-                int length = room.MyRoomWorkersIDs.Count;
-                for (int i = 0; i < length; i++)
-                {
-                    newSaveData.MyRoomWorkersIDs.Add(room.MyRoomWorkersIDs[i]);
-                }
-                CurrentSaveData.Rooms.Add(newSaveData);
-            }
-            else
-            {
-                RoomSaveData currentSavedRoom = CurrentSaveData.Rooms.Where(x=> x.availableRoomCell == roomCell).SingleOrDefault();
-                currentSavedRoom.isLock = room.isLock;
-                currentSavedRoom.isActive = room.isActive;
-                currentSavedRoom.RequiredMoney = room.RequiredMoney;
-                currentSavedRoom.IsHasStatue = room.isHasStatue;
-                currentSavedRoom.MyStatue = room.GetMyStatueInTheMyRoom();
-
-                currentSavedRoom.MyRoomWorkersIDs.Clear();
-                int length = room.MyRoomWorkersIDs.Count;
-                for (int i = 0; i < length; i++)
-                {
-                    currentSavedRoom.MyRoomWorkersIDs.Add(room.MyRoomWorkersIDs[i]);
-                }
-            }
-        }
-
-        CurrentSaveData.CurrentPictures = currentActivePictures;
-        //CurrentSaveData.InventoryPictures = inventoryPictures;
-        CurrentSaveData.PurchasedItems = inventoryItems;
-        CurrentSaveData.DailyRewardItems = dailyRewardItems;
-        CurrentSaveData.SkillNodes = skillNodes;
-        CurrentSaveData.CurrentWorkerDatas = currentWorkerDatas;
-        CurrentSaveData.InventoryWorkerDatas = inventoryWorkerDatas;
-        CurrentSaveData.StatueDatas = statueDatas;
-
-        if(GoogleAdsManager.instance != null)
-            CurrentSaveData.adData = GoogleAdsManager.instance.adsData;
-
+        //Debug.Log("CurrentSaveData.LastDailyRewardTime => " + CurrentSaveData.LastDailyRewardTime);
+        //Debug.Log("CurrentSaveData.WhatDay => " + CurrentSaveData.WhatDay);
+        //List<RoomData> currentRooms = new List<RoomData>();
         //if (RoomManager.instance != null)
-            //CurrentSaveData.ActiveRoomsRequiredMoney = RoomManager.instance.activeRoomsRequiredMoney;
+        //{
+        //    List<RoomData> AllActiveRooms = RoomManager.instance.RoomDatas.Where(x=> (x.isActive && !x.isLock) || x.isActive).ToList();
+        //    foreach (var room in AllActiveRooms)
+        //        currentRooms.Add(room);
+        //    Debug.Log("currentRooms.count: " + currentRooms.Count);
+        //}
 
+        //List<PictureData> currentActivePictures = new List<PictureData>();
+        //foreach (var item in MuseumManager.instance.AllPictureElements)
+        //    currentActivePictures.Add(item._pictureData);
+        //Debug.Log("currentActivePictures.count: " + currentActivePictures.Count);
+
+        //List<PictureData> inventoryPictures = new List<PictureData>();
+        //foreach (var item in MuseumManager.instance.InventoryPictures)
+        //    inventoryPictures.Add(item);
+        //Debug.Log("inventoryPictures.count: " + inventoryPictures.Count);
+
+        //List<ItemData> inventoryItems = new List<ItemData>();
+        //foreach (var item in MuseumManager.instance.PurchasedItems)
+        //{
+        //    inventoryItems.Add(item);
+        //}
+        //Debug.Log("inventoryItems.count: " + inventoryItems.Count);
+
+        //List<ItemData> dailyRewardItems = new List<ItemData>();
+        //foreach (var item in ItemManager.instance.CurrentDailyRewardItems)
+        //{
+        //    dailyRewardItems.Add(item);
+        //}
+        //Debug.Log("dailyRewardItems.count: " + dailyRewardItems.Count);
+
+        //List<SkillNode> skillNodes = new List<SkillNode>();
+        //foreach (var skill in SkillTreeManager.instance.skillNodes)
+        //{
+        //    skillNodes.Add(skill);
+        //}
+
+        //List<EditObjData> statueDatas = new List<EditObjData>();
+        //if (RoomManager.instance != null)
+        //{
+        //    foreach (var statueData in RoomManager.instance.statuesHandler.activeEditObjs)
+        //    {
+        //        statueDatas.Add(statueData);
+        //    }
+        //}
+        //List<WorkerData> currentWorkerDatas = new List<WorkerData>();
+        //List<WorkerData> inventoryWorkerDatas = new List<WorkerData>();
+        //Debug.Log("skillNodes.count: " + skillNodes.Count);
         //if (WorkerManager.instance != null)
-        //    CurrentSaveData.baseWorkerHiringPrice = WorkerManager.instance.BaseWorkerHiringPrice;
+        //{
+            
+        //    foreach (var currentWorker in MuseumManager.instance.CurrentActiveWorkers)
+        //    {
+        //        currentWorkerDatas.Add(currentWorker.MyDatas);
+        //    }
+        //    Debug.Log("currentWorkerDatas.count: " + currentWorkerDatas.Count);
+            
+        //    //foreach (var inventoryWorker in WorkerManager.instance.GetWorkersInInventory())
+        //    //{
+        //    //    inventoryWorkerDatas.Add(inventoryWorker.MyDatas);
+        //    //}
+        //    //Debug.Log("inventoryWorkerDatas.count: " + inventoryWorkerDatas.Count);
+        //}
 
-        string jsonString = JsonUtility.ToJson(CurrentSaveData);
-        File.WriteAllText(Application.persistentDataPath + "/" + CurrentSaveData.SaveName + ".json", jsonString); // this will write the json to the specified path
+        //HashSet<string> savedRoomCells = new HashSet<string>(CurrentSaveData.Rooms.Select(r => r.availableRoomCell));
+        //foreach (var room in currentRooms)
+        //{
+        //    string roomCell = room.availableRoomCell.CellLetter.ToString() + room.availableRoomCell.CellNumber.ToString();
+        //    if (!savedRoomCells.Contains(roomCell))//
+        //    {
+        //        RoomSaveData newSaveData = new RoomSaveData();
+        //        newSaveData.availableRoomCell = roomCell;
+        //        newSaveData.isLock = room.isLock;
+        //        newSaveData.isActive = room.isActive;
+        //        newSaveData.RequiredMoney = room.RequiredMoney;
+        //        newSaveData.IsHasStatue = room.isHasStatue;
+        //        newSaveData.MyStatue = room.GetMyStatueInTheMyRoom();
 
-        Debug.Log("Game Save Location: " + Application.persistentDataPath + "/" + CurrentSaveData.SaveName + ".json");
+        //        newSaveData.MyRoomWorkersIDs.Clear();
+        //        int length = room.MyRoomWorkersIDs.Count;
+        //        for (int i = 0; i < length; i++)
+        //        {
+        //            newSaveData.MyRoomWorkersIDs.Add(room.MyRoomWorkersIDs[i]);
+        //        }
+        //        CurrentSaveData.Rooms.Add(newSaveData);
+        //    }
+        //    else
+        //    {
+        //        RoomSaveData currentSavedRoom = CurrentSaveData.Rooms.Where(x=> x.availableRoomCell == roomCell).SingleOrDefault();
+        //        currentSavedRoom.isLock = room.isLock;
+        //        currentSavedRoom.isActive = room.isActive;
+        //        currentSavedRoom.RequiredMoney = room.RequiredMoney;
+        //        currentSavedRoom.IsHasStatue = room.isHasStatue;
+        //        currentSavedRoom.MyStatue = room.GetMyStatueInTheMyRoom();
+
+        //        currentSavedRoom.MyRoomWorkersIDs.Clear();
+        //        int length = room.MyRoomWorkersIDs.Count;
+        //        for (int i = 0; i < length; i++)
+        //        {
+        //            currentSavedRoom.MyRoomWorkersIDs.Add(room.MyRoomWorkersIDs[i]);
+        //        }
+        //    }
+        //}
+
+        //CurrentSaveData.CurrentPictures = currentActivePictures;
+        ////CurrentSaveData.InventoryPictures = inventoryPictures;
+        //CurrentSaveData.PurchasedItems = inventoryItems;
+        //CurrentSaveData.DailyRewardItems = dailyRewardItems;
+        //CurrentSaveData.SkillNodes = skillNodes;
+        //CurrentSaveData.CurrentWorkerDatas = currentWorkerDatas;
+        //CurrentSaveData.InventoryWorkerDatas = inventoryWorkerDatas;
+        //CurrentSaveData.StatueDatas = statueDatas;
+
+        //if(GoogleAdsManager.instance != null)
+        //    CurrentSaveData.adData = GoogleAdsManager.instance.adsData;
+
+        ////if (RoomManager.instance != null)
+        //    //CurrentSaveData.ActiveRoomsRequiredMoney = RoomManager.instance.activeRoomsRequiredMoney;
+
+        ////if (WorkerManager.instance != null)
+        ////    CurrentSaveData.baseWorkerHiringPrice = WorkerManager.instance.BaseWorkerHiringPrice;
+
+        //string jsonString = JsonUtility.ToJson(CurrentSaveData);
+        //File.WriteAllText(Application.persistentDataPath + "/" + CurrentSaveData.SaveName + ".json", jsonString); // this will write the json to the specified path
+
+        //Debug.Log("Game Save Location: " + Application.persistentDataPath + "/" + CurrentSaveData.SaveName + ".json");
     }
 
-    public async void LoadRooms()
+    public async System.Threading.Tasks.Task LoadRooms()
     {
         if (!IsFirstGame)
         {
-            Dictionary<string, object> gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
+            Dictionary<string, object> gameDatas = new Dictionary<string, object>();                
+
+#if UNITY_EDITOR
+            gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
+#else
+            gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
             float activeRoomsRequiredMoney = Convert.ToSingle(gameDatas["ActiveRoomsRequiredMoney"]);
             ActiveRoomsRequiredMoney = activeRoomsRequiredMoney; 
         }
@@ -364,6 +392,24 @@ public class GameManager : MonoBehaviour
         PictureChangesReqiuredAmountCalculater();
         CurrentSaveData.baseWorkerHiringPrice = 500;
     }
+    public async void LoadGooglePlayAchievements()
+    {
+        Dictionary<string, object> gameDatas = new Dictionary<string, object>();
+#if UNITY_EDITOR
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
+#else
+            gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
+        int purchasedRoomCount = gameDatas.ContainsKey("PurchasedRoomCount") ? Convert.ToInt32(gameDatas["PurchasedRoomCount"]) : 0;
+        int numberOfTablesPlaced = gameDatas.ContainsKey("NumberOfTablesPlaced") ? Convert.ToInt32(gameDatas["NumberOfTablesPlaced"]) : 0;
+        int numberOfVisitors = gameDatas.ContainsKey("NumberOfVisitors") ? Convert.ToInt32(gameDatas["NumberOfVisitors"]) : 0;
+        int numberOfStatuesPlaced = gameDatas.ContainsKey("NumberOfStatuesPlaced") ? Convert.ToInt32(gameDatas["NumberOfStatuesPlaced"]) : 0;
+        int totalNumberOfMuseumVisitors = gameDatas.ContainsKey("TotalNumberOfMuseumVisitors") ? Convert.ToInt32(gameDatas["TotalNumberOfMuseumVisitors"]) : 0;
+        int totalWorkerHiringCount = gameDatas.ContainsKey("TotalWorkerHiringCount") ? Convert.ToInt32(gameDatas["TotalWorkerHiringCount"]) : 0;
+        int totalWorkerAssignCount = gameDatas.ContainsKey("TotalWorkerAssignCount") ? Convert.ToInt32(gameDatas["TotalWorkerAssignCount"]) : 0;
+
+        GPGamesManager.instance.achievementController.SetDatas(purchasedRoomCount, numberOfTablesPlaced, numberOfVisitors, numberOfStatuesPlaced, totalNumberOfMuseumVisitors,totalWorkerHiringCount, totalWorkerAssignCount);
+    }
     public void PictureChangesReqiuredAmountCalculater()
     {        
         int museumLevel = MuseumManager.instance.GetCurrentCultureLevel();
@@ -377,14 +423,28 @@ public class GameManager : MonoBehaviour
     {
         GameLanguage = CurrentSaveData.GameLanguage;
     }
-    public void LoadRemoveAds()
+    public async System.Threading.Tasks.Task LoadRemoveAds()
     {
+        Dictionary<string, object> gameDatas = new Dictionary<string, object>();
+#if UNITY_EDITOR
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
+#else
+            gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
+        AdverstingData databaseAdversting = new AdverstingData();
+        bool removeAds = gameDatas.ContainsKey("RemoveAllAds") ? Convert.ToBoolean(gameDatas["RemoveAllAds"]) : false;
+        databaseAdversting.RemovedAllAds = removeAds;
         if (GoogleAdsManager.instance != null)
-            GoogleAdsManager.instance.adsData = CurrentSaveData.adData;        
+            GoogleAdsManager.instance.adsData = databaseAdversting;        
     }
     public async void LoadMuseumNumeralDatas()
     {
-        Dictionary<string, object> gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
+        Dictionary<string, object> gameDatas = new Dictionary<string, object>();
+#if UNITY_EDITOR
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
+#else
+            gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
         float _gold, _culture, _gem, _skillPoint;
         int _currentCultureLevel;
         _gold = Convert.ToSingle(gameDatas["Gold"]);
@@ -398,6 +458,8 @@ public class GameManager : MonoBehaviour
     public async System.Threading.Tasks.Task LoadIsFirstGame()
     {
         bool firstGameResult = false;
+
+#if UNITY_EDITOR
         await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").ContinueWithOnMainThread(getTask =>
         {
             if (getTask.IsCompleted)
@@ -406,12 +468,23 @@ public class GameManager : MonoBehaviour
                 firstGameResult = gameDatas.ContainsKey("IsFirstGame") ? Convert.ToBoolean(gameDatas["IsFirstGame"]) : false;
             }
         });
+#else
+            await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).ContinueWithOnMainThread(getTask =>
+        {
+            if (getTask.IsCompleted)
+            {
+                Dictionary<string, object> gameDatas = getTask.Result;
+                firstGameResult = gameDatas.ContainsKey("IsFirstGame") ? Convert.ToBoolean(gameDatas["IsFirstGame"]) : false;
+            }
+        });
+#endif
         Debug.Log("Is First Game ? = " + firstGameResult);
         IsFirstGame = firstGameResult;
     }
     public async void LoadIsWatchTutorial()
     {
         bool watchTutorialResult = false;
+#if UNITY_EDITOR
         await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").ContinueWithOnMainThread(getTask =>
         {
             if (getTask.IsCompleted)
@@ -420,12 +493,24 @@ public class GameManager : MonoBehaviour
                 watchTutorialResult = gameDatas.ContainsKey("IsWatchTutorial") ? Convert.ToBoolean(gameDatas["IsWatchTutorial"]) : false;
             }
         });
+#else
+            await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).ContinueWithOnMainThread(getTask =>
+        {
+            if (getTask.IsCompleted)
+            {
+                Dictionary<string, object> gameDatas = getTask.Result;
+                watchTutorialResult = gameDatas.ContainsKey("IsWatchTutorial") ? Convert.ToBoolean(gameDatas["IsWatchTutorial"]) : false;
+            }
+        });
+#endif
+
         Debug.Log("Is Watch Tutorial ? = " + watchTutorialResult);
         IsWatchTutorial = watchTutorialResult;
     }
     public void LoadInventoryPictures()
     {
         List<PictureData> pictureDatas = new List<PictureData>();
+#if UNITY_EDITOR
         FirestoreManager.instance.pictureDatasHandler.GetAllPictureInDatabase("ahmet123").ContinueWithOnMainThread(task =>
         {
             if (task.IsCompleted && !task.IsFaulted)
@@ -444,12 +529,37 @@ public class GameManager : MonoBehaviour
                 Debug.LogError("Hata olustu: " + task.Exception);
             }
         });
+#else
+        FirestoreManager.instance.pictureDatasHandler.GetAllPictureInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCompleted && !task.IsFaulted)
+            {
+                List<PictureData> databasePictures = task.Result;
+                foreach (PictureData picture in databasePictures)
+                {
+                    if (!picture.isActive)
+                    {
+                        pictureDatas.Add(picture);
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogError("Hata olustu: " + task.Exception);
+            }
+        });
+#endif
         MuseumManager.instance.InventoryPictures = pictureDatas;
     }
     public async void LoadPurchasedItems()
     {
         List<ItemData> purchasedItems = new List<ItemData>();
-        Dictionary<string, object> gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
+        Dictionary<string, object> gameDatas = new Dictionary<string, object>();
+#if UNITY_EDITOR
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
+#else
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
         List<int> itemIDs = ((List<object>)gameDatas["PurchasedItemIDs"]).Select(x => Convert.ToInt32(x)).ToList();
         foreach (int id in itemIDs)
         {
@@ -473,12 +583,17 @@ public class GameManager : MonoBehaviour
         }
 
     }
-    public async void LoadSkills()
+    public async System.Threading.Tasks.Task LoadSkills()
     {
         List<SkillNode> afterDatabaseSkills = new List<SkillNode>();
         foreach (var skill in SkillTreeManager.instance.skillNodes)
         {
-            SkillNode s = await FirestoreManager.instance.skillDatasHandler.GetSkillInDatabase("ahmet123", skill.ID);
+            SkillNode s = null;
+#if UNITY_EDITOR
+            await FirestoreManager.instance.skillDatasHandler.GetSkillInDatabase("ahmet123", skill.ID);
+#else
+            await FirestoreManager.instance.skillDatasHandler.GetSkillInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId, skill.ID);
+#endif
             if (s != null)
                 afterDatabaseSkills.Add(s);
             else
@@ -511,14 +626,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public async void LoadWorkers()
+    public async System.Threading.Tasks.Task LoadWorkers()
     {
-        Dictionary<string, object> gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
+        Dictionary<string, object> gameDatas = new Dictionary<string, object>();
+#if UNITY_EDITOR
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
+#else
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
         BaseWorkerHiringPrice = Convert.ToSingle(gameDatas["BaseWorkerHiringPrice"]);
 
         List<WorkerData> inventoryWorkers = new List<WorkerData>();
-        Dictionary<string, object> gameDatas1 = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
-        List<int> workerIDs = ((List<object>)gameDatas1["WorkersInInventoryIDs"]).Select(x => Convert.ToInt32(x)).ToList();
+        List<int> workerIDs = ((List<object>)gameDatas["WorkersInInventoryIDs"]).Select(x => Convert.ToInt32(x)).ToList();
         foreach (int id in workerIDs)
         {
             WorkerData databaseItem = WorkerManager.instance.GetAllWorkers().Where(x => x.ID == id).SingleOrDefault().MyDatas;
@@ -526,27 +645,42 @@ public class GameManager : MonoBehaviour
         }
 
         List<WorkerData> currentActiveWorkers = new List<WorkerData>();
-        Dictionary<string, object> gameDatas2 = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
-        List<int> currentWorkerIDs = ((List<object>)gameDatas2["CurrentActiveWorkersIDs"]).Select(x => Convert.ToInt32(x)).ToList();
-        foreach (int id in currentWorkerIDs)
+
+        List<int> workerIds = WorkerManager.instance.GetAllWorkers().Select(x => x.MyDatas.ID).ToList();
+        foreach (var id in workerIds)
         {
-            WorkerData databaseItem = WorkerManager.instance.GetAllWorkers().Where(x => x.ID == id).SingleOrDefault().MyDatas;
-            currentActiveWorkers.Add(databaseItem);
+            WorkerData databaseWorker = null;
+#if UNITY_EDITOR
+            databaseWorker = await FirestoreManager.instance.workerDatasHandler.GetWorkerInDatabase("ahmet123", id);
+#else
+            databaseWorker = await FirestoreManager.instance.workerDatasHandler.GetWorkerInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId, id);
+#endif
+            if (databaseWorker != null)
+            {
+                currentActiveWorkers.Add(databaseWorker);
+            }
         }
 
-        foreach (WorkerData worker in currentActiveWorkers)
+        foreach (WorkerData databaseWorker in currentActiveWorkers)
         {
-            Worker w = WorkerManager.instance.GetWorkerToWorkerType(worker);
+            List<int> iWorkRoomIds = new List<int>();
+            int length1 = databaseWorker.WorkRoomsIDs.Count;
+            for (int i = 0; i < length1; i++)
+            {
+                iWorkRoomIds.Add(databaseWorker.WorkRoomsIDs[i]);
+            }
+            Worker w = WorkerManager.instance.GetWorkerToWorkerType(databaseWorker);
             WorkerBehaviour wb = WorkerManager.instance.GetAllWorkers().Where(x=> x.ID == w.ID).SingleOrDefault();
+            w.Name = databaseWorker.Name;
+            w.Level = databaseWorker.Level;
             w.IWorkRoomsIDs.Clear();
             wb.MyDatas.WorkRoomsIDs.Clear();
-            int length = worker.WorkRoomsIDs.Count;
-            Debug.Log("worker.WorkRoomsIDs.Count => " + worker.WorkRoomsIDs.Count);
+            int length = iWorkRoomIds.Count;
+            Debug.Log("worker.WorkRoomsIDs.Count => " + iWorkRoomIds.Count);
             for (int i = 0; i < length; i++)
             {
-                Debug.Log("worker.WorkRoomsIDs[i] => " + worker.WorkRoomsIDs[i]);
-                w.IWorkRoomsIDs.Add(worker.WorkRoomsIDs[i]);
-                wb.MyDatas.WorkRoomsIDs.Add(worker.WorkRoomsIDs[i]);
+                w.IWorkRoomsIDs.Add(iWorkRoomIds[i]);
+                wb.MyDatas.WorkRoomsIDs.Add(iWorkRoomIds[i]);
             }
             MuseumManager.instance.CurrentActiveWorkers.Add(WorkerManager.instance.GetAllWorkers().Where(x=> x.ID == w.ID).SingleOrDefault());
 
@@ -562,25 +696,40 @@ public class GameManager : MonoBehaviour
             MuseumManager.instance.WorkersInInventory.Add(WorkerManager.instance.GetAllWorkers().Where(x => x.ID == w.ID).SingleOrDefault());
         }
     }
-    public async void LoadDailyRewardItems()
+    public async System.Threading.Tasks.Task LoadDailyRewardItems()
     {
         List<ItemData> dailyRewardItems = new List<ItemData>();
-        Dictionary<string, object> gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
+        Dictionary<string, object> gameDatas = new Dictionary<string, object>();
+#if UNITY_EDITOR
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
+#else
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
         List<int> itemIDs = ((List<object>)gameDatas["DailyRewardItemIDs"]).Select(x => Convert.ToInt32(x)).ToList();
         foreach (int id in itemIDs)
         {
             ItemData databaseItem = ItemManager.instance.GetAllDailyRewardItemDatas().Where(x=> x.ID == id).SingleOrDefault();
             dailyRewardItems.Add(databaseItem);
         }
-        ItemManager.instance.CurrentDailyRewardItems = dailyRewardItems;        
+        if (dailyRewardItems.Count > 0)
+            ItemManager.instance.CurrentDailyRewardItems = dailyRewardItems;              
     }
-    public void LoadLastDailyRewardTime()
+    public async void LoadLastDailyRewardTime()
     {
-        Debug.Log("CurrentSaveData.LastDailyRewardTime => " + CurrentSaveData.LastDailyRewardTime);
-        if (CurrentSaveData.LastDailyRewardTime != "")
+        Dictionary<string, object> gameDatas = new Dictionary<string, object>();
+#if UNITY_EDITOR
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
+#else
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
+        string lastDateTimeString = gameDatas.ContainsKey("LastDailyRewardTime")? gameDatas["LastDailyRewardTime"].ToString(): "";
+        byte whatDay = gameDatas.ContainsKey("WhatDay") ? Convert.ToByte(gameDatas["WhatDay"]): (byte)0;
+        Debug.Log("Loading LastDailyRewardTime => " + lastDateTimeString);
+        Debug.Log("Loading WhatDay => " + whatDay);
+        if (lastDateTimeString != "")
         {
-            rewardManager.lastDailyRewardTime = DateTime.Parse(CurrentSaveData.LastDailyRewardTime);
-            TimeManager.instance.WhatDay = CurrentSaveData.WhatDay;
+            MuseumManager.instance.lastDailyRewardTime = DateTime.Parse(lastDateTimeString);
+            TimeManager.instance.WhatDay = whatDay;
         }
     }
 

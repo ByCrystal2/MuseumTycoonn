@@ -105,34 +105,72 @@ public class WorkerManager : MonoBehaviour
             }
         }
     }
-    public void AddAllWorkersSubWork()
+    public async void AddAllWorkersSubWork()
     {
         foreach (var worker in AllWorkers)
         {
             worker.Agent = worker.gameObject.GetComponent<NavMeshAgent>();
             worker.NpcCurrentSpeed = worker.NpcSpeed;
-           
+            string noneDatabaseName = Constant.instance.GetNPCName(worker.IsMale);
+            WorkerData databaseWorker = null;
+#if UNITY_EDITOR
+            databaseWorker = await FirestoreManager.instance.workerDatasHandler.GetWorkerInDatabase("ahmet123", worker.ID);
+#else
+                    databaseWorker = await FirestoreManager.instance.workerDatasHandler.GetWorkerInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId, worker.ID);
+#endif
+            Debug.Log("is databaseWorker null => " + databaseWorker == null);
             switch (worker.workerType)
             {
                 case WorkerType.Security:
-                    worker.MyScript = new Security(worker.ID, worker.NpcCurrentSpeed, 100,worker.workerType,0 , worker);
-                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs,worker.workerType);
+                    if (databaseWorker != null)
+                        worker.MyScript = new Security(worker.ID, databaseWorker.Name, databaseWorker.Level, worker.NpcCurrentSpeed, 100,Random.Range(20,61), Random.Range(150, 200), worker.IsMale, databaseWorker.WorkRoomsIDs, worker.workerType, 0, worker);
+                    else
+                        worker.MyScript = new Security(worker.ID, noneDatabaseName, 1, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, new List<int>(), worker.workerType, 0, worker);
+
+                    if (databaseWorker != null)
+                        worker.MyDatas = new WorkerData(databaseWorker.ID, databaseWorker.Name, databaseWorker.Level, worker.MyScript.Exp, databaseWorker.WorkRoomsIDs, worker.workerType);
+                    else
+                        worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Name, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs,worker.workerType);
                     break;
                 case WorkerType.Housekeeper:
-                    worker.MyScript = new Housekeeper(worker.ID,worker.NpcCurrentSpeed, 100, worker.workerType,0 , worker);
-                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs, worker.workerType);
+                    if (databaseWorker != null)
+                        worker.MyScript = new Housekeeper(worker.ID, databaseWorker.Name, databaseWorker.Level, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, databaseWorker.WorkRoomsIDs, worker.workerType, 0, worker);
+                    else
+                        worker.MyScript = new Housekeeper(worker.ID, noneDatabaseName, 1, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, new List<int>(), worker.workerType, 0, worker);
+                    if (databaseWorker != null)
+                        worker.MyDatas = new WorkerData(databaseWorker.ID, databaseWorker.Name, databaseWorker.Level, worker.MyScript.Exp, databaseWorker.WorkRoomsIDs, worker.workerType);
+                    else
+                        worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Name, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs, worker.workerType);
                     break;
                 case WorkerType.Musician:
-                    worker.MyScript = new Musician(worker.ID, worker.NpcCurrentSpeed, 100, worker.workerType, 0, worker);
-                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs, worker.workerType);
+                    if (databaseWorker != null)
+                        worker.MyScript = new Musician(worker.ID, databaseWorker.Name, databaseWorker.Level, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, databaseWorker.WorkRoomsIDs, worker.workerType, 0, worker);
+                    else
+                        worker.MyScript = new Musician(worker.ID, noneDatabaseName, 1, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, new List<int>(), worker.workerType, 0, worker);
+                    if (databaseWorker != null)
+                        worker.MyDatas = new WorkerData(databaseWorker.ID, databaseWorker.Name, databaseWorker.Level, worker.MyScript.Exp, databaseWorker.WorkRoomsIDs, worker.workerType);
+                    else
+                        worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Name, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs, worker.workerType);
                     break;
                 case WorkerType.Receptionist:
-                    worker.MyScript = new Receptionist(worker.ID, worker.NpcCurrentSpeed, 100, worker.workerType, 0, worker);
-                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs, worker.workerType);
+                    if (databaseWorker != null)
+                        worker.MyScript = new Receptionist(worker.ID, databaseWorker.Name, databaseWorker.Level, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, databaseWorker.WorkRoomsIDs, worker.workerType, 0, worker);
+                    else
+                        worker.MyScript = new Receptionist(worker.ID, noneDatabaseName, 1, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, new List<int>(), worker.workerType, 0, worker);
+                    if (databaseWorker != null)
+                        worker.MyDatas = new WorkerData(databaseWorker.ID, databaseWorker.Name, databaseWorker.Level, worker.MyScript.Exp, databaseWorker.WorkRoomsIDs, worker.workerType);
+                    else
+                        worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Name, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs, worker.workerType);
                     break;
                 case WorkerType.BrochureSeller:
-                    worker.MyScript = new BrochureSeller(worker.ID, worker.NpcCurrentSpeed, 100, worker.workerType, 0, worker);
-                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs, worker.workerType);
+                    if (databaseWorker != null)
+                        worker.MyScript = new BrochureSeller(worker.ID, databaseWorker.Name, databaseWorker.Level, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, databaseWorker.WorkRoomsIDs, worker.workerType, 0, worker);
+                    else
+                        worker.MyScript = new BrochureSeller(worker.ID, noneDatabaseName, 1, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, new List<int>(), worker.workerType, 0, worker);
+                    if (databaseWorker != null)
+                        worker.MyDatas = new WorkerData(databaseWorker.ID, databaseWorker.Name, databaseWorker.Level, worker.MyScript.Exp, databaseWorker.WorkRoomsIDs, worker.workerType);
+                    else
+                        worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Name, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs, worker.workerType);
                     break;
                 default:
                     break;
@@ -221,7 +259,11 @@ public class WorkerManager : MonoBehaviour
     public void AddWorkerToInventory(WorkerBehaviour _newWorker)
     {
         MuseumManager.instance.WorkersInInventory.Add(_newWorker);
+#if UNITY_EDITOR
         FirestoreManager.instance.UpdateGameData("ahmet123");
+#else
+             FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
     }
     public int GetBaseHiringWorkerWithMuseumLevel()
     {

@@ -1,6 +1,8 @@
+using Firebase.Database;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,10 +13,6 @@ public class LoadingScene : MonoBehaviour
     public Slider loadingSlider; // Eðer yükleme çubuðu kullanacaksanýz
     public TextMeshProUGUI loadingText;
     bool isLoading = false; // Yüklenme durumunu takip eden bayrak
-    private void OnEnable()
-    {
-        LoadNextScene();
-    }
     public void LoadNextScene()
     {
         Scenes nextScene = GetNextScene(SceneManager.GetActiveScene());
@@ -80,6 +78,52 @@ public class LoadingScene : MonoBehaviour
             Debug.LogError("Invalid scene name: " + currentScene.name);
             return Scenes.None;
         }
+    }
+    public IEnumerator LoadFirebaseData()
+    {
+        Debug.Log("LoadFirebaseData is starting...");
+        yield return new WaitUntil(() => PlayerManager.instance != null);
+        PlayerManager.instance.LockPlayer();
+        UIController.instance.CloseJoystickObj(true);
+        List<NPCBehaviour> nps = FindObjectsOfType<NPCBehaviour>().ToList();
+        foreach (var npc in nps)
+        {
+            npc.enabled = false;
+            npc.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
+        }
+        float progressHelper = 0;
+        while (!NpcManager.instance.databaseProcessComplated)
+        {
+            // Yükleme ilerlemesini güncelle
+            int randomValue = UnityEngine.Random.Range(5, 10);
+            progressHelper += randomValue;
+            float progress = Mathf.Clamp01(progressHelper / 100f);
+            loadingSlider.value = progress;
+            loadingText.text = (int)(progress * 100) + "%";
+            yield return new WaitForEndOfFrame(); ;
+        }
+
+        // Yükleme tamamlandýðýnda iþlemleri yap
+        OnDataLoaded();
+    }
+
+    private void OnDataLoaded()
+    {
+        // Yükleme ekranýný gizle
+        Debug.Log("LoadFirebaseData is ending...");
+        if (GameManager.instance.IsWatchTutorial)
+        {
+            List<NPCBehaviour> nps = FindObjectsOfType<NPCBehaviour>().ToList();
+            foreach (var npc in nps)
+            {
+                npc.enabled = true;
+                npc.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = true;
+            }
+            PlayerManager.instance.UnLockPlayer();
+            UIController.instance.CloseJoystickObj(false);
+        }
+        
+        Destroy(gameObject,0.2f);
     }
 }
 public enum Scenes

@@ -190,6 +190,81 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &264026664
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 264026666}
+  - component: {fileID: 264026665}
+  m_Layer: 0
+  m_Name: WorkerDatasHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &264026665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 264026664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 732a641eeed00254c86fe4a62535d105, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &264026666
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 264026664}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2081975052}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &265352221
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 265352222}
+  m_Layer: 0
+  m_Name: IAPUtil
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &265352222
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 265352221}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &284691415
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -420,6 +495,8 @@ MonoBehaviour:
     type: 3}
   loadingCanvasIgnoringTags:
   - UIInteraction
+  - EditModeCanvas
+  - ImageCanvas
 --- !u!4 &486172882
 Transform:
   m_ObjectHideFlags: 0
@@ -1435,6 +1512,7 @@ Transform:
   - {fileID: 1550316411}
   - {fileID: 2035650998}
   - {fileID: 1016865862}
+  - {fileID: 264026666}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2081975053
@@ -1453,6 +1531,7 @@ MonoBehaviour:
   pictureDatasHandler: {fileID: 1550316410}
   statueDatasHandler: {fileID: 2035650997}
   skillDatasHandler: {fileID: 1016865863}
+  workerDatasHandler: {fileID: 264026665}
 --- !u!1001 &2943470255642956440
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1589,3 +1668,4 @@ SceneRoots:
   - {fileID: 1707960038}
   - {fileID: 1694891516}
   - {fileID: 284691415}
+  - {fileID: 265352222}

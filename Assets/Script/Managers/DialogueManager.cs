@@ -88,20 +88,32 @@ public class DialogueManager : MonoBehaviour
 
         DisplayNextSentence();
     }
-    public void EndTutorialDialogue() // unity event
+    public async void EndTutorialDialogue() // unity event
     {
         GameManager.instance.IsWatchTutorial = true;
         GameManager.instance.IsFirstGame = false;
         SetActivationDialoguePanel(false);
+        await DatabaseWaitingDatas();
         UIController.instance.tutorialUISPanel.gameObject.SetActive(false);
         currentTrigger.gameObject.SetActive(false);
         PlayerManager.instance.UnLockPlayer();
         UIController.instance.CloseJoystickObj(false);
+        UIController.instance.StartRightPanelUISBasePosAnim(false);
+        List<NPCBehaviour> nps = FindObjectsOfType<NPCBehaviour>().ToList();
+        foreach (var npc in nps)
+        {
+            npc.enabled = true;
+            npc.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = true;
+        }
+#if UNITY_EDITOR
+        FirestoreManager.instance.UpdateGameData("ahmet123", true);
+#else
+        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId,true);        
+#endif
         CinemachineTransition(false);
-        DatabaseWaitingDatas();
-        GameManager.instance.Save();
+        //GameManager.instance.Save();
     }
-    private async void DatabaseWaitingDatas()
+    private async System.Threading.Tasks.Task DatabaseWaitingDatas()
     {
         ItemData firstTableForPlayer = new ItemData(99999, "Vincent van Gogh", "Hediye Tablo", 1, 0, null, ItemType.Table, ShoppingType.Gold, 1, 3);
         PictureData newDatabaseItem = new PictureData();
@@ -112,14 +124,20 @@ public class DialogueManager : MonoBehaviour
         newDatabaseItem.isFirst = false;
         newDatabaseItem.isLocked = false;
         newDatabaseItem.id = 208;
-
-        await FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId("ahmet123", newDatabaseItem);
-        await FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId("ahmet123", MuseumManager.instance.InventoryPictures.Where(x => x.painterData.ID == 9999).SingleOrDefault());
+        string userID = "";
+#if UNITY_EDITOR
+        userID = "ahmet123";
+#else
+        userID = FirebaseAuthManager.instance.GetCurrentUser().UserId;
+#endif
+        await FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId(userID, newDatabaseItem);
+        await FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId(userID, MuseumManager.instance.InventoryPictures.Where(x => x.painterData.ID == 9999).SingleOrDefault());
         List<RoomData> activeRoomDatas = RoomManager.instance.RoomDatas.Where(x => x.isActive).ToList();
-        await FirestoreManager.instance.skillDatasHandler.AddSkillWithUserId("ahmet123", SkillTreeManager.instance.skillNodes.Where(x=> x.ID == 0).SingleOrDefault());
-        await FirestoreManager.instance.skillDatasHandler.AddSkillWithUserId("ahmet123", SkillTreeManager.instance.skillNodes.Where(x=> x.ID == 1).SingleOrDefault());
-        await FirestoreManager.instance.roomDatasHandler.AddRoomsWithUserId("ahmet123", activeRoomDatas);
-        await FirestoreManager.instance.UpdateGameData("ahmet123");
+        await FirestoreManager.instance.skillDatasHandler.AddSkillWithUserId(userID, SkillTreeManager.instance.skillNodes.Where(x=> x.ID == 0).SingleOrDefault());
+        await FirestoreManager.instance.skillDatasHandler.AddSkillWithUserId(userID, SkillTreeManager.instance.skillNodes.Where(x=> x.ID == 1).SingleOrDefault());
+        await FirestoreManager.instance.roomDatasHandler.AddRoomsWithUserId(userID, activeRoomDatas);
+        await FirestoreManager.instance.workerDatasHandler.AddWorkerWithUserId(userID, MuseumManager.instance.CurrentActiveWorkers.FirstOrDefault().MyDatas);
+        await FirestoreManager.instance.UpdateGameData(userID);
     }
     private void CinemachineTransition(bool _goTutorial)
     {

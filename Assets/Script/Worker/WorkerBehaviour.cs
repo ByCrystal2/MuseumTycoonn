@@ -19,6 +19,7 @@ public class WorkerBehaviour : MonoBehaviour
     [SerializeField] public float MaxEnergy;
 
     [SerializeField] public WorkerType workerType;
+    [SerializeField] public bool IsMale;
     public WorkerData MyDatas;
     public Worker MyScript;
     public Transform EffectParent;
@@ -309,6 +310,11 @@ public class WorkerBehaviour : MonoBehaviour
             item.Stop();
             item.Play();
         }
+#if UNITY_EDITOR
+        FirestoreManager.instance.workerDatasHandler.UpdateWorkerData("ahmet123", MyDatas);
+#else
+        FirestoreManager.instance.workerDatasHandler.UpdateWorkerData(FirebaseAuthManager.instance.GetCurrentUser().UserId, MyDatas);
+#endif
     }
 
     private void OnEnergyRunOut()
@@ -345,13 +351,15 @@ public class WorkerBehaviour : MonoBehaviour
 public sealed class WorkerData
 {
     public int ID;
+    public string Name;
     public int Level;
     public float Xp;
     public List<int> WorkRoomsIDs = new List<int>();
     [HideInInspector]public WorkerType WorkerType;
-    public WorkerData(int _id, int level, float _Xp, List<int> _workRoomsIDs, WorkerType workerType)
+    public WorkerData(int _id,string _name, int level, float _Xp, List<int> _workRoomsIDs, WorkerType workerType)
     {
         this.ID = _id;
+        this.Name = _name;
         this.Level = level;
         this.Xp = _Xp;
         WorkRoomsIDs.Clear();

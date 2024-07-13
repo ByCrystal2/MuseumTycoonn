@@ -718,7 +718,13 @@ public class TutoSceneTimeLine : MonoBehaviour
             return;
 
         double currentTime = videoPlayer.time;
-        if(!endVideo && currentTime > 5) // Yayinlanmadan once kod defulta cekilmeli => DefaultValue: 49.7f
+        bool timeBool = false;
+#if UNITY_EDITOR
+        timeBool = currentTime > 5;
+#else
+        timeBool = currentTime > 49.7f;
+#endif
+        if (!endVideo && timeBool) // Yayinlanmadan once kod defulta cekilmeli => DefaultValue: 49.7f
         {
             endVideo = true;
             OnVideoEnd(null);

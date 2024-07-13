@@ -28,7 +28,7 @@ public class DailyRewardsPanelController : MonoBehaviour
 
     void SetTimeText()
     {
-        System.TimeSpan _currentTime = (GameManager.instance.rewardManager.lastDailyRewardTime + GameManager.instance.rewardManager.dailyRewardInterval - GameManager.instance.rewardManager.currentTime);
+        System.TimeSpan _currentTime = (MuseumManager.instance.lastDailyRewardTime + GameManager.instance.rewardManager.dailyRewardInterval - GameManager.instance.rewardManager.currentTime);
         txtTime.text = $"{_currentTime.Hours:D2}:{_currentTime.Minutes:D2}:{_currentTime.Seconds:D2}";
     }
     public void CreatePnlReceived(Transform _content)
@@ -123,8 +123,13 @@ public class DailyRewardsPanelController : MonoBehaviour
             newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount; ;
             newInventoryItem.painterData = new PainterData(_currentRewardItem.ID, _currentRewardItem.Description, _currentRewardItem.Name, _currentRewardItem.StarCount);
             MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
+#if UNITY_EDITOR
+             FirestoreManager.instance.UpdateGameData("ahmet123");
+#else
+             FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
         }
-        GameManager.instance.Save();
+        //GameManager.instance.Save();
     }
     public void ForTutorialUnityEvent()
     {

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,27 +35,32 @@ public class NpcManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(this);
         GameManager.instance.rewardManager = FindObjectOfType<RewardManager>();
-
+        FirebaseAuthManager.instance.ForFireBaseLoading();
         AwakeLoadingProcesses();
     }
+    public bool databaseProcessComplated = false;
     public async void AwakeLoadingProcesses()
     {
+        databaseProcessComplated = false;
         if (GameManager.instance.IsFirstGame)
         {
             GameManager.instance.ActiveRoomsRequiredMoney = 1000;
             GameManager.instance.BaseWorkerHiringPrice = 500;
 
-            await FirestoreManager.instance.UpdateGameData("ahmet123",true);
+#if UNITY_EDITOR
+            await FirestoreManager.instance.UpdateGameData("ahmet123");
+#else
+            await FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
         }
         UIController.instance.roomUISPanelController.InitializeRoomUIS();
         RoomManager.instance.AddRooms(); // in app baglantisi kurulmadan once odalar yuklendi.
-        GameManager.instance.LoadRooms();
+        await GameManager.instance.LoadRooms();
         //GameManager.instance.LoadInventoryPictures();
         GameManager.instance.LoadStatues();
         WorkerManager.instance.BaseAllWorkerOptions();
-        GameManager.instance.LoadWorkers();
+        await GameManager.instance.LoadWorkers();
         WorkerManager.instance.CreateWorkersToMarket();
-        GameManager.instance.LoadDailyRewardItems();
         //Gaming Services Activation
 
         BuyingConsumables.instance.InitializePurchasing();
@@ -71,8 +77,8 @@ public class NpcManager : MonoBehaviour
 
             }
         }
-        GameManager.instance.LoadSkills();
-        GameManager.instance.LoadLastDailyRewardTime();
+        await GameManager.instance.LoadSkills();
+        //GameManager.instance.LoadLastDailyRewardTime();
 
         if (GameManager.instance != null)
         {
@@ -86,16 +92,15 @@ public class NpcManager : MonoBehaviour
             {
                 DialogueManager.instance.SetActivationDialoguePanel(false);
                 GameObject.FindWithTag("TutorialNPC").SetActive(false); // Destroyda edilebilirdi fakat lazim olabilir ilerde.
-                UIController.instance.tutorialUISPanel.gameObject.SetActive(false);
+                Destroy(UIController.instance.tutorialUISPanel.gameObject);
             }
         }
         ItemData firstTableForPlayer = new ItemData(99999, "Vincent van Gogh", "Hediye Tablo", 1, 0, null, ItemType.Table, ShoppingType.Gold, 1, 3);
         if (GameManager.instance.IsFirstGame)
         {
             Debug.Log("GameManager IsFirstGame True. And First Game Process Starting...");
-            ItemManager.instance.SetCalculatedDailyRewardItems();
 
-            GameManager.instance.rewardManager.lastDailyRewardTime = TimeManager.instance.CurrentDateTime;
+            MuseumManager.instance.lastDailyRewardTime = TimeManager.instance.CurrentDateTime;
             MuseumManager.instance.OnNpcPaid(2500);
 
             PictureData newInventoryItem = new PictureData();
@@ -127,7 +132,7 @@ public class NpcManager : MonoBehaviour
         {
         }
         UIController.instance.SetUpdateWeeklyRewards();
-        GameManager.instance.LoadRemoveAds();
+        await GameManager.instance.LoadRemoveAds();
         if (GoogleAdsManager.instance.adsData == null)
             GoogleAdsManager.instance.adsData = new AdverstingData();
 
@@ -143,6 +148,8 @@ public class NpcManager : MonoBehaviour
         }
         GoogleAdsManager.instance.StartRewardAdBool(true);
         //Start Method
+        Debug.Log("Database Loading Process Complated.");
+        databaseProcessComplated = true;
     }
 
     private void Start()

@@ -391,6 +391,11 @@ public class ItemManager : MonoBehaviour
             CurrentDailyRewardItems.Add(item);
             //Debug.Log($"{item.ID} ID'li - {item.CurrentItemType} item Turlu - {item.CurrentShoppingType} item Shop turlu - {item.Amount} - {item.Name} Adli item eklendi!");
         }
+//#if UNITY_EDITOR
+//        FirestoreManager.instance.UpdateGameData("ahmet123",true);
+//#else
+//        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId,true);        
+//#endif
     }
 }
 public enum ItemType

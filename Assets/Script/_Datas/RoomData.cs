@@ -56,7 +56,13 @@ public class RoomData : MonoBehaviour
     }
     public async System.Threading.Tasks.Task LoadThisRoom()
     {
-        await FirestoreManager.instance.roomDatasHandler.GetRoomInDatabase("ahmet123", this.ID).ContinueWithOnMainThread(async (getTask) =>
+        string userID = "";
+#if UNITY_EDITOR
+        userID = "ahmet123";
+#else
+        userID = FirebaseAuthManager.instance.GetCurrentUser().UserId;
+#endif
+        await FirestoreManager.instance.roomDatasHandler.GetRoomInDatabase(userID, this.ID).ContinueWithOnMainThread(async (getTask) =>
         {
             try
             {
@@ -198,7 +204,7 @@ public class RoomData : MonoBehaviour
 
                         //PictureData currentPictureData = GameManager.instance.CurrentSaveData.CurrentPictures.Where(x => x.id == pe._pictureData.id).SingleOrDefault();
                         Debug.Log("RoomCode => " + availableRoomCell.CellLetter.ToString() + availableRoomCell.CellNumber.ToString() + " pe.name => " + pe.name + " and pe._pictureData.id => " + pe._pictureData.id);
-                        await FirestoreManager.instance.pictureDatasHandler.GetPictureInDatabase("ahmet123", pe._pictureData.id)
+                        await FirestoreManager.instance.pictureDatasHandler.GetPictureInDatabase(userID, pe._pictureData.id)
                         .ContinueWithOnMainThread(async (task) =>
                         {
                             if (task.IsCompleted && !task.IsFaulted)

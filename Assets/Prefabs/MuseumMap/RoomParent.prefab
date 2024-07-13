@@ -279,7 +279,7 @@ GameObject:
   - component: {fileID: 1032479564588780344}
   m_Layer: 12
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: EditModeCanvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -607,7 +607,7 @@ GameObject:
   - component: {fileID: 3939140909924802926}
   m_Layer: 13
   m_Name: EditModeCanvas
-  m_TagString: Untagged
+  m_TagString: EditModeCanvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2192,7 +2192,7 @@ GameObject:
   - component: {fileID: 1402245857505562180}
   m_Layer: 12
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: EditModeCanvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3297,7 +3297,7 @@ GameObject:
   - component: {fileID: 4917986305806566954}
   m_Layer: 12
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: EditModeCanvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5369,7 +5369,7 @@ GameObject:
   - component: {fileID: 7757267785373302312}
   m_Layer: 12
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: EditModeCanvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5471,7 +5471,7 @@ GameObject:
   - component: {fileID: 4821154301592611836}
   m_Layer: 12
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: EditModeCanvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6813,6 +6813,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 5524077994058853981, guid: 5ec004a6223bdd347998bad5663df228,
+        type: 3}
+      propertyPath: m_TagString
+      value: ImageCanvas
+      objectReference: {fileID: 0}
     - target: {fileID: 6219807720572712101, guid: 5ec004a6223bdd347998bad5663df228,
         type: 3}
       propertyPath: m_Name
@@ -7835,6 +7840,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5524077994058853981, guid: 5ec004a6223bdd347998bad5663df228,
+        type: 3}
+      propertyPath: m_TagString
+      value: ImageCanvas
+      objectReference: {fileID: 0}
     - target: {fileID: 6219807720572712101, guid: 5ec004a6223bdd347998bad5663df228,
         type: 3}
       propertyPath: m_Name
@@ -8707,6 +8717,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5524077994058853981, guid: 5ec004a6223bdd347998bad5663df228,
+        type: 3}
+      propertyPath: m_TagString
+      value: ImageCanvas
       objectReference: {fileID: 0}
     - target: {fileID: 6219807720572712101, guid: 5ec004a6223bdd347998bad5663df228,
         type: 3}
@@ -9607,6 +9622,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 5524077994058853981, guid: 5ec004a6223bdd347998bad5663df228,
+        type: 3}
+      propertyPath: m_TagString
+      value: ImageCanvas
+      objectReference: {fileID: 0}
     - target: {fileID: 6219807720572712101, guid: 5ec004a6223bdd347998bad5663df228,
         type: 3}
       propertyPath: m_Name
@@ -9947,6 +9967,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 5524077994058853981, guid: 5ec004a6223bdd347998bad5663df228,
+        type: 3}
+      propertyPath: m_TagString
+      value: ImageCanvas
+      objectReference: {fileID: 0}
     - target: {fileID: 6219807720572712101, guid: 5ec004a6223bdd347998bad5663df228,
         type: 3}
       propertyPath: m_Name
@@ -10189,6 +10214,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 5524077994058853981, guid: 5ec004a6223bdd347998bad5663df228,
+        type: 3}
+      propertyPath: m_TagString
+      value: ImageCanvas
       objectReference: {fileID: 0}
     - target: {fileID: 6219807720572712101, guid: 5ec004a6223bdd347998bad5663df228,
         type: 3}
@@ -10752,6 +10782,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 5524077994058853981, guid: 5ec004a6223bdd347998bad5663df228,
+        type: 3}
+      propertyPath: m_TagString
+      value: ImageCanvas
+      objectReference: {fileID: 0}
     - target: {fileID: 6219807720572712101, guid: 5ec004a6223bdd347998bad5663df228,
         type: 3}
       propertyPath: m_Name
@@ -10841,6 +10876,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 180
       objectReference: {fileID: 0}
+    - target: {fileID: 5524077994058853981, guid: 5ec004a6223bdd347998bad5663df228,
+        type: 3}
+      propertyPath: m_TagString
+      value: ImageCanvas
+      objectReference: {fileID: 0}
     - target: {fileID: 6219807720572712101, guid: 5ec004a6223bdd347998bad5663df228,
         type: 3}
       propertyPath: m_Name
@@ -10929,6 +10969,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5524077994058853981, guid: 5ec004a6223bdd347998bad5663df228,
+        type: 3}
+      propertyPath: m_TagString
+      value: ImageCanvas
       objectReference: {fileID: 0}
     - target: {fileID: 6219807720572712101, guid: 5ec004a6223bdd347998bad5663df228,
         type: 3}
@@ -11741,6 +11786,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 5524077994058853981, guid: 5ec004a6223bdd347998bad5663df228,
+        type: 3}
+      propertyPath: m_TagString
+      value: ImageCanvas
+      objectReference: {fileID: 0}
     - target: {fileID: 6219807720572712101, guid: 5ec004a6223bdd347998bad5663df228,
         type: 3}
       propertyPath: m_Name
@@ -12404,6 +12454,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 180
       objectReference: {fileID: 0}
+    - target: {fileID: 5524077994058853981, guid: 5ec004a6223bdd347998bad5663df228,
+        type: 3}
+      propertyPath: m_TagString
+      value: ImageCanvas
+      objectReference: {fileID: 0}
     - target: {fileID: 6219807720572712101, guid: 5ec004a6223bdd347998bad5663df228,
         type: 3}
       propertyPath: m_Name
@@ -12731,6 +12786,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 5524077994058853981, guid: 5ec004a6223bdd347998bad5663df228,
+        type: 3}
+      propertyPath: m_TagString
+      value: ImageCanvas
       objectReference: {fileID: 0}
     - target: {fileID: 6219807720572712101, guid: 5ec004a6223bdd347998bad5663df228,
         type: 3}

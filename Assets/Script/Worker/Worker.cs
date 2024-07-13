@@ -8,7 +8,7 @@ public abstract class Worker: ITaskAssignable
 {
     public int ID;
     public string Name;
-    public int Level;
+    public int Level = 1;
     public float Exp;
     public const int MaxLevel = 5;
     public float Speed;
@@ -21,18 +21,23 @@ public abstract class Worker: ITaskAssignable
     public WorkerType WorkerType;
     public WorkerBehaviour Behaviour;
 
-    public Worker(int _id,float _speed, float _energy, WorkerType workerType,float _xp, WorkerBehaviour _behaviour)
+    public Worker(int _id,string _name,int _level,float _speed, float _energy,int _age, float _heigth, bool _isMale, List<int> _iWorkRoomIDs, WorkerType workerType,float _xp, WorkerBehaviour _behaviour)
     {
         this.ID = _id;
+        this.Name = _name;
+        this.Level = _level;
+        this.Exp = _xp;
         this.Speed = _speed;
         this.Energy = _energy;
-        this.Energy = Random.Range(1, 101); // Gecici Kod.
-        this.Age = Random.Range(20, 500); // Gecici Kod.
-        this.Height = Random.Range(_energy, 250); // Gecici Kod.
-        this.isMale = Random.Range(0, 2) == 1 ? true : false; // Gecici Kod.
-        this.Name = "Kosippy Worker"; // Gecici Kod.
-        this.Level = Random.Range(1, MaxLevel + 1); // Gecici Kod.
-        this.Exp = _xp;
+        this.Age = _age;
+        this.Height = _heigth;
+        this.isMale = _isMale;
+        IWorkRoomsIDs.Clear();
+        int length = _iWorkRoomIDs.Count;
+        for (int i = 0; i < length; i++)
+        {
+            IWorkRoomsIDs.Add(_iWorkRoomIDs[i]);
+        }
         this.WorkerType = workerType;
         this.Behaviour = _behaviour;
     }

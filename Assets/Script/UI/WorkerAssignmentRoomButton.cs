@@ -46,8 +46,13 @@ public class WorkerAssignmentRoomButton : MonoBehaviour,IPointerClickHandler
             UIController.instance.GetDesiredInventoryWorkersInContent(currentWorker.WorkerType);
 
             currentBehaviour.gameObject.SetActive(true);
+#if UNITY_EDITOR
+            FirestoreManager.instance.workerDatasHandler.AddWorkerWithUserId("ahmet123", currentBehaviour.MyDatas);
+#else
+            FirestoreManager.instance.workerDatasHandler.AddWorkerWithUserId(FirebaseAuthManager.instance.GetCurrentUser().UserId, currentBehaviour.MyDatas);
+#endif
             GPGamesManager.instance.achievementController.WorkerAssignControl(currentWorker.WorkerType);
-            GameManager.instance.Save();
+            //GameManager.instance.Save();
         }
     }
 }

@@ -7,12 +7,12 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ScriptableObjects", menuName = "Google Play Games/Achievements")]
 public class AchievementController : ScriptableObject
 {
-    private int PurchasedRoomCount;
+    public int PurchasedRoomCount;
     private List<AchievementControl> purchasedRoomAchievements = new List<AchievementControl>
     {
         new AchievementControl("CgkIzoLC7dsGEAIQAw", 1),
     };
-    private int NumberOfTablesPlaced;
+    public int NumberOfTablesPlaced;
     private List<AchievementControl> placedTableAchievements = new List<AchievementControl>
     {
         new AchievementControl("CgkIzoLC7dsGEAIQAg", 1),
@@ -20,20 +20,20 @@ public class AchievementController : ScriptableObject
         new AchievementControl("CgkIzoLC7dsGEAIQDg", 50),
         // Daha fazla hedef ekleyebilirsiniz
     };
-    private int NumberOfVisitors;
+    public int NumberOfVisitors;
     private List<AchievementControl> visitorCountAchievements = new List<AchievementControl>
     {
         new AchievementControl("CgkIzoLC7dsGEAIQBw", 1),
         // Daha fazla hedef ekleyebilirsiniz
     };
-    private int NumberOfStatuesPlaced;
+    public int NumberOfStatuesPlaced;
     private List<AchievementControl> statuesPlacedCountAchievements = new List<AchievementControl>
     {
         new AchievementControl("CgkIzoLC7dsGEAIQBw", 1),
         new AchievementControl("CgkIzoLC7dsGEAIQDw", 10),
         // Daha fazla hedef ekleyebilirsiniz
     };
-    private int TotalNumberOfMuseumVisitors;
+    public int TotalNumberOfMuseumVisitors;
     private List<AchievementControl> totalVisitorCountAchievements = new List<AchievementControl>
     {
         new AchievementControl("CgkIzoLC7dsGEAIQEA", 50),
@@ -41,7 +41,7 @@ public class AchievementController : ScriptableObject
     };
 
     //WorkerHiringCount
-    private int TotalWorkerHiringCount;
+    public int TotalWorkerHiringCount;
     private List<AchievementControl> totalWorkerHiringAchievements = new List<AchievementControl>
     {
         new AchievementControl("CgkIzoLC7dsGEAIQDQ", 10),
@@ -113,7 +113,7 @@ public class AchievementController : ScriptableObject
     //WorkerHiringCount
 
     //WorkerAssignCount
-    private int TotalWorkerAssignCount;
+    public int TotalWorkerAssignCount;
     private List<AchievementControl> totalWorkerAssignAchievements = new List<AchievementControl>
     {
         new AchievementControl("CgkIzoLC7dsGEAIQEQ", 1),
@@ -209,7 +209,16 @@ public class AchievementController : ScriptableObject
 
         Debug.Log("All values have been reset.");
     }
-
+    public void SetDatas(int _purchasedRoomControl, int _numberOfTablePlaced, int _numberOfVisitors,int _numberOfStatuesPlaced, int _totalNumberOfVisitorsCount, int _workerHiringCount, int _workerAssignCount)
+    {
+        PurchasedRoomCount = _purchasedRoomControl;
+        NumberOfTablesPlaced = _numberOfTablePlaced;
+        NumberOfVisitors = _numberOfVisitors;
+        NumberOfStatuesPlaced = _numberOfStatuesPlaced;
+        TotalNumberOfMuseumVisitors = _totalNumberOfVisitorsCount;
+        TotalWorkerHiringCount = _workerHiringCount;
+        TotalWorkerAssignCount = _workerAssignCount;
+    }
     public void ShowAchievements()
     {
         _achievements.ShowAchievementsUI();
@@ -221,18 +230,38 @@ public class AchievementController : ScriptableObject
     public void IncreasePurchasedRoomCount()
     {
         PurchasedRoomCount++;
+#if UNITY_EDITOR
+        FirestoreManager.instance.UpdateGameData("ahmet123");
+#else
+        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
     }
     public void IncreaseNumberOfTablesPlaced()
     {
         NumberOfTablesPlaced++;
+#if UNITY_EDITOR
+        FirestoreManager.instance.UpdateGameData("ahmet123");
+#else
+        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
     }
     public void IncreaseNumberOfVisitors()
     {
         NumberOfVisitors++;
+#if UNITY_EDITOR
+        FirestoreManager.instance.UpdateGameData("ahmet123");
+#else
+        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
     }
     public void IncreaseNumberOfStatuesPlaced()
     {
         NumberOfStatuesPlaced++;
+#if UNITY_EDITOR
+        FirestoreManager.instance.UpdateGameData("ahmet123");
+#else
+        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
     }
     public void IncreaseOrDecreaseTotalNumberOfMuseumVisitor(bool _increase)
     {
@@ -244,6 +273,11 @@ public class AchievementController : ScriptableObject
                 return;
             TotalNumberOfMuseumVisitors--;
         }
+#if UNITY_EDITOR
+        FirestoreManager.instance.UpdateGameData("ahmet123");
+#else
+        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
     }
     public void IncreaseWorkerHiringCount(WorkerType _workerType)
     {
@@ -252,6 +286,11 @@ public class AchievementController : ScriptableObject
         workerAchievement.NumberOfWorkersOwned++;
         WorkerHiringAchievementControl[index] = workerAchievement;
         TotalWorkerHiringCount++;
+#if UNITY_EDITOR
+        FirestoreManager.instance.UpdateGameData("ahmet123");
+#else
+        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
     }
     public void IncreaseWorkerAssignCount(WorkerType _workerType)
     {
@@ -260,6 +299,11 @@ public class AchievementController : ScriptableObject
         workerAchievement.NumberOfWorkersOwned++;
         WorkerAssignAchievementControl[index] = workerAchievement;
         TotalWorkerAssignCount++;
+#if UNITY_EDITOR
+        FirestoreManager.instance.UpdateGameData("ahmet123");
+#else
+        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
     }
     private void TotalWorkerHiringControler()
     {//toplam satin alinan isci sayisi controlu        

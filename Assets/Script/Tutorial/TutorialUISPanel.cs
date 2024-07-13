@@ -15,6 +15,11 @@ public class TutorialUISPanel : MonoBehaviour
     private Vector2 referenceResolution = new Vector2(1920, 1080);
     Vector3 targetPos;
     RectTransform target;
+    Vector3 defaultArrowPos;
+    private void Awake()
+    {
+        defaultArrowPos = arrow.transform.localPosition;
+    }
     private void Start()
     {
         // Tutorial baþladýðýnda tüm UI elemanlarýný gizle
@@ -25,12 +30,14 @@ public class TutorialUISPanel : MonoBehaviour
 
     public void SetTarget(RectTransform _target)//UnityEvent addlistener.
     {
+        arrow.transform.localPosition = defaultArrowPos;
         if (_target != null)
             target = _target;
         EventSending();
     }
     public void SetTarget()//UnityEvent addlistener.
     {
+        arrow.transform.localPosition = defaultArrowPos;
         targetPos = DialogueManager.instance.currentHelper.TargetPos;
         EventSending();
     }
@@ -49,7 +56,6 @@ public class TutorialUISPanel : MonoBehaviour
     Tween arrowTween;
     public void ShowHighlight(string message)
     {
-
         // Dim panelini ve highlight elemanlarýný etkinleþtir
 
         //Debug.Log("dimPanel.activeSelf => " + dimPanel.activeSelf);
@@ -65,17 +71,17 @@ public class TutorialUISPanel : MonoBehaviour
             Vector2 adjustedPos = AdjustPositionForCurrentResolution(targetPos);
 
             highlightImage.GetComponent<RectTransform>().anchoredPosition = adjustedPos;
-            arrow.GetComponent<RectTransform>().anchoredPosition = new Vector2(adjustedPos.x - 125, adjustedPos.y);
+            //arrow.GetComponent<RectTransform>().anchoredPosition = new Vector2(adjustedPos.x, adjustedPos.y);
             highlightImage.GetComponent<RectTransform>().sizeDelta = new Vector2(130, 130);
-            highlightText.GetComponent<RectTransform>().anchoredPosition = new Vector3(adjustedPos.x, adjustedPos.y - 100, 0);        
+            //highlightText.GetComponent<RectTransform>().anchoredPosition = new Vector3(adjustedPos.x, adjustedPos.y - 100, 0);        
         }
         else
         {
             Debug.Log("Highlight target is not null!");
             highlightImage.GetComponent<RectTransform>().position = target.position;
-            arrow.GetComponent<RectTransform>().position = new Vector2(target.position.x - 48, target.position.y);
+            //arrow.GetComponent<RectTransform>().position = new Vector2(target.position.x, target.position.y);
             highlightImage.GetComponent<RectTransform>().sizeDelta = new Vector2(130, 130);
-            highlightText.GetComponent<RectTransform>().position = new Vector3(target.position.x, target.position.y - 100, 0);
+            //highlightText.GetComponent<RectTransform>().position = new Vector3(target.position.x, target.position.y - 100, 0);
         }
         highlightText.text = message;
         StartCoroutine(WaitForHidingHighLight());
@@ -84,13 +90,14 @@ public class TutorialUISPanel : MonoBehaviour
     IEnumerator WaitForHidingHighLight()
     {
         yield return new WaitUntil(() => !hidingHighLigt);
+        arrow.transform.localPosition = defaultArrowPos;
         dimPanel.SetActive(true);
         highlightImage.SetActive(true);
         highlightText.gameObject.SetActive(true);
         arrow.SetActive(true);
         highlightImage.GetComponent<CanvasGroup>().alpha = 0.2f;
         hightLightTweener = highlightImage.GetComponent<CanvasGroup>().DOFade(1, 0.5f).SetLoops(-1, LoopType.Yoyo);
-        arrowTween = arrow.transform.DOLocalMoveX(highlightImage.GetComponent<RectTransform>().position.x - 15, 0.7f).SetLoops(-1, LoopType.Yoyo);
+        arrowTween = arrow.transform.DOLocalMoveX(arrow.transform.localPosition.x - 30, 0.4f).SetLoops(-1, LoopType.Yoyo);
     }
     private Vector2 AdjustPositionForCurrentResolution(Vector3 originalPosition)
     {
@@ -113,6 +120,7 @@ public class TutorialUISPanel : MonoBehaviour
         // Dim paneli ve highlight elemanlarý için fade out animasyonu
         dimPanel.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() =>
         {
+            arrow.transform.localPosition = defaultArrowPos;
             hightLightTweener.Kill();
             arrowTween.Kill();
             dimPanel.SetActive(false);

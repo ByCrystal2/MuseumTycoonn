@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class RewardManager : MonoBehaviour
 {
-    public DateTime lastDailyRewardTime;
+    //public DateTime lastDailyRewardTime;
     public DateTime lastWeeklyRewardTime;
 
     public TimeSpan dailyRewardInterval = TimeSpan.FromHours(24);
@@ -184,7 +184,7 @@ public class RewardManager : MonoBehaviour
         //Debug.Log("lastDailyRewardTime => " + lastDailyRewardTime.ToString());
         //Debug.Log("Kalan Zaman => " + ((lastDailyRewardTime + dailyRewardInterval) - currentTime).ToString());
         //Debug.Log("Kalan Zaman => " + ((lastDailyRewardTime + dailyRewardInterval) - currentTime) + " <= " + TimeSpan.Zero.ToString());
-        if ((lastDailyRewardTime + dailyRewardInterval) - currentTime <= TimeSpan.Zero/* || TimeManager.instance.WhatDay == 0*/)
+        if ((MuseumManager.instance.lastDailyRewardTime + dailyRewardInterval) - currentTime <= TimeSpan.Zero/* || TimeManager.instance.WhatDay == 0*/)
         {
             //TimeManager.instance.FirstOpen = false;
             return true;
@@ -203,10 +203,10 @@ public class RewardManager : MonoBehaviour
         {
             if (!IsDailyRewardTimeEnd()) return;
         }
-        
+
         // Günlük ödül verme iþlemi
         // ...
-        lastDailyRewardTime = currentTime; // Son alýnan gunluk odul zamanini guncelle
+        MuseumManager.instance.lastDailyRewardTime = currentTime; // Son alýnan gunluk odul zamanini guncelle
         if (TimeManager.instance.WhatDay == 7)
         {
             // Haftalýk ödül verme iþlemi
@@ -244,17 +244,22 @@ public class RewardManager : MonoBehaviour
         Debug.Log("[AFTER] TimeManager.instance.timeData.WhatDay => " + TimeManager.instance.WhatDay);
 
         UIController.instance.SetUpdateWeeklyRewards();
-        GameManager.instance.Save();
-        
+#if UNITY_EDITOR
+        FirestoreManager.instance.UpdateGameData("ahmet123");
+#else
+        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
+        //GameManager.instance.Save();
+
     }
     WaitForEndOfFrame wait;
     public IEnumerator WaitForLastDailyRewardTime()
     {
         Busy = true;
-        while (lastDailyRewardTime.Year < 2024)
+        while (MuseumManager.instance.lastDailyRewardTime.Year < 2024)
         {
             yield return wait;
-            Debug.Log("LastDailyRewardTime verisi dogrulanmayý bekliyor... => " + lastDailyRewardTime.Year);
+            Debug.Log("LastDailyRewardTime verisi dogrulanmayý bekliyor... => " + MuseumManager.instance.lastDailyRewardTime.Year);
         }
         Busy = false;
     }

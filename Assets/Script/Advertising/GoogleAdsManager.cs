@@ -337,7 +337,7 @@ public class GoogleAdsManager : MonoBehaviour
             MuseumManager.instance.AddGold(currentRewardAdData.Amount);
         }
 
-        GameManager.instance.Save();
+        //GameManager.instance.Save();
     }
 
     private void RegisterEventHandlers(RewardedAd ad)

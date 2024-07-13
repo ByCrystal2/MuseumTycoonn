@@ -103,10 +103,25 @@ public class FirebaseAuthManager : MonoBehaviour
             if (!loadingCanvasIgnoringTags.Contains(c.tag)){canvas = c.transform; break;}
         if (canvas != null)
         {
-            Instantiate(LoadingPanel, canvas);
+            GameObject obj = Instantiate(LoadingPanel, canvas);
+            obj.GetComponent<LoadingScene>().LoadNextScene();
         }
         else
             Debug.Log("Mevcut sahnede canvas bulunmamaktadir veya tum canvaslar engellenenler listesindedir. Mevcut sahne:"+SceneManager.GetActiveScene().name);
+    }
+    public void ForFireBaseLoading()
+    {
+        Canvas[] canvases = FindObjectsOfType<Canvas>();
+        Transform canvas = transform;
+        foreach (Canvas c in canvases)
+            if (!loadingCanvasIgnoringTags.Contains(c.tag)) { canvas = c.transform; break; }
+        if (canvas != null)
+        {
+            GameObject obj = Instantiate(LoadingPanel, canvas);
+            StartCoroutine(obj.GetComponent<LoadingScene>().LoadFirebaseData());
+        }
+        else
+            Debug.Log("Mevcut sahnede canvas bulunmamaktadir veya tum canvaslar engellenenler listesindedir. Mevcut sahne:" + SceneManager.GetActiveScene().name);
     }
     public FirebaseAuth GetAuth()
     {

@@ -284,7 +284,12 @@ public class ShopController : MonoBehaviour
                          newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
                          newInventoryItem.painterData = new PainterData(_item.ID, _item.Description, _item.Name, _item.StarCount);
                          MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
+
+#if UNITY_EDITOR
                          FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId("ahmet123", newInventoryItem);
+#else
+                         FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId(FirebaseAuthManager.instance.GetCurrentUser().UserId, newInventoryItem); 
+#endif
                          ItemsBuyingUpdate(_item);
                      }
                  }
@@ -319,7 +324,11 @@ public class ShopController : MonoBehaviour
                         newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
                         newInventoryItem.painterData = new PainterData(_item.ID, _item.Description, _item.Name, _item.StarCount);
                         MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
+#if UNITY_EDITOR
                         FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId("ahmet123", newInventoryItem);
+#else
+                         FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId(FirebaseAuthManager.instance.GetCurrentUser().UserId, newInventoryItem); 
+#endif
                         ItemsBuyingUpdate(_item);
                     }
                 }
@@ -354,7 +363,11 @@ public class ShopController : MonoBehaviour
         ItemManager.instance.ShopItemDatas.Remove(_item);
         MuseumManager.instance.PurchasedItems.Add(_item);
         //ItemManager.instance.AddItemInShop(ItemManager.instance.RItems[Random.Range(0, ItemManager.instance.RItems.Count)]);
+#if UNITY_EDITOR
         FirestoreManager.instance.UpdateGameData("ahmet123");
+#else
+             FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
         GetCurrentShoppingTypeItems();
     }
     public Sprite SetAndControlItemIcon(ShoppingType _shoppingType)

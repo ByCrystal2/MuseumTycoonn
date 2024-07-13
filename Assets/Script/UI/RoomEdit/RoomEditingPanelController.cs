@@ -193,9 +193,14 @@ public class RoomEditingPanelController : MonoBehaviour
         RoomManager.instance.statuesHandler.activeEditObjs.Add(ClickedEditObjBehaviour.data);
 
         RoomManager.instance.statuesHandler.currentEditObjs.Remove(ClickedEditObjBehaviour.data);
-
-        await FirestoreManager.instance.roomDatasHandler.IERoomDataProcces("ahmet123", RoomManager.instance.CurrentEditedRoom);
-        FirestoreManager.instance.statueDatasHandler.AddStatueWithUserId("ahmet123", ClickedEditObjBehaviour.data);
+        string userID = "";
+#if UNITY_EDITOR
+        userID = "ahmet123";
+#else
+        userID = FirebaseAuthManager.instance.GetCurrentUser().UserId;
+#endif
+        await FirestoreManager.instance.roomDatasHandler.IERoomDataProcces(userID, RoomManager.instance.CurrentEditedRoom);
+        FirestoreManager.instance.statueDatasHandler.AddStatueWithUserId(userID, ClickedEditObjBehaviour.data);
         ClickedEditObjBehaviour = null;
         //UIController.instance.SetActivationRoomEditingPanel(false);
         AddStatuesInContent();
