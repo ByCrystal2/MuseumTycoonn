@@ -56,6 +56,7 @@ public class RightUIPanelController : MonoBehaviour
                 FPSModeObj.SetActive(true);
                 VisibleUIObj.SetActive(false);
                 GameManager.instance.SetCurrenGameMode(GameMode.FPS);
+                if (GameManager.instance.IsWatchTutorial)
                 PicturesMenuController.instance.ExitPicturePanel();
                 PlayerEditModeCanvas.SetActive(false);
                 btnDailyRewardObj.transform.position = fpsModeDailyRewardTransform.position;

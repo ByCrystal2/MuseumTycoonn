@@ -1019,6 +1019,7 @@ public class UIController : MonoBehaviour
     public void CloseJoystickObj(bool _close)
     {
         JoystickObj.SetActive(!_close);
+        Debug.Log("Joystick is open => " + !_close);
     }
     public void CloseRewardAdPanel(bool _close)
     {
@@ -1058,6 +1059,10 @@ public class UIController : MonoBehaviour
                     newSecurityObj.GetComponent<WorkerInfoUIs>().SetMyPrice(0);
                     newSecurityObj.GetComponent<WorkerInfoUIs>().txtPrice.text = "0";
 
+                    GameObject workerHiringObj = newSecurityObj.GetComponentInChildren<WorkerHiringButton>().transform.GetChild(2).gameObject;
+                    Debug.Log("workerHiringObj.name => " + workerHiringObj.name);
+                    TutorialTargetObjectHandler target = workerHiringObj.AddComponent<TutorialTargetObjectHandler>();
+                    target.SetOptions(5, workerHiringObj.GetComponent<RectTransform>());
                     tutorialControl = true;
                 }
             }
@@ -1238,9 +1243,16 @@ public class UIController : MonoBehaviour
         List<WorkerBehaviour> workers = MuseumManager.instance.WorkersInInventory.Where(x => x.workerType == _wType).OrderBy(x => x.MyScript.Level).ToList();
         foreach (WorkerBehaviour worker in workers)
         {
-            GameObject newSecurityObj = Instantiate(InventoryWorkerPrefab_V1, WorkerInventoryContent);
+            GameObject newWorkerObj = Instantiate(InventoryWorkerPrefab_V1, WorkerInventoryContent);
             Debug.Log("worker.MyScript.Level => " + worker.MyScript.Level);
-            newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(worker.ID, worker.MyScript.Name, worker.MyScript.Age, worker.MyScript.Height, worker.MyScript.Level);
+            newWorkerObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(worker.ID, worker.MyScript.Name, worker.MyScript.Age, worker.MyScript.Height, worker.MyScript.Level);
+            if (!GameManager.instance.IsWatchTutorial)
+            {
+                GameObject hiringObject = newWorkerObj.GetComponentInChildren<WorkerInventoryChooseRoomsButton>().transform.GetChild(1).gameObject;
+                Debug.Log("hiringObject.name => " + hiringObject.name);
+                TutorialTargetObjectHandler target = hiringObject.AddComponent<TutorialTargetObjectHandler>();
+                target.SetOptions(6,hiringObject.GetComponent<RectTransform>());
+            }
         }
         Debug.Log($"Worker Turu => {_wType} olan Isciler Envantere Listelendi.");
     }
@@ -1272,28 +1284,34 @@ public class UIController : MonoBehaviour
         int length = currentItems.Count;
         for (int i = 0; i < length; i++)
         {
+            GameObject _newDailyRewardItemOption = null;
             switch (currentItems[i].CurrentItemType)
             {
                 case ItemType.None:
                     break;
                 case ItemType.Gem:
-                    GameObject _newDailyRewardGem = Instantiate(DailyRewardGemPrefab, DailyRewardContents[i]);
-                    _newDailyRewardGem.GetComponent<DailyRewardItemOptions>().SetMyOptions(currentItems[i].ID, currentItems[i].Name, currentItems[i].Amount, true, currentItems[i].IsPurchased, currentItems[i].IsLocked);
+                    _newDailyRewardItemOption = Instantiate(DailyRewardGemPrefab, DailyRewardContents[i]);
+                    _newDailyRewardItemOption.GetComponent<DailyRewardItemOptions>().SetMyOptions(currentItems[i].ID, currentItems[i].Name, currentItems[i].Amount, true, currentItems[i].IsPurchased, currentItems[i].IsLocked);
                     break;
                 case ItemType.Gold:
-                    GameObject _newDailyRewardGold = Instantiate(DailyRewardGoldPrefab, DailyRewardContents[i]);
-                    _newDailyRewardGold.GetComponent<DailyRewardItemOptions>().SetMyOptions(currentItems[i].ID, currentItems[i].Name, currentItems[i].Amount, true, currentItems[i].IsPurchased, currentItems[i].IsLocked);
+                    _newDailyRewardItemOption = Instantiate(DailyRewardGoldPrefab, DailyRewardContents[i]);
+                    _newDailyRewardItemOption.GetComponent<DailyRewardItemOptions>().SetMyOptions(currentItems[i].ID, currentItems[i].Name, currentItems[i].Amount, true, currentItems[i].IsPurchased, currentItems[i].IsLocked);
                     break;
                 case ItemType.Table:
-                    GameObject _newDailyRewardTable = Instantiate(DailyRewardTablePrefab, DailyRewardContents[i]);
-                    _newDailyRewardTable.GetComponent<DailyRewardItemOptions>().SetMyOptions(currentItems[i].ID, currentItems[i].Name, currentItems[i].Amount, true, currentItems[i].IsPurchased, currentItems[i].IsLocked, currentItems[i].StarCount);
+                    _newDailyRewardItemOption = Instantiate(DailyRewardTablePrefab, DailyRewardContents[i]);
+                    _newDailyRewardItemOption.GetComponent<DailyRewardItemOptions>().SetMyOptions(currentItems[i].ID, currentItems[i].Name, currentItems[i].Amount, true, currentItems[i].IsPurchased, currentItems[i].IsLocked, currentItems[i].StarCount);
                     break;
                 case ItemType.All:
                     break;
                 default:
                     break;
             }
-
+            if (!GameManager.instance.IsWatchTutorial)
+                if (i == 0)
+                {
+                    TutorialTargetObjectHandler target = _newDailyRewardItemOption.AddComponent<TutorialTargetObjectHandler>();
+                    target.SetOptions(2, _newDailyRewardItemOption.GetComponent<RectTransform>());
+                }
         }
     }
     public void ClearDailyRewardContents()

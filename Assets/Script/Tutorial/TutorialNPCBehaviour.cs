@@ -49,7 +49,7 @@ public class TutorialNPCBehaviour : MonoBehaviour
                     targetPoint = MovePoints[0].transform;
                     agent.SetDestination(targetPoint.position);
                     helper += Time.deltaTime;
-                    if (helper >= 2f)
+                    if (helper >= 2.5f)
                     {
                         playerAnim.SetBool("Walk", true);
                         playerAgent.SetDestination(followPlayer.position);

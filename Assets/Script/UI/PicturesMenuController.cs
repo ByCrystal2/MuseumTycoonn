@@ -78,6 +78,11 @@ public class PicturesMenuController : MonoBehaviour
         for (int i = 0; i < TextureIds.Count; i++)
         {
             GameObject newPicture = Instantiate(pictureSlotPrefab, pictureContent);
+            if(!GameManager.instance.IsWatchTutorial)
+            {
+                TutorialTargetObjectHandler target = newPicture.AddComponent<TutorialTargetObjectHandler>();
+                target.SetOptions(1, newPicture.GetComponent<RectTransform>());
+            }
             int index = i + 1;
             if (index == TextureIds.Count - 1)
             {

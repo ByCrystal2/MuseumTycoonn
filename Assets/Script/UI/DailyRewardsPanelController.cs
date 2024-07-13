@@ -33,7 +33,7 @@ public class DailyRewardsPanelController : MonoBehaviour
     }
     public void CreatePnlReceived(Transform _content)
     {
-        Instantiate(pnlIsReceivedPrefab, _content);
+        GameObject receivedObj = Instantiate(pnlIsReceivedPrefab, _content);
     }
     public void CreatePnlLocked(Transform _content)
     {

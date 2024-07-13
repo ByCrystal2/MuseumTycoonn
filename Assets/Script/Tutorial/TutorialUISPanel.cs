@@ -1,7 +1,9 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class TutorialUISPanel : MonoBehaviour
@@ -16,8 +18,15 @@ public class TutorialUISPanel : MonoBehaviour
     Vector3 targetPos;
     RectTransform target;
     Vector3 defaultArrowPos;
+    int setTargetValue = 0;
+    Canvas defaultCanvas;
+    EventSystem eventSystem;
+    GraphicRaycaster raycaster;
     private void Awake()
     {
+        eventSystem = EventSystem.current;
+        defaultCanvas = GetComponentInParent<Canvas>();
+        raycaster = defaultCanvas.GetComponent<GraphicRaycaster>();
         defaultArrowPos = arrow.transform.localPosition;
     }
     private void Start()
@@ -30,15 +39,38 @@ public class TutorialUISPanel : MonoBehaviour
 
     public void SetTarget(RectTransform _target)//UnityEvent addlistener.
     {
+        setTargetValue = 0;
         arrow.transform.localPosition = defaultArrowPos;
         if (_target != null)
             target = _target;
         EventSending();
     }
-    public void SetTarget()//UnityEvent addlistener.
+    public void SetTarget(int _targetID)
     {
+        setTargetValue = 1;
         arrow.transform.localPosition = defaultArrowPos;
-        targetPos = DialogueManager.instance.currentHelper.TargetPos;
+        RectTransform target = FindObjectsOfType<TutorialTargetObjectHandler>().Where(x => x.ID == _targetID).SingleOrDefault().targetTransform;
+        if (target != null)
+        {
+            targetPos = target.position;
+        }            
+        else
+            Debug.Log("Tutorial target is not found and null. Sent ID:"+_targetID);
+
+        EventSending();
+    }
+    public void SetTarget(GameObject _target3DObj)//UnityEvent addlistener.
+    {
+        setTargetValue = 2;
+        arrow.transform.localPosition = defaultArrowPos;
+        Vector3 worldPosition = _target3DObj.transform.position;
+
+        // Dünya pozisyonunu ekran pozisyonuna çevir
+        Vector3 screenPosition = Camera.main.WorldToScreenPoint(worldPosition);
+
+        // Ekran pozisyonunu 2D vektör olarak al
+        Vector2 uiPosition = new Vector2(screenPosition.x, screenPosition.y);
+        targetPos = uiPosition;
         EventSending();
     }
     private void EventSending()
@@ -62,20 +94,25 @@ public class TutorialUISPanel : MonoBehaviour
         // Dim paneli için fade in animasyonu
         dimPanel.GetComponent<CanvasGroup>().DOFade(0.9f, 0.5f);
 
+        StartCoroutine(IEShowHightLight(message));
+    }
+    IEnumerator IEShowHightLight(string _message)
+    {
         // Hedef UI elemanýnýn dünya koordinatlarýný ekran koordinatlarýna çevir
-
         // Hedef pozisyonu mevcut ekran çözünürlüðüne göre ayarlayýn
-        if (target == null)
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        if (target == null && setTargetValue == 2)
         {
             Debug.Log("Highlight target is null!");
-            Vector2 adjustedPos = AdjustPositionForCurrentResolution(targetPos);
+            //Vector2 adjustedPos = AdjustPositionForCurrentResolution(targetPos);
 
-            highlightImage.GetComponent<RectTransform>().anchoredPosition = adjustedPos;
+            highlightImage.GetComponent<RectTransform>().position = targetPos;
             //arrow.GetComponent<RectTransform>().anchoredPosition = new Vector2(adjustedPos.x, adjustedPos.y);
             highlightImage.GetComponent<RectTransform>().sizeDelta = new Vector2(130, 130);
             //highlightText.GetComponent<RectTransform>().anchoredPosition =    new Vector3(adjustedPos.x, adjustedPos.y - 100, 0);        
         }
-        else
+        else if (target != null && setTargetValue == 0)
         {
             Debug.Log("Highlight target is not null!");
             highlightImage.GetComponent<RectTransform>().position = target.position;
@@ -83,9 +120,17 @@ public class TutorialUISPanel : MonoBehaviour
             highlightImage.GetComponent<RectTransform>().sizeDelta = new Vector2(130, 130);
             //highlightText.GetComponent<RectTransform>().position = new Vector3(target.position.x, target.position.y - 100, 0);
         }
-        highlightText.text = message;
+        else if (setTargetValue == 1)
+        {
+            Debug.Log("Tutorial Target Object Handler Pos => " + targetPos);
+            highlightImage.GetComponent<RectTransform>().position = targetPos;
+            //arrow.GetComponent<RectTransform>().position = new Vector2(target.position.x, target.position.y);
+            highlightImage.GetComponent<RectTransform>().sizeDelta = new Vector2(130, 130);
+        }
+        highlightText.text = _message;
         StartCoroutine(WaitForHidingHighLight());
         target = null;
+        setTargetValue = -1;
     }
     IEnumerator WaitForHidingHighLight()
     {

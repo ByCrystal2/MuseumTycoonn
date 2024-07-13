@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -82,7 +83,12 @@ public class UIInteractHandler : MonoBehaviour
             yesButton.gameObject.SetActive(!okayUI);
             noButton.gameObject.SetActive(!okayUI);
             okayButton.gameObject.SetActive(okayUI);
-        }        
+        }
+        if (!GameManager.instance.IsWatchTutorial)
+        {
+            TutorialTargetObjectHandler target = yesButton.transform.GetChild(0).gameObject.AddComponent<TutorialTargetObjectHandler>();
+            target.SetOptions(4, yesButton.transform.GetChild(0).gameObject.GetComponent<RectTransform>());
+        }
         ShowPanel();
     }
 

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
+using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -180,11 +181,18 @@ public class ShopController : MonoBehaviour
         ClearAllItemsInShop();
         List<ItemData> tableItems = new List<ItemData>();
         tableItems =ItemManager.instance.GetItemTypeItems(ItemType.Table);
-        foreach (ItemData tableItem in tableItems) // ItemData gemItem = gemItems[0] ItemData gemItem = gemItems[1]
+        int length = tableItems.Count;
+        for (int i = 0; i < length; i++)// ItemData gemItem = gemItems[0] ItemData gemItem = gemItems[1]
         {
             GameObject _newTable = Instantiate(itemPrefabv2, itemContent);
-            _newTable.transform.GetChild(5).GetComponent<Button>().onClick.AddListener(() => BuyItem(tableItem));
-            SetNewItemProparties(_newTable, tableItem, ItemType.Table);
+            _newTable.transform.GetChild(5).GetComponent<Button>().onClick.AddListener(() => BuyItem(tableItems[i]));
+            SetNewItemProparties(_newTable, tableItems[i], ItemType.Table);
+            if (!GameManager.instance.IsWatchTutorial)
+                if (i == 0)
+                {
+                    TutorialTargetObjectHandler target = _newTable.transform.GetChild(5).transform.GetChild(3).gameObject.AddComponent<TutorialTargetObjectHandler>();
+                    target.SetOptions(3, _newTable.transform.GetChild(5).transform.GetChild(3).gameObject.GetComponent<RectTransform>());
+                }
         }
     }
     public void SetButtonsAlphaValue()
