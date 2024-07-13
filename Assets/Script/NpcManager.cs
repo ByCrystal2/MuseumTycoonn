@@ -25,6 +25,11 @@ public class NpcManager : MonoBehaviour
     [SerializeField] private Transform NPCMessParent;
     [SerializeField] private List<NPCBehaviour> GuiltyNpcs = new List<NPCBehaviour>();
     [SerializeField] private List<NPCBehaviour> TargetGuiltyNpcs = new List<NPCBehaviour>();
+
+    //ForTutorial
+    [SerializeField] private Transform museumDoor1;
+    [SerializeField] private Transform museumDoor2;
+    //ForTutorial
     private void Awake()
     {
         if (instance)
@@ -77,7 +82,7 @@ public class NpcManager : MonoBehaviour
 
             }
         }
-        await GameManager.instance.LoadSkills();
+        GameManager.instance.LoadSkills();
         //GameManager.instance.LoadLastDailyRewardTime();
 
         if (GameManager.instance != null)
@@ -150,6 +155,19 @@ public class NpcManager : MonoBehaviour
         //Start Method
         Debug.Log("Database Loading Process Complated.");
         databaseProcessComplated = true;
+    }
+    public void MuseumDoorsProcess(bool _isOpen)
+    {
+        if (_isOpen)
+        {
+            museumDoor1.GetComponent<DoorBehaviour>().DoorProcess(-105, 2f);
+            museumDoor2.GetComponent<DoorBehaviour>().DoorProcess(105, 2f);
+        }
+        else
+        {
+            museumDoor1.GetComponent<DoorBehaviour>().DoorProcess(0, 2f);
+            museumDoor2.GetComponent<DoorBehaviour>().DoorProcess(0, 2f);
+        }
     }
 
     private void Start()

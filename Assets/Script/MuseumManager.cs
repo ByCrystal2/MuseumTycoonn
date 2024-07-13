@@ -18,6 +18,7 @@ public class MuseumManager : MonoBehaviour
     [SerializeField] public List<WorkerBehaviour> CurrentActiveWorkers = new List<WorkerBehaviour>();
     //workers
 
+    
     //reward
     public System.DateTime lastDailyRewardTime;
     //reward
