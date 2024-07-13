@@ -121,6 +121,7 @@ public class LoadingScene : MonoBehaviour
             }
             PlayerManager.instance.UnLockPlayer();
             UIController.instance.CloseJoystickObj(false);
+            NpcManager.instance.MuseumDoorsProcess(true);
         }
         
         Destroy(gameObject,0.2f);

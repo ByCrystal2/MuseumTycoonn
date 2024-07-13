@@ -73,7 +73,7 @@ public class TutorialUISPanel : MonoBehaviour
             highlightImage.GetComponent<RectTransform>().anchoredPosition = adjustedPos;
             //arrow.GetComponent<RectTransform>().anchoredPosition = new Vector2(adjustedPos.x, adjustedPos.y);
             highlightImage.GetComponent<RectTransform>().sizeDelta = new Vector2(130, 130);
-            //highlightText.GetComponent<RectTransform>().anchoredPosition = new Vector3(adjustedPos.x, adjustedPos.y - 100, 0);        
+            //highlightText.GetComponent<RectTransform>().anchoredPosition =    new Vector3(adjustedPos.x, adjustedPos.y - 100, 0);        
         }
         else
         {
