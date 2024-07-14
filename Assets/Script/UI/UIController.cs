@@ -1260,6 +1260,14 @@ public class UIController : MonoBehaviour
     public void AddDesiredChooseRoomsInContent(int _roomID, int _workerID, Color _color, string _cellNumber, bool _interectable)
     {
         GameObject newAssignmentRoom = Instantiate(AssignmentRoomPrefab_V1, WorkerAssignContent);
+        if (!GameManager.instance.IsWatchTutorial)
+        {
+            if (_cellNumber == "A5")
+            {
+                TutorialTargetObjectHandler target = newAssignmentRoom.AddComponent<TutorialTargetObjectHandler>();
+                target.SetOptions(7, newAssignmentRoom.GetComponent<RectTransform>());
+            }
+        }
         WorkerAssignmentRoomButton _newAssing = newAssignmentRoom.GetComponent<WorkerAssignmentRoomButton>();
         _newAssing.AssignmentRoomButton(_roomID, _workerID, _color, _cellNumber, _interectable);
     }

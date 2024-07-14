@@ -69,6 +69,7 @@ public class WorkerInventoryChooseRoomsButton : MonoBehaviour,IPointerClickHandl
                 Debug.Log("Oda satin alinmamis. Oda Kodu => " + room.availableRoomCell.CellLetter + "" + room.availableRoomCell.CellNumber);
                 UIController.instance.AddDesiredChooseRoomsInContent(room.ID, MyWorker.ID, Color.black, room.availableRoomCell.CellLetter + "" + room.availableRoomCell.CellNumber, false);
             }
+            
         }
     }
 }

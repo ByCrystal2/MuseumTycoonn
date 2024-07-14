@@ -86,8 +86,8 @@ public class UIInteractHandler : MonoBehaviour
         }
         if (!GameManager.instance.IsWatchTutorial)
         {
-            TutorialTargetObjectHandler target = yesButton.transform.GetChild(0).gameObject.AddComponent<TutorialTargetObjectHandler>();
-            target.SetOptions(4, yesButton.transform.GetChild(0).gameObject.GetComponent<RectTransform>());
+            TutorialTargetObjectHandler target = yesButton.transform.GetChild(2).gameObject.AddComponent<TutorialTargetObjectHandler>();
+            target.SetOptions(4, target.GetComponent<RectTransform>());
         }
         ShowPanel();
     }

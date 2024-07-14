@@ -14,7 +14,10 @@ public class FocusedObjClickHandler : MonoBehaviour, IPointerClickHandler
         Component destroyComp = gameObject.GetComponent<FocusedObjClickHandler>();
         UIController.instance.tutorialUISPanel.HideHighlight();
         if (DialogueManager.instance.currentTrigger.helpers.Count <= 0)
+        {
             Debug.Log(DialogueManager.instance.currentTrigger.Name + " adli diaogcunun dialoglarý sonlandi...");
+            UIController.instance.tutorialUISPanel.SetActivationDimPanel(false);
+        }
         else
         {
             DialogueManager.instance.currentTrigger.TriggerDialog(DialogueManager.instance.currentTrigger.currentStep + 1);

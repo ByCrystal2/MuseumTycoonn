@@ -17,7 +17,12 @@ public class TutorialUISPanel : MonoBehaviour
     private Vector2 referenceResolution = new Vector2(1920, 1080);
     Vector3 targetPos;
     RectTransform target;
+    TutorialTargetObjectHandler tutorialTargetWithId;
     Vector3 defaultArrowPos;
+    Quaternion defaultArrowRot;
+
+    [SerializeField] Vector3 rightArrowPos;
+    [SerializeField] Quaternion rightArrowRot;
     int setTargetValue = 0;
     Canvas defaultCanvas;
     EventSystem eventSystem;
@@ -28,6 +33,7 @@ public class TutorialUISPanel : MonoBehaviour
         defaultCanvas = GetComponentInParent<Canvas>();
         raycaster = defaultCanvas.GetComponent<GraphicRaycaster>();
         defaultArrowPos = arrow.transform.localPosition;
+        defaultArrowRot = arrow.transform.localRotation;
     }
     private void Start()
     {
@@ -40,7 +46,7 @@ public class TutorialUISPanel : MonoBehaviour
     public void SetTarget(RectTransform _target)//UnityEvent addlistener.
     {
         setTargetValue = 0;
-        arrow.transform.localPosition = defaultArrowPos;
+        //arrow.transform.localPosition = defaultArrowPos;
         if (_target != null)
             target = _target;
         EventSending();
@@ -48,11 +54,12 @@ public class TutorialUISPanel : MonoBehaviour
     public void SetTarget(int _targetID)
     {
         setTargetValue = 1;
-        arrow.transform.localPosition = defaultArrowPos;
-        RectTransform target = FindObjectsOfType<TutorialTargetObjectHandler>().Where(x => x.ID == _targetID).SingleOrDefault().targetTransform;
+        //arrow.transform.localPosition = defaultArrowPos;
+        TutorialTargetObjectHandler target = FindObjectsOfType<TutorialTargetObjectHandler>().Where(x => x.ID == _targetID).SingleOrDefault();
         if (target != null)
         {
-            targetPos = target.position;
+            Debug.Log("Tutorial target object name => " + target.name);
+            tutorialTargetWithId = target;
         }            
         else
             Debug.Log("Tutorial target is not found and null. Sent ID:"+_targetID);
@@ -62,7 +69,7 @@ public class TutorialUISPanel : MonoBehaviour
     public void SetTarget(GameObject _target3DObj)//UnityEvent addlistener.
     {
         setTargetValue = 2;
-        arrow.transform.localPosition = defaultArrowPos;
+        //arrow.transform.localPosition = defaultArrowPos;
         Vector3 worldPosition = _target3DObj.transform.position;
 
         // Dünya pozisyonunu ekran pozisyonuna çevir
@@ -102,48 +109,59 @@ public class TutorialUISPanel : MonoBehaviour
         // Hedef pozisyonu mevcut ekran çözünürlüðüne göre ayarlayýn
         yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
+        Vector3 targetPosition = Vector3.zero;
         if (target == null && setTargetValue == 2)
         {
             Debug.Log("Highlight target is null!");
-            //Vector2 adjustedPos = AdjustPositionForCurrentResolution(targetPos);
-
-            highlightImage.GetComponent<RectTransform>().position = targetPos;
-            //arrow.GetComponent<RectTransform>().anchoredPosition = new Vector2(adjustedPos.x, adjustedPos.y);
-            highlightImage.GetComponent<RectTransform>().sizeDelta = new Vector2(130, 130);
-            //highlightText.GetComponent<RectTransform>().anchoredPosition =    new Vector3(adjustedPos.x, adjustedPos.y - 100, 0);        
+            targetPosition = targetPos;        
         }
         else if (target != null && setTargetValue == 0)
         {
             Debug.Log("Highlight target is not null!");
-            highlightImage.GetComponent<RectTransform>().position = target.position;
-            //arrow.GetComponent<RectTransform>().position = new Vector2(target.position.x, target.position.y);
-            highlightImage.GetComponent<RectTransform>().sizeDelta = new Vector2(130, 130);
-            //highlightText.GetComponent<RectTransform>().position = new Vector3(target.position.x, target.position.y - 100, 0);
+            targetPosition = target.position;
         }
-        else if (setTargetValue == 1)
+        else if (setTargetValue == 1 && tutorialTargetWithId != null)
         {
-            Debug.Log("Tutorial Target Object Handler Pos => " + targetPos);
-            highlightImage.GetComponent<RectTransform>().position = targetPos;
-            //arrow.GetComponent<RectTransform>().position = new Vector2(target.position.x, target.position.y);
-            highlightImage.GetComponent<RectTransform>().sizeDelta = new Vector2(130, 130);
+            yield return new WaitUntil(() => tutorialTargetWithId.IsTargetSettingComplated());
+            Debug.Log("Tutorial Target Object Handler Pos => " + tutorialTargetWithId.targetTransform.position);
+            targetPosition = tutorialTargetWithId.targetTransform.position;
         }
+        highlightImage.GetComponent<RectTransform>().position = targetPosition;
+        highlightImage.GetComponent<RectTransform>().sizeDelta = new Vector2(130, 130);
+        
+        //PlaceArrow();
         highlightText.text = _message;
         StartCoroutine(WaitForHidingHighLight());
         target = null;
+        tutorialTargetWithId = null;
         setTargetValue = -1;
     }
     IEnumerator WaitForHidingHighLight()
     {
         yield return new WaitUntil(() => !hidingHighLigt);
-        arrow.transform.localPosition = defaultArrowPos;
+        if (DialogueManager.instance.currentHelper.placeArrowToRight)
+        {
+            arrow.transform.localPosition = rightArrowPos;
+            arrow.transform.localRotation = rightArrowRot;
+        }
+        else
+        {
+            arrow.transform.localPosition = defaultArrowPos;
+            arrow.transform.localRotation = defaultArrowRot;
+        }
         dimPanel.SetActive(true);
         highlightImage.SetActive(true);
         highlightText.gameObject.SetActive(true);
         arrow.SetActive(true);
         highlightImage.GetComponent<CanvasGroup>().alpha = 0.2f;
         hightLightTweener = highlightImage.GetComponent<CanvasGroup>().DOFade(1, 0.5f).SetLoops(-1, LoopType.Yoyo);
-        arrowTween = arrow.transform.DOLocalMoveX(arrow.transform.localPosition.x - 30, 0.4f).SetLoops(-1, LoopType.Yoyo);
+        if (DialogueManager.instance.currentHelper.placeArrowToRight)
+            arrowTween = arrow.transform.DOLocalMoveX(arrow.transform.localPosition.x + 30, 0.4f).SetLoops(-1, LoopType.Yoyo);
+        else
+            arrowTween = arrow.transform.DOLocalMoveX(arrow.transform.localPosition.x - 30, 0.4f).SetLoops(-1, LoopType.Yoyo);
+
     }
+
     private Vector2 AdjustPositionForCurrentResolution(Vector3 originalPosition)
     {
         Vector2 currentResolution = new Vector2(Screen.width, Screen.height);
@@ -163,17 +181,21 @@ public class TutorialUISPanel : MonoBehaviour
     {
         hidingHighLigt = true;
         // Dim paneli ve highlight elemanlarý için fade out animasyonu
-        dimPanel.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() =>
-        {
-            arrow.transform.localPosition = defaultArrowPos;
+        //dimPanel.GetComponent<CanvasGroup>().DOFade(0, 0.5f).OnComplete(() =>
+        //{
+            //arrow.transform.localPosition = defaultArrowPos;
             hightLightTweener.Kill();
             arrowTween.Kill();
-            dimPanel.SetActive(false);
+            //dimPanel.SetActive(false);
             highlightImage.SetActive(false);
             highlightText.gameObject.SetActive(false);
             arrow.SetActive(false);
             hidingHighLigt = false;
-        });
+        //});
+    }
+    public void SetActivationDimPanel(bool _active)
+    {
+        dimPanel.SetActive(_active);
     }
     [System.Serializable]
     public struct targetHelper

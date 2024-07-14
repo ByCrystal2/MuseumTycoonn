@@ -49,15 +49,25 @@ public class DialogueManager : MonoBehaviour
         currentDialogPanel.nameText.text = _name;
         
     }
+    Coroutine currentCoroutine;
+    bool coroutineControl = false;
     public void StartTutorial()//DialogueTrigger UnityEvents...
     {
+        
+        //if (currentCoroutine != null)
+        //{
+        //    StopCoroutine(currentCoroutine);
+        //}
+        //currentCoroutine = StartCoroutine(StartTutorialDialogue(currentHelper.Dialogs));
         StartCoroutine(StartTutorialDialogue(currentHelper.Dialogs));
     }
     private IEnumerator StartTutorialDialogue(List<Dialog> _dialogs)
     {
+        yield return new WaitUntil(() => !coroutineControl);
         if (_dialogs.Count > 0)
         Debug.Log("Dialog Starting... First Dialog Message => " + _dialogs[0].Sentence);
 
+        coroutineControl = true;
         currentDialogPanel.dialogText.text = "";
         yield return new WaitForEndOfFrame();
         CinemachineTransition(true);
@@ -145,16 +155,33 @@ public class DialogueManager : MonoBehaviour
         TutorialCinemachineBrain.SetActive(_goTutorial);
         PlayerCinemachineBrain.SetActive(!_goTutorial);
     }
+    Tween dialoguePanelTween;
     public void SetActivationDialoguePanel(bool _active)
     {
         if (_active)
         {
            DialoguePanel.SetActive(true);
-           DialoguePanel.GetComponent<CanvasGroup>().DOFade(1, 2);
+            if (dialoguePanelTween != null)
+           dialoguePanelTween.Kill();
+            dialoguePanelTween = DialoguePanel.GetComponent<CanvasGroup>().DOFade(1, 2);
         }
         else
-        {            
-            DialoguePanel.GetComponent<CanvasGroup>().DOFade(0, 1).OnComplete(() => DialoguePanel.SetActive(false));
+        {
+            if (dialoguePanelTween != null)
+                dialoguePanelTween.Kill();
+            dialoguePanelTween = DialoguePanel.GetComponent<CanvasGroup>().DOFade(0, 1).OnUpdate(() =>
+            {
+                if (coroutineControl)
+                {
+                    int length = DialoguePanel.transform.childCount;
+                    for (int i = 0; i < length; i++)
+                        DialoguePanel.transform.GetChild(i).gameObject.SetActive(false);
+                }
+            }).OnComplete(() =>
+            {
+                DialoguePanel.SetActive(false);
+                coroutineControl = false;
+            });
         }
     }
     public void DisplayNextSentence()

@@ -33,6 +33,11 @@ public class TutorialLevelManager : MonoBehaviour
         AudioManager.instance.TutorialSource.Stop();
         DialogueTrigger kingTrigger = GameObject.FindWithTag("TutorialNPC").GetComponent<DialogueTrigger>();
         kingTrigger.TriggerDialog(Steps.Step1);
+        StartCoroutine(WaitingForAnim(kingTrigger));
+    }
+    IEnumerator WaitingForAnim(DialogueTrigger kingTrigger)
+    {
+        yield return new WaitForSeconds(0.5f);
         kingTrigger.GetComponent<TutorialNPCBehaviour>().ProcessAnim("Sit", false);
     }
 }
