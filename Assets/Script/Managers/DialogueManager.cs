@@ -103,9 +103,10 @@ public class DialogueManager : MonoBehaviour
         GameManager.instance.IsWatchTutorial = true;
         GameManager.instance.IsFirstGame = false;
         SetActivationDialoguePanel(false);
+        NpcManager.instance.MuseumDoorsProcess(true);
         await DatabaseWaitingDatas();
-        UIController.instance.tutorialUISPanel.gameObject.SetActive(false);
         currentTrigger.gameObject.SetActive(false);
+        UIController.instance.tutorialUISPanel.gameObject.SetActive(false);
         PlayerManager.instance.UnLockPlayer();
         UIController.instance.CloseJoystickObj(false);
         UIController.instance.StartRightPanelUISBasePosAnim(false);
@@ -121,7 +122,6 @@ public class DialogueManager : MonoBehaviour
         FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId,true);        
 #endif
         CinemachineTransition(false);
-        NpcManager.instance.MuseumDoorsProcess(true);
         //GameManager.instance.Save();
     }
     private async System.Threading.Tasks.Task DatabaseWaitingDatas()
