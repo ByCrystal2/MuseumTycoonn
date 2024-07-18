@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -198,18 +198,20 @@ public class RewardManager : MonoBehaviour
     public void CheckRewards(bool _overWrite = false)
     {
         currentTime = TimeManager.instance.CurrentDateTime;
+        if (MuseumManager.instance.lastDailyRewardTime.Year == 1)
+            MuseumManager.instance.lastDailyRewardTime = currentTime; // Son alï¿½nan gunluk odul zamanini guncelle
         if (Busy) return;
         if (!_overWrite)
         {
             if (!IsDailyRewardTimeEnd()) return;
         }
 
-        // Günlük ödül verme iþlemi
+        // GÃ¼nlÃ¼k Ã¶dÃ¼l verme iÅŸlemi
         // ...
-        MuseumManager.instance.lastDailyRewardTime = currentTime; // Son alýnan gunluk odul zamanini guncelle
+        MuseumManager.instance.lastDailyRewardTime = currentTime; // Son alÄ±nan gunluk odul zamanini guncelle
         if (TimeManager.instance.WhatDay == 7)
         {
-            // Haftalýk ödül verme iþlemi
+            // HaftalÄ±k Ã¶dÃ¼l verme iÅŸlemi
             // ...
             Debug.Log("Haftalik guncelleme");
             ItemManager.instance.SetCalculatedDailyRewardItems();                
@@ -223,19 +225,19 @@ public class RewardManager : MonoBehaviour
 
         int index = TimeManager.instance.WhatDay;
 
-        // Eðer bulunduysa
+        // EÄŸer bulunduysa
         if (index != -1)
         {
-            // Orijinal listedeki öðeyi al
+            // Orijinal listedeki Ã¶ÄŸeyi al
             var originalItem = ItemManager.instance.CurrentDailyRewardItems[index];
 
-            // Orijinal öðenin bir kopyasýný oluþtur
+            // Orijinal Ã¶ÄŸenin bir kopyasÄ±nÄ± oluÅŸtur
             var updatedItem = originalItem;
 
-            // Kopyanýn üzerinde deðiþiklik yap
+            // KopyanÄ±n Ã¼zerinde deÄŸiÅŸiklik yap
             updatedItem.IsLocked = false;
 
-            // Kopyayý orijinal listeye geri yerleþtir
+            // KopyayÄ± orijinal listeye geri yerleÅŸtir
             ItemManager.instance.CurrentDailyRewardItems[index] = updatedItem;
         }
 
@@ -260,7 +262,7 @@ public class RewardManager : MonoBehaviour
         while (MuseumManager.instance.lastDailyRewardTime.Year < 2024)
         {
             yield return wait;
-            Debug.Log("LastDailyRewardTime verisi dogrulanmayý bekliyor... => " + MuseumManager.instance.lastDailyRewardTime.Year);
+            Debug.Log("LastDailyRewardTime verisi dogrulanmayÄ± bekliyor... => " + MuseumManager.instance.lastDailyRewardTime.Year);
         }
         Busy = false;
         currentReward = null;
@@ -272,6 +274,7 @@ public class RewardManager : MonoBehaviour
         if (currentReward == null)
         {
             currentReward = StartCoroutine(WaitForLastDailyRewardTimeCoroutine());
+            TimeManager.instance.lastDailyCheck = true;
         }
         else
         {

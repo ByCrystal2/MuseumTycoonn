@@ -20,6 +20,7 @@ public class TimeManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
+        lastDailyCheck = false;
     }
     void Start()
     {
@@ -31,6 +32,7 @@ public class TimeManager : MonoBehaviour
     {
         StartCoroutine(GetTime());
     }
+    public bool lastDailyCheck;
     IEnumerator GetTime()
     {
         using (UnityWebRequest request = UnityWebRequest.Get(apiUrl))
@@ -52,10 +54,11 @@ public class TimeManager : MonoBehaviour
                 // CurrentDateTime => 07:59:59
                 CurrentDateTime = DateTime.Parse(timeData.datetime);
                 // CurrentDateTime => 08:00:00
-                if (GameManager.instance.rewardManager != null)
+                if (GameManager.instance._rewardManager != null)
                 {
-                    GameManager.instance.rewardManager.WaitForLastDailyRewardTime();
-                    GameManager.instance.rewardManager.CheckRewards();
+                    if (!lastDailyCheck)
+                        GameManager.instance._rewardManager.WaitForLastDailyRewardTime();
+                    GameManager.instance._rewardManager.CheckRewards();
                     //Debug.Log("Þu an saat: " + CurrentDateTime.ToString("HH:mm:ss"));
                 }
                 

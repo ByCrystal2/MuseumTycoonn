@@ -600,23 +600,6 @@ public class NPCBehaviour : MonoBehaviour
         CreateTarget();
         
     }
-    public void LODControl()
-    {
-        LOD[] lods = myLOD.GetLODs();
-        float distance = Vector3.Distance(Camera.main.transform.position, transform.position);
-        int currentLODLevel = 0;
-
-        for (int i = 0; i < lods.Length; i++)
-        {
-            if (distance <= lods[i].screenRelativeTransitionHeight)
-            {
-                currentLODLevel = i;
-                break;
-            }
-        }
-        if (currentLODLevel == lods.Length - 1) anim.enabled = false;
-        else anim.enabled = true;
-    }
     void OnExitWayMuseum(float _multiplier = 1)
     {
         OnEndGuilty();
