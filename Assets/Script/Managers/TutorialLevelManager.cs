@@ -15,6 +15,7 @@ public class TutorialLevelManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
+        //Camera.main.gameObject.SetActive(false);
     }
 
     private void Start()
@@ -27,10 +28,11 @@ public class TutorialLevelManager : MonoBehaviour
     //    return RandomAnimations[index];
     //}
 
-    public void OnEndFlyCutscene()
+    public void OnEndFlyCutscene(Camera targetCamera)
     {
         if (AudioManager.instance != null)
         AudioManager.instance.TutorialSource.Stop();
+        targetCamera.gameObject.SetActive(true);
         DialogueTrigger kingTrigger = GameObject.FindWithTag("TutorialNPC").GetComponent<DialogueTrigger>();
         kingTrigger.TriggerDialog(Steps.Step1);
         StartCoroutine(WaitingForAnim(kingTrigger));

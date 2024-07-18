@@ -14,13 +14,15 @@ public class TutoSceneTimeLine : MonoBehaviour
     public Text SubtitleText;
     public CanvasGroup SubtitleCanvas;
     public List<GameObject> CloseEndVideo;
-
+    [SerializeField] Camera playerCamera;
     private SubtitleData subtitleData;
     List<SubtitleData> subtitleDatas = new List<SubtitleData>();
     private void Awake()
     {
         if (AudioManager.instance != null)
-         AudioManager.instance.PlayMusicOfTutorial();        
+         AudioManager.instance.PlayMusicOfTutorial();
+
+        playerCamera.gameObject.SetActive(false);
     }
     void Start()
     {
@@ -696,7 +698,7 @@ public class TutoSceneTimeLine : MonoBehaviour
     {
         foreach (var item in CloseEndVideo)
             item.gameObject.SetActive(false);
-        TutorialLevelManager.instance.OnEndFlyCutscene();
+        TutorialLevelManager.instance.OnEndFlyCutscene(playerCamera);
     }
 
     void OnPlayableDirectorStopped(PlayableDirector director)
@@ -720,7 +722,7 @@ public class TutoSceneTimeLine : MonoBehaviour
         double currentTime = videoPlayer.time;
         bool timeBool = false;
 #if UNITY_EDITOR
-        timeBool = currentTime > 3; //default 3 or 5
+        timeBool = currentTime > 49.7f; //default 3 or 5
 #else
         timeBool = currentTime > 49.7f;
 #endif
