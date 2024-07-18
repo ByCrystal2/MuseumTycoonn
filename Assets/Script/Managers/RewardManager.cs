@@ -253,7 +253,8 @@ public class RewardManager : MonoBehaviour
 
     }
     WaitForEndOfFrame wait;
-    public IEnumerator WaitForLastDailyRewardTime()
+    Coroutine currentReward; 
+    public IEnumerator WaitForLastDailyRewardTimeCoroutine()
     {
         Busy = true;
         while (MuseumManager.instance.lastDailyRewardTime.Year < 2024)
@@ -262,6 +263,19 @@ public class RewardManager : MonoBehaviour
             Debug.Log("LastDailyRewardTime verisi dogrulanmayý bekliyor... => " + MuseumManager.instance.lastDailyRewardTime.Year);
         }
         Busy = false;
+        currentReward = null;
+        Debug.Log("WaitForLastDailyRewardTimeCoroutine coroutine i sonlandi.");
     }
     
+    public void WaitForLastDailyRewardTime()
+    {
+        if (currentReward == null)
+        {
+            currentReward = StartCoroutine(WaitForLastDailyRewardTimeCoroutine());
+        }
+        else
+        {
+            Debug.Log("Coroutine hala calisiyor yenisini baslatma islemi iptal edildi.");
+        }
+    }
 }

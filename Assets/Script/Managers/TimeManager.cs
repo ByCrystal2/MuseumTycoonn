@@ -54,7 +54,7 @@ public class TimeManager : MonoBehaviour
                 // CurrentDateTime => 08:00:00
                 if (GameManager.instance.rewardManager != null)
                 {
-                    StartCoroutine(GameManager.instance.rewardManager.WaitForLastDailyRewardTime());
+                    GameManager.instance.rewardManager.WaitForLastDailyRewardTime();
                     GameManager.instance.rewardManager.CheckRewards();
                     //Debug.Log("Þu an saat: " + CurrentDateTime.ToString("HH:mm:ss"));
                 }
