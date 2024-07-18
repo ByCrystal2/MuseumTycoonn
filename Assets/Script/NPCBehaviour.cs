@@ -87,10 +87,12 @@ public class NPCBehaviour : MonoBehaviour
     public List<Renderer> npcRenderers = new();
     public List<Canvas> myCanvasses = new();
 
+    LODGroup myLOD;
     private void Awake()
     {
         npcRenderers = GetComponentsInChildren<Renderer>().ToList();
         myCanvasses = GetComponentsInChildren<Canvas>().ToList();
+        myLOD = GetComponent<LODGroup>();
         int length = transform.childCount;
         for (int i = 0; i < length; i++)
         {
@@ -153,7 +155,7 @@ public class NPCBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        //LODControl();
         if (TargetPosition == null)
         {
             if (IsBusy)
@@ -598,7 +600,23 @@ public class NPCBehaviour : MonoBehaviour
         CreateTarget();
         
     }
+    public void LODControl()
+    {
+        LOD[] lods = myLOD.GetLODs();
+        float distance = Vector3.Distance(Camera.main.transform.position, transform.position);
+        int currentLODLevel = 0;
 
+        for (int i = 0; i < lods.Length; i++)
+        {
+            if (distance <= lods[i].screenRelativeTransitionHeight)
+            {
+                currentLODLevel = i;
+                break;
+            }
+        }
+        if (currentLODLevel == lods.Length - 1) anim.enabled = false;
+        else anim.enabled = true;
+    }
     void OnExitWayMuseum(float _multiplier = 1)
     {
         OnEndGuilty();

@@ -264,7 +264,7 @@ public class GoogleAdsManager : MonoBehaviour
         Debug.Log("_rewardedAdUnitIds.Count => " + _rewardedAdUnitIds.Count);
         foreach (var item in _rewardedAdUnitIds)
         {
-            if (GameManager.instance.rewardManager.IsSendingFocusedLevelSuitable(item.focusedLevel))
+            if (GameManager.instance._rewardManager.IsSendingFocusedLevelSuitable(item.focusedLevel))
             {
                 currentAdIds.Add(item);
                 Debug.Log("item.focusedLevel => " + item.focusedLevel);
@@ -282,13 +282,13 @@ public class GoogleAdsManager : MonoBehaviour
                 RewardAdData earnReward = new RewardAdData();
                 if (int.TryParse(r.Type, out int result))
                 {
-                    earnReward = GameManager.instance.rewardManager.GetRewardAdsWithID(result);
+                    earnReward = GameManager.instance._rewardManager.GetRewardAdsWithID(result);
                 }
                 else
                 {
 
                     Debug.Log(r.Type + " isminde ki odul int deger vermedi.");
-                    earnReward = GameManager.instance.rewardManager.GetRewardAdsWithID(1);
+                    earnReward = GameManager.instance._rewardManager.GetRewardAdsWithID(1);
                     Debug.Log("earnReward.Amount => " + earnReward.Amount.ToString());
                 }                    
                 
@@ -352,7 +352,7 @@ public class GoogleAdsManager : MonoBehaviour
                 adValue.Value,
                 adValue.CurrencyCode));
 
-            RewardAdData earnReward = GameManager.instance.rewardManager.GetRewardAdsWithID(int.Parse(adValue.CurrencyCode));
+            RewardAdData earnReward = GameManager.instance._rewardManager.GetRewardAdsWithID(int.Parse(adValue.CurrencyCode));
 
             if (earnReward.Type == ItemType.Gem)
             {

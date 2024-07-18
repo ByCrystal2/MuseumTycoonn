@@ -28,7 +28,7 @@ public class DailyRewardsPanelController : MonoBehaviour
 
     void SetTimeText()
     {
-        System.TimeSpan _currentTime = (MuseumManager.instance.lastDailyRewardTime + GameManager.instance.rewardManager.dailyRewardInterval - GameManager.instance.rewardManager.currentTime);
+        System.TimeSpan _currentTime = (MuseumManager.instance.lastDailyRewardTime + GameManager.instance._rewardManager.dailyRewardInterval - GameManager.instance._rewardManager.currentTime);
         txtTime.text = $"{_currentTime.Hours:D2}:{_currentTime.Minutes:D2}:{_currentTime.Seconds:D2}";
     }
     public void CreatePnlReceived(Transform _content)

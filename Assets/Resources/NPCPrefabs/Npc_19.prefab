@@ -1769,6 +1769,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1306292429847430266}
+  - component: {fileID: 5677375947200650827}
   - component: {fileID: 5752709791196856459}
   - component: {fileID: 7320254008141707680}
   - component: {fileID: 1046341504145585230}
@@ -1806,6 +1807,25 @@ Transform:
   - {fileID: 5667485214614269406}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!205 &5677375947200650827
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4195412129559835609}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: -0.0000044107437, y: 0.8671605, z: -0.071418524}
+  m_Size: 2.0491223
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.2
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 3266206822484741872}
+  m_Enabled: 1
 --- !u!95 &5752709791196856459
 Animator:
   serializedVersion: 5
@@ -1864,9 +1884,9 @@ MonoBehaviour:
   StressBackgroundImage: {fileID: 4432824137298375253}
   StressFillerImage: {fileID: 4140066962570675350}
   EffectsParent: {fileID: 3791201319914710720}
-  EditModeGuiltyImage: {fileID: 6345698724660499177}
-  EditModeStressBackgroundImage: {fileID: 4432824137298375253}
-  EditModeStressFillerImage: {fileID: 4140066962570675350}
+  EditModeGuiltyImage: {fileID: 6420710978410585480}
+  EditModeStressBackgroundImage: {fileID: 7943309848475801482}
+  EditModeStressFillerImage: {fileID: 5194831328644931432}
   isGuiltyNow: 0
 --- !u!195 &4016361896606479347
 NavMeshAgent:
@@ -1931,6 +1951,8 @@ MonoBehaviour:
   IsBusy: 0
   IsMale: 1
   npcDialogState: 0
+  npcRenderers: []
+  myCanvasses: []
 --- !u!54 &6573653087258166552
 Rigidbody:
   m_ObjectHideFlags: 0

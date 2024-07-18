@@ -39,7 +39,7 @@ public class NpcManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(this);
-        GameManager.instance.rewardManager = FindObjectOfType<RewardManager>();
+        GameManager.instance._rewardManager = FindObjectOfType<RewardManager>();
         FirebaseAuthManager.instance.ForFireBaseLoading();
         AwakeLoadingProcesses();
     }
@@ -130,7 +130,7 @@ public class NpcManager : MonoBehaviour
                 // Kopyayý orijinal listeye geri yerleþtir
                 ItemManager.instance.CurrentDailyRewardItems[index] = updatedItem;
             }
-            //GameManager.instance.rewardManager.CheckRewards(true);
+            //GameManager.instance._rewardManager.CheckRewards(true);
             GPGamesManager.instance.achievementController.FirstGameAchievement();
         }
         else

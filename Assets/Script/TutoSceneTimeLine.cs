@@ -722,7 +722,7 @@ public class TutoSceneTimeLine : MonoBehaviour
         double currentTime = videoPlayer.time;
         bool timeBool = false;
 #if UNITY_EDITOR
-        timeBool = currentTime > 49.7f; //default 3 or 5
+        timeBool = currentTime > 3f; //default 3 or 5
 #else
         timeBool = currentTime > 49.7f;
 #endif

@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
     public string GameLanguage = "Turkish";
     float AutoSaveTimer;
     GameMode CurrentGameMode;
-    public RewardManager rewardManager;
+    public RewardManager _rewardManager;
     public int PictureChangeRequiredAmount = 250;
     public float ActiveRoomsRequiredMoney;
     public float BaseWorkerHiringPrice;
@@ -51,13 +51,11 @@ public class GameManager : MonoBehaviour
         {
             yield return null;
         }
+        System.Threading.Tasks.Task task = LoadLastDailyRewardTime();
+        yield return new WaitUntil(() => task.IsCompleted);
         TimeManager.instance.InvokeRepeating(nameof(TimeManager.instance.UpdateCurrentTime), 1, 1f);
         DateTime dateControl = new DateTime(0001,01,01,01,01,01);
-        //Debug.Log("TimeManager.instance.CurrentDateTime <= dateControl => " + TimeManager.instance.CurrentDateTime + " | " + dateControl);
-        while (TimeManager.instance.CurrentDateTime.Second <= dateControl.Second)
-        {
-            yield return null;
-        }
+        yield return new WaitUntil(() => TimeManager.instance.CurrentDateTime.Second > dateControl.Second);
         Init();
         //Load();
         System.Threading.Tasks.Task task1 = LoadIsFirstGame();
@@ -67,7 +65,6 @@ public class GameManager : MonoBehaviour
         LoadIsWatchTutorial();
         LoadDailyRewardItems();
         LoadGooglePlayAchievements();
-        LoadLastDailyRewardTime();
         LoadMuseumNumeralDatas();
         LanguageControlInDatabase();
         LoadInventoryPictures();
@@ -174,9 +171,9 @@ public class GameManager : MonoBehaviour
         //    CurrentSaveData.IsWatchTutorial = GameManager.instance.IsWatchTutorial;
         //}
 
-        ////if (rewardManager != null)
+        ////if (_rewardManager != null)
         ////{
-        ////    CurrentSaveData.LastDailyRewardTime =  rewardManager.lastDailyRewardTime.ToString("yyyy-MM-dd HH:mm:ss");
+        ////    CurrentSaveData.LastDailyRewardTime =  _rewardManager.lastDailyRewardTime.ToString("yyyy-MM-dd HH:mm:ss");
         ////    CurrentSaveData.WhatDay = TimeManager.instance.WhatDay;
         ////}
         
@@ -714,7 +711,7 @@ public class GameManager : MonoBehaviour
         if (dailyRewardItems.Count > 0)
             ItemManager.instance.CurrentDailyRewardItems = dailyRewardItems;              
     }
-    public async void LoadLastDailyRewardTime()
+    public async System.Threading.Tasks.Task LoadLastDailyRewardTime()
     {
         Dictionary<string, object> gameDatas = new Dictionary<string, object>();
 #if UNITY_EDITOR
