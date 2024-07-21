@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Experimental.AI;
 
 public class NavigationHandler : MonoBehaviour
 {
@@ -23,10 +24,9 @@ public class NavigationHandler : MonoBehaviour
     {
         List<WayPointRuntime> CurrentNavigation = new List<WayPointRuntime>();
         CurrentNavigation = FindShortestPath(_start, _end);
-        if (Application.isPlaying)
-            CurrentNavigation.Add(new WayPointRuntime() { connections = new List<WayPointRuntime>(), PathName = "Target", Position = _end.position });
+        CurrentNavigation.Add(new WayPointRuntime() { connections = new List<WayPointRuntime>(), PathName = "Target", Position = _end.position });
         
-        if (CurrentNavigation.Count > 1)
+        if (CurrentNavigation.Count <= 1)
             Debug.LogError("Navigasyon olusturma basarisiz hatlarda bir kopukluk olabilir.");
         
         return CurrentNavigation;
@@ -196,8 +196,9 @@ public class NavigationHandler : MonoBehaviour
     void FillGizmosFunc()
     {
         CoreWayPoints = FindObjectsByType<WayPointData>(FindObjectsSortMode.InstanceID).ToList();
-        WayPoints.Clear();            
+        WayPoints.Clear();
 
+        int index = 1;
         //Convert MonoBehaviour to data!
         foreach (var item in CoreWayPoints)
         {
@@ -208,10 +209,12 @@ public class NavigationHandler : MonoBehaviour
             {
                 WayPointRuntime conwpR = new();
                 conwpR.Position = item2.transform.position;
-                conwpR.PathName = item2.transform.name;
+                conwpR.PathName = "W_" + index;
                 wpR.connections.Add(conwpR);
+                index++;
             }
-            wpR.PathName = item.transform.name;
+            wpR.PathName = "W_" + index;
+            index++;
             WayPoints.Add(wpR);
         }
     }
@@ -224,10 +227,39 @@ public class NavigationHandler : MonoBehaviour
     public bool SetActiveTrue;
     public bool SetActiveFalse;
 
+    public bool CreateExampleNavigation;
+    public bool ClearExampleNavigation;
+
+    public Transform NPC_StartPoint;
+    public Transform NPC_Target;
+
     private void OnDrawGizmos()
     {
         if (Application.isPlaying)
             return;
+
+        if (CreateExampleNavigation)
+        {
+            CreateExampleNavigation = false;
+            EditorOnlyTestWaypoint = CreateNavigation(NPC_StartPoint, NPC_Target);
+            return;
+        }
+
+        if (ClearExampleNavigation)
+        {
+            ClearExampleNavigation = false;
+            EditorOnlyTestWaypoint.Clear();
+            return;
+        }
+
+        if (EditorOnlyTestWaypoint.Count > 0)
+        {
+            Gizmos.color = Color.cyan;
+            for (int i = 0; i < EditorOnlyTestWaypoint.Count - 1; i++)
+            {
+                Gizmos.DrawLine(EditorOnlyTestWaypoint[i].Position + Vector3.up, EditorOnlyTestWaypoint[i + 1].Position + Vector3.up);
+            }
+        }
 
         if (BehaviourToStruct)
         {
@@ -304,6 +336,9 @@ public class NavigationHandler : MonoBehaviour
         foreach (var item in CoreWayPoints)
             item.gameObject.SetActive(_show);
     }
+
+    public List<WayPointRuntime> EditorOnlyTestWaypoint = new List<WayPointRuntime>();
+
 #endif
 
     [System.Serializable]
