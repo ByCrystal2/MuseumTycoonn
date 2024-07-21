@@ -199,7 +199,12 @@ public class NavigationHandler : MonoBehaviour
         WayPoints.Clear();
 
         int index = 1;
-        //Convert MonoBehaviour to data!
+        foreach (var item in CoreWayPoints)
+        {
+            item.transform.name = "W_" + index;
+            index++;
+        }
+
         foreach (var item in CoreWayPoints)
         {
             WayPointRuntime wpR = new();
@@ -209,12 +214,10 @@ public class NavigationHandler : MonoBehaviour
             {
                 WayPointRuntime conwpR = new();
                 conwpR.Position = item2.transform.position;
-                conwpR.PathName = "W_" + index;
+                conwpR.PathName = item2.transform.name;
                 wpR.connections.Add(conwpR);
-                index++;
             }
-            wpR.PathName = "W_" + index;
-            index++;
+            wpR.PathName = item.transform.name;
             WayPoints.Add(wpR);
         }
     }
@@ -250,15 +253,6 @@ public class NavigationHandler : MonoBehaviour
             ClearExampleNavigation = false;
             EditorOnlyTestWaypoint.Clear();
             return;
-        }
-
-        if (EditorOnlyTestWaypoint.Count > 0)
-        {
-            Gizmos.color = Color.cyan;
-            for (int i = 0; i < EditorOnlyTestWaypoint.Count - 1; i++)
-            {
-                Gizmos.DrawLine(EditorOnlyTestWaypoint[i].Position + Vector3.up, EditorOnlyTestWaypoint[i + 1].Position + Vector3.up);
-            }
         }
 
         if (BehaviourToStruct)
@@ -298,6 +292,16 @@ public class NavigationHandler : MonoBehaviour
 
         if (ShowGizmos)
         {
+            if (EditorOnlyTestWaypoint.Count > 0)
+            {
+                Gizmos.color = Color.cyan;
+                for (int i = 0; i < EditorOnlyTestWaypoint.Count - 1; i++)
+                {
+                    Gizmos.DrawLine(EditorOnlyTestWaypoint[i].Position + Vector3.up, EditorOnlyTestWaypoint[i + 1].Position + Vector3.up);
+                }
+                return;
+            }
+
             foreach (var item in WayPoints)
             {
                 if (IncludeWayPoints)
