@@ -89,7 +89,7 @@ public class LoadingScene : MonoBehaviour
         foreach (var npc in nps)
         {
             npc.enabled = false;
-            //npc.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
+            npc.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
         }
         float progressHelper = 0;
         while (!NpcManager.instance.databaseProcessComplated)
@@ -117,7 +117,7 @@ public class LoadingScene : MonoBehaviour
             foreach (var npc in nps)
             {
                 npc.enabled = true;
-                //npc.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = true;
+                npc.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = true;
             }
             PlayerManager.instance.UnLockPlayer();
             UIController.instance.CloseJoystickObj(false);
