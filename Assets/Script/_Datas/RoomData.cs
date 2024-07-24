@@ -18,7 +18,7 @@ public class RoomData : MonoBehaviour
     public bool isLock = true;
     public bool isActive = false;
     public bool isHasStatue;
-    [SerializeField] public GameObject[] DirectionWalls; // West-North-East-South Walls
+    [SerializeField] private GameObject[] DirectionWalls; // West-North-East-South Walls
     [SerializeField] public GameObject[] DirectionPictures; // West-North-East-South Pictures
 
     public List<int> MyRoomWorkersIDs = new List<int>();
