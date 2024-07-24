@@ -117,8 +117,7 @@ public class MuseumManager : MonoBehaviour
         }
 
         if(UIController.instance != null)
-            if(UIController.instance.CultureFillBar != null)
-                UIController.instance.CultureFillBar.fillAmount = SmootherCultureExp / GetRequiredCultureExp();
+            UIController.instance.CultureFillBar.fillAmount = SmootherCultureExp / GetRequiredCultureExp();
     }
 
     void CatchTheColorForAll()

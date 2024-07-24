@@ -1390,6 +1390,7 @@ GameObject:
   - component: {fileID: 1410078730583002179}
   - component: {fileID: 4121576499254918522}
   - component: {fileID: 3420546340043497662}
+  - component: {fileID: 3399094487545769695}
   - component: {fileID: 1078563824577875621}
   - component: {fileID: 3530070400198743301}
   m_Layer: 7
@@ -1480,10 +1481,29 @@ MonoBehaviour:
   StressBackgroundImage: {fileID: 3190017322422969687}
   StressFillerImage: {fileID: 4112003341141689196}
   EffectsParent: {fileID: 6135414997892465370}
-  EditModeGuiltyImage: {fileID: 0}
-  EditModeStressBackgroundImage: {fileID: 0}
-  EditModeStressFillerImage: {fileID: 0}
   isGuiltyNow: 0
+--- !u!195 &3399094487545769695
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4137839518287949070}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.3
+  m_Speed: 3.5
+  m_Acceleration: 999
+  avoidancePriority: 6
+  m_AngularSpeed: 999
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: -0.07
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!114 &1078563824577875621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1496,12 +1516,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40413729aef19bd42b42051b458e4a62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TargetObject: {fileID: 0}
-  TargetPositions: []
+  TargetPosition: {fileID: 0}
+  MySources: []
   CurrentAudioSource: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
   CurrentInvestigate: 0
+  Agent: {fileID: 3399094487545769695}
   NpcSpeed: 3
   NpcCurrentSpeed: 0
   NpcRotationSpeed: 0
@@ -1525,8 +1546,6 @@ MonoBehaviour:
   IsBusy: 0
   IsMale: 1
   npcDialogState: 0
-  npcRenderers: []
-  myCanvasses: []
 --- !u!54 &3530070400198743301
 Rigidbody:
   m_ObjectHideFlags: 0
