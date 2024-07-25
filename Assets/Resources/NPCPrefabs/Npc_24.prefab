@@ -3328,12 +3328,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    m_Quality: 3
-    m_FrameInfluence: 0.1
-    m_JitterScale: 1
-    m_MipBias: 0
-    m_VarianceClampScale: 0.9
-    m_ContrastAdaptiveSharpening: 0
+    quality: 3
+    frameInfluence: 0.1
+    jitterScale: 1
+    mipBias: 0
+    varianceClampScale: 0.9
+    contrastAdaptiveSharpening: 0
 --- !u!1 &7132564814521468109
 GameObject:
   m_ObjectHideFlags: 0
@@ -3669,7 +3669,6 @@ GameObject:
   - component: {fileID: 1320547825393197637}
   - component: {fileID: 2435280307109582200}
   - component: {fileID: 8044193677187161084}
-  - component: {fileID: 8525181890106909414}
   - component: {fileID: 5120280803687790501}
   - component: {fileID: 4392161037196406555}
   m_Layer: 7
@@ -3784,28 +3783,6 @@ MonoBehaviour:
   EditModeStressBackgroundImage: {fileID: 24004791206454121}
   EditModeStressFillerImage: {fileID: 8033372264804186310}
   isGuiltyNow: 0
---- !u!195 &8525181890106909414
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7340953565208555177}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.3
-  m_Speed: 3.5
-  m_Acceleration: 999
-  avoidancePriority: 9
-  m_AngularSpeed: 999
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: -0.07
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
 --- !u!114 &5120280803687790501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3818,12 +3795,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40413729aef19bd42b42051b458e4a62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TargetPosition: {fileID: 0}
+  TargetObject: {fileID: 0}
+  TargetPositions: []
   CurrentAudioSource: {fileID: 0}
   CurrentState: 0
   CurrentTarget: 0
   CurrentInvestigate: 0
-  Agent: {fileID: 8525181890106909414}
   NpcSpeed: 3
   NpcCurrentSpeed: 0
   NpcRotationSpeed: 0
@@ -4239,12 +4216,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    m_Quality: 3
-    m_FrameInfluence: 0.1
-    m_JitterScale: 1
-    m_MipBias: 0
-    m_VarianceClampScale: 0.9
-    m_ContrastAdaptiveSharpening: 0
+    quality: 3
+    frameInfluence: 0.1
+    jitterScale: 1
+    mipBias: 0
+    varianceClampScale: 0.9
+    contrastAdaptiveSharpening: 0
 --- !u!1 &8519643206119399032
 GameObject:
   m_ObjectHideFlags: 0
