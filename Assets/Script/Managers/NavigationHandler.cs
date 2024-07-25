@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Experimental.AI;
 
@@ -204,9 +205,9 @@ public class NavigationHandler : MonoBehaviour
             item.transform.name = "W_" + index;
             index++;
         }
-
         foreach (var item in CoreWayPoints)
         {
+        item.connections.RemoveAll(connection => connection == null);
             WayPointRuntime wpR = new();
             wpR.connections = new List<WayPointRuntime>();
             wpR.Position = item.transform.position;
