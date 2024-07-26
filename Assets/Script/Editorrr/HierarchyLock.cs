@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class HierarchyLock : MonoBehaviour
 {
+#if UNITY_EDITOR
     private static bool IsLocked
     {
         get
@@ -37,4 +38,5 @@ public class HierarchyLock : MonoBehaviour
     {
         IsLocked = !IsLocked;
     }
+#endif
 }

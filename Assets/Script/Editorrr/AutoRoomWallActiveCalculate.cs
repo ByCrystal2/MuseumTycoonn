@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class AutoRoomWallActiveCalculate : MonoBehaviour
 {
+#if UNITY_EDITOR
     [MenuItem("Tools/Museum Of Excesses/Refresh The Rooms")]
     public static void RoomWallActivation()
     {
@@ -46,6 +47,6 @@ public class AutoRoomWallActiveCalculate : MonoBehaviour
         }
         Debug.Log("Rooms refreshed!");
     }
-
+#endif
 
 }

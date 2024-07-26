@@ -37,10 +37,23 @@ public class RoomData : MonoBehaviour
     List<NPCBehaviour> NPCsInTheRoom = new List<NPCBehaviour>();
     EditObjData MyStatue;
     public Transform CenterPoint;
+
+    [Header("Optimizations")]
+    [SerializeField] List<CanvasRenderHelper> renderHelpers = new List<CanvasRenderHelper>();
+    int renderHelpersCount => renderHelpers.Count;
     private void Start()
     {
         
         
+    }
+    private void FixedUpdate()
+    {
+        if (!isLock) return;
+        for (int i = 0; i < renderHelpersCount; i++)
+        {
+            bool visible = renderHelpers[i].ObjectIsVisible();
+            renderHelpers[i].Canvas.SetActive(visible);
+        }
     }
     public List<NPCBehaviour> GetNpcsInTheMyRoom()
     {
@@ -154,7 +167,7 @@ public class RoomData : MonoBehaviour
             {
                 SetMyRequiredTexts("Not Purchased");
                 Debug.Log("Oda Aktif deðil Ve activeRoomsRequiredMoney 0'dan kucuk => " + GameManager.instance.ActiveRoomsRequiredMoney + "|| My Required Money => " + RequiredMoney);
-            }
+            }            
         }
         else
         {
@@ -187,6 +200,8 @@ public class RoomData : MonoBehaviour
                 else
                     DirectionPictures[(int)direction].SetActive(false);
             }
+            for (int i = 0; i < renderHelpersCount; i++)
+                renderHelpers[i].RendererObject.gameObject.SetActive(false);
             //RoomBlok.SetActive(false);
             RoofLock.SetActive(false);
             NotPurchasedBlok.SetActive(false);
@@ -290,6 +305,8 @@ public class RoomData : MonoBehaviour
             {
                 door.SetActive(false);
             }
+            for (int i = 0; i < renderHelpersCount; i++)
+                renderHelpers[i].RendererObject.gameObject.SetActive(false);
             //RoomBlok.SetActive(false);
             RoofLock.SetActive(false);
             NotPurchasedBlok.SetActive(false);
@@ -382,5 +399,16 @@ public struct RoomCell
     {
         CellLetter = _letter;
         CellNumber = _number;
+    }
+}
+[System.Serializable]
+public struct CanvasRenderHelper
+{
+    public Renderer RendererObject;
+    public GameObject Canvas;
+
+    public bool ObjectIsVisible()
+    {
+        return RendererObject.isVisible;
     }
 }

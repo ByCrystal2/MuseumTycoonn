@@ -9,7 +9,6 @@ using System.Linq;
 
 public class FirebaseAuthManager : MonoBehaviour
 {
-    [SerializeField] TMPro.TextMeshProUGUI textMeshPro;
     [SerializeField] GameObject LoadingPanel;
     [SerializeField] string[] loadingCanvasIgnoringTags;
     FirebaseAuth auth;
@@ -58,7 +57,6 @@ public class FirebaseAuthManager : MonoBehaviour
             StartCoroutine(FirestoreManager.instance.CheckIfUserExists("ahmet123", "ahmetburak04.ab@gmail.com","+905456984055","ByCrystal"));
             CreateNewLoading();
 #endif
-            textMeshPro.text = "Auth Failed!";
             Debug.Log("Auth Failed! result => " + status.ToString());
         }
     }
@@ -71,7 +69,6 @@ public class FirebaseAuthManager : MonoBehaviour
 
         if (task.IsCanceled)
         {
-            textMeshPro.text += "Auth Cancelled";
             Debug.Log("Auth Cancelled!");
         }
         else if (task.IsFaulted)
@@ -83,7 +80,6 @@ public class FirebaseAuthManager : MonoBehaviour
         {
             currentUser = task.Result;
             StartCoroutine(FirestoreManager.instance.CheckIfUserExists());
-            textMeshPro.text += currentUser.ToString();
             Debug.Log("Auth Success => " + currentUser.UserId);
             CreateNewLoading();
         }
@@ -91,7 +87,6 @@ public class FirebaseAuthManager : MonoBehaviour
 
     private void HandleException(System.Exception e)
     {
-        textMeshPro.text += "Exception => " + e.Message;
         Debug.Log("Exception => " + e.Message);
     }
 

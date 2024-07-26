@@ -153,11 +153,14 @@ public class NPCBehaviour : MonoBehaviour
         if (!visible)
             ResetAnimations(false);
     }
-
+    private float timer = 0f;
+    private float interval = 0.033f; // 2 frame beklemek icin 1/30 saniye (30 FPS)
     // Update is called once per frame
     void Update()
     {
-        //LODControl();
+        //timer += Time.deltaTime;
+        //if (timer < interval) return;
+        //timer = 0f;
         if (TargetPositions.Count == 0)
         {
             if (IsBusy)

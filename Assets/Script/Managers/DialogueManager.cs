@@ -114,7 +114,6 @@ public class DialogueManager : MonoBehaviour
         foreach (var npc in nps)
         {
             npc.enabled = true;
-            npc.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = true;
         }
 #if UNITY_EDITOR
         FirestoreManager.instance.UpdateGameData("ahmet123", true);
@@ -141,10 +140,10 @@ public class DialogueManager : MonoBehaviour
 #else
         userID = FirebaseAuthManager.instance.GetCurrentUser().UserId;
 #endif
-         FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId(userID, newDatabaseItem);
+         await FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId(userID, newDatabaseItem);
          FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId(userID, MuseumManager.instance.InventoryPictures.Where(x => x.painterData.ID == 9999).SingleOrDefault());
         List<RoomData> activeRoomDatas = RoomManager.instance.RoomDatas.Where(x => x.isActive).ToList();
-         FirestoreManager.instance.skillDatasHandler.AddSkillWithUserId(userID, SkillTreeManager.instance.skillNodes.Where(x=> x.ID == 0).SingleOrDefault());
+         await FirestoreManager.instance.skillDatasHandler.AddSkillWithUserId(userID, SkillTreeManager.instance.skillNodes.Where(x=> x.ID == 0).SingleOrDefault());
          FirestoreManager.instance.skillDatasHandler.AddSkillWithUserId(userID, SkillTreeManager.instance.skillNodes.Where(x=> x.ID == 1).SingleOrDefault());
         await FirestoreManager.instance.roomDatasHandler.AddRoomsWithUserId(userID, activeRoomDatas);
          FirestoreManager.instance.workerDatasHandler.AddWorkerWithUserId(userID, MuseumManager.instance.CurrentActiveWorkers.FirstOrDefault().MyDatas);
