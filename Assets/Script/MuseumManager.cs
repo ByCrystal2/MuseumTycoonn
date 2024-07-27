@@ -259,7 +259,7 @@ public class MuseumManager : MonoBehaviour
         AddTotalVisitorCommentCount(1);
         CalculateTotalVisitorHappiness();
         string likedArtist = "";
-        foreach (var artist in _npc.LikedArtist)
+        foreach (var artist in _npc.GetLikedArtists())
         {
             if (artist == _pictureElement._pictureData.painterData.Description)
             {
@@ -342,7 +342,7 @@ public class MuseumManager : MonoBehaviour
 
         foreach (NPCBehaviour npc in CurrentNpcs)
         {
-            totalHappiness += npc.Happiness;
+            totalHappiness += npc.GetNpcHappiness();
         }
         
         if (CurrentNpcs.Count > 0)

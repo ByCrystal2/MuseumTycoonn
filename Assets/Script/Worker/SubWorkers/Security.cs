@@ -117,7 +117,7 @@ public class Security : Worker, ISleepable, IMoveable
         {
             Behaviour.EffectParent.transform.position = MyCurrentNPCTarget.transform.position;
             Behaviour.Weapon.SetActive(false);
-            MyCurrentNPCTarget.Beaten();
+            MyCurrentNPCTarget.SetNPCState(NPCState.CombatBeaten, true);
             CompleteTask(CurrentActiveTask);
             CurrentActiveTask = null;
             MyCurrentNPCTarget = null;

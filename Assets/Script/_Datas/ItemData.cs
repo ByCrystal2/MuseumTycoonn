@@ -39,7 +39,7 @@ public struct ItemData
                     requiredMoneyChange = requiredMoneyChange.Replace(c, '.');
                 }                    
             }
-            IAP_ID = Constant.instance.IAPIDCompany + Constant.instance.IAPIDGame + _itemType.ToString().ToLower() + "x" + _amount.ToString() + "_" + _shoppingType.ToString().ToLower() + "_" + requiredMoneyChange; //com_kosippysudio_museumtycoon_gold5000x_realmoney_10
+            IAP_ID = Constant.IAPIDCompany + Constant.IAPIDGame + _itemType.ToString().ToLower() + "x" + _amount.ToString() + "_" + _shoppingType.ToString().ToLower() + "_" + requiredMoneyChange; //com_kosippysudio_museumtycoon_gold5000x_realmoney_10
         }
 
         Description = _description;

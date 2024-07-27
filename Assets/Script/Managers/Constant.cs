@@ -2,15 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Constant : MonoBehaviour
+public static class Constant
 {
     private const string iAPIDCompany = "com_kosippysudio_";
-    public string IAPIDCompany { get { return iAPIDCompany; } }
+    public static string IAPIDCompany { get { return iAPIDCompany; } }
 
     private const string iAPIDGame = "museumofexcesses_";
-    public string IAPIDGame { get { return iAPIDGame; } }
+    public static string IAPIDGame { get { return iAPIDGame; } }
 
-    public List<string> NPCNamesMale = new List<string>()
+    public static List<string> NPCNamesMale = new List<string>()
     {
         // Ýngilizce Erkek
         "John Smith", "Robert Brown", "Michael Miller", "William Moore", "David Anderson",
@@ -65,7 +65,7 @@ public class Constant : MonoBehaviour
         "Omar Al-Sadiq", "Khalid Al-Shami", "Ibrahim Al-Faraj", "Mahmoud Al-Masri", "Abdullah Al-Harthi"
     };
 
-    public List<string> NPCNamesFemale = new List<string>()
+    public static List<string> NPCNamesFemale = new List<string>()
     {
         // Ýngilizce Kadýn
         "Alice Johnson", "Mary Davis", "Jennifer Wilson", "Linda Taylor", "Elizabeth Thomas",
@@ -120,7 +120,7 @@ public class Constant : MonoBehaviour
         "Salma Al-Qadi", "Noura Al-Bassam", "Hind Al-Hamad", "Sarah Al-Mutairi", "Reem Al-Ali"
     };
 
-    public List<string> FamousPainterNames = new List<string>()
+    public static List<string> FamousPainterNames = new List<string>()
 {
     // Erkek Ressamlar
     "Leonardo da Vinci", "Michelangelo Buonarroti", "Vincent van Gogh", "Pablo Picasso", "Claude Monet",
@@ -134,18 +134,8 @@ public class Constant : MonoBehaviour
     "Lee Krasner", "Marie Bracquemond", "Angelica Kauffman", "Elisabeth Vigée Le Brun", "Gabriele Münter",
     "Joan Mitchell", "Paula Modersohn-Becker", "Louise Elisabeth Vigee Le Brun", "Helen Frankenthaler", "Suzanne Valadon"
 };
-    public static Constant instance { get; set; }
-    private void Awake()
-    {
-        if (instance)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        instance = this;
-        DontDestroyOnLoad(this);
-    }
-    public string GetNPCName(bool isMale)
+
+    public static string GetNPCName(bool isMale)
     {
         if (isMale)
         {
@@ -156,7 +146,8 @@ public class Constant : MonoBehaviour
             return NPCNamesFemale[Random.Range(0, NPCNamesFemale.Count)];
         }
     }
-    public List<string> GetRandomFamousPaintersWithDesiredCount(int _howMuch)
+
+    public static List<string> GetRandomFamousPaintersWithDesiredCount(int _howMuch)
     {
         List<string> result = new List<string>();
         for (int i = 0; i < _howMuch; i++)

@@ -94,9 +94,9 @@ public class StatuesHandler
                     case EditObjBonusType.None:
                         break;
                     case EditObjBonusType.IncreaseNPCHappiness:
-                        Debug.Log("Before => npc.Happiness += currentBonus._Value => " + npc.Happiness + "+=" + currentBonus.Value);
-                        npc.Happiness += currentBonus.Value;
-                        Debug.Log("After => npc.Happiness += currentBonus._Value => " + npc.Happiness);
+                        Debug.Log("Before => npc.Happiness += currentBonus._Value => " + npc.GetNpcHappiness() + "+=" + currentBonus.Value);
+                        npc.ChangeHappinessValue(currentBonus.Value);
+                        Debug.Log("After => npc.Happiness += currentBonus._Value => " + npc.GetNpcHappiness());
                         break;
                     case EditObjBonusType.ReduceNpcFightRate:
                         // npc.FightingRate += 10;
@@ -133,9 +133,9 @@ public class StatuesHandler
                 case EditObjBonusType.None:
                     break;
                 case EditObjBonusType.IncreaseNPCHappiness:
-                    Debug.Log("Before => Current Room Bonus => " + EditObjBonusType.IncreaseNPCHappiness + "Current NPC Happiness => " + _currentNpc.Happiness);
-                    _currentNpc.Happiness += currentBonus.Value;
-                    Debug.Log("After => Current Room Bonus => " + EditObjBonusType.IncreaseNPCHappiness + "Current NPC Happiness => " + _currentNpc.Happiness);
+                    Debug.Log("Before => Current Room Bonus => " + EditObjBonusType.IncreaseNPCHappiness + "Current NPC Happiness => " + _currentNpc.GetNpcHappiness());
+                    _currentNpc.ChangeHappinessValue(currentBonus.Value);
+                    Debug.Log("After => Current Room Bonus => " + EditObjBonusType.IncreaseNPCHappiness + "Current NPC Happiness => " + _currentNpc.GetNpcHappiness());
                     break;
                 case EditObjBonusType.ReduceNpcFightRate:
                     // npc.FightingRate += 10;
@@ -172,7 +172,7 @@ public class StatuesHandler
                 case EditObjBonusType.None:
                     break;
                 case EditObjBonusType.IncreaseNPCHappiness:
-                    _currentNpc.Happiness -= currentBonus.Value;
+                    _currentNpc.ChangeHappinessValue(-currentBonus.Value);
                     break;
                 case EditObjBonusType.ReduceNpcFightRate:
                     // npc.FightingRate -= 10;

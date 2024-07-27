@@ -17,7 +17,7 @@ public class RoomBlokClickHandler : MonoBehaviour
         {
             GPGamesManager.instance.achievementController.IncreaseNumberOfVisitors();
             GPGamesManager.instance.achievementController.IncreaseOrDecreaseTotalNumberOfMuseumVisitor(true);
-            _enteredNpc.CurrentVisitedRoom = MyParentRoomData;
+            _enteredNpc.SetEnteredRoom(MyParentRoomData);
             RoomManager.instance.AddNpcInTheRoom(MyParentRoomData, _enteredNpc);
 
             GPGamesManager.instance.achievementController.VisitorCountControl();

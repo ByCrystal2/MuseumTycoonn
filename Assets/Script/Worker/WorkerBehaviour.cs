@@ -246,7 +246,7 @@ public class WorkerBehaviour : MonoBehaviour
                     {
                         if (Vector3.Distance(item.transform.position, transform.position) < m.GetHappinessRange())
                         {
-                            item.IncreaseHappiness(4 * (m.Level + 1));
+                            item.ChangeHappinessValue((4 * (m.Level + 1)));
                         }
                     }
                 }

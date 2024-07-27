@@ -111,7 +111,7 @@ public class WorkerManager : MonoBehaviour
         {
             worker.Agent = worker.gameObject.GetComponent<NavMeshAgent>();
             worker.NpcCurrentSpeed = worker.NpcSpeed;
-            string noneDatabaseName = Constant.instance.GetNPCName(worker.IsMale);
+            string noneDatabaseName = Constant.GetNPCName(worker.IsMale);
             WorkerData databaseWorker = null;
 #if UNITY_EDITOR
             databaseWorker = await FirestoreManager.instance.workerDatasHandler.GetWorkerInDatabase("ahmet123", worker.ID);

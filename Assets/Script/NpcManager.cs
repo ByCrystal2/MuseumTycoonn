@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class NpcManager : MonoBehaviour
@@ -23,13 +24,18 @@ public class NpcManager : MonoBehaviour
     public List<Sprite> StressEmojis;
 
     [SerializeField] private Transform NPCMessParent;
+    [SerializeField] private List<DialogReadyNpc> DialogReadyNPCs = new List<DialogReadyNpc>();
     [SerializeField] private List<NPCBehaviour> GuiltyNpcs = new List<NPCBehaviour>();
     [SerializeField] private List<NPCBehaviour> TargetGuiltyNpcs = new List<NPCBehaviour>();
 
     //ForTutorial
     [SerializeField] private Transform museumDoor1;
     [SerializeField] private Transform museumDoor2;
-    //ForTutorial
+
+    public static string AnimResetParam = "Reset";
+    public static string AnimMoveParam = "Walk";
+    public static string AnimLookParam = "Look";
+    public static string AnimDialogParam = "Dialog";
     private void Awake()
     {
         if (instance)
@@ -175,6 +181,11 @@ public class NpcManager : MonoBehaviour
        
     }
 
+    public void SetNpcPairsInDialog(NPCBehaviour npc1, NPCBehaviour npc2)
+    {
+
+    }
+
     #region Npc Mess
     public void AddMessIntoMessParent(Transform _newMess)
     {
@@ -298,6 +309,84 @@ public class NpcManager : MonoBehaviour
         }
     }
 
+    public void AddDialogReadyNpc(Transform _target, NPCBehaviour _npc)
+    {
+        bool contains = false;
+        foreach (var item in DialogReadyNPCs)
+        {
+            if (item.NPC == _npc)
+            {
+                contains = true;
+                break;
+            }
+        }
+
+        if (!contains)
+            DialogReadyNPCs.Add(new() { Target = _target, NPC = _npc });
+    }
+
+    public void RemoveDialogReadyNPC(NPCBehaviour _npc)
+    {
+        int length = DialogReadyNPCs.Count;
+        for (int i = length - 1; i >= 0; i--)
+            if (DialogReadyNPCs[i].NPC == _npc)
+                DialogReadyNPCs.RemoveAt(i);
+    }
+
+    public NPCBehaviour FindDialogPartner(NPCBehaviour _npc)
+    {
+        NPCBehaviour partner = null;
+        int length = DialogReadyNPCs.Count;
+        int myIndex = -1;
+        int partnerIndex = -1;
+        for (int i = 0; i < length; i++)
+        {
+            if (DialogReadyNPCs[i].NPC == _npc)
+            {
+                myIndex = i;
+                break;
+            }
+        }
+
+        for (int i = 0; i < length; i++)
+        {
+            if (DialogReadyNPCs[myIndex].Target == DialogReadyNPCs[i].Target)
+            {
+                partnerIndex = i;
+                break;
+            }
+        }
+
+        if (partner != null)
+        {
+            DialogReadyNPCs[myIndex].NPC.SetDialogTarget(DialogReadyNPCs[partnerIndex].NPC);
+            DialogReadyNPCs[partnerIndex].NPC.SetDialogTarget(DialogReadyNPCs[myIndex].NPC);
+
+            DialogReadyNPCs[myIndex].NPC.SetNPCState(NPCState.Dialog, true);
+            DialogReadyNPCs[partnerIndex].NPC.SetNPCState(NPCState.Dialog, true);
+
+            if (myIndex != partnerIndex)
+            {
+                if (myIndex > partnerIndex)
+                {
+                    DialogReadyNPCs.RemoveAt(myIndex);
+                    DialogReadyNPCs.RemoveAt(partnerIndex);
+                }
+                else
+                {
+                    DialogReadyNPCs.RemoveAt(partnerIndex);
+                    DialogReadyNPCs.RemoveAt(myIndex);
+                }
+            }
+            else
+            {
+                DialogReadyNPCs.RemoveAt(myIndex);
+            }
+        }
+
+        return partner;
+    }
+
     public NPCBehaviour GetNearestGuiltyNPC(Vector3 _currentSecurityLocation, List<int> _myRooms)
     {
         List<RoomData> myRooms = RoomManager.instance.GetRoomWithIDs(_myRooms);
@@ -305,7 +394,7 @@ public class NpcManager : MonoBehaviour
         List<NPCBehaviour> firstPrioritNPCs = new List<NPCBehaviour>();
         foreach (var npc in GuiltyNpcs)
             foreach (var room in myRooms)
-                if (npc.CurrentVisitedRoom.ID == room.ID)
+                if (npc.GetNpcCurrentRoom().ID == room.ID)
                     firstPrioritNPCs.Add(npc);
 
         NPCBehaviour NearestNPC = null;
@@ -344,7 +433,7 @@ public class NpcManager : MonoBehaviour
                 bool contains = false;
                 foreach (var item in nearRoomsToMyArea)
                 {
-                    if (GuiltyNpcs[i].CurrentVisitedRoom.ID == item.ID)
+                    if (GuiltyNpcs[i].GetNpcCurrentRoom().ID == item.ID)
                     {
                         contains = true;
                         break;
@@ -367,10 +456,112 @@ public class NpcManager : MonoBehaviour
     }
 
     #endregion
+
+#if UNITY_EDITOR
+    [Header("Set Component Shortcut")]
+    [SerializeField] private bool SetNPCsRequiredComponents;
+
+    private void OnDrawGizmos()
+    {
+        if (SetNPCsRequiredComponents)
+        {
+            SetNPCsRequiredComponents = false;
+            NPCBehaviour[] npcBehaviours = FindObjectsByType<NPCBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
+            foreach (var item in npcBehaviours)
+                item.SetComponents();
+            
+            Debug.Log("Listedeki tum npclerin componentleri guncellendi.");
+        }
+    }
+#endif
+
+    public static List<float> delaysPerState = new List<float>() 
+    {
+        2,
+        0.5f,
+        5,
+        3,
+        5,
+        3,
+        15,
+        15,
+    };
+}
+
+[System.Serializable]
+public struct DialogReadyNpc
+{
+    public Transform Target;
+    public NPCBehaviour NPC;
+}
+
+[System.Serializable]
+public struct NPCGeneralData
+{
+    public string NpcName;
+    public bool isMale; 
+}
+
+[System.Serializable]
+public struct NPCStatData
+{
+    public float NpcSpeed;
+    public float NpcCurrentSpeed;
+    public float NpcRotationSpeed;
+
+    public List<MyColors> LikedColors;
+    public MyColors DislikedColor;
+    public List<string> LikedArtist;
+    public float Happiness;
+    public float HappinessBuff;
+
+    public float Stress;
+    public float StressBuff;
+
+    public float toilet;
+    public float education;
+    public float additionalLuck;
+}
+
+[System.Serializable]
+public struct NPCStateData
+{
+    public NPCState _mainState;
+    public NpcLocationState _location;
 }
 
 public enum NpcEmotionEffect
 {
     Happiness,
     Sadness,
+}
+
+public enum WalkEnum
+{
+    Idle,
+    NormalWalk,
+    HappyWalk,
+    SadWalk,
+    DrunkWalk,
+    QueenWalk,
+    KingWalk,
+}
+
+public enum NpcLocationState
+{
+    Outside,
+    EnterWay,
+    Inside,
+}
+
+public enum NPCState
+{
+    Idle,
+    Move,
+    Investigate,
+    DialogFree,
+    Dialog,
+    Farewell,
+    CombatBeat,
+    CombatBeaten,
 }
