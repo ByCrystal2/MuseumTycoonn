@@ -483,7 +483,7 @@ public class NpcManager : MonoBehaviour
         0.5f,
         5,
         10,
-        5,
+        10,
         3,
         15,
         15,
