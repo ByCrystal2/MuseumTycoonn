@@ -49,6 +49,8 @@ public class NPCBehaviour : MonoBehaviour
         StatData.NpcCurrentSpeed = StatData.NpcSpeed + StatData.NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f);
 
         transform.position = Random.Range(0,2) == 0 ? NpcManager.instance.GidisListe[Random.Range(0, NpcManager.instance.GidisListe.Count)].position : NpcManager.instance.GelisListe[Random.Range(0, NpcManager.instance.GelisListe.Count)].position;
+
+        InvestigatedAreas.Clear();
     }
 
     private void FixedUpdate()
@@ -74,6 +76,8 @@ public class NPCBehaviour : MonoBehaviour
         }
         else if (npcState._mainState == NPCState.Investigate)
         {
+            if(TargetObject != null)
+                LookAt(TargetObject.parent);
             if (IdleTimer < Time.time)
                 Investigate();
             else if (IdleTimer < Time.time + 1)
@@ -98,7 +102,7 @@ public class NPCBehaviour : MonoBehaviour
         }
         else if (npcState._mainState == NPCState.Dialog)
         {
-            if (DialogTarget != null)
+            if (DialogTarget == null)
             {
                 TargetObject?.gameObject.SetActive(true);
                 ResetAnimator();
@@ -107,6 +111,7 @@ public class NPCBehaviour : MonoBehaviour
                 return;
             }
 
+            Debug.Log(transform.name + " bir dialoga basladi.");
             if (IdleTimer < Time.time)
                 Dialog();
             else if (IdleTimer < Time.time + 1)
@@ -220,8 +225,6 @@ public class NPCBehaviour : MonoBehaviour
         ResetAnimator();
         anim.SetTrigger(NpcManager.AnimResetParam);
         anim.SetInteger(NpcManager.AnimLookParam, 1);
-
-        LookAt(TargetObject.parent);
     }
 
     private void OnInvestigateEnd()
@@ -237,16 +240,14 @@ public class NPCBehaviour : MonoBehaviour
         luck += (GetNpcHappiness() * 0.2f);
         luck += (StatData.additionalLuck * luck * 0.01f);
         Debug.Log("iletisim kurma istegi %" + luck);
-        if (luck > 70)
+        if (luck > 0)
         {
-            Debug.Log("NPC: " + transform.name + " wants to dialog with someone! Saved to the list.");
-            NpcManager.instance.AddDialogReadyNpc(TargetObject, this);
+            NpcManager.instance.AddDialogReadyNpc(TargetObject.parent, this);
             SetNPCState(NPCState.DialogFree, true);
             IdleTimer = Time.time + NpcManager.delaysPerState[(int)NPCState.DialogFree];
         }
         else
         {
-            Debug.Log("NPC: " + transform.name + " does not want to dialog with someone! Saved to the list.");
             TargetObject?.gameObject.SetActive(true);
             ResetAnimator();
             anim.SetTrigger(NpcManager.AnimResetParam);
@@ -363,6 +364,7 @@ public class NPCBehaviour : MonoBehaviour
 
     private void OnDialogEnd()
     {
+        Debug.Log(transform.name + " mevcut dialogunu sonlandirdi.");
         if (DialogTarget == null)
         {
             TargetObject?.gameObject.SetActive(true);
@@ -498,6 +500,7 @@ public class NPCBehaviour : MonoBehaviour
                     TargetObject = gidis ? NpcManager.instance.Enter2Point : NpcManager.instance.Enter1Point;
                     TargetPositions = NavigationHandler.instance.CreateNavigation(transform, TargetObject);
                     npcState._location = NpcLocationState.EnterWay;
+                    InvestigatedAreas.Clear();
                     MuseumManager.instance.OnNpcEnteredMuseum(this);
                     return;
                 }
@@ -586,21 +589,19 @@ public class NPCBehaviour : MonoBehaviour
     {
         VisitableArtAmount = Random.Range(2, 5);
         npcState._location = NpcLocationState.Inside;
+        StatData.Happiness = 50;
+        StatData.Stress = 0;
+        StatData.toilet = Random.Range(0, 30);
         CreateTarget();
         SetNPCState(NPCState.Move, true);
     }
 
     void LookAt(Transform Target)
     {
-        Vector3 direction = (Target.position - transform.position).normalized;
-        float step = StatData.NpcCurrentSpeed * Time.deltaTime;
-
-        Vector3 lookDirection = new Vector3(direction.x, 0, direction.z);
-        if (lookDirection != Vector3.zero)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, step);
-        }
+        Vector3 directionToTarget = Target.position - transform.position;
+        float angle = Mathf.Atan2(directionToTarget.x, directionToTarget.z) * Mathf.Rad2Deg;
+        Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, StatData.NpcRotationSpeed * Time.deltaTime);
     }
     void UpdateNavigation()
     {

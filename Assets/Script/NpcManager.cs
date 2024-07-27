@@ -350,15 +350,17 @@ public class NpcManager : MonoBehaviour
 
         for (int i = 0; i < length; i++)
         {
-            if (DialogReadyNPCs[myIndex].Target == DialogReadyNPCs[i].Target)
+            if (DialogReadyNPCs[myIndex].Target == DialogReadyNPCs[i].Target && DialogReadyNPCs[i].NPC != DialogReadyNPCs[myIndex].NPC)
             {
                 partnerIndex = i;
+                partner = DialogReadyNPCs[i].NPC;
                 break;
             }
         }
 
         if (partner != null)
         {
+            Debug.Log(DialogReadyNPCs[myIndex].NPC.name + " ve " + DialogReadyNPCs[partnerIndex].NPC.name + " dialog baslattilar.");
             DialogReadyNPCs[myIndex].NPC.SetDialogTarget(DialogReadyNPCs[partnerIndex].NPC);
             DialogReadyNPCs[partnerIndex].NPC.SetDialogTarget(DialogReadyNPCs[myIndex].NPC);
 
@@ -480,7 +482,7 @@ public class NpcManager : MonoBehaviour
         2,
         0.5f,
         5,
-        3,
+        10,
         5,
         3,
         15,
