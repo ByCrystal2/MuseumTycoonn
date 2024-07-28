@@ -25,7 +25,7 @@ public class GoldStackHandler : MonoBehaviour
             if (targetTempGold > 0)
             {
                 targetStackTimer -= Time.deltaTime;
-                float change = Time.deltaTime * changeAmountTemp;
+                float change = Time.deltaTime * changeAmountTemp * 5;
                 if (change > targetTempGold)
                 {
                     change = targetTempGold;
@@ -52,8 +52,8 @@ public class GoldStackHandler : MonoBehaviour
         {
             if (currentTempGold > 0)
             {
-                targetCollectTimer -= Time.deltaTime;
-                float change = Time.deltaTime * changeAmountTemp;
+                targetCollectTimer -= Time.deltaTime * 5;
+                float change = Time.deltaTime * changeAmountTemp * 5;
                 if (change > currentTempGold)
                 {
                     change = currentTempGold;

@@ -476,6 +476,7 @@ public class NPCBehaviour : MonoBehaviour
             TargetObject.gameObject.SetActive(false);
         SetNPCState(NPCState.VictoryDance, true);
         OnBeginGuilty();
+        NpcManager.instance.AddGuiltyNPC(this);
     }
     
     private void CombatBeaten()
@@ -660,7 +661,7 @@ public class NPCBehaviour : MonoBehaviour
         SetHappinessValue(100);
         SetStressValue(0);
         NpcWalkType = WalkEnum.NormalWalk;
-        StatData.NpcCurrentSpeed = (StatData.NpcSpeed + StatData.NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f) * (escapeAfterBeat ? NpcManager.EscapeSpeedMultiplier : 1f));
+        StatData.NpcCurrentSpeed = ((StatData.NpcSpeed * (escapeAfterBeat ? NpcManager.EscapeSpeedMultiplier : 1f)) + StatData.NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f));
         if (TargetObject != null)
             TargetObject.gameObject.SetActive(true);
 
@@ -791,13 +792,13 @@ public class NPCBehaviour : MonoBehaviour
         else if (happiness > 25 && happiness < 75)
         {
             NpcWalkType = WalkEnum.NormalWalk;
-            StatData.NpcCurrentSpeed = StatData.NpcSpeed + StatData.NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f) * (escapeAfterBeat ? NpcManager.EscapeSpeedMultiplier : 1f);
+            StatData.NpcCurrentSpeed = (StatData.NpcSpeed * (escapeAfterBeat ? NpcManager.EscapeSpeedMultiplier : 1f)) + StatData.NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f);
         }
         else
         {
             NpcWalkType = WalkEnum.HappyWalk;
-            float happySpeed = StatData.NpcSpeed * 1.25f;
-            StatData.NpcCurrentSpeed = happySpeed + happySpeed * (escapeAfterBeat ? NpcManager.EscapeSpeedMultiplier : 1f) * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f);
+            float happySpeed = StatData.NpcSpeed * (escapeAfterBeat ? NpcManager.EscapeSpeedMultiplier : 1.25f);
+            StatData.NpcCurrentSpeed = happySpeed + happySpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f);
             AudioManager.instance.GetDialogAudios(DialogType.NpcHappiness, CurrentAudioSource, GeneralData.isMale);
         }
     }

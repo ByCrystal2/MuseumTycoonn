@@ -362,37 +362,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40413729aef19bd42b42051b458e4a62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  npcState:
+    _mainState: 0
+    _location: 0
   TargetObject: {fileID: 0}
   TargetPositions: []
+  anim: {fileID: 0}
   CurrentAudioSource: {fileID: 0}
-  CurrentState: 0
-  CurrentTarget: 0
-  CurrentInvestigate: 0
-  NpcSpeed: 3
-  NpcCurrentSpeed: 0
-  NpcRotationSpeed: 0
-  OutsidePosition: {x: 0, y: 0, z: 0}
-  DialogTarget: {fileID: 0}
   MyNPCUI: {fileID: 7969173026581735775}
   BeatenEffectParent: {fileID: 991041844472521732}
-  CurrentVisitedRoom: {fileID: 0}
-  MyName: Ahmet Burak
-  IdleLength: 1.5
-  NpcWalkType: 1
-  VisitableArtAmount: 0
-  LikedColors: 
-  DislikedColor: 0
-  LikedArtist: []
-  Happiness: 0
-  InvestigatedAreas: []
-  Education: 0
-  AdditionalLuck: 0
-  NpcVisittingArtAmount: 0
-  IsBusy: 0
-  IsMale: 1
-  npcDialogState: 0
+  myDefaultCamera: {fileID: 0}
+  myWorkCamera: {fileID: 0}
   npcRenderers: []
   myCanvasses: []
+  GeneralData:
+    NpcName: 
+    isMale: 0
+  StatData:
+    NpcSpeed: 0
+    NpcCurrentSpeed: 0
+    NpcRotationSpeed: 0
+    LikedColors: 
+    DislikedColor: 0
+    LikedArtist: []
+    Happiness: 0
+    HappinessBuff: 0
+    Stress: 0
+    StressBuff: 0
+    toilet: 0
+    education: 0
+    educationBuff: 0
+    additionalLuck: 0
+  DialogTarget: {fileID: 0}
+  CurrentVisitedRoom: {fileID: 0}
+  IdleTimer: 0
+  VisitableArtAmount: 0
+  NpcWalkType: 1
+  InvestigatedAreas: []
+  BusyUntil: 0
+  escapeAfterBeat: 0
+  ReadyForDialog: 0
 --- !u!54 &5249031479682438036
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -810,6 +819,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3100619725362340668}
+  - {fileID: 369403179340363568}
   m_Father: {fileID: 2667796540542912743}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1154,16 +1164,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3067611372372437559}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0.000000029802433, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3100619725362340668}
+  m_Father: {fileID: 2646506809973126031}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 11, y: 0}
+  m_AnchoredPosition: {x: 11.2, y: -90.899994}
   m_SizeDelta: {x: 90.39, y: 69}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4256797878113132250
@@ -1891,7 +1901,6 @@ RectTransform:
   - {fileID: 584548777509317696}
   - {fileID: 3522763405326400964}
   - {fileID: 7058928293714753381}
-  - {fileID: 369403179340363568}
   m_Father: {fileID: 2646506809973126031}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}

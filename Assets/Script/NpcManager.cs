@@ -506,7 +506,7 @@ public class NpcManager : MonoBehaviour
     }
 #endif
 
-    public static float EscapeSpeedMultiplier = 4.5f;
+    public static float EscapeSpeedMultiplier = 2.5f;
 
     public static List<float> delaysPerState = new List<float>() 
     {
