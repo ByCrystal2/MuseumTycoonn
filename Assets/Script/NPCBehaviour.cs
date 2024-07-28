@@ -342,7 +342,7 @@ public class NPCBehaviour : MonoBehaviour
         int center = 5;
         if (NPCCurrentScore < center)
         {
-            AudioManager.instance.GetDialogAudios(DialogType.NpcDisLike, CurrentAudioSource, GeneralData.isMale);
+            AudioManager.instance.GetDialogAudios(DialogType.NpcLike, CurrentAudioSource, GeneralData.isMale);
             ChangeCoreStressValue((5 - NPCCurrentScore) * 2);
             ChangeCoreHappinessValue(Mathf.Round(GetNpcStress() * 0.2f));
             MyNPCUI.PlayEmotionEffect(NpcEmotionEffect.Sadness);
@@ -350,7 +350,7 @@ public class NPCBehaviour : MonoBehaviour
         }
         else
         {
-            AudioManager.instance.GetDialogAudios(DialogType.NpcLike, CurrentAudioSource, GeneralData.isMale);
+            AudioManager.instance.GetDialogAudios(DialogType.NpcDisLike, CurrentAudioSource, GeneralData.isMale);
             ChangeCoreStressValue((NPCCurrentScore - 5) * 2);
             int _happiness = (int)Mathf.Round((100 - GetNpcStress()) * 0.05f);
             _happiness = (int)(_happiness + (float)_happiness * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.HappinessIncreaseRatio] / 100f));
@@ -784,7 +784,7 @@ public class NPCBehaviour : MonoBehaviour
         if (happiness <= 25)
         {
             NpcWalkType = WalkEnum.SadWalk;
-            float sadSpeed = StatData.NpcSpeed * 0.45f * (escapeAfterBeat ? NpcManager.EscapeSpeedMultiplier : 1f);
+            float sadSpeed = StatData.NpcSpeed * (escapeAfterBeat ? NpcManager.EscapeSpeedMultiplier : 0.45f);
             StatData.NpcCurrentSpeed = sadSpeed + sadSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f);
             AudioManager.instance.GetDialogAudios(DialogType.NpcSad, CurrentAudioSource, GeneralData.isMale);
         }
