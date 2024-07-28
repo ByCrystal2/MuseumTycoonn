@@ -690,7 +690,11 @@ public class GameManager : MonoBehaviour
         foreach (WorkerData worker in inventoryWorkers)
         {
             Worker w = WorkerManager.instance.GetWorkerToWorkerType(worker);
-            MuseumManager.instance.WorkersInInventory.Add(WorkerManager.instance.GetAllWorkers().Where(x => x.ID == w.ID).SingleOrDefault());
+
+            if (w != null)
+                MuseumManager.instance.WorkersInInventory.Add(WorkerManager.instance.GetAllWorkers().Where(x => x.ID == w.ID).SingleOrDefault());
+            else
+                Debug.Log($"Veritabanindan gelen {worker.Name} adli, {worker.ID} ID'li npc iscilerimiz arasinda bulunmamaktadir.");
         }
     }
     public async System.Threading.Tasks.Task LoadDailyRewardItems()

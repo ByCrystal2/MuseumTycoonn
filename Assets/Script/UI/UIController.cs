@@ -887,7 +887,7 @@ public class UIController : MonoBehaviour
         {
             for (int i = 0; i < length; i++)
             {
-                if (i < _LikedColors.Count)
+                if (i < likedColors.Count)
                 {
                     if (likedColors[i] != null)
                     {
@@ -935,6 +935,7 @@ public class UIController : MonoBehaviour
         if (NpcManager.instance.CurrentNPC != null)
         {
             NpcManager.instance.CurrentNPC.SetMyCamerasActivation(false, false);
+            NpcManager.instance.CurrentNPC = null;
         }
     }
 

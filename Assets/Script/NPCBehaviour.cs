@@ -811,6 +811,7 @@ public class NPCBehaviour : MonoBehaviour
         if (!UIController.instance.IsPointerOverAnyUI())
         {
             Debug.Log("NPC'ye tiklandi/dokunuldu.");
+            NpcManager.instance.CurrentNPC = this;
             if (GameManager.instance.GetCurrentGameMode() == GameMode.FPS)
             {
                 PlayerManager.instance.LockPlayer();

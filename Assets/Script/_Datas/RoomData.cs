@@ -51,9 +51,17 @@ public class RoomData : MonoBehaviour
         if (!isLock) return;
         for (int i = 0; i < renderHelpersCount; i++)
         {
+            if (i == renderHelpersCount - 1 && GameManager.instance.GetCurrentGameMode() == GameMode.MuseumEditing)
+            {
+                if(!renderHelpers[i].Canvas.activeSelf)
+                renderHelpers[i].Canvas.SetActive(true);
+                break;
+            }
             bool visible = renderHelpers[i].ObjectIsVisible();
-            renderHelpers[i].Canvas.SetActive(visible);
+            if (renderHelpers[i].Canvas.activeSelf != visible)
+                renderHelpers[i].Canvas.SetActive(visible);
         }
+
     }
     public List<NPCBehaviour> GetNpcsInTheMyRoom()
     {
