@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 public class NpcManager : MonoBehaviour
@@ -36,6 +37,10 @@ public class NpcManager : MonoBehaviour
     public static string AnimMoveParam = "Walk";
     public static string AnimLookParam = "Look";
     public static string AnimDialogParam = "Dialog";
+    public static string AnimLikedParam = "Liked";
+    public static string AnimNoLikedParam = "NoLiked";
+    public static string AnimMakeMessParam = "MakeMess";
+
     private void Awake()
     {
         if (instance)
@@ -462,6 +467,7 @@ public class NpcManager : MonoBehaviour
 #if UNITY_EDITOR
     [Header("Set Component Shortcut")]
     [SerializeField] private bool SetNPCsRequiredComponents;
+    [SerializeField] private bool SetLocationDataIDs;
 
     private void OnDrawGizmos()
     {
@@ -470,23 +476,49 @@ public class NpcManager : MonoBehaviour
             SetNPCsRequiredComponents = false;
             NPCBehaviour[] npcBehaviours = FindObjectsByType<NPCBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
             foreach (var item in npcBehaviours)
+            {
                 item.SetComponents();
-            
+            EditorUtility.SetDirty(item);
+            }
+            AssetDatabase.SaveAssets();
             Debug.Log("Listedeki tum npclerin componentleri guncellendi.");
+        }
+        if (SetLocationDataIDs)
+        {
+            SetLocationDataIDs = false;
+            LocationData[] locationDatas = FindObjectsByType<LocationData>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
+            int id = 1001;
+            foreach (var item in locationDatas)
+            {
+                if (item.transform.parent.TryGetComponent(out PictureElement PD))
+                {
+                    item.id = PD._pictureData.id;
+                }
+                else
+                {
+                    item.id = id;
+                    id++;
+                }
+                EditorUtility.SetDirty(item);
+            }
+            AssetDatabase.SaveAssets();
         }
     }
 #endif
 
+    public static float EscapeSpeedMultiplier = 4.5f;
+
     public static List<float> delaysPerState = new List<float>() 
     {
-        2,
-        0.5f,
-        5,
-        10,
-        10,
-        3,
-        15,
-        15,
+        2, //Idle
+        0.5f, //Move
+        5, //Investigate
+        5, //DialogFree
+        10, //Dialog
+        6, //Farewell
+        3, //CombatBeat
+        15, //Combatbeaten
+        10, //VictoryDance
     };
 }
 
@@ -522,6 +554,7 @@ public struct NPCStatData
 
     public float toilet;
     public float education;
+    public float educationBuff;
     public float additionalLuck;
 }
 
@@ -566,4 +599,5 @@ public enum NPCState
     Farewell,
     CombatBeat,
     CombatBeaten,
+    VictoryDance,
 }

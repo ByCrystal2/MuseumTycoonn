@@ -12,14 +12,14 @@ using UnityEngine.UI;
 
 public class NPCBehaviour : MonoBehaviour
 {
-    [Header("Main State")]
+    [Header("--Main State--")]
     [SerializeField] private NPCStateData npcState;
 
-    [Header("Move System")]
+    [Header("--Move System--")]
     [SerializeField] private Transform TargetObject;
     [SerializeField] private List<NavigationHandler.WayPointRuntime> TargetPositions;
 
-    [Header("Required Components")]
+    [Header("--Required Components--")]
     [SerializeField] private Animator anim;
     [SerializeField] private AudioSource CurrentAudioSource;
     [SerializeField] private NPCUI MyNPCUI;
@@ -29,11 +29,11 @@ public class NPCBehaviour : MonoBehaviour
     [SerializeField] private List<Renderer> npcRenderers = new();
     [SerializeField] private List<Canvas> myCanvasses = new();
 
-    [Header("NPC Data")]
+    [Header("--NPC Data--")]
     [SerializeField] private NPCGeneralData GeneralData;
     [SerializeField] private NPCStatData StatData;
 
-    [Header("Runtime Datas (DEBUG)")]
+    [Header("--Runtime Datas (DEBUG)--")]
     [SerializeField] private NPCBehaviour DialogTarget;
     [SerializeField] private RoomData CurrentVisitedRoom;
     [SerializeField] private float IdleTimer;
@@ -87,7 +87,8 @@ public class NPCBehaviour : MonoBehaviour
         {
             if (IdleTimer < Time.time)
             {
-                TargetObject?.gameObject.SetActive(true);
+                if (TargetObject != null)
+                    TargetObject.gameObject.SetActive(true);
                 NpcManager.instance.RemoveDialogReadyNPC(this);
                 ReadyForDialog = false;
                 ResetAnimator();
@@ -104,7 +105,8 @@ public class NPCBehaviour : MonoBehaviour
         {
             if (DialogTarget == null)
             {
-                TargetObject?.gameObject.SetActive(true);
+                if (TargetObject != null)
+                    TargetObject.gameObject.SetActive(true);
                 ResetAnimator();
                 anim.SetTrigger(NpcManager.AnimResetParam);
                 SetNPCState(NPCState.Idle, true);
@@ -129,11 +131,22 @@ public class NPCBehaviour : MonoBehaviour
         {
             if(IdleTimer < Time.time)
                 CombatBeat();
+            else if (IdleTimer < Time.time + 1)
+                CombatBeatEnd();
         }
         else if (npcState._mainState == NPCState.CombatBeaten)
         {
-            if(IdleTimer < Time.time)
+            if (IdleTimer < Time.time)
                 CombatBeaten();
+            else if (IdleTimer < Time.time + 1)
+                OnCombatEnd(false);
+        }
+        else if (npcState._mainState == NPCState.VictoryDance)
+        {
+            if (IdleTimer < Time.time)
+                VictoryDance();
+            else if (IdleTimer < Time.time + 1)
+                OnCombatEnd(true);
         }
     }
 
@@ -148,13 +161,17 @@ public class NPCBehaviour : MonoBehaviour
     private void Move()
     {
         if (CurrentVisitedRoom != null)
-            StatData.toilet += Time.deltaTime * 4f;
+        {
+            ChangeCoreToiletValue(Time.deltaTime * 4f);
+            if (BusyUntil > Time.time)
+                return;
+        }
 
         if(IdleTimer < Time.time)
         {
             ResetAnimator();
             anim.SetTrigger(NpcManager.AnimResetParam);
-            IdleTimer = Time.time + NpcManager.delaysPerState[(int)NPCState.Move] * 5;
+            IdleTimer = Time.time + NpcManager.delaysPerState[(int)NPCState.Move] * 20;
         }
 
         anim.SetInteger(NpcManager.AnimMoveParam, escapeAfterBeat ? 102 : (int)NpcWalkType);
@@ -165,7 +182,6 @@ public class NPCBehaviour : MonoBehaviour
             if (pic.TryGetComponent(out PictureElement PE))
             {
                 SetNPCState(NPCState.Investigate, true);
-                TargetObject.gameObject.SetActive(false);
             }
             else
             {
@@ -187,9 +203,6 @@ public class NPCBehaviour : MonoBehaviour
             }
             else
             {
-                if (DialogTarget != null)
-                    Debug.Log("dialog targeti olmasina ragmen Move a gecti.");
-
                 if (TargetPositions.Count == 0)
                     return;
 
@@ -229,26 +242,31 @@ public class NPCBehaviour : MonoBehaviour
 
     private void OnInvestigateEnd()
     {
+        bool _liked = false;
         TargetObject.gameObject.SetActive(false);
         PictureElement PE = TargetObject.GetComponentInParent<PictureElement>();
         if(PE != null && PE._pictureData.TextureID != 0)
         {
-            CalculateInvestigateScore(PE);
+            _liked = CalculateInvestigateScore(PE);
         }
 
         float luck = Random.Range(0, 101);
         luck += (GetNpcHappiness() * 0.2f);
         luck += (StatData.additionalLuck * luck * 0.01f);
         Debug.Log("iletisim kurma istegi %" + luck);
-        if (luck > 0)
+        if (luck > 60)
         {
             NpcManager.instance.AddDialogReadyNpc(TargetObject.parent, this);
             SetNPCState(NPCState.DialogFree, true);
             IdleTimer = Time.time + NpcManager.delaysPerState[(int)NPCState.DialogFree];
+            ResetAnimator();
+            anim.SetTrigger(NpcManager.AnimResetParam);
+            anim.SetInteger(_liked ? NpcManager.AnimLikedParam : NpcManager.AnimNoLikedParam, Random.Range(1,3));
         }
         else
         {
-            TargetObject?.gameObject.SetActive(true);
+            if (TargetObject != null)
+                TargetObject.gameObject.SetActive(true);
             ResetAnimator();
             anim.SetTrigger(NpcManager.AnimResetParam);
             SetNPCState(NPCState.Idle, true);
@@ -256,8 +274,9 @@ public class NPCBehaviour : MonoBehaviour
         VisitableArtAmount--;
     }
 
-    void CalculateInvestigateScore(PictureElement PE)
+    bool CalculateInvestigateScore(PictureElement PE)
     {
+        bool _liked = false;
         int NPCMaxScore = 10;
         int NPCMinScore = 0;
         int NPCCurrentScore = 5;
@@ -327,6 +346,7 @@ public class NPCBehaviour : MonoBehaviour
             ChangeCoreStressValue((5 - NPCCurrentScore) * 2);
             ChangeCoreHappinessValue(Mathf.Round(GetNpcStress() * 0.2f));
             MyNPCUI.PlayEmotionEffect(NpcEmotionEffect.Sadness);
+            _liked = false;
         }
         else
         {
@@ -336,7 +356,10 @@ public class NPCBehaviour : MonoBehaviour
             _happiness = (int)(_happiness + (float)_happiness * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.HappinessIncreaseRatio] / 100f));
             ChangeCoreHappinessValue(_happiness);
             MyNPCUI.PlayEmotionEffect(NpcEmotionEffect.Happiness);
+            _liked = true;
         }
+
+        return _liked;
     }
 
     private void DialogFree()
@@ -354,7 +377,8 @@ public class NPCBehaviour : MonoBehaviour
 
     private void Dialog()
     {
-        TargetObject.gameObject.SetActive(false);
+        if (TargetObject != null)
+            TargetObject.gameObject.SetActive(false);
         IdleTimer = Time.time + NpcManager.delaysPerState[(int)NPCState.Dialog];
 
         ResetAnimator();
@@ -367,7 +391,8 @@ public class NPCBehaviour : MonoBehaviour
         Debug.Log(transform.name + " mevcut dialogunu sonlandirdi.");
         if (DialogTarget == null)
         {
-            TargetObject?.gameObject.SetActive(true);
+            if (TargetObject != null)
+                TargetObject.gameObject.SetActive(true);
             ResetAnimator();
             anim.SetTrigger(NpcManager.AnimResetParam);
             SetNPCState(NPCState.Idle, true);
@@ -378,27 +403,26 @@ public class NPCBehaviour : MonoBehaviour
             {
                 int Stress = (int)GetNpcStress();
                 int partnerStress = (int)DialogTarget.GetNpcStress();
-                if (Stress >= 0)
-                {
-                    int luck = Random.Range(0 + (int)Stress, 101);
-                    if (luck >= (70 - Stress))
-                    {
-                        bool amIbeat;
-                        if (partnerStress == Stress)
-                        {
-                            int otherPriority = DialogTarget.transform.GetInstanceID();
-                            amIbeat = transform.GetInstanceID() > otherPriority;
-                        }
-                        else
-                        {
-                            amIbeat = Stress > partnerStress;
-                        }
 
-                        SetNPCState(amIbeat ? NPCState.CombatBeat : NPCState.CombatBeaten, true);
-                        DialogTarget.SetNPCState(amIbeat ? NPCState.CombatBeaten : NPCState.CombatBeat, true);
-                        return;
+                int luck = Random.Range(0 + (int)Stress, 101);
+                if (luck >= (70 - Stress))
+                {
+                    bool amIbeat;
+                    if (partnerStress == Stress)
+                    {
+                        int otherPriority = DialogTarget.transform.GetInstanceID();
+                        amIbeat = transform.GetInstanceID() > otherPriority;
                     }
+                    else
+                    {
+                        amIbeat = Stress > partnerStress;
+                    }
+
+                    SetNPCState(amIbeat ? NPCState.CombatBeat : NPCState.CombatBeaten, true);
+                    DialogTarget.SetNPCState(amIbeat ? NPCState.CombatBeaten : NPCState.CombatBeat, true);
+                    return;
                 }
+                
                 SetNPCState(NPCState.Farewell, true);
                 DialogTarget.SetNPCState(NPCState.Farewell, true);
             }
@@ -409,7 +433,8 @@ public class NPCBehaviour : MonoBehaviour
     {
         if (DialogTarget == null)
         {
-            TargetObject?.gameObject.SetActive(true);
+            if (TargetObject != null)
+                TargetObject.gameObject.SetActive(true);
             ResetAnimator();
             anim.SetTrigger(NpcManager.AnimResetParam);
             SetNPCState(NPCState.Idle, true);
@@ -420,40 +445,73 @@ public class NPCBehaviour : MonoBehaviour
             ResetAnimator();
             anim.SetTrigger(NpcManager.AnimResetParam);
             anim.SetInteger(NpcManager.AnimDialogParam, -1);
+            IdleTimer = Time.time + NpcManager.delaysPerState[(int)NPCState.Farewell];
         }
     }
 
     private void OnFarewellEnd()
     {
-        if (DialogTarget == null)
-        {
-            TargetObject?.gameObject.SetActive(true);
-            SetNPCState(NPCState.Idle, true);
-        }
-        else
-        {
-            TargetObject?.gameObject.SetActive(true);
-            DialogTarget = null;
-            ResetAnimator();
-            anim.SetTrigger(NpcManager.AnimResetParam);
-            SetNPCState(NPCState.Idle, true);
-        }
+        if (TargetObject != null)
+            TargetObject.gameObject.SetActive(true);
+        DialogTarget = null;
+        ResetAnimator();
+        anim.SetTrigger(NpcManager.AnimResetParam);
+        SetNPCState(NPCState.Idle, true);
     }
 
     private void CombatBeat()
     {
-        TargetObject?.gameObject.SetActive(true);
+        if (TargetObject != null)
+            TargetObject.gameObject.SetActive(false);
+        int kickid = Random.Range(-102, -100);
         ResetAnimator();
         anim.SetTrigger(NpcManager.AnimResetParam);
-        SetNPCState(NPCState.Idle, true);
+        anim.SetInteger(NpcManager.AnimDialogParam, kickid);
+        IdleTimer = Time.time + NpcManager.delaysPerState[(int)NPCState.CombatBeat];
+    }
+
+    private void CombatBeatEnd()
+    {
+        if (TargetObject != null)
+            TargetObject.gameObject.SetActive(false);
+        SetNPCState(NPCState.VictoryDance, true);
+        OnBeginGuilty();
     }
     
     private void CombatBeaten()
     {
-        TargetObject?.gameObject.SetActive(true);
+        if (TargetObject != null)
+            TargetObject.gameObject.SetActive(false);
+        ResetAnimator();
+        anim.SetTrigger(NpcManager.AnimResetParam);
+        anim.SetInteger(NpcManager.AnimDialogParam, -2);
+        IdleTimer = Time.time + NpcManager.delaysPerState[(int)NPCState.CombatBeaten];
+        PlayBeatenEffect(true);
+    }
+
+    private void VictoryDance()
+    {
+        if (TargetObject != null)
+            TargetObject.gameObject.SetActive(false);
+        ResetAnimator();
+        anim.SetTrigger(NpcManager.AnimResetParam);
+        anim.SetInteger(NpcManager.AnimDialogParam, -3);
+        IdleTimer = Time.time + NpcManager.delaysPerState[(int)NPCState.VictoryDance];
+    }
+
+    private void OnCombatEnd(bool _didIBeat)
+    {
+        if (TargetObject != null)
+            TargetObject.gameObject.SetActive(true);
         ResetAnimator();
         anim.SetTrigger(NpcManager.AnimResetParam);
         SetNPCState(NPCState.Idle, true);
+        if (!_didIBeat)
+        {
+            PlayBeatenEffect(false);
+            npcState._location = NpcLocationState.Outside;
+            OnExitWayMuseum(true);
+        }
     }
 
     private void ResetAnimator()
@@ -461,6 +519,9 @@ public class NPCBehaviour : MonoBehaviour
         anim.SetInteger(NpcManager.AnimLookParam, 0);
         anim.SetInteger(NpcManager.AnimMoveParam, 0);
         anim.SetInteger(NpcManager.AnimDialogParam, 0);
+        anim.SetInteger(NpcManager.AnimLikedParam, 0);
+        anim.SetInteger(NpcManager.AnimNoLikedParam, 0);
+        anim.SetInteger(NpcManager.AnimMakeMessParam, 0);
     }
 
     public void SetNPCState(NPCState _newState, bool _force)
@@ -484,7 +545,9 @@ public class NPCBehaviour : MonoBehaviour
 
     public void CreateTarget()
     {
-        escapeAfterBeat = false;
+        if(TargetObject != null)
+            TargetObject.gameObject.SetActive(true);
+        
         if (npcState._location == NpcLocationState.Outside)
         {
             bool gidis = Random.Range(0, 2) == 0;
@@ -511,6 +574,7 @@ public class NPCBehaviour : MonoBehaviour
         }
         else if (npcState._location == NpcLocationState.Inside)
         {
+            escapeAfterBeat = false;
             if (VisitableArtAmount <= 0)
             {
                 OnExitWayMuseum(false);
@@ -546,7 +610,18 @@ public class NPCBehaviour : MonoBehaviour
                     possible.RemoveAt(i);
             }
 
-            if (possible.Count == 0)
+            List<LocationData> higherPriority = new List<LocationData>();
+            lengthVisit = possible.Count;
+            for (int i = lengthVisit - 1; i >= 0; i--)
+            {
+                if (possible[i].transform.parent.TryGetComponent(out PictureElement PD))
+                {
+                    higherPriority.Add(possible[i]);
+                    possible.RemoveAt(i);
+                }
+            }
+            
+            if (higherPriority.Count == 0 || VisitableArtAmount == 0)
             {
                 Debug.LogError("Gidilecek hic bir yer yok!.");
                 MyNPCUI.PlayEmotionEffect(NpcEmotionEffect.Sadness);
@@ -556,16 +631,22 @@ public class NPCBehaviour : MonoBehaviour
             }
             else
             {
+                LocationData newTargetLocation = higherPriority.Count > 0 && Random.Range(0, 101) > 40 ?
+                    higherPriority[Random.Range(0, higherPriority.Count)] : possible[Random.Range(0, possible.Count)];
 
-                LocationData newTargetLocation = possible[Random.Range(0, possible.Count)];
                 if (!InvestigatedAreas.Contains(newTargetLocation))
                     InvestigatedAreas.Add(newTargetLocation);
                 TargetObject = newTargetLocation.transform;
+                Transform pic = TargetObject.parent;
+                if (pic.TryGetComponent(out PictureElement PE))
+                    TargetObject.gameObject.SetActive(false);
+                
                 UpdateNavigation();
             }
         }
         else if (npcState._location == NpcLocationState.EnterWay)
         {
+            escapeAfterBeat = false;
             NpcArrivedTheEnterGate();
         }
     }
@@ -579,7 +660,10 @@ public class NPCBehaviour : MonoBehaviour
         SetHappinessValue(100);
         SetStressValue(0);
         NpcWalkType = WalkEnum.NormalWalk;
-        StatData.NpcCurrentSpeed = (StatData.NpcSpeed + StatData.NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f) * (escapeAfterBeat ? 2f : 1f));
+        StatData.NpcCurrentSpeed = (StatData.NpcSpeed + StatData.NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f) * (escapeAfterBeat ? NpcManager.EscapeSpeedMultiplier : 1f));
+        if (TargetObject != null)
+            TargetObject.gameObject.SetActive(true);
+
         TargetObject = NpcManager.instance.GidisListe[Random.Range(0, NpcManager.instance.GidisListe.Count)];
         npcState._location = NpcLocationState.Outside;
         UpdateNavigation();
@@ -648,28 +732,112 @@ public class NPCBehaviour : MonoBehaviour
         }
     }
 
+    public void DoToilet()
+    {
+        BusyUntil = Time.time + 2.5f;
+        int MaxCultureFactorEffect = 30;
+
+        int cultureFactor = Mathf.Clamp(MuseumManager.instance.GetCurrentCultureLevel(), 0, MaxCultureFactorEffect);
+        float ToiletChance = 30 + (GetNpcStress() * 0.5f) - cultureFactor;
+        if (ToiletChance < 0)
+            ToiletChance = 0;
+
+        float skillFactor = 0; //skillden (-) bonus gelmesi lazim. 
+
+        float change = Random.Range(0, 101);
+        Debug.Log("ToiletChance: " + ToiletChance + " / Current chance: " + change);
+        if (change < ToiletChance)
+        {
+            ResetAnimator();
+            anim.SetTrigger(NpcManager.AnimResetParam);
+            anim.SetInteger(NpcManager.AnimMakeMessParam, 1);
+            Invoke(nameof(CreateMess), 1f);
+            SetStressValue(GetNpcStress() / 2);
+        }
+        SetToiletValue(0);
+    }
+
+    public void CreateMess()
+    {
+        if (CurrentVisitedRoom == null)
+            return;
+
+        GameObject npc_Mess;
+        int messChance = Random.Range(0, 3);
+        if (messChance == 0)
+            npc_Mess = Instantiate(Resources.Load<GameObject>("NPC/NPC_Poop"), transform.position, Quaternion.identity);
+        else if (messChance == 1)
+            npc_Mess = Instantiate(Resources.Load<GameObject>("NPC/NPC_Gas"), transform.position, Quaternion.identity);
+        else
+            npc_Mess = Instantiate(Resources.Load<GameObject>("NPC/NPC_Pee"), transform.position, Quaternion.identity);
+
+        npc_Mess.GetComponent<NpcMess>().SetCurrentRoom(CurrentVisitedRoom);
+        NpcManager.instance.AddMessIntoMessParent(npc_Mess.transform);
+        ResetAnimator();
+        anim.SetTrigger(NpcManager.AnimResetParam);
+        anim.SetInteger(NpcManager.AnimMoveParam, escapeAfterBeat ? 102 : (int)NpcWalkType);
+    }
+
     void OnHappinessChange()
     {
         float happiness = GetNpcHappiness();
         if (happiness <= 25)
         {
             NpcWalkType = WalkEnum.SadWalk;
-            float sadSpeed = StatData.NpcSpeed * 0.45f;
+            float sadSpeed = StatData.NpcSpeed * 0.45f * (escapeAfterBeat ? NpcManager.EscapeSpeedMultiplier : 1f);
             StatData.NpcCurrentSpeed = sadSpeed + sadSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f);
             AudioManager.instance.GetDialogAudios(DialogType.NpcSad, CurrentAudioSource, GeneralData.isMale);
         }
         else if (happiness > 25 && happiness < 75)
         {
             NpcWalkType = WalkEnum.NormalWalk;
-            StatData.NpcCurrentSpeed = StatData.NpcSpeed + StatData.NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f); ;
+            StatData.NpcCurrentSpeed = StatData.NpcSpeed + StatData.NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f) * (escapeAfterBeat ? NpcManager.EscapeSpeedMultiplier : 1f);
         }
         else
         {
             NpcWalkType = WalkEnum.HappyWalk;
             float happySpeed = StatData.NpcSpeed * 1.25f;
-            StatData.NpcCurrentSpeed = happySpeed + happySpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f);
+            StatData.NpcCurrentSpeed = happySpeed + happySpeed * (escapeAfterBeat ? NpcManager.EscapeSpeedMultiplier : 1f) * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f);
             AudioManager.instance.GetDialogAudios(DialogType.NpcHappiness, CurrentAudioSource, GeneralData.isMale);
         }
+    }
+
+    IEnumerator WaitingForIsPointerOver()
+    {
+        //for (int i = 0; i < 3; i++)
+        yield return new WaitForEndOfFrame();
+
+        if (!UIController.instance.IsPointerOverAnyUI())
+        {
+            Debug.Log("NPC'ye tiklandi/dokunuldu.");
+            if (GameManager.instance.GetCurrentGameMode() == GameMode.FPS)
+            {
+                PlayerManager.instance.LockPlayer();
+            }
+            //NpcManager.instance.CurrentNPC = this;
+            UIController.instance.NpcInformationPanel.SetActive(true);
+            UIController.instance.SetNPCInfoPanelUIs(GeneralData.NpcName, GetNpcHappiness(), GetNpcStress(), GetNpcToilet(), GetNpcEducation(), GetLikedColors(), GetLikedArtists());
+            if (npcState._mainState == NPCState.Investigate)
+            {
+                SetMyCamerasActivation(false, true);
+            }
+            else
+            {
+                SetMyCamerasActivation(true, false);
+            }
+        }
+    }
+
+    private void OnMouseDown()
+    {
+        //StopAllCoroutines();
+        StartCoroutine(WaitingForIsPointerOver());
+    }
+
+    private void OnToiletValueChanged()
+    {
+        if (StatData.toilet >= 100)
+            DoToilet();
     }
 
     #region Editleme Fonksiyonlari
@@ -689,7 +857,19 @@ public class NPCBehaviour : MonoBehaviour
     {
         StatData.Stress = _stress;
         StatData.Stress = Mathf.Clamp(StatData.Stress, 0, 100);
-        //OnHappinessChange();
+    }
+
+    public void SetToiletValue(float _toilet)
+    {
+        StatData.toilet = _toilet;
+        StatData.toilet = Mathf.Clamp(StatData.toilet, 0, 100);
+    }
+
+    public void ChangeCoreToiletValue(float _changeAmount)
+    {
+        StatData.toilet += _changeAmount;
+        StatData.toilet = Mathf.Clamp(StatData.toilet, 0, 100);
+        OnToiletValueChanged();
     }
 
     //negatif olarak da gonderilebilir. Negatif olmasi durumunda dusurulecek.
@@ -743,9 +923,24 @@ public class NPCBehaviour : MonoBehaviour
         return Mathf.Clamp(StatData.Stress + StatData.StressBuff ,0 ,100);
     }
 
+    public float GetNpcToilet()
+    {
+        return Mathf.Clamp(StatData.toilet, 0, 100);
+    }
+
+    public float GetNpcEducation()
+    {
+        return Mathf.Clamp(StatData.education + StatData.educationBuff, 0, 100);
+    }
+
     public List<string> GetLikedArtists()
     {
         return StatData.LikedArtist;
+    }
+
+    public List<MyColors> GetLikedColors()
+    {
+        return StatData.LikedColors;
     }
 
     public RoomData GetNpcCurrentRoom()
