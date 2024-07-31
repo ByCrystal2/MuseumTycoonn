@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -993,7 +993,7 @@ Transform:
   m_GameObject: {fileID: 378612342}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1055.7946, y: 547.3166, z: 0.5397949}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1585,7 +1585,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4faa661074240642b225ed553efd6d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsWatchTutorial: 0
 --- !u!4 &600672005
 Transform:
   m_ObjectHideFlags: 0
@@ -1595,7 +1594,7 @@ Transform:
   m_GameObject: {fileID: 600672003}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 585.6017, y: -377.3291, z: 236.4061}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2301,7 +2300,7 @@ Transform:
   m_GameObject: {fileID: 765714395}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 16.666275, y: -8.359267, z: -1.8639479}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3229,6 +3228,7 @@ MonoBehaviour:
     datetime: 
   WhatDay: 0
   FirstOpen: 1
+  lastDailyCheck: 0
 --- !u!4 &930688040
 Transform:
   m_ObjectHideFlags: 0
@@ -3238,7 +3238,7 @@ Transform:
   m_GameObject: {fileID: 930688038}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 801.1995, y: 570.48, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3556,8 +3556,12 @@ MonoBehaviour:
     LastDailyRewardTime: 
     WhatDay: 0
   GameLanguage: Turkish
-  rewardManager: {fileID: 0}
+  _rewardManager: {fileID: 0}
   PictureChangeRequiredAmount: 250
+  ActiveRoomsRequiredMoney: 0
+  BaseWorkerHiringPrice: 0
+  IsFirstGame: 1
+  IsWatchTutorial: 0
 --- !u!4 &1202299727
 Transform:
   m_ObjectHideFlags: 0
@@ -3775,7 +3779,7 @@ Transform:
   m_GameObject: {fileID: 1276463172}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1446.3416, y: 643.3327, z: 0.13415527}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4074,6 +4078,7 @@ MonoBehaviour:
   RItems: []
   DailyRewardItems: []
   CurrentDailyRewardItems: []
+  AllItems: []
 --- !u!4 &1474189936
 Transform:
   m_ObjectHideFlags: 0
@@ -4083,7 +4088,7 @@ Transform:
   m_GameObject: {fileID: 1474189934}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 676.15485, y: 637.1701, z: -0.27526855}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4145,7 +4150,7 @@ Transform:
   m_GameObject: {fileID: 1475525474}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 951.7265, y: 774.9149, z: 5.891876}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4396,10 +4401,12 @@ MonoBehaviour:
   - id: 5
     texture: {fileID: 2800000, guid: 75a81034310a082408cac7f17842bffd, type: 3}
     MostCommonColors: 
-  CurrentActivePictures: []
+  AllPictureElements: []
   InventoryPictures: []
   PurchasedItems: []
   CurrentNpcs: []
+  WorkersInInventory: []
+  CurrentActiveWorkers: []
   EmptyPictureSprite: {fileID: 21300000, guid: 5cb427ca385cd1248bd3913dbcd3de5a, type: 3}
   CurrentNPCCountInMuseum: 0
   DailyNPCCountInMuseum: 0
@@ -4925,7 +4932,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1915641231}
-  - component: {fileID: 1915641230}
   m_Layer: 0
   m_Name: ConstantManager
   m_TagString: Untagged
@@ -4933,321 +4939,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1915641230
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1915641229}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31dab4249d07e3446b0024bfd6a3c736, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  NPCNamesMale:
-  - John Smith
-  - Robert Brown
-  - Michael Miller
-  - William Moore
-  - David Anderson
-  - Richard Jackson
-  - Joseph Harris
-  - Thomas Thompson
-  - Charles Martinez
-  - Christopher Clark
-  - "Ahmet Y\u0131lmaz"
-  - Mehmet Demir
-  - "Mustafa \xC7elik"
-  - "Ali Y\u0131ld\u0131r\u0131m"
-  - "H\xFCseyin Arslan"
-  - Hasan Karaca
-  - "\u0130brahim Polat"
-  - "\u0130smail Yavuz"
-  - "Osman \u015Eim\u015Fek"
-  - Yusuf Kaplan
-  - Somchai Sukhumvit
-  - Wira Thongchai
-  - Prayut Thammarat
-  - Chuchart Sukhothai
-  - Anan Ayutthaya
-  - Preecha Bangna
-  - Sombun Klongtoey
-  - Chaiwat Din Daeng
-  - Pongsak Samutprakarn
-  - Wittaya Huaikhwang
-  - Carlos Garcia
-  - Jose Martinez
-  - Antonio Lopez
-  - Manuel Perez
-  - Francisco Ramirez
-  - Juan Flores
-  - Luis Diaz
-  - Javier Morales
-  - Miguel Cruz
-  - Pedro Castro
-  - Wang Wei
-  - Zhang Hua
-  - Chen Long
-  - Yang Lei
-  - Wu Jing
-  - Wang Lin
-  - Zhang Yu
-  - Chen Xi
-  - Yang Rui
-  - Wu Qiang
-  - Wang Jun
-  - Zhang Qiang
-  - Chen Jie
-  - Yang Ming
-  - Wu Dan
-  - Wang Yan
-  - Zhang Yu
-  - Chen Li
-  - Yang Lei
-  - Wu Jian
-  - Azad Baran
-  - Ciya Roj
-  - "Erdalan Hev\xEE"
-  - Firat Zana
-  - Hejar Welat
-  - Lorin Azadi
-  - Orhan Piroz
-  - "Sipan Serxweb\xFBn"
-  - "Teko\u015Fin Rojhat"
-  - "Zagros \u015Eiyar"
-  - Aleksandr Ivanov
-  - Dmitriy Sidorov
-  - Sergey Kuznetsov
-  - Andrey Vasiliev
-  - Ivan Fedorov
-  - Mikhail Nikitin
-  - Nikolay Pavlov
-  - Yuriy Lebedev
-  - Aleksey Soloviev
-  - Vladimir Zaitsev
-  - "Hans M\xFCller"
-  - Peter Schneider
-  - Thomas Weber
-  - Klaus Wagner
-  - Wolfgang Schulz
-  - "J\xFCrgen Bauer"
-  - Werner Richter
-  - Helmut Wolf
-  - "G\xFCnter Schwarz"
-  - Frank Braun
-  - Jean Martin
-  - Michel Dubois
-  - Pierre Robert
-  - Claude Petit
-  - Alain Leroy
-  - Philippe Simon
-  - Jacques Lefevre
-  - Bernard Dupont
-  - "Andr\xE9 Bonnet"
-  - Daniel Girard
-  - Takashi Tanaka
-  - Hiroshi Yamamoto
-  - Taro Kobayashi
-  - Kenji Kato
-  - Kazuya Hayashi
-  - Shigeru Mori
-  - Masahiro Kimura
-  - Kazuo Matsumoto
-  - Yoshio Ikeda
-  - Noboru Nishimura
-  - Kim Cheolsu
-  - Park Minsu
-  - Jung Junho
-  - Yoon Dohyun
-  - Jang Junhyuk
-  - Oh Jihoon
-  - Song Jihoon
-  - Baek Dusan
-  - Namgoong Min
-  - Cho Sungmin
-  - Ahmad Al-Farsi
-  - Muhammad Al-Rashid
-  - Ali Al-Nasser
-  - Hassan Al-Haj
-  - Yusuf Al-Tamimi
-  - Omar Al-Sadiq
-  - Khalid Al-Shami
-  - Ibrahim Al-Faraj
-  - Mahmoud Al-Masri
-  - Abdullah Al-Harthi
-  NPCNamesFemale:
-  - Alice Johnson
-  - Mary Davis
-  - Jennifer Wilson
-  - Linda Taylor
-  - Elizabeth Thomas
-  - Susan White
-  - Margaret Martin
-  - Jessica Garcia
-  - Sarah Robinson
-  - Karen Rodriguez
-  - "Ay\u015Fe Kaya"
-  - "Fatma \u015Eahin"
-  - "Emine \xD6z"
-  - "Zeynep Ayd\u0131n"
-  - "Hatice Ko\xE7"
-  - "Elif \xC7ak\u0131r"
-  - Meryem Tekin
-  - Sultan Aksoy
-  - Aysel Kurt
-  - "G\xFCl Sar\u0131"
-  - Somying Charoen
-  - Mali Rattanakosin
-  - Wipa Chaiyaphum
-  - Prapa Pathumwan
-  - Jaruwan Laksi
-  - Patcharee Thonburi
-  - Kanchana Bangkapi
-  - Chitra Bangrak
-  - Nipaporn Ratchada
-  - Nipapan Bangmod
-  - Maria Rodriguez
-  - Carmen Hernandez
-  - Ana Gonzalez
-  - Isabel Sanchez
-  - Dolores Torres
-  - Pilar Rivera
-  - Luisa Ortiz
-  - Teresa Fernandez
-  - Rosa Gutierrez
-  - Elena Ramos
-  - Li Na
-  - Liu Fang
-  - Zhao Min
-  - Zhou Feng
-  - Zheng Ming
-  - Li Mei
-  - Liu Xin
-  - Zhao Yue
-  - Zhou Yi
-  - Zheng Hua
-  - Li Jie
-  - Liu Yan
-  - Zhao Wei
-  - Zhou Li
-  - Zheng Hui
-  - Li Xin
-  - Liu Wei
-  - Zhao Xue
-  - Zhou Peng
-  - Zheng Feng
-  - "Berfin \xC7i\xE7ek"
-  - "Dil\u015Fad Botan"
-  - Gulbahar Dilan
-  - "Jiyan Z\xEElan"
-  - Kurdistan Dilovan
-  - "Medya \u015Eore\u015F"
-  - Nalin Derya
-  - Perwin Serhed
-  - Rojin Newroz
-  - Viyan Asmin
-  - Mariya Petrova
-  - Anna Smirnova
-  - Ekaterina Popova
-  - Natalya Mikhailova
-  - Olga Morozova
-  - Tatyana Zakharova
-  - Elena Novikova
-  - Lyudmila Kozlova
-  - Marina Vinogradova
-  - Galina Maximova
-  - Anna Schmidt
-  - Maria Fischer
-  - Ursula Meyer
-  - Monika Becker
-  - Ingrid Hoffmann
-  - Sabine Koch
-  - Renate Klein
-  - Petra Neumann
-  - Heike Zimmermann
-  - Susanne Hartmann
-  - Marie Bernard
-  - Nathalie Thomas
-  - Isabelle Richard
-  - Sophie Durand
-  - Martine Moreau
-  - Christine Laurent
-  - Catherine Fournier
-  - "Val\xE9rie Lambert"
-  - "Sandrine Fran\xE7ois"
-  - "H\xE9l\xE8ne Roux"
-  - Yuko Suzuki
-  - Keiko Nakamura
-  - Akiko Saito
-  - Yumi Yamada
-  - Naoko Shimizu
-  - Haruka Inoue
-  - Emi Sasaki
-  - Miyuki Shibata
-  - Reiko Okada
-  - Aiko Fukuda
-  - Lee Younghee
-  - Choi Jiyoung
-  - Kang Suji
-  - Cho Sumin
-  - Im Haneul
-  - Shin Yuri
-  - Hong Gildong
-  - Hanra
-  - Seo Jisoo
-  - Ahn Hyojin
-  - Fatima Al-Shehri
-  - Aisha Al-Mansour
-  - Khadija Al-Haddad
-  - Zaynab Al-Dabbagh
-  - Maryam Al-Farsi
-  - Salma Al-Qadi
-  - Noura Al-Bassam
-  - Hind Al-Hamad
-  - Sarah Al-Mutairi
-  - Reem Al-Ali
-  FamousPainterNames:
-  - Leonardo da Vinci
-  - Michelangelo Buonarroti
-  - Vincent van Gogh
-  - Pablo Picasso
-  - Claude Monet
-  - Rembrandt van Rijn
-  - Henri Matisse
-  - Salvador Dali
-  - Edgar Degas
-  - Paul Cezanne
-  - Edouard Manet
-  - Gustav Klimt
-  - Eugene Delacroix
-  - Jackson Pollock
-  - Wassily Kandinsky
-  - Joan Miro
-  - Francisco Goya
-  - Albrecht Durer
-  - Georges Seurat
-  - Pierre-Auguste Renoir
-  - Frida Kahlo
-  - Georgia O'Keeffe
-  - Mary Cassatt
-  - Artemisia Gentileschi
-  - Berthe Morisot
-  - Hilma af Klint
-  - Sofonisba Anguissola
-  - "K\xE4the Kollwitz"
-  - Tamara de Lempicka
-  - Judith Leyster
-  - Lee Krasner
-  - Marie Bracquemond
-  - Angelica Kauffman
-  - "Elisabeth Vig\xE9e Le Brun"
-  - "Gabriele M\xFCnter"
-  - Joan Mitchell
-  - Paula Modersohn-Becker
-  - Louise Elisabeth Vigee Le Brun
-  - Helen Frankenthaler
-  - Suzanne Valadon
 --- !u!4 &1915641231
 Transform:
   m_ObjectHideFlags: 0
@@ -5257,7 +4948,7 @@ Transform:
   m_GameObject: {fileID: 1915641229}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 960, y: 540, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

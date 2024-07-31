@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class SkillAbilityAmountController : MonoBehaviour
 {
-    public TextMeshProUGUI abilityText;
-    
+    [SerializeField] TextMeshProUGUI abilityText;
     public void IncreasingAbilityAmount()
     {
         int currentSkillAbilityAmount = int.Parse(abilityText.text);        
@@ -14,11 +13,7 @@ public class SkillAbilityAmountController : MonoBehaviour
         abilityText.text = currentSkillAbilityAmount.ToString();        
     }
     public void SetSkillCurrentLevelUI(int _currentLevel)
-    {
-        if (abilityText == null)        
-            abilityText = GetComponent<TextMeshProUGUI>();
-        
+    {        
         abilityText.text = _currentLevel.ToString();
     }
-
 }

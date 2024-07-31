@@ -207,5 +207,12 @@ public class StatuesHandler
     {
         return allStatueBonusses.Where(x=> x.ID  == _statueId).SingleOrDefault();
     }
-    
+    public List<int> GetStatueDatas()
+    {
+        List<int> list = new List<int>();
+        int length = editObjs.Count;
+        for (int i = 0; i < length; i++)
+            list.Add(editObjs[i].ID);
+        return list;
+    }
 }

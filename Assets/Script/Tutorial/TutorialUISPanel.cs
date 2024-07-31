@@ -55,7 +55,7 @@ public class TutorialUISPanel : MonoBehaviour
     {
         setTargetValue = 1;
         //arrow.transform.localPosition = defaultArrowPos;
-        TutorialTargetObjectHandler target = FindObjectsOfType<TutorialTargetObjectHandler>().Where(x => x.ID == _targetID).SingleOrDefault();
+        TutorialTargetObjectHandler target = DialogueManager.instance.TargetObjectHandlers.Where(x => x.ID == _targetID).SingleOrDefault();
         if (target != null)
         {
             Debug.Log("Tutorial target object name => " + target.name);

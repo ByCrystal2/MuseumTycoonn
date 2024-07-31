@@ -1,3 +1,4 @@
+using Firebase.Extensions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,16 +14,16 @@ public class WorkerManager : MonoBehaviour
 
     [SerializeField] public List<WorkerAndTasks> WorkersAndTasks = new List<WorkerAndTasks>();
 
-    [SerializeField] Transform WorkersContent;
+    [SerializeField] public Transform WorkersContent;
     public static WorkerManager instance { get; set; }
 
-    private List<int> RequiredExpsPerLevel = new List<int>() { 
+    private List<int> RequiredExpsPerLevel = new List<int>() {
         0, 110, 145, 180, 235, //1Star 5LV
         470, 561, 643, 756, 904, //2Star 10lv
         1808, 2104, 2208, 2315, 2531, //3Star 15lv
         5062, 5433, 5761, 6062, 6437, //4Star 20lv
         12874, 14643, 17001, 19362, 24099, //5Star 25lv
-    }; 
+    };
 
     private void Awake()
     {
@@ -34,19 +35,6 @@ public class WorkerManager : MonoBehaviour
         instance = this;
     }
 
-    public void BaseAllWorkerOptions()
-    {
-        int length = WorkersContent.childCount;
-        for (int i = 0; i < length; i++)
-        {
-            if (WorkersContent.GetChild(i).TryGetComponent(out WorkerBehaviour workerMono))
-            {
-                AllWorkers.Add(WorkersContent.GetChild(i).GetComponent<WorkerBehaviour>());
-            }
-            WorkersContent.GetChild(i).gameObject.SetActive(false);
-        }
-        AddAllWorkersSubWork();
-    }
 
     public int CalculateCurrentLevel(float _myExp)
     {
@@ -105,79 +93,68 @@ public class WorkerManager : MonoBehaviour
             }
         }
     }
-    public async void AddAllWorkersSubWork()
+    
+    public void SetDatabaseDatas(WorkerBehaviour worker, WorkerData databaseWorker, string noneDatabaseName)
     {
-        foreach (var worker in AllWorkers)
+        switch (worker.workerType)
         {
-            worker.Agent = worker.gameObject.GetComponent<NavMeshAgent>();
-            worker.NpcCurrentSpeed = worker.NpcSpeed;
-            string noneDatabaseName = Constant.GetNPCName(worker.IsMale);
-            WorkerData databaseWorker = null;
-#if UNITY_EDITOR
-            databaseWorker = await FirestoreManager.instance.workerDatasHandler.GetWorkerInDatabase("ahmet123", worker.ID);
-#else
-                    databaseWorker = await FirestoreManager.instance.workerDatasHandler.GetWorkerInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId, worker.ID);
-#endif
-            Debug.Log("is databaseWorker null => " + databaseWorker == null);
-            switch (worker.workerType)
-            {
-                case WorkerType.Security:
-                    if (databaseWorker != null)
-                        worker.MyScript = new Security(worker.ID, databaseWorker.Name, databaseWorker.Level, worker.NpcCurrentSpeed, 100,Random.Range(20,61), Random.Range(150, 200), worker.IsMale, databaseWorker.WorkRoomsIDs, worker.workerType, 0, worker);
-                    else
-                        worker.MyScript = new Security(worker.ID, noneDatabaseName, 1, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, new List<int>(), worker.workerType, 0, worker);
+            case WorkerType.Security:
+                if (databaseWorker != null)
+                    worker.MyScript = new Security(worker.ID, databaseWorker.Name, databaseWorker.Level, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, databaseWorker.WorkRoomsIDs, worker.workerType, 0, worker);
+                else
+                    worker.MyScript = new Security(worker.ID, noneDatabaseName, 1, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, new List<int>(), worker.workerType, 0, worker);
 
-                    if (databaseWorker != null)
-                        worker.MyDatas = new WorkerData(databaseWorker.ID, databaseWorker.Name, databaseWorker.Level, worker.MyScript.Exp, databaseWorker.WorkRoomsIDs, worker.workerType);
-                    else
-                        worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Name, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs,worker.workerType);
-                    break;
-                case WorkerType.Housekeeper:
-                    if (databaseWorker != null)
-                        worker.MyScript = new Housekeeper(worker.ID, databaseWorker.Name, databaseWorker.Level, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, databaseWorker.WorkRoomsIDs, worker.workerType, 0, worker);
-                    else
-                        worker.MyScript = new Housekeeper(worker.ID, noneDatabaseName, 1, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, new List<int>(), worker.workerType, 0, worker);
-                    if (databaseWorker != null)
-                        worker.MyDatas = new WorkerData(databaseWorker.ID, databaseWorker.Name, databaseWorker.Level, worker.MyScript.Exp, databaseWorker.WorkRoomsIDs, worker.workerType);
-                    else
-                        worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Name, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs, worker.workerType);
-                    break;
-                case WorkerType.Musician:
-                    if (databaseWorker != null)
-                        worker.MyScript = new Musician(worker.ID, databaseWorker.Name, databaseWorker.Level, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, databaseWorker.WorkRoomsIDs, worker.workerType, 0, worker);
-                    else
-                        worker.MyScript = new Musician(worker.ID, noneDatabaseName, 1, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, new List<int>(), worker.workerType, 0, worker);
-                    if (databaseWorker != null)
-                        worker.MyDatas = new WorkerData(databaseWorker.ID, databaseWorker.Name, databaseWorker.Level, worker.MyScript.Exp, databaseWorker.WorkRoomsIDs, worker.workerType);
-                    else
-                        worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Name, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs, worker.workerType);
-                    break;
-                case WorkerType.Receptionist:
-                    if (databaseWorker != null)
-                        worker.MyScript = new Receptionist(worker.ID, databaseWorker.Name, databaseWorker.Level, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, databaseWorker.WorkRoomsIDs, worker.workerType, 0, worker);
-                    else
-                        worker.MyScript = new Receptionist(worker.ID, noneDatabaseName, 1, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, new List<int>(), worker.workerType, 0, worker);
-                    if (databaseWorker != null)
-                        worker.MyDatas = new WorkerData(databaseWorker.ID, databaseWorker.Name, databaseWorker.Level, worker.MyScript.Exp, databaseWorker.WorkRoomsIDs, worker.workerType);
-                    else
-                        worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Name, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs, worker.workerType);
-                    break;
-                case WorkerType.BrochureSeller:
-                    if (databaseWorker != null)
-                        worker.MyScript = new BrochureSeller(worker.ID, databaseWorker.Name, databaseWorker.Level, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, databaseWorker.WorkRoomsIDs, worker.workerType, 0, worker);
-                    else
-                        worker.MyScript = new BrochureSeller(worker.ID, noneDatabaseName, 1, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, new List<int>(), worker.workerType, 0, worker);
-                    if (databaseWorker != null)
-                        worker.MyDatas = new WorkerData(databaseWorker.ID, databaseWorker.Name, databaseWorker.Level, worker.MyScript.Exp, databaseWorker.WorkRoomsIDs, worker.workerType);
-                    else
-                        worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Name, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs, worker.workerType);
-                    break;
-                default:
-                    break;
-            }
-            float s = (int)Random.Range(-100, 51) * 0.01f;
-            worker.Agent.speed = worker.NpcCurrentSpeed + s;
+                if (databaseWorker != null)
+                    worker.MyDatas = new WorkerData(databaseWorker.ID, databaseWorker.Name, databaseWorker.Level, worker.MyScript.Exp, databaseWorker.WorkRoomsIDs, worker.workerType);
+                else
+                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Name, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs, worker.workerType);
+                break;
+            case WorkerType.Housekeeper:
+                if (databaseWorker != null)
+                    worker.MyScript = new Housekeeper(worker.ID, databaseWorker.Name, databaseWorker.Level, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, databaseWorker.WorkRoomsIDs, worker.workerType, 0, worker);
+                else
+                    worker.MyScript = new Housekeeper(worker.ID, noneDatabaseName, 1, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, new List<int>(), worker.workerType, 0, worker);
+                if (databaseWorker != null)
+                    worker.MyDatas = new WorkerData(databaseWorker.ID, databaseWorker.Name, databaseWorker.Level, worker.MyScript.Exp, databaseWorker.WorkRoomsIDs, worker.workerType);
+                else
+                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Name, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs, worker.workerType);
+                break;
+            case WorkerType.Musician:
+                if (databaseWorker != null)
+                    worker.MyScript = new Musician(worker.ID, databaseWorker.Name, databaseWorker.Level, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, databaseWorker.WorkRoomsIDs, worker.workerType, 0, worker);
+                else
+                    worker.MyScript = new Musician(worker.ID, noneDatabaseName, 1, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, new List<int>(), worker.workerType, 0, worker);
+                if (databaseWorker != null)
+                    worker.MyDatas = new WorkerData(databaseWorker.ID, databaseWorker.Name, databaseWorker.Level, worker.MyScript.Exp, databaseWorker.WorkRoomsIDs, worker.workerType);
+                else
+                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Name, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs, worker.workerType);
+                break;
+            case WorkerType.Receptionist:
+                if (databaseWorker != null)
+                    worker.MyScript = new Receptionist(worker.ID, databaseWorker.Name, databaseWorker.Level, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, databaseWorker.WorkRoomsIDs, worker.workerType, 0, worker);
+                else
+                    worker.MyScript = new Receptionist(worker.ID, noneDatabaseName, 1, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, new List<int>(), worker.workerType, 0, worker);
+                if (databaseWorker != null)
+                    worker.MyDatas = new WorkerData(databaseWorker.ID, databaseWorker.Name, databaseWorker.Level, worker.MyScript.Exp, databaseWorker.WorkRoomsIDs, worker.workerType);
+                else
+                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Name, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs, worker.workerType);
+                break;
+            case WorkerType.BrochureSeller:
+                if (databaseWorker != null)
+                    worker.MyScript = new BrochureSeller(worker.ID, databaseWorker.Name, databaseWorker.Level, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, databaseWorker.WorkRoomsIDs, worker.workerType, 0, worker);
+                else
+                    worker.MyScript = new BrochureSeller(worker.ID, noneDatabaseName, 1, worker.NpcCurrentSpeed, 100, Random.Range(20, 61), Random.Range(150, 200), worker.IsMale, new List<int>(), worker.workerType, 0, worker);
+                if (databaseWorker != null)
+                    worker.MyDatas = new WorkerData(databaseWorker.ID, databaseWorker.Name, databaseWorker.Level, worker.MyScript.Exp, databaseWorker.WorkRoomsIDs, worker.workerType);
+                else
+                    worker.MyDatas = new WorkerData(worker.ID, worker.MyScript.Name, worker.MyScript.Level, worker.MyScript.Exp, worker.MyScript.IWorkRoomsIDs, worker.workerType);
+                break;
+            default:
+                break;
         }
+        float s = (int)Random.Range(-100, 51) * 0.01f;
+        worker.Agent.speed = worker.NpcCurrentSpeed + s;
+
         int securityCount, housekeeperCount, musicianCount, receptionistCount, brochureSellerCount;
         securityCount = AllWorkers.Where(x=> x.workerType == WorkerType.Security).Count();
         housekeeperCount = AllWorkers.Where(x=> x.workerType == WorkerType.Housekeeper).Count();
@@ -186,7 +163,6 @@ public class WorkerManager : MonoBehaviour
         brochureSellerCount = AllWorkers.Where(x=> x.workerType == WorkerType.BrochureSeller).Count();
 
         Debug.Log($"Security Sayisi => {securityCount} || Housekeeper Sayisi => {housekeeperCount} || Musician Sayisi => {musicianCount} || Receptionist Sayisi => {receptionistCount} || BrochureSeller Sayisi => {brochureSellerCount}");
-
     }
     public Worker GetWorkerToWorkerType(WorkerData _workerData)
     {

@@ -135,9 +135,9 @@ public class FirestoreSkillDatasHandler : MonoBehaviour
         });
     }
 
-    public async System.Threading.Tasks.Task<SkillNode> GetSkillInDatabase(string userId, int _skillId)
+    public async System.Threading.Tasks.Task<List<SkillNode>> GetSkillsInDatabase(string userId, List<int> _gameSkillIds)
     {
-        SkillNode foundSkill = null;
+        List<SkillNode> foundSkills = new List<SkillNode>();
 
         try
         {
@@ -150,40 +150,65 @@ public class FirestoreSkillDatasHandler : MonoBehaviour
                 if (documentSnapshot.Exists)
                 {
                     CollectionReference skillDatasRef = documentSnapshot.Reference.Collection("SkillDatas");
-                    Query skillQuery = skillDatasRef.WhereEqualTo("ID", _skillId);
-                    QuerySnapshot skillQuerySnapshot = await skillQuery.GetSnapshotAsync();
-
-                    foreach (DocumentSnapshot skillDocumentSnapshot in skillQuerySnapshot.Documents)
+                    foreach (int id in _gameSkillIds)
                     {
-                        if (skillDocumentSnapshot.Exists)
-                        {
-                            // Eþleþen tabloyu bulun
-                            var skillData = skillDocumentSnapshot.ToDictionary();
-                            SkillNode helperSkillData = SkillTreeManager.instance.skillNodes.Where(x => x.ID == _skillId).SingleOrDefault();
-                            if (helperSkillData != null)
-                            {
-                                foundSkill = helperSkillData;
-                                foundSkill.buffs.Clear();
-                                foundSkill.Amounts.Clear();
-                                foundSkill.SkillCurrentLevel = skillData.ContainsKey("CurrentLevel") ? Convert.ToInt32(skillData["CurrentLevel"]) : 0;
-                                foundSkill.SkillMaxLevel = skillData.ContainsKey("MaxLevel") ? Convert.ToInt32(skillData["MaxLevel"]) : 0;
-                                foundSkill.SkillRequiredMoney = skillData.ContainsKey("RequiredMoney") ? Convert.ToSingle(skillData["RequiredMoney"]) : 0;
-                                foundSkill.SkillRequiredPoint = skillData.ContainsKey("RequiredPoint") ? Convert.ToSingle(skillData["RequiredPoint"]) : 0;
+                    Debug.Log("Database Getting Skill ID => " + id);
+                        Query skillQuery = skillDatasRef.WhereEqualTo("ID", id);
+                        QuerySnapshot skillQuerySnapshot = await skillQuery.GetSnapshotAsync();
 
-                                foundSkill.IsLocked = skillData.ContainsKey("IsLocked") && Convert.ToBoolean(skillData["IsLocked"]);
-                                foundSkill.IsPurchased = skillData.ContainsKey("IsPurchased") && Convert.ToBoolean(skillData["IsPurchased"]);
-                                List<int> amounts = skillData.ContainsKey("BuffAmounts") ? ((List<object>)skillData["BuffAmounts"]).Select(x => Convert.ToInt32(x)).ToList() : new List<int>();
-                                List<eStat> buffs = skillData.ContainsKey("Buffs") ? ((List<object>)skillData["Buffs"]).Select(x => (eStat)Enum.Parse(typeof(eStat), x.ToString())).ToList() : new List<eStat>();
-                                foundSkill.Amounts.Clear();
-                                foundSkill.buffs.Clear();
-                                foundSkill.Amounts = amounts;
-                                foundSkill.buffs = buffs;
+                        SkillNode foundSkill = new SkillNode();
+                        foreach (DocumentSnapshot skillDocumentSnapshot in skillQuerySnapshot.Documents)
+                        {
+                            if (skillDocumentSnapshot.Exists)
+                            {
+                            // Eþleþen tabloyu bulun
+                            
+                            var skillData = skillDocumentSnapshot.ToDictionary();
+                                SkillNode helperSkillData = SkillTreeManager.instance.skillNodes.Where(x => x.ID == id).SingleOrDefault();
+                                if (helperSkillData != null)
+                                {
+                                    Debug.Log(id + "'li eslesen tablo veritabaninda bulundu ve skillTree ile eslesti => " + helperSkillData.ID);
+                                    foundSkill = helperSkillData;
+                                    foundSkill.SkillCurrentLevel = skillData.ContainsKey("CurrentLevel") ? Convert.ToInt32(skillData["CurrentLevel"]) : 0;                                    
+                                    foundSkill.SkillMaxLevel = skillData.ContainsKey("MaxLevel") ? Convert.ToInt32(skillData["MaxLevel"]) : 0;
+
+                                    Debug.Log("Skill aktarimi 1.");
+                                    foundSkill.SkillRequiredMoney = skillData.ContainsKey("RequiredMoney") ? Convert.ToSingle(skillData["RequiredMoney"]) : 0;
+                                    foundSkill.SkillRequiredPoint = skillData.ContainsKey("RequiredPoint") ? Convert.ToSingle(skillData["RequiredPoint"]) : 0;
+                                    Debug.Log("Skill aktarimi 2.");
+                                    foundSkill.IsLocked = skillData.ContainsKey("IsLocked") && Convert.ToBoolean(skillData["IsLocked"]);
+                                    foundSkill.IsPurchased = skillData.ContainsKey("IsPurchased") && Convert.ToBoolean(skillData["IsPurchased"]);
+                                    List<int> amounts = skillData.ContainsKey("BuffAmounts") ? ((List<object>)skillData["BuffAmounts"]).Select(x => Convert.ToInt32(x)).ToList() : new List<int>();
+                                    Debug.Log("Skill aktarimi 3.");
+                                    List<eStat> buffs = skillData.ContainsKey("Buffs") ? ((List<object>)skillData["Buffs"]).Select(x => (eStat)Enum.Parse(typeof(eStat), x.ToString())).ToList() : new List<eStat>();
+                                    Debug.Log("Skill aktarimi 4.");
+                                    foundSkill.Amounts.Clear();
+                                    foundSkill.buffs.Clear();
+                                    int length = buffs.Count;
+                                    for (int i = 0; i < length; i++)
+                                    {
+                                        foundSkill.buffs.Add(buffs[i]);
+                                    }
+                                    int length2 = amounts.Count;
+                                    for (int i = 0; i < length2; i++)
+                                    {
+                                        foundSkill.Amounts.Add(amounts[i]);
+                                    }
+                                    foundSkill.SkillEffect = $"+{foundSkill.Amounts[foundSkill.SkillCurrentLevel > 0 ? foundSkill.SkillCurrentLevel - 1 : 0]} {foundSkill.defaultEffectString}";
+                                    if (foundSkill != null)
+                                    {
+                                        foundSkills.Add(foundSkill);
+                                        Debug.Log($"{foundSkill.ID}'li skill listeye eklendi.");
+                                        continue;
+                                    }
+                                    break;
+                                }
                             }
                         }
-                    }
-
-                    if (foundSkill != null)
+                    }                   
+                    if (foundSkills != null)
                     {
+                        Debug.Log("Skill aktarimi sonlandi. Veri tabani skill sayisi => " + foundSkills.Count);
                         break;
                     }
                 }
@@ -191,9 +216,9 @@ public class FirestoreSkillDatasHandler : MonoBehaviour
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Error getting statue data: {ex.Message}");
+            Debug.LogError($"Error getting skill data: {ex.Message}");
         }
 
-        return foundSkill;
+        return foundSkills;
     }
 }

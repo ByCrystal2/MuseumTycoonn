@@ -82,6 +82,7 @@ public class PicturesMenuController : MonoBehaviour
             {
                 TutorialTargetObjectHandler target = newPicture.AddComponent<TutorialTargetObjectHandler>();
                 target.SetOptions(1, newPicture.GetComponent<RectTransform>());
+                DialogueManager.instance.TargetObjectHandlers.Add(target);
             }
             int index = i + 1;
             if (index == TextureIds.Count - 1)

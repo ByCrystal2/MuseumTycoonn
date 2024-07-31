@@ -47,9 +47,12 @@ public class NPCBehaviour : MonoBehaviour
     void Start()
     {
         StatData.NpcCurrentSpeed = StatData.NpcSpeed + StatData.NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f);
-
-        transform.position = Random.Range(0,2) == 0 ? NpcManager.instance.GidisListe[Random.Range(0, NpcManager.instance.GidisListe.Count)].position : NpcManager.instance.GelisListe[Random.Range(0, NpcManager.instance.GelisListe.Count)].position;
-
+        Vector3 firstPosition;
+        do
+        {
+            firstPosition = Random.Range(0, 2) == 0 ? NpcManager.instance.GidisListe[Random.Range(0, NpcManager.instance.GidisListe.Count)].position : NpcManager.instance.GelisListe[Random.Range(0, NpcManager.instance.GelisListe.Count)].position; 
+        } while ((firstPosition == NpcManager.instance.GidisListe[NpcManager.instance.GidisListe.Count - 1].position) || (firstPosition == NpcManager.instance.GelisListe[NpcManager.instance.GelisListe.Count - 1].position));
+        transform.position = firstPosition;
         InvestigatedAreas.Clear();
     }
 
@@ -561,7 +564,8 @@ public class NPCBehaviour : MonoBehaviour
                 if (!MuseumManager.instance.IsMuseumFull())
                 {
                     Debug.Log("Npc decided to enter museum.");
-                    TargetObject = gidis ? NpcManager.instance.Enter2Point : NpcManager.instance.Enter1Point;
+                    //TargetObject = gidis ? NpcManager.instance.Enter2Point : NpcManager.instance.Enter1Point;
+                    TargetObject =NpcManager.instance.Enter2Point;
                     TargetPositions = NavigationHandler.instance.CreateNavigation(transform, TargetObject);
                     npcState._location = NpcLocationState.EnterWay;
                     InvestigatedAreas.Clear();

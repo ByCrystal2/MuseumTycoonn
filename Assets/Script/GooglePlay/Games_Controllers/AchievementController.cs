@@ -230,38 +230,38 @@ public class AchievementController : ScriptableObject
     public void IncreasePurchasedRoomCount()
     {
         PurchasedRoomCount++;
-#if UNITY_EDITOR
-        FirestoreManager.instance.UpdateGameData("ahmet123");
-#else
-        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-#endif
+//#if UNITY_EDITOR
+//        FirestoreManager.instance.UpdateGameData("ahmet123");
+//#else
+//        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+//#endif
     }
     public void IncreaseNumberOfTablesPlaced()
     {
         NumberOfTablesPlaced++;
-#if UNITY_EDITOR
-        FirestoreManager.instance.UpdateGameData("ahmet123");
-#else
-        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-#endif
+//#if UNITY_EDITOR
+//        FirestoreManager.instance.UpdateGameData("ahmet123");
+//#else
+//        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+//#endif
     }
     public void IncreaseNumberOfVisitors()
     {
         NumberOfVisitors++;
-#if UNITY_EDITOR
-        FirestoreManager.instance.UpdateGameData("ahmet123");
-#else
-        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-#endif
+//#if UNITY_EDITOR
+//        FirestoreManager.instance.UpdateGameData("ahmet123");
+//#else
+//        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+//#endif
     }
     public void IncreaseNumberOfStatuesPlaced()
     {
         NumberOfStatuesPlaced++;
-#if UNITY_EDITOR
-        FirestoreManager.instance.UpdateGameData("ahmet123");
-#else
-        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-#endif
+//#if UNITY_EDITOR
+//        FirestoreManager.instance.UpdateGameData("ahmet123");
+//#else
+//        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+//#endif
     }
     public void IncreaseOrDecreaseTotalNumberOfMuseumVisitor(bool _increase)
     {
@@ -273,11 +273,11 @@ public class AchievementController : ScriptableObject
                 return;
             TotalNumberOfMuseumVisitors--;
         }
-#if UNITY_EDITOR
-        FirestoreManager.instance.UpdateGameData("ahmet123");
-#else
-        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-#endif
+//#if UNITY_EDITOR
+//        FirestoreManager.instance.UpdateGameData("ahmet123");
+//#else
+//        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+//#endif
     }
     public void IncreaseWorkerHiringCount(WorkerType _workerType)
     {
@@ -286,11 +286,11 @@ public class AchievementController : ScriptableObject
         workerAchievement.NumberOfWorkersOwned++;
         WorkerHiringAchievementControl[index] = workerAchievement;
         TotalWorkerHiringCount++;
-#if UNITY_EDITOR
-        FirestoreManager.instance.UpdateGameData("ahmet123");
-#else
-        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-#endif
+//#if UNITY_EDITOR
+//        FirestoreManager.instance.UpdateGameData("ahmet123");
+//#else
+//        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+//#endif
     }
     public void IncreaseWorkerAssignCount(WorkerType _workerType)
     {
@@ -299,11 +299,11 @@ public class AchievementController : ScriptableObject
         workerAchievement.NumberOfWorkersOwned++;
         WorkerAssignAchievementControl[index] = workerAchievement;
         TotalWorkerAssignCount++;
-#if UNITY_EDITOR
-        FirestoreManager.instance.UpdateGameData("ahmet123");
-#else
-        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-#endif
+//#if UNITY_EDITOR
+//        FirestoreManager.instance.UpdateGameData("ahmet123");
+//#else
+//        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+//#endif
     }
     private void TotalWorkerHiringControler()
     {//toplam satin alinan isci sayisi controlu        

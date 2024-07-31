@@ -23,7 +23,13 @@ public class DialogueManager : MonoBehaviour
     public DialogueTrigger currentTrigger;
     public DialogHelper currentHelper;
 
-
+    public List<TutorialTargetObjectHandler> TargetObjectHandlers{
+        get{
+            if (targetObjectHandlers.Count > 0) 
+                targetObjectHandlers.RemoveAll(connection => connection == null); 
+            return targetObjectHandlers;} private set { targetObjectHandlers = value; } 
+           }
+    private List<TutorialTargetObjectHandler> targetObjectHandlers;
     public static DialogueManager instance { get; private set; }
     private void Awake()
     {
@@ -34,6 +40,7 @@ public class DialogueManager : MonoBehaviour
         }
         instance = this;
         sentences = new Queue<string>();
+        TargetObjectHandlers = new List<TutorialTargetObjectHandler>();
     }
     public void SetCurrentDialogTrigger(DialogueTrigger _trigger)
     {
@@ -147,7 +154,6 @@ public class DialogueManager : MonoBehaviour
          FirestoreManager.instance.skillDatasHandler.AddSkillWithUserId(userID, SkillTreeManager.instance.skillNodes.Where(x=> x.ID == 1).SingleOrDefault());
         await FirestoreManager.instance.roomDatasHandler.AddRoomsWithUserId(userID, activeRoomDatas);
          FirestoreManager.instance.workerDatasHandler.AddWorkerWithUserId(userID, MuseumManager.instance.CurrentActiveWorkers.FirstOrDefault().MyDatas);
-         FirestoreManager.instance.UpdateGameData(userID);
     }
     private void CinemachineTransition(bool _goTutorial)
     {

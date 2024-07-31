@@ -120,9 +120,9 @@ public class FirestoreStatueDatasHandler : MonoBehaviour
             }
         });
     }
-    public async Task<EditObjData> GetStatueInDatabase(string userId, int _statueId)
+    public async Task<List<EditObjData>> GetStatuesInDatabase(string userId, List<int> _statueIds)
     {
-        EditObjData foundStatue = null;
+        List<EditObjData> foundStatues = new List<EditObjData>();
 
         try
         {
@@ -135,44 +135,52 @@ public class FirestoreStatueDatasHandler : MonoBehaviour
                 if (documentSnapshot.Exists)
                 {
                     CollectionReference statueIdsRef = documentSnapshot.Reference.Collection("StatueDatas");
-                    Query statueQuery = statueIdsRef.WhereEqualTo("ID", _statueId);
-                    QuerySnapshot statueQuerySnapshot = await statueQuery.GetSnapshotAsync();
 
-                    foreach (DocumentSnapshot statueDocumentSnapshot in statueQuerySnapshot.Documents)
+                    foreach (int id in _statueIds)
                     {
-                        if (statueDocumentSnapshot.Exists)
+                        Query statueQuery = statueIdsRef.WhereEqualTo("ID", id);
+                        QuerySnapshot statueQuerySnapshot = await statueQuery.GetSnapshotAsync();
+                        EditObjData foundStatue;
+                        foreach (DocumentSnapshot statueDocumentSnapshot in statueQuerySnapshot.Documents)
                         {
-                            // Eþleþen tabloyu bulun
-                            var statueData = statueDocumentSnapshot.ToDictionary();
-                            EditObjData helperStatueData = RoomManager.instance.statuesHandler.GetStatueWithID(_statueId);
-                            if (helperStatueData != null)
+                            if (statueDocumentSnapshot.Exists)
                             {
-                                foundStatue = helperStatueData;
-                                foundStatue.Bonusses.Clear();
-                                string cellString = statueData.ContainsKey("TargetRoomCell") ? statueData["TargetRoomCell"].ToString() : "null";
-                                if (cellString != "null")
+                                // Eþleþen tabloyu bulun
+                                var statueData = statueDocumentSnapshot.ToDictionary();
+                                EditObjData helperStatueData = RoomManager.instance.statuesHandler.GetStatueWithID(id);
+                                if (helperStatueData != null)
                                 {
-                                    if (Enum.TryParse(cellString[0].ToString(), true, out CellLetter targetRoomCell))
+                                    foundStatue = helperStatueData;
+                                    foundStatue.Bonusses.Clear();
+                                    string cellString = statueData.ContainsKey("TargetRoomCell") ? statueData["TargetRoomCell"].ToString() : "null";
+                                    if (cellString != "null")
                                     {
-                                        foundStatue._currentRoomCell = new RoomCell(targetRoomCell, int.Parse(cellString[1].ToString()));
+                                        if (Enum.TryParse(cellString[0].ToString(), true, out CellLetter targetRoomCell))
+                                        {
+                                            foundStatue._currentRoomCell = new RoomCell(targetRoomCell, int.Parse(cellString[1].ToString()));
+                                        }
                                     }
-                                }                                
-                                foundStatue.IsPurchased = statueData.ContainsKey("IsPurchased") && Convert.ToBoolean(statueData["IsPurchased"]);
-                                foundStatue.IsLocked = statueData.ContainsKey("IsLocked") && Convert.ToBoolean(statueData["IsLocked"]);
-                                List<int> statueBonusIds = statueData.ContainsKey("BonusIDs") ? ((List<object>)statueData["BonusIDs"]).Select(x => Convert.ToInt32(x)).ToList() : new List<int>();
-                                foundStatue.myStatueIndex = statueData.ContainsKey("StatueIndex") ? Convert.ToInt32(statueData["StatueIndex"]) : -1;
+                                    foundStatue.IsPurchased = statueData.ContainsKey("IsPurchased") && Convert.ToBoolean(statueData["IsPurchased"]);
+                                    foundStatue.IsLocked = statueData.ContainsKey("IsLocked") && Convert.ToBoolean(statueData["IsLocked"]);
+                                    List<int> statueBonusIds = statueData.ContainsKey("BonusIDs") ? ((List<object>)statueData["BonusIDs"]).Select(x => Convert.ToInt32(x)).ToList() : new List<int>();
+                                    foundStatue.myStatueIndex = statueData.ContainsKey("StatueIndex") ? Convert.ToInt32(statueData["StatueIndex"]) : -1;
 
-                                foreach (int id in statueBonusIds)
-                                {
-                                    Bonus databaseBonus = RoomManager.instance.statuesHandler.GetStatueBonusInAllBonusWithId(id);
-                                    foundStatue.Bonusses.Add(databaseBonus);
+                                    foreach (int _id in statueBonusIds)
+                                    {
+                                        Bonus databaseBonus = RoomManager.instance.statuesHandler.GetStatueBonusInAllBonusWithId(_id);
+                                        foundStatue.Bonusses.Add(databaseBonus);
+                                    }
+                                    foundStatues.Add(foundStatue);
+                                    break;
                                 }
                             }
                         }
                     }
+                    
 
-                    if (foundStatue != null)
+                    if (foundStatues != null)
                     {
+                        Debug.Log("Statue aktarimi sonlandi. Veri tabani statue sayisi => " + foundStatues.Count);
                         break;
                     }
                 }
@@ -183,7 +191,7 @@ public class FirestoreStatueDatasHandler : MonoBehaviour
             Debug.LogError($"Error getting statue data: {ex.Message}");
         }
 
-        return foundStatue;
+        return foundStatues;
     }
 
 }

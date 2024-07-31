@@ -123,13 +123,13 @@ public class FirestoreWorkerDatasHandler : MonoBehaviour
             }
         });
     }
-    public async Task<WorkerData> GetWorkerInDatabase(string userId, int _workerId)
+    public async Task<List<WorkerData>> GetWorkersInDatabase(string userId, List<int> _workerIds)
     {
-        WorkerData foundWorker = null;
+        List<WorkerData> foundWorkers = new List<WorkerData>();
 
-        //try
-        //{
-            // Kullanýcýya ait belgeleri sorgula
+        try
+        {
+            //Kullaniciya ait belgeleri sorgula
             Query query = db.Collection("Workers").WhereEqualTo("userID", userId);
             QuerySnapshot querySnapshot = await query.GetSnapshotAsync();
 
@@ -138,50 +138,54 @@ public class FirestoreWorkerDatasHandler : MonoBehaviour
                 if (documentSnapshot.Exists)
                 {
                     CollectionReference workerIdsRef = documentSnapshot.Reference.Collection("WorkerDatas");
-                    Query workerQuery = workerIdsRef.WhereEqualTo("ID", _workerId);
-                    QuerySnapshot workerQuerySnapshot = await workerQuery.GetSnapshotAsync();
-
-                    foreach (DocumentSnapshot workerDocumentSnapshot in workerQuerySnapshot.Documents)
+                    foreach (int _workerId in _workerIds)
                     {
-                        if (workerDocumentSnapshot.Exists)
+                        Query workerQuery = workerIdsRef.WhereEqualTo("ID", _workerId);
+                        QuerySnapshot workerQuerySnapshot = await workerQuery.GetSnapshotAsync();
+                        WorkerData foundWorker;
+                        foreach (DocumentSnapshot workerDocumentSnapshot in workerQuerySnapshot.Documents)
                         {
-                            // Eþleþen tabloyu bulun
-                            var workerData = workerDocumentSnapshot.ToDictionary();
-                            Debug.Log("workerData is starting... All Workers Count: " + WorkerManager.instance.GetAllWorkers().Count);
-                            WorkerData helperStatueData = WorkerManager.instance.GetAllWorkers().Where(x => x.ID == _workerId).SingleOrDefault().MyDatas;
-
-                            List<int> workerIds = new List<int>();
-                        workerIds = workerData.ContainsKey("WorkRoomsIDs") ? ((List<object>)workerData["WorkRoomsIDs"]).Select(x => Convert.ToInt32(x)).ToList() : new List<int>();
-                        Debug.Log("database workerIds Count => " + workerIds.Count);
-                            //Debug.Log("workerData[\"WorkRoomsIDs\"" + ((List<int>)workerData["WorkRoomsIDs"]).Count);
-                            if (helperStatueData != null)
+                            if (workerDocumentSnapshot.Exists)
                             {
-                                foundWorker = helperStatueData;
-                                foundWorker.WorkRoomsIDs.Clear();
-                                foundWorker.ID = workerData.ContainsKey("ID") ? Convert.ToInt32(workerData["ID"]) : 0;
-                                foundWorker.Level = workerData.ContainsKey("Level") ? Convert.ToInt32(workerData["Level"]) : 0;
-                                foundWorker.Name = workerData.ContainsKey("Name") ? workerData["Name"].ToString() : "";
-                            foreach (int id in workerIds)
+                                // Eþleþen tabloyu bulun
+                                var workerData = workerDocumentSnapshot.ToDictionary();
+                                WorkerData helperWorkerData = WorkerManager.instance.GetAllWorkers().Where(x => x.ID == _workerId).SingleOrDefault().MyDatas;
+                                Debug.Log("helperWorkerData.ID => " + helperWorkerData.ID);
+                                List<int> workerRoomIds = new List<int>();
+                                workerRoomIds = workerData.ContainsKey("WorkRoomsIDs") ? ((List<object>)workerData["WorkRoomsIDs"]).Select(x => Convert.ToInt32(x)).ToList() : new List<int>();
+                                Debug.Log("database workerRoomIds Count => " + workerRoomIds.Count);
+                                //Debug.Log("workerData[\"WorkRoomsIDs\"" + ((List<int>)workerData["WorkRoomsIDs"]).Count);
+                                if (helperWorkerData != null)
                                 {
-                                    foundWorker.WorkRoomsIDs.Add(id);
+                                    foundWorker = helperWorkerData;
+                                    foundWorker.WorkRoomsIDs.Clear();
+                                    foundWorker.ID = workerData.ContainsKey("ID") ? Convert.ToInt32(workerData["ID"]) : 0;
+                                    foundWorker.Level = workerData.ContainsKey("Level") ? Convert.ToInt32(workerData["Level"]) : 0;
+                                    foundWorker.Name = workerData.ContainsKey("Name") ? workerData["Name"].ToString() : "";
+                                    foreach (int id in workerRoomIds)
+                                    {
+                                        foundWorker.WorkRoomsIDs.Add(id);
+                                    }
+                                    foundWorkers.Add(foundWorker);
+                                    break;
                                 }
                             }
-                        }
+                        }                    
                     }
-
-                    if (foundWorker != null)
+                    if (foundWorkers != null)
                     {
+                        Debug.Log("Worker aktarimi sonlandi. Veri tabani worker sayisi => " + foundWorkers.Count);
                         break;
                     }
                 }
             }
-        //}
-        //catch (Exception ex)
-        //{
-        //    Debug.LogError($"Error getting worker data: {ex.Message}");
-        //}
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error getting worker data: {ex.Message}");
+        }
 
-        return foundWorker;
+        return foundWorkers;
     }
     public void UpdateWorkerData(string userId, WorkerData _workerData)
     {

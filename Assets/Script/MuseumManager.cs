@@ -164,22 +164,22 @@ public class MuseumManager : MonoBehaviour
         Debug.Log(" New gold: " + Gold);
         DailyEarning += Gold;
         UIController.instance.InMuseumDailyEarningChanged(DailyEarning);
-#if UNITY_EDITOR
-        FirestoreManager.instance.UpdateGameData("ahmet123");
-#else
-        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-#endif
+//#if UNITY_EDITOR
+//        FirestoreManager.instance.UpdateGameData("ahmet123");
+//#else
+//        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+//#endif
     }
     public void AddGem(float _gem)
     {
         Gem += _gem;
         UIController.instance.GemText.text = "" + Gem;
         Debug.Log("New Gem: " + Gem);
-#if UNITY_EDITOR
-        FirestoreManager.instance.UpdateGameData("ahmet123");
-#else
-        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-#endif
+//#if UNITY_EDITOR
+//        FirestoreManager.instance.UpdateGameData("ahmet123");
+//#else
+//        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+//#endif
     }
     public void AddSkillPoint(int _point) // TEHLIKELI KOD! TESTTEN SONRA SILINMELIDIR!
     {
@@ -195,11 +195,11 @@ public class MuseumManager : MonoBehaviour
         SkillPoint -= _point;
         UIController.instance.SkillPointCountChanged(SkillPoint);
         Debug.Log("Spending Successful. New Point: " + SkillPoint);
-#if UNITY_EDITOR
-        FirestoreManager.instance.UpdateGameData("ahmet123");
-#else
-        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-#endif
+//#if UNITY_EDITOR
+//        FirestoreManager.instance.UpdateGameData("ahmet123");
+//#else
+//        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+//#endif
     }
     public void SpendingGold(float _gold)
     {
@@ -211,11 +211,11 @@ public class MuseumManager : MonoBehaviour
         Gold -= _gold;
         UIController.instance.GoldText.text = "" + Gold;
         Debug.Log("Spending Successful. New gold: " + Gold);
-#if UNITY_EDITOR
-        FirestoreManager.instance.UpdateGameData("ahmet123");
-#else
-        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-#endif
+//#if UNITY_EDITOR
+//        FirestoreManager.instance.UpdateGameData("ahmet123");
+//#else
+//        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+//#endif
     }
 
     public void SpendingGem(float _gem)
@@ -228,11 +228,11 @@ public class MuseumManager : MonoBehaviour
         Gem -= _gem;
         UIController.instance.GemText.text = "" + Gem;
         Debug.Log("Spending Successful. New gem: " + Gem);
-#if UNITY_EDITOR
-        FirestoreManager.instance.UpdateGameData("ahmet123");
-#else
-        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-#endif
+//#if UNITY_EDITOR
+//        FirestoreManager.instance.UpdateGameData("ahmet123");
+//#else
+//        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+//#endif
     }
     public void OnNpcExitedMuseum(NPCBehaviour _oldNpc)
     {
@@ -294,11 +294,11 @@ public class MuseumManager : MonoBehaviour
         UIController.instance.CultureLevelCountChanged(CurrentCultureLevel);
         UIController.instance.SkillPointCountChanged(SkillPoint);
         UIController.instance.UIChangesControl();
-#if UNITY_EDITOR
-        FirestoreManager.instance.UpdateGameData("ahmet123");
-#else
-        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-#endif
+//#if UNITY_EDITOR
+//        FirestoreManager.instance.UpdateGameData("ahmet123");
+//#else
+//        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+//#endif
     }
 
     public void AddPictureTable(PictureElement PE)

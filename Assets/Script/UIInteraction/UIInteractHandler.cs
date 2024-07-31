@@ -88,6 +88,7 @@ public class UIInteractHandler : MonoBehaviour
         {
             TutorialTargetObjectHandler target = yesButton.transform.GetChild(2).gameObject.AddComponent<TutorialTargetObjectHandler>();
             target.SetOptions(4, target.GetComponent<RectTransform>());
+            DialogueManager.instance.TargetObjectHandlers.Add(target);
         }
         ShowPanel();
     }

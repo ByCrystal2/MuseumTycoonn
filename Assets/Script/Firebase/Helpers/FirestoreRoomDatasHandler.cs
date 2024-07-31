@@ -166,69 +166,73 @@ public class FirestoreRoomDatasHandler : MonoBehaviour
         }
     }
 
-    public async Task<RoomData> GetRoomInDatabase(string userId, int roomId)
+    public async Task<List<RoomData>> GetRoomsInDatabase(string userId, List<int> roomIds)
     {
-        RoomData foundRoom = null;
+        List<RoomData> foundRooms = new List<RoomData>();
 
-        //try
-        //{
-            // Kullanýcýya ait belgeleri sorgula
+        try
+        {
+            //Kullanýcýya ait belgeleri sorgula
             Query query = db.Collection("Rooms").WhereEqualTo("userID", userId);
-            QuerySnapshot querySnapshot = await query.GetSnapshotAsync();
-
+            QuerySnapshot querySnapshot =  await query.GetSnapshotAsync();
             foreach (DocumentSnapshot documentSnapshot in querySnapshot.Documents)
             {
                 if (documentSnapshot.Exists)
                 {
                     // Belgenin RoomDatas alt koleksiyonuna eriþ
+                    List<EditObjData> eobs = await FirestoreManager.instance.statueDatasHandler.GetStatuesInDatabase(userId, RoomManager.instance.statuesHandler.GetStatueDatas());
                     CollectionReference roomDatasRef = documentSnapshot.Reference.Collection("RoomDatas");
-                    Query roomQuery = roomDatasRef.WhereEqualTo("ID", roomId);
-                    QuerySnapshot roomQuerySnapshot = await roomQuery.GetSnapshotAsync();
-
-                    foreach (DocumentSnapshot roomDocumentSnapshot in roomQuerySnapshot.Documents)
+                    foreach (int _id in roomIds)
                     {
-                        if (roomDocumentSnapshot.Exists)
+                        Query roomQuery = roomDatasRef.WhereEqualTo("ID", _id);
+                        QuerySnapshot roomQuerySnapshot = await roomQuery.GetSnapshotAsync();
+                        RoomData foundRoom;
+                        EditObjData foundEob;
+                        foreach (DocumentSnapshot roomDocumentSnapshot in roomQuerySnapshot.Documents)
                         {
-                            // Eþleþen tabloyu bulun
-                            var roomData = roomDocumentSnapshot.ToDictionary();
-                            int statueId = roomData.ContainsKey("StatueID") ? Convert.ToInt32(roomData["StatueID"]) : 0;
-                            EditObjData eob = await FirestoreManager.instance.statueDatasHandler.GetStatueInDatabase(userId, statueId);
-                            
-                            int id = roomData.ContainsKey("ID") ? Convert.ToInt32(roomData["ID"]) : 0;
-                            RoomData helperRoomData = RoomManager.instance.RoomDatas.Where(x => x.ID == id).SingleOrDefault();
-                        Debug.Log("Database Room id" + id + " and roomdatas count => " + RoomManager.instance.RoomDatas.Count);
-                            if (helperRoomData != null)
+                            if (roomDocumentSnapshot.Exists)
                             {
-                                foundRoom = helperRoomData;
-                                foundRoom.isActive = roomData.ContainsKey("IsActive") && Convert.ToBoolean(roomData["IsActive"]);
-                                foundRoom.isHasStatue = roomData.ContainsKey("IsHasStatue") && Convert.ToBoolean(roomData["IsHasStatue"]);
-                                foundRoom.isLock = roomData.ContainsKey("IsLock") && Convert.ToBoolean(roomData["IsLock"]);
-                            foundRoom.MyRoomWorkersIDs = roomData.ContainsKey("RoomWorkersIDs")
-                    ? ((List<object>)roomData["RoomWorkersIDs"]).Select(x => Convert.ToInt32(x)).ToList()
-                    : new List<int>();
-                            if (eob != null)
+                                // Eþleþen tabloyu bulun
+                                var roomData = roomDocumentSnapshot.ToDictionary();
+                                int statueId = roomData.ContainsKey("StatueID") ? Convert.ToInt32(roomData["StatueID"]) : 0;
+                                foundEob = eobs.Where((x) => x.ID == statueId).SingleOrDefault();
+
+                                int id = roomData.ContainsKey("ID") ? Convert.ToInt32(roomData["ID"]) : 0;
+                                RoomData helperRoomData = RoomManager.instance.RoomDatas.Where(x => x.ID == id).SingleOrDefault();
+                                if (helperRoomData != null)
                                 {
-                                Debug.Log("Database Statue ID is " + eob.ID);
-                                    foundRoom.SetMyStatue(eob);
+                                    foundRoom = helperRoomData;
+                                    foundRoom.isActive = roomData.ContainsKey("IsActive") && Convert.ToBoolean(roomData["IsActive"]);
+                                    foundRoom.isHasStatue = roomData.ContainsKey("IsHasStatue") && Convert.ToBoolean(roomData["IsHasStatue"]);
+                                    foundRoom.isLock = roomData.ContainsKey("IsLock") && Convert.ToBoolean(roomData["IsLock"]);
+                                    foundRoom.MyRoomWorkersIDs = roomData.ContainsKey("RoomWorkersIDs")
+                            ? ((List<object>)roomData["RoomWorkersIDs"]).Select(x => Convert.ToInt32(x)).ToList()
+                            : new List<int>();
+                                    if (foundEob != null)
+                                    {
+                                        Debug.Log("Database Statue ID is " + foundEob.ID);
+                                        foundRoom.SetMyStatue(foundEob);
+                                    }
+                                    foundRooms.Add(foundRoom);
+                                    break;
                                 }
-                                break;
                             }
                         }
                     }
-
-                    if (foundRoom != null)
+                    if (foundRooms != null)
                     {
+                        Debug.Log("Oda aktarimi sonlandi. Veri tabani oda sayisi => " + foundRooms.Count);
                         break;
                     }
                 }
             }
-        //}
-        //catch (Exception ex)
-        //{
-        //    Debug.LogError($"Error getting room data: {ex.Message}");
-        //}
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error getting room data: {ex.Message}");
+        }
 
-        return foundRoom;
+        return foundRooms;
     }
 
 }

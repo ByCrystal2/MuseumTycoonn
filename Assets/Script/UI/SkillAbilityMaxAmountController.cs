@@ -6,15 +6,9 @@ using UnityEngine.UI;
 
 public class SkillAbilityMaxAmountController : MonoBehaviour
 {
-    TextMeshProUGUI myText;
-    private void Awake()
-    {
-        
-    }
+    [SerializeField] TextMeshProUGUI myText;
     public void SetSkillMaxLevelUI(int _currentLevel)
-    {
-        if (myText == null)        
-            myText = GetComponent<TextMeshProUGUI>();
+    {        
         myText.text = _currentLevel.ToString();
     }
 }

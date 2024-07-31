@@ -18,12 +18,14 @@ public class SkillNode
 
     public List<eStat> buffs = new List<eStat>();
     public List<int> Amounts = new List<int>();
+    public string defaultEffectString;
     public SkillNode(int _id, string _skillName, string _skillDescription, string _skillEffect, float _skillRquiredPoint, float skillRequiredMoney, int _skillMaxLevel, List<eStat> _buffs, List<int> _amounts)
     {
         this.ID = _id;
         this.SkillName = _skillName;
         this.SkillDescription = _skillDescription;
         this.SkillEffect = _skillEffect;
+        defaultEffectString = _skillEffect;
         this.SkillRequiredPoint = _skillRquiredPoint;
         this.SkillRequiredMoney = skillRequiredMoney;
         this.SkillMaxLevel = _skillMaxLevel;
@@ -47,22 +49,28 @@ public class SkillNode
         this.SkillName = skillNode.SkillName;
         this.SkillDescription = skillNode.SkillDescription;
         this.SkillEffect = skillNode.SkillEffect;
+        defaultEffectString = skillNode.SkillEffect;
         this.SkillRequiredPoint = skillNode.SkillRequiredPoint;
         this.SkillRequiredMoney= skillNode.SkillRequiredMoney;
         this.SkillCurrentLevel = skillNode.SkillCurrentLevel;
         this.SkillMaxLevel = skillNode.SkillMaxLevel;
         this.IsLocked = skillNode.IsLocked;
         this.IsPurchased = skillNode.IsPurchased;
+
         buffs.Clear();
         Amounts.Clear();
         int length = skillNode.buffs.Count;
         for (int i = 0; i < length; i++)
         {
             buffs.Add(skillNode.buffs[i]);
+        }
+        int length2 = skillNode.Amounts.Count;
+        for (int i = 0; i < length2; i++)
+        {
             Amounts.Add(skillNode.Amounts[i]);
         }
     }
-
+    public SkillNode() { }
     public bool IsMoneyAndLevelEnough(float _money, float _point)
     {
         if (_money >= SkillRequiredMoney && _point >= SkillRequiredPoint)  
@@ -80,6 +88,12 @@ public class SkillNode
     public void Purchased(bool _isPurchased)
     {
         this.IsPurchased = _isPurchased;
+        if (_isPurchased)
+        {
+            SkillCurrentLevel++;
+            if (SkillCurrentLevel < SkillMaxLevel)
+            this.SkillEffect = $"+{this.Amounts[SkillCurrentLevel]} {defaultEffectString}";
+        }
     }
     
 }

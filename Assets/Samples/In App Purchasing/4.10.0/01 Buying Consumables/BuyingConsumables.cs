@@ -1,10 +1,8 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Purchasing;
 using UnityEngine.Purchasing.Extension;
-using static UnityEngine.Rendering.DebugUI;
 public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
 {
     IStoreController m_StoreController; // The Unity Purchasing system.
@@ -32,29 +30,33 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
             else if (item.CurrentItemType == ItemType.Table || item.CurrentItemType == ItemType.Ads)
                 builder.AddProduct(item.IAP_ID, ProductType.NonConsumable);
         }
-        List<RoomData> IAPRooms = RoomManager.instance.RoomDatas.Where(x => x.CurrentShoppingType == ShoppingType.RealMoney).ToList();
-        if (IAPRooms != null && IAPRooms.Count > 0)
+        if (RoomManager.instance != null)
         {
-            Debug.Log("IAP Rooms 0 index: " + IAPRooms[0].availableRoomCell.CellLetter + IAPRooms[0].availableRoomCell.CellNumber);
-            foreach (var room in IAPRooms)
+            List<RoomData> IAPRooms = RoomManager.instance.RoomDatas.Where(x => x.CurrentShoppingType == ShoppingType.RealMoney).ToList();
+            if (IAPRooms != null && IAPRooms.Count > 0)
             {
-                if (room.CurrentRoomType == RoomType.Normal) // item turu normal ise yapýlacak islemler...
+                Debug.Log("IAP Rooms 0 index: " + IAPRooms[0].availableRoomCell.CellLetter + IAPRooms[0].availableRoomCell.CellNumber);
+                foreach (var room in IAPRooms)
                 {
-                    builder.AddProduct(room.IAP_ID, ProductType.NonConsumable);
-                    Debug.Log("Oda Buildere Eklendi: " + room.ID + " " + room.IAP_ID + " " + room.availableRoomCell.CellLetter + room.availableRoomCell.CellNumber);
-                }
-                else if (room.CurrentRoomType == RoomType.Special) // item turu special ise yapýlacak islemler...
-                {
-                    builder.AddProduct(room.IAP_ID, ProductType.NonConsumable);
-                    Debug.Log("Oda Buildere Eklendi: " + room.ID + " " + room.IAP_ID + " " + room.availableRoomCell.CellLetter + room.availableRoomCell.CellNumber);
-                }
+                    if (room.CurrentRoomType == RoomType.Normal) // item turu normal ise yapýlacak islemler...
+                    {
+                        builder.AddProduct(room.IAP_ID, ProductType.NonConsumable);
+                        Debug.Log("Oda Buildere Eklendi: " + room.ID + " " + room.IAP_ID + " " + room.availableRoomCell.CellLetter + room.availableRoomCell.CellNumber);
+                    }
+                    else if (room.CurrentRoomType == RoomType.Special) // item turu special ise yapýlacak islemler...
+                    {
+                        builder.AddProduct(room.IAP_ID, ProductType.NonConsumable);
+                        Debug.Log("Oda Buildere Eklendi: " + room.ID + " " + room.IAP_ID + " " + room.availableRoomCell.CellLetter + room.availableRoomCell.CellNumber);
+                    }
 
+                }
+            }
+            else
+            {
+                Debug.Log("Para ile satilan oda bulunamadi.");
             }
         }
-        else
-        {
-            Debug.Log("Para ile satilan oda bulunamadi.");
-        }
+        
         UnityPurchasing.Initialize(this, builder);
     }
 
@@ -197,15 +199,15 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
         newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
         newInventoryItem.painterData = new PainterData(_table.ID, _table.Description, _table.Name, _table.StarCount);
         MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
-        ;
 #if UNITY_EDITOR
         FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId("ahmet123", newInventoryItem);
 #else
-                    FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId(FirebaseAuthManager.instance.GetCurrentUser().UserId,newInventoryItem);
+        FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId(FirebaseAuthManager.instance.GetCurrentUser().UserId,newInventoryItem);
 #endif
 
         ItemManager.instance.GetAllItemDatas().Remove(_table);
         ItemManager.instance.GetAllIAPItemDatas().Remove(_table);
+        if (ShopController.instance != null)
         ShopController.instance.GetCurrentShoppingTypeItems();
     }
     void AdsRemoveComplate(ItemData _ads)
@@ -214,10 +216,12 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
         ItemManager.instance.GetAllItemDatas().Remove(_ads);
         ItemManager.instance.GetAllIAPItemDatas().Remove(_ads);
         MuseumManager.instance.PurchasedItems.Add(_ads);
-        ShopController.instance.GetCurrentShoppingTypeItems();
+        if (ShopController.instance != null)
+            ShopController.instance.GetCurrentShoppingTypeItems();
     }
     void AddRoom(RoomData _room)
     {
+        if (RoomManager.instance != null)
         RoomManager.instance.RoomsActivationAndPurchasedControl(_room, RoomManager.instance.RoomDatas);
         //GameManager.instance.Save();
     }

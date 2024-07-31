@@ -12,7 +12,9 @@ public class FPSCounter : MonoBehaviour
 
     void Start()
     {
+#if !UNITY_EDITOR
         Application.targetFrameRate = targetFrameRate;
+#endif
     }
 
     void Update()

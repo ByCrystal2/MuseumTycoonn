@@ -77,7 +77,7 @@ public static class Constant
 
         // Tayca Kadýn
         "Somying Charoen", "Mali Rattanakosin", "Wipa Chaiyaphum", "Prapa Pathumwan", "Jaruwan Laksi",
-        "Patcharee Thonburi", "Kanchana Bangkapi", "Chitra Bangrak", "Nipaporn Ratchada", "Nipapan Bangmod",
+        "Patcharee Thonburi", "Kanchana Bangkapi", "Chitra Bangrak", "Nipapan Bangmod",
 
         // Ýspanyolca Kadýn
         "Maria Rodriguez", "Carmen Hernandez", "Ana Gonzalez", "Isabel Sanchez", "Dolores Torres",

@@ -20,7 +20,7 @@ public class RoomData : MonoBehaviour
     public bool isHasStatue;
     [SerializeField] public GameObject[] DirectionWalls; // West-North-East-South Walls
     [SerializeField] public GameObject[] DirectionPictures; // West-North-East-South Pictures
-
+    [SerializeField] RoomUIHandler _targetHandler;
     public List<int> MyRoomWorkersIDs = new List<int>();
 
     [SerializeField] public RoomCell availableRoomCell = new RoomCell();
@@ -29,7 +29,7 @@ public class RoomData : MonoBehaviour
     public List<GameObject> Doors = new List<GameObject>();
     private GameObject RoomBlok;
     [SerializeField] GameObject NotPurchasedBlok;
-    private GameObject RoofLock;
+    [SerializeField] GameObject RoofLock;
     public List<TextMeshProUGUI> MyRequiredMoneyTexts;
 
     public Transform LocationHolder;
@@ -75,7 +75,7 @@ public class RoomData : MonoBehaviour
     {
         MyStatue = _newStatue;
     }
-    public async System.Threading.Tasks.Task LoadThisRoom()
+    public async void LoadThisRoom()
     {
         string userID = "";
 #if UNITY_EDITOR
@@ -83,52 +83,12 @@ public class RoomData : MonoBehaviour
 #else
         userID = FirebaseAuthManager.instance.GetCurrentUser().UserId;
 #endif
-        await FirestoreManager.instance.roomDatasHandler.GetRoomInDatabase(userID, this.ID).ContinueWithOnMainThread(async (getTask) =>
-        {
-            try
-            {
-                if (getTask.IsCompleted && !getTask.IsFaulted)
-                {
-                    RoomData databaseRoom = getTask.Result;
-                    Debug.Log("Database room data retrieval completed.");
-
-                    if (databaseRoom != null)
-                    {
-                        Debug.Log($"databaseRoom.ID => {databaseRoom.ID} databaseRoom.isActive => {databaseRoom.isActive} databaseRoom.StatueID => {databaseRoom.GetMyStatueInTheMyRoom()?.ID}");
-
-                        RoomData myRoom = GetComponent<RoomData>();
-                        myRoom = databaseRoom;
-                        Debug.Log("myRoom.ID is " + myRoom.ID + " databaseRoom.ID is " + databaseRoom.ID);
-                        if (myRoom.GetMyStatueInTheMyRoom() != null)
-                        {
-                            Debug.Log($"before myRoom.GetMyStatueInTheMyRoom().IsPurchased => {myRoom.GetMyStatueInTheMyRoom().IsPurchased}");
-                            var myStatue = myRoom.GetMyStatueInTheMyRoom();
-                            Debug.Log($"myStatue Infos: ID:{myStatue.ID} + Name:{myStatue.Name} + RoomCell:{myStatue._currentRoomCell.CellLetter.ToString() + myStatue._currentRoomCell.CellNumber} + Bonusses.Count:{myStatue.Bonusses.Count}");
-                            myStatue.SetIsPurchased();
-                            Debug.Log($"myStatue Infos: FocusedLevel:{myStatue.FocusedLevel}");
-                            RoomManager.instance.AddSavedStatues(myStatue);
-                            RoomManager.instance.statuesHandler.activeEditObjs.Add(myStatue);
-                            Debug.Log($"after myRoom.GetMyStatueInTheMyRoom().IsPurchased => {myRoom.GetMyStatueInTheMyRoom().IsPurchased}");
-                        }
-                    }
-                }
-                else
-                {
-                    Debug.LogError("Error occurred: " + getTask.Exception + " Room code => " + this.availableRoomCell.CellLetter.ToString() + this.availableRoomCell.CellNumber.ToString());
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError("Room Database Loading Error:"+ex.Message + " Room code => " + this.availableRoomCell.CellLetter.ToString() + this.availableRoomCell.CellNumber.ToString());
-            }
-            
-        });
+        
 
         if (CurrentShoppingType == ShoppingType.RealMoney)
             IAP_ID = Constant.IAPIDCompany + Constant.IAPIDGame + CurrentRoomType.ToString().ToLower() + "x" + 1 + "_" + CurrentShoppingType.ToString().ToLower() + "_" + ((int)RequiredMoney).ToString(); //com_kosippysudio_museumtycoon_gold5000x_realmoney_10
 
         RoomBlok = gameObject.GetComponentInChildren<RoomBlokClickHandler>().gameObject;
-        RoofLock = gameObject.GetComponentInChildren<PanelClickHandler>().gameObject.GetComponentInParent<Canvas>().gameObject;
 
         if (isLock)
         {
@@ -227,7 +187,7 @@ public class RoomData : MonoBehaviour
 
                         //PictureData currentPictureData = GameManager.instance.CurrentSaveData.CurrentPictures.Where(x => x.id == pe._pictureData.id).SingleOrDefault();
                         Debug.Log("RoomCode => " + availableRoomCell.CellLetter.ToString() + availableRoomCell.CellNumber.ToString() + " pe.name => " + pe.name + " and pe._pictureData.id => " + pe._pictureData.id);
-                        await FirestoreManager.instance.pictureDatasHandler.GetPictureInDatabase(userID, pe._pictureData.id)
+                        FirestoreManager.instance.pictureDatasHandler.GetPictureInDatabase(userID, pe._pictureData.id)
                         .ContinueWithOnMainThread(async (task) =>
                         {
                             if (task.IsCompleted && !task.IsFaulted)
@@ -276,7 +236,6 @@ public class RoomData : MonoBehaviour
         //while (UIController.instance.roomUISPanelController.GetRoomUIS().Count <= 0)
         //    yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
-        RoomUIHandler _targetHandler = GetComponentInChildren<RoomUIHandler>();
         _targetHandler.UpdateMyUI();
     }
     public void SetRoomBlockPanelActive(bool _isActive)

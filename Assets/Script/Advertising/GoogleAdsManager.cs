@@ -494,6 +494,10 @@ public class GoogleAdsManager : MonoBehaviour
     }
     public void RemoveAds()
     {
+        if (adsData is null)
+        {
+            adsData = new AdverstingData();
+        }
         adsData.RemovedAllAds = true;
         BannerAdWaitingTime = 120;
         InterstitialAdWaitingTime = 60;

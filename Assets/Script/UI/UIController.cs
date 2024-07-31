@@ -55,7 +55,7 @@ public class UIController : MonoBehaviour
     [Header("GameModsUIS")]
     [SerializeField] GameObject JoystickObj;
     [Header("Skill Tree")]
-    public GameObject skillsContent;
+    public List<Transform> skillsContents;
     //skill info
     public GameObject skillInfoPanel;
     public TextMeshProUGUI SkillPointText;
@@ -575,8 +575,7 @@ public class UIController : MonoBehaviour
 
                 SkillPointText.text = "" + (MuseumManager.instance.GetCurrentSkillPoint() - currentSkill.SkillRequiredPoint);
                 MuseumManager.instance.SpendingSkillPoint(currentSkill.SkillRequiredPoint);
-                SkillRequiredPointAndMoneyController(currentSkill);
-                currentSkill.SkillCurrentLevel++;
+                SkillRequiredPointAndMoneyController(currentSkill);                
                 if (currentSkill.SkillCurrentLevel < currentSkill.SkillMaxLevel)
                 {
                     skillNameText.text = currentSkill.SkillName;
@@ -1065,6 +1064,7 @@ public class UIController : MonoBehaviour
                     TutorialTargetObjectHandler target = workerHiringObj.AddComponent<TutorialTargetObjectHandler>();
                     target.SetOptions(5, workerHiringObj.GetComponent<RectTransform>());
                     tutorialControl = true;
+                    DialogueManager.instance.TargetObjectHandlers.Add(target);
                 }
             }
             else
@@ -1253,6 +1253,7 @@ public class UIController : MonoBehaviour
                 Debug.Log("hiringObject.name => " + hiringObject.name);
                 TutorialTargetObjectHandler target = hiringObject.AddComponent<TutorialTargetObjectHandler>();
                 target.SetOptions(6,hiringObject.GetComponent<RectTransform>());
+                DialogueManager.instance.TargetObjectHandlers.Add(target);
             }
         }
         Debug.Log($"Worker Turu => {_wType} olan Isciler Envantere Listelendi.");
@@ -1267,6 +1268,7 @@ public class UIController : MonoBehaviour
             {
                 TutorialTargetObjectHandler target = newAssignmentRoom.AddComponent<TutorialTargetObjectHandler>();
                 target.SetOptions(7, newAssignmentRoom.GetComponent<RectTransform>());
+                DialogueManager.instance.TargetObjectHandlers.Add(target);
             }
         }
         WorkerAssignmentRoomButton _newAssing = newAssignmentRoom.GetComponent<WorkerAssignmentRoomButton>();
@@ -1320,6 +1322,7 @@ public class UIController : MonoBehaviour
                 {
                     TutorialTargetObjectHandler target = _newDailyRewardItemOption.AddComponent<TutorialTargetObjectHandler>();
                     target.SetOptions(2, _newDailyRewardItemOption.GetComponent<RectTransform>());
+                    DialogueManager.instance.TargetObjectHandlers.Add(target);
                 }
         }
     }

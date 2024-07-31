@@ -112,118 +112,129 @@ public class FirestoreManager : MonoBehaviour
             }
         });
     }
+    DocumentReference gameDataRef;
     public async System.Threading.Tasks.Task UpdateGameData(string userId, bool _overwrite = false)
     {
         if (GameManager.instance != null) if (!GameManager.instance.IsWatchTutorial && !_overwrite) return;
         // Kullanýcý ID'si ile belgeyi sorgula
-        Query query = db.Collection("Users").WhereEqualTo("userID", userId);
+        var museumDatas = MuseumManager.instance.GetSaveData();
         Debug.Log("UpdateGameData method is starting...");
-        try
-        {
 
-            await query.GetSnapshotAsync().ContinueWithOnMainThread(async task =>
+        if (gameDataRef == null)
         {
-            if (task.IsCompleted)
+            Query query = db.Collection("Users").WhereEqualTo("userID", userId);
+            try
             {
-                QuerySnapshot snapshot = task.Result;
 
-                if (snapshot.Documents.Count() > 0)
+                await query.GetSnapshotAsync().ContinueWithOnMainThread(async task =>
+            {
+                if (task.IsCompleted)
                 {
-                    DocumentSnapshot documentSnapshot = snapshot.Documents.FirstOrDefault();
-                    DocumentReference documentReference = documentSnapshot.Reference;
+                    QuerySnapshot snapshot = task.Result;
 
-                    // Belge varsa, alt koleksiyon olan PictureDatas'ta tabloyu bul ve güncelle
-                    CollectionReference gameDatasRef = documentReference.Collection("GameDatas");
-
-                    await gameDatasRef.GetSnapshotAsync().ContinueWithOnMainThread(async gameDataTask =>
+                    if (snapshot.Documents.Count() > 0)
                     {
-                    if (gameDataTask.IsCompleted)
-                    {
-                        QuerySnapshot gameDataSnapshot = gameDataTask.Result;
+                        DocumentSnapshot documentSnapshot = snapshot.Documents.FirstOrDefault();
+                        DocumentReference documentReference = documentSnapshot.Reference;
 
-                        if (gameDataSnapshot.Documents.Count() > 0)
+                        // Belge varsa, alt koleksiyon olan PictureDatas'ta tabloyu bul ve güncelle
+                        CollectionReference gameDatasRef = documentReference.Collection("GameDatas");
+
+                        await gameDatasRef.GetSnapshotAsync().ContinueWithOnMainThread(async gameDataTask =>
                         {
-                            Debug.Log("GameData is exits with " + userId + " userId");
-                            DocumentSnapshot gameDataDocument = gameDataSnapshot.Documents.FirstOrDefault();
-                            DocumentReference gameDataRef = gameDataDocument.Reference;
-                            var museumDatas = MuseumManager.instance.GetSaveData();
-                            try
+                            if (gameDataTask.IsCompleted)
                             {
-                                    Dictionary<string, object> updates = new Dictionary<string, object>
-                                    {
-                                        { "IsWatchTutorial",  GameManager.instance.IsWatchTutorial},
-                                        { "IsFirstGame", GameManager.instance.IsFirstGame },
-                                        { "Gold", museumDatas._gold },
-                                        { "Culture", museumDatas._Culture },
-                                        { "Gem", museumDatas._Gem },
-                                        { "SkillPoint", museumDatas._SkillPoint },
-                                        { "CurrentCultureLevel", museumDatas._CurrentCultureLevel },
-                                        { "GameLanguage", GameManager.instance.GetGameLanguage() },
-                                        { "ActiveRoomsRequiredMoney", GameManager.instance.ActiveRoomsRequiredMoney },
-                                        { "BaseWorkerHiringPrice", GameManager.instance.BaseWorkerHiringPrice },
-                                        { "PurchasedItemIDs", MuseumManager.instance.PurchasedItems.Select(x=> x.ID).ToList() },
-                                        { "DailyRewardItemIDs", ItemManager.instance.CurrentDailyRewardItems.Select(x=> x.ID).ToList() },
-                                        { "WorkersInInventoryIDs", MuseumManager.instance.WorkersInInventory.Select(x=> x.ID).ToList()},
-                                        { "LastDailyRewardTime", MuseumManager.instance.lastDailyRewardTime.ToString("yyyy-MM-dd HH:mm:ss") },
-                                        { "WhatDay", TimeManager.instance.WhatDay },
-                                        { "RemoveAllAds", GoogleAdsManager.instance.adsData.RemovedAllAds },
+                                QuerySnapshot gameDataSnapshot = gameDataTask.Result;
 
-                                    //Achievements
-                                    { "PurchasedRoomCount", GPGamesManager.instance.achievementController.PurchasedRoomCount },
-                                    { "NumberOfTablesPlaced", GPGamesManager.instance.achievementController.NumberOfTablesPlaced },
-                                    { "NumberOfVisitors", GPGamesManager.instance.achievementController.NumberOfVisitors },
-                                    { "NumberOfStatuesPlaced", GPGamesManager.instance.achievementController.NumberOfStatuesPlaced },
-                                    { "TotalNumberOfMuseumVisitors", GPGamesManager.instance.achievementController.TotalNumberOfMuseumVisitors },
-                                    { "TotalWorkerHiringCount", GPGamesManager.instance.achievementController.TotalWorkerHiringCount },
-                                    { "TotalWorkerAssignCount", GPGamesManager.instance.achievementController.TotalWorkerAssignCount },
-                                        //Achievements
-                                        { "Timestamp", FieldValue.ServerTimestamp }
-
-                                    };
-
-                                    await gameDataRef.UpdateAsync(updates).ContinueWithOnMainThread(updateTask =>
-                                    {
-                                        if (updateTask.IsCompleted)
-                                        {
-                                            Debug.Log($"Game data successfully updated for user {userId}");
-                                        }
-                                        else if (updateTask.IsFaulted)
-                                        {
-                                            Debug.LogError($"Failed to update game data: {updateTask.Exception}");
-                                        }
-                                    });
-                                }
-                                catch (Exception _ex)
+                                if (gameDataSnapshot.Documents.Count() > 0)
                                 {
-                                    Debug.LogError($"Error updating game data: {_ex}");
+                                    Debug.Log("GameData is exits with " + userId + " userId");
+                                    DocumentSnapshot gameDataDocument = gameDataSnapshot.Documents.FirstOrDefault();
+                                    gameDataRef = gameDataDocument.Reference;
+
+                                    UpdateGameDatasHelper(museumDatas, gameDataRef, userId);
+
                                 }
-                                
                             }
                             else
                             {
-
+                                Debug.LogError($"Error querying game data: {gameDataTask.Exception}");
                             }
-                        }
-                        else
-                        {
-                            Debug.LogError($"Error querying game data: {gameDataTask.Exception}");
-                        }
-                    });
+                        });
+                    }
+                    else
+                    {
+                        Debug.LogError($"No document found for user ID: {userId}");
+                    }
                 }
                 else
                 {
-                    Debug.LogError($"No document found for user ID: {userId}");
+                    Debug.LogError($"Error querying documents: {task.Exception}");
                 }
+            });
             }
-            else
+            catch (Exception _ex)
             {
-                Debug.LogError($"Error querying documents: {task.Exception}");
-            }
-        });
+                Debug.LogError($"UpdateGameData method error cathing. Error: " + _ex.Message);
+            } 
+        }
+        else
+        {
+            UpdateGameDatasHelper(museumDatas, gameDataRef, userId);
+            Debug.Log("GameData is not null!");
+        }
+    }
+    async void UpdateGameDatasHelper((float _gold,float _Culture, float _Gem, float _SkillPoint, int _CurrentCultureLevel) museumDatas, DocumentReference gameDataRef, string userId)
+    {
+        try
+        {
+            Dictionary<string, object> updates = new Dictionary<string, object>
+            {
+                { "IsWatchTutorial",  GameManager.instance.IsWatchTutorial},
+                { "IsFirstGame", GameManager.instance.IsFirstGame },
+                { "Gold", museumDatas._gold },
+                { "Culture", museumDatas._Culture },
+                { "Gem", museumDatas._Gem },
+                { "SkillPoint", museumDatas._SkillPoint },
+                { "CurrentCultureLevel", museumDatas._CurrentCultureLevel },
+                { "GameLanguage", GameManager.instance.GetGameLanguage() },
+                { "ActiveRoomsRequiredMoney", GameManager.instance.ActiveRoomsRequiredMoney },
+                { "BaseWorkerHiringPrice", GameManager.instance.BaseWorkerHiringPrice },
+                { "PurchasedItemIDs", MuseumManager.instance.PurchasedItems.Select(x=> x.ID).ToList() },
+                { "DailyRewardItemIDs", ItemManager.instance.CurrentDailyRewardItems.Select(x=> x.ID).ToList() },
+                { "WorkersInInventoryIDs", MuseumManager.instance.WorkersInInventory.Select(x=> x.ID).ToList()},
+                { "LastDailyRewardTime", MuseumManager.instance.lastDailyRewardTime.ToString("yyyy-MM-dd HH:mm:ss") },
+                { "WhatDay", TimeManager.instance.WhatDay },
+                { "RemoveAllAds", GoogleAdsManager.instance.adsData.RemovedAllAds },
+
+            //Achievements
+            { "PurchasedRoomCount", GPGamesManager.instance.achievementController.PurchasedRoomCount },
+            { "NumberOfTablesPlaced", GPGamesManager.instance.achievementController.NumberOfTablesPlaced },
+            { "NumberOfVisitors", GPGamesManager.instance.achievementController.NumberOfVisitors },
+            { "NumberOfStatuesPlaced", GPGamesManager.instance.achievementController.NumberOfStatuesPlaced },
+            { "TotalNumberOfMuseumVisitors", GPGamesManager.instance.achievementController.TotalNumberOfMuseumVisitors },
+            { "TotalWorkerHiringCount", GPGamesManager.instance.achievementController.TotalWorkerHiringCount },
+            { "TotalWorkerAssignCount", GPGamesManager.instance.achievementController.TotalWorkerAssignCount },
+                //Achievements
+                { "Timestamp", FieldValue.ServerTimestamp }
+
+            };
+
+            await gameDataRef.UpdateAsync(updates).ContinueWithOnMainThread(updateTask =>
+            {
+                if (updateTask.IsCompleted)
+                {
+                    Debug.Log($"Game data successfully updated for user {userId}");
+                }
+                else if (updateTask.IsFaulted)
+                {
+                    Debug.LogError($"Failed to update game data: {updateTask.Exception}");
+                }
+            });
         }
         catch (Exception _ex)
         {
-            Debug.LogError($"UpdateGameData method error cathing. Error: " + _ex.Message);
+            Debug.LogError($"Error updating game data: {_ex}");
         }
     }
     public async System.Threading.Tasks.Task UpdateGameLanguageInGameDatas(string userId)
@@ -313,31 +324,40 @@ public class FirestoreManager : MonoBehaviour
             Debug.LogError($"UpdateGameData method error cathing. Error: " + _ex.Message);
         }
     }
+    QuerySnapshot _gameDataQuerySnapshot;
     public async Task<Dictionary<string, object>> GetGameDataInDatabase(string userId)
     {
         var gameDataDictonary = new Dictionary<string, object>();
         try
         {
             // Kullanýcýya ait belgeleri sorgula
-            Query query = db.Collection("Users").WhereEqualTo("userID", userId);
-            QuerySnapshot querySnapshot = await query.GetSnapshotAsync();
-
-            foreach (DocumentSnapshot documentSnapshot in querySnapshot.Documents)
+            if (_gameDataQuerySnapshot == null)
             {
-                if (documentSnapshot.Exists)
-                {
-                    CollectionReference gameDataRef = documentSnapshot.Reference.Collection("GameDatas");
-                    QuerySnapshot gameDataQuerySnapshot = await gameDataRef.GetSnapshotAsync();
+                Query query = db.Collection("Users").WhereEqualTo("userID", userId);
+                QuerySnapshot querySnapshot = await query.GetSnapshotAsync();
 
-                    foreach (DocumentSnapshot gameDataDocumentSnapshot in gameDataQuerySnapshot.Documents)
+                foreach (DocumentSnapshot documentSnapshot in querySnapshot.Documents)
+                {
+                    if (documentSnapshot.Exists)
                     {
-                        if (gameDataDocumentSnapshot.Exists)
+                        CollectionReference gameDataRef = documentSnapshot.Reference.Collection("GameDatas");
+                        QuerySnapshot gameDataQuerySnapshot = await gameDataRef.GetSnapshotAsync();
+
+                        foreach (DocumentSnapshot gameDataDocumentSnapshot in gameDataQuerySnapshot.Documents)
                         {
-                            gameDataDictonary = gameDataDocumentSnapshot.ToDictionary();
+                            if (gameDataDocumentSnapshot.Exists)
+                            {
+                                gameDataDictonary = gameDataDocumentSnapshot.ToDictionary();
+                            }
                         }
+                        _gameDataQuerySnapshot = gameDataQuerySnapshot;
                     }
-                }
+                } 
             }
+            else
+                foreach (DocumentSnapshot gameDataDocumentSnapshot in _gameDataQuerySnapshot.Documents)
+                    if (gameDataDocumentSnapshot.Exists)
+                        gameDataDictonary = gameDataDocumentSnapshot.ToDictionary();
         }
         catch (Exception ex)
         {

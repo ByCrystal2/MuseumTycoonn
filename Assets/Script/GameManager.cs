@@ -5,10 +5,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using TMPro;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.AI;
 
 public class GameManager : MonoBehaviour
 {
@@ -38,7 +37,7 @@ public class GameManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(this);
-        AutoSaveTimer = Time.time + 300;
+        AutoSaveTimer = Time.time + 30;
     }
 
     public void Start()
@@ -86,7 +85,13 @@ public class GameManager : MonoBehaviour
         if (AutoSaveTimer < Time.time)
         {
             Save();
-            AutoSaveTimer = Time.time + 300;
+            AutoSaveTimer = Time.time + 30;
+#if UNITY_EDITOR
+            FirestoreManager.instance.UpdateGameData("ahmet123");
+#else
+            FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
+            Debug.Log("Auto Save!");
         }
 
     }
@@ -312,27 +317,79 @@ public class GameManager : MonoBehaviour
 
     public async System.Threading.Tasks.Task LoadRooms()
     {
+        string userID = "";
+#if UNITY_EDITOR
+        userID = "ahmet123";
+#else
+        userID = FirebaseAuthManager.instance.GetCurrentUser().UserId;
+#endif
         if (!IsFirstGame)
         {
             Dictionary<string, object> gameDatas = new Dictionary<string, object>();                
+            gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(userID);
 
-#if UNITY_EDITOR
-            gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
-#else
-            gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-#endif
             float activeRoomsRequiredMoney = Convert.ToSingle(gameDatas["ActiveRoomsRequiredMoney"]);
             ActiveRoomsRequiredMoney = activeRoomsRequiredMoney; 
         }
         
 
         //MuseumManager.instance.AllPictureElements = FindObjectsOfType<PictureElement>().ToList();
-        List<RoomData> AllRooms = GameObject.FindObjectsOfType<RoomData>().ToList();
+        List<int> AllRoomIDs = RoomManager.instance.RoomDatas.Select(x=> x.ID).ToList();
         //RoomLoad
-        foreach (var room in AllRooms)
+        //foreach (var room in AllRooms)
+        //{
+        //      room.LoadThisRoom();
+        //}
+        List<RoomData> targetRooms = new List<RoomData>();
+        List<RoomData> allRooms = RoomManager.instance.RoomDatas;
+        await FirestoreManager.instance.roomDatasHandler.GetRoomsInDatabase(userID, AllRoomIDs).ContinueWithOnMainThread(async (getTask) =>
         {
-              room.LoadThisRoom();
-        }
+            try
+            {
+                if (getTask.IsCompleted && !getTask.IsFaulted)
+                {
+                    List<RoomData> databaseRooms = getTask.Result;
+                    Debug.Log("Database room data retrieval completed.");
+                    foreach (RoomData databaseRoom in databaseRooms)
+                    {
+                        if (databaseRoom != null)
+                        {
+                            Debug.Log($"databaseRoom.ID => {databaseRoom.ID} databaseRoom.isActive => {databaseRoom.isActive} databaseRoom.StatueID => {databaseRoom.GetMyStatueInTheMyRoom()?.ID}");
+
+                            RoomData myRoom = RoomManager.instance.RoomDatas.Where(x=> x.ID == databaseRoom.ID).SingleOrDefault();
+                            myRoom = databaseRoom;
+                            Debug.Log("myRoom.ID is " + myRoom.ID + " databaseRoom.ID is " + databaseRoom.ID);
+                            if (myRoom.GetMyStatueInTheMyRoom() != null)
+                            {
+                                Debug.Log($"before myRoom.GetMyStatueInTheMyRoom().IsPurchased => {myRoom.GetMyStatueInTheMyRoom().IsPurchased}");
+                                var myStatue = myRoom.GetMyStatueInTheMyRoom();
+                                Debug.Log($"myStatue Infos: ID:{myStatue.ID} + Name:{myStatue.Name} + RoomCell:{myStatue._currentRoomCell.CellLetter.ToString() + myStatue._currentRoomCell.CellNumber} + Bonusses.Count:{myStatue.Bonusses.Count}");
+                                myStatue.SetIsPurchased();
+                                Debug.Log($"myStatue Infos: FocusedLevel:{myStatue.FocusedLevel}");
+                                RoomManager.instance.AddSavedStatues(myStatue);
+                                RoomManager.instance.statuesHandler.activeEditObjs.Add(myStatue);
+                                Debug.Log($"after myRoom.GetMyStatueInTheMyRoom().IsPurchased => {myRoom.GetMyStatueInTheMyRoom().IsPurchased}");
+                            }
+                            myRoom.LoadThisRoom();
+                        }
+                    }
+                    
+                }
+                else
+                {
+                    Debug.LogError("Error occurred: " + getTask.Exception + " Room count => " + getTask.Result.Count);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("Room Database Loading Error:" + ex.Message + " Room count => " + getTask.Result.Count);
+            }
+
+        });
+        int length = allRooms.Count;
+        for (int i = 0; i < length; i++)
+            if (!targetRooms.Contains(allRooms[i]))
+                allRooms[i].LoadThisRoom();
         //MuseumManager.instance.InventoryPictures = CurrentSaveData.InventoryPictures;
 
         //int adet = 0;
@@ -353,7 +410,7 @@ public class GameManager : MonoBehaviour
         //                currentRoom.isActive = currentRoomSave.isActive;
         //                currentRoom.isLock = currentRoomSave.isLock;
         //                currentRoom.RequiredMoney = currentRoomSave.RequiredMoney;
-                        
+
         //                Debug.Log("kac adet oda bulundu: " + adet);
         //                adet++;
         //                break;
@@ -432,7 +489,19 @@ public class GameManager : MonoBehaviour
         bool removeAds = gameDatas.ContainsKey("RemoveAllAds") ? Convert.ToBoolean(gameDatas["RemoveAllAds"]) : false;
         databaseAdversting.RemovedAllAds = removeAds;
         if (GoogleAdsManager.instance != null)
-            GoogleAdsManager.instance.adsData = databaseAdversting;        
+            GoogleAdsManager.instance.adsData = databaseAdversting;
+
+        if (GoogleAdsManager.instance.adsData.RemovedAllAds)
+        {
+            GoogleAdsManager.instance.StartInterstitialAdBool(false);
+            GoogleAdsManager.instance.StartBannerAdBool(false);
+        }
+        else
+        {
+            GoogleAdsManager.instance.StartInterstitialAdBool(true);
+            GoogleAdsManager.instance.StartBannerAdBool(true);
+        }
+        GoogleAdsManager.instance.StartRewardAdBool(true);
     }
     public async void LoadMuseumNumeralDatas()
     {
@@ -583,49 +652,69 @@ public class GameManager : MonoBehaviour
     public async System.Threading.Tasks.Task LoadSkills()
     {
         List<SkillNode> afterDatabaseSkills = new List<SkillNode>();
-        foreach (var skill in SkillTreeManager.instance.skillNodes)
-        {
-            SkillNode s = null;
+        List<SkillNode> allSkills = SkillTreeManager.instance.skillNodes.ToList();
+        //        foreach (var skill in SkillTreeManager.instance.skillNodes)
+        //        {
+        //            SkillNode s = null;
+        //#if UNITY_EDITOR
+        //            await FirestoreManager.instance.skillDatasHandler.GetSkillsInDatabase("ahmet123", skill.ID);
+        //#else
+        //            await FirestoreManager.instance.skillDatasHandler.GetSkillsInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId, skill.ID);
+        //#endif
+        //            if (s != null)
+        //                afterDatabaseSkills.Add(s);
+        //            else
+        //                afterDatabaseSkills.Add(skill);
+
+        //        }
+        List<int> skillNodeIDs = allSkills.Select(x => x.ID).ToList();
 #if UNITY_EDITOR
-            await FirestoreManager.instance.skillDatasHandler.GetSkillInDatabase("ahmet123", skill.ID);
+        afterDatabaseSkills = await FirestoreManager.instance.skillDatasHandler.GetSkillsInDatabase("ahmet123", skillNodeIDs);
 #else
-            await FirestoreManager.instance.skillDatasHandler.GetSkillInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId, skill.ID);
+            afterDatabaseSkills = await FirestoreManager.instance.skillDatasHandler.GetSkillsInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId, skillNodeIDs);
 #endif
-            if (s != null)
-                afterDatabaseSkills.Add(s);
-            else
-                afterDatabaseSkills.Add(skill);
-            
-        }
-        foreach (SkillNode skill in afterDatabaseSkills)
+        int length = allSkills.Count;
+        for (int i = 0; i < length; i++)
         {
-            GameObject baseSkiilObj = SkillTreeManager.instance.skillObjects.Where(x=> x.GetComponent<BaseSkillOptions>().SkillID == skill.ID).SingleOrDefault();
-            if (baseSkiilObj != null)
+            if (i < afterDatabaseSkills.Count)
             {
-                int lenght = baseSkiilObj.transform.childCount;
-                for (int i = 0; i < lenght; i++)
-                {
-                    Debug.Log(baseSkiilObj.transform.GetChild(i).gameObject.name);
-                    Transform childTransform = baseSkiilObj.transform.GetChild(i);
-                    if (childTransform.TryGetComponent(out SkillAbilityAmountController skillAmountController))
-                    {
-                        Debug.Log(skill.SkillCurrentLevel);
-                        Debug.Log(skill.SkillMaxLevel);                        
-                        skillAmountController.SetSkillCurrentLevelUI(skill.SkillCurrentLevel);
-                    }
-                    if (childTransform.TryGetComponent(out SkillAbilityMaxAmountController skillMaxController))
-                    {
-                        skillMaxController.SetSkillMaxLevelUI(skill.SkillMaxLevel);
-                        Debug.Log("Mevcut Skill'in Max Leveli => " + skill.SkillMaxLevel);
-                    }
-                }
+                SkillTreeManager.instance.SetSkillTextProcess(afterDatabaseSkills[i]);
+                Debug.Log(afterDatabaseSkills[i].ID + " li skill UI guncellenmistir. (database)");
             }
-        }
+            else
+            {
+                allSkills[i].SkillEffect = allSkills[i].SkillEffect = $"+{allSkills[i].Amounts[allSkills[i].SkillCurrentLevel > 0 ? allSkills[i].SkillCurrentLevel - 1 : 0]} {allSkills[i].defaultEffectString}";
+                SkillTreeManager.instance.SetSkillTextProcess(allSkills[i]);
+                Debug.Log(allSkills[i].ID + " li skill UI guncellenmistir.");
+            }
+            if (i == length - 1)
+            {
+                SkillTreeManager.instance.RefreshSkillBonuses();
+                break;
+            }
+        }        
+        
     }
 
     public async System.Threading.Tasks.Task LoadWorkers()
     {
+        int length = WorkerManager.instance.WorkersContent.childCount;
+        for (int i = 0; i < length; i++)
+        {
+            if (WorkerManager.instance.WorkersContent.GetChild(i).TryGetComponent(out WorkerBehaviour workerMono))
+            {
+                WorkerManager.instance.AllWorkers.Add(workerMono);
+                workerMono.Agent = workerMono.gameObject.GetComponent<NavMeshAgent>();
+                workerMono.NpcCurrentSpeed = workerMono.NpcSpeed;
+                string noneDatabaseName = Constant.GetNPCName(workerMono.IsMale);
+                WorkerData databaseWorker = null;
+                WorkerManager.instance.SetDatabaseDatas(workerMono, databaseWorker, noneDatabaseName);
+                workerMono.gameObject.SetActive(false);
+            }
+        }
+        Debug.Log("WorkerManager.instance.AllWorkers.Count => " + WorkerManager.instance.AllWorkers.Count);
         Dictionary<string, object> gameDatas = new Dictionary<string, object>();
+        List<WorkerBehaviour> allWorkers = WorkerManager.instance.GetAllWorkers();
 #if UNITY_EDITOR
         gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
 #else
@@ -633,31 +722,15 @@ public class GameManager : MonoBehaviour
 #endif
         BaseWorkerHiringPrice = Convert.ToSingle(gameDatas["BaseWorkerHiringPrice"]);
 
-        List<WorkerData> inventoryWorkers = new List<WorkerData>();
-        List<int> workerIDs = ((List<object>)gameDatas["WorkersInInventoryIDs"]).Select(x => Convert.ToInt32(x)).ToList();
-        foreach (int id in workerIDs)
-        {
-            WorkerData databaseItem = WorkerManager.instance.GetAllWorkers().Where(x => x.ID == id).SingleOrDefault().MyDatas;
-            inventoryWorkers.Add(databaseItem);
-        }
-
         List<WorkerData> currentActiveWorkers = new List<WorkerData>();
 
-        List<int> workerIds = WorkerManager.instance.GetAllWorkers().Select(x => x.MyDatas.ID).ToList();
-        foreach (var id in workerIds)
-        {
-            WorkerData databaseWorker = null;
+        List<int> workerIds = allWorkers.Select(x => x.ID).ToList();
+        Debug.Log("workerIds.Count => " + workerIds.Count);
 #if UNITY_EDITOR
-            databaseWorker = await FirestoreManager.instance.workerDatasHandler.GetWorkerInDatabase("ahmet123", id);
+        currentActiveWorkers = await FirestoreManager.instance.workerDatasHandler.GetWorkersInDatabase("ahmet123", workerIds);
 #else
-            databaseWorker = await FirestoreManager.instance.workerDatasHandler.GetWorkerInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId, id);
+        currentActiveWorkers = await FirestoreManager.instance.workerDatasHandler.GetWorkersInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId, workerIds);
 #endif
-            if (databaseWorker != null)
-            {
-                currentActiveWorkers.Add(databaseWorker);
-            }
-        }
-
         foreach (WorkerData databaseWorker in currentActiveWorkers)
         {
             List<int> iWorkRoomIds = new List<int>();
@@ -667,35 +740,59 @@ public class GameManager : MonoBehaviour
                 iWorkRoomIds.Add(databaseWorker.WorkRoomsIDs[i]);
             }
             Worker w = WorkerManager.instance.GetWorkerToWorkerType(databaseWorker);
-            WorkerBehaviour wb = WorkerManager.instance.GetAllWorkers().Where(x=> x.ID == w.ID).SingleOrDefault();
+            WorkerBehaviour wb = allWorkers.Where(x => x.ID == w.ID).SingleOrDefault();
             w.Name = databaseWorker.Name;
             w.Level = databaseWorker.Level;
             w.IWorkRoomsIDs.Clear();
             wb.MyDatas.WorkRoomsIDs.Clear();
-            int length = iWorkRoomIds.Count;
-            Debug.Log("worker.WorkRoomsIDs.Count => " + iWorkRoomIds.Count);
-            for (int i = 0; i < length; i++)
+            int length2 = iWorkRoomIds.Count;
+            for (int i = 0; i < length2; i++)
             {
                 w.IWorkRoomsIDs.Add(iWorkRoomIds[i]);
                 wb.MyDatas.WorkRoomsIDs.Add(iWorkRoomIds[i]);
             }
-            MuseumManager.instance.CurrentActiveWorkers.Add(WorkerManager.instance.GetAllWorkers().Where(x=> x.ID == w.ID).SingleOrDefault());
-
-            if (w.IWorkRoomsIDs.Count > 0)
-            {
-                wb.gameObject.SetActive(true);
-                Debug.Log("wb.gameObject.SetActive(true) => " + (w.IWorkRoomsIDs.Count > 0) + "Worker Name => " + wb.name);
-            }
+            MuseumManager.instance.CurrentActiveWorkers.Add(wb);           
         }
+
+        int length3 = allWorkers.Count;
+        for (int i = 0; i < length3; i++)
+        {
+            WorkerBehaviour currentWorker = allWorkers[i];
+            currentWorker.Agent = currentWorker.gameObject.GetComponent<NavMeshAgent>();
+            currentWorker.NpcCurrentSpeed = currentWorker.NpcSpeed;
+            string noneDatabaseName = Constant.GetNPCName(currentWorker.IsMale);
+            WorkerData databaseWorker = null;
+            if (currentActiveWorkers.Any(x => x.ID == currentWorker.ID))
+            {
+                databaseWorker = currentActiveWorkers.FirstOrDefault(x => x.ID == currentWorker.ID);
+                Debug.Log("currentActiveWorkers.Any(x => x.ID == currentWorker.ID) => " + currentWorker.ID);
+            }
+            WorkerManager.instance.SetDatabaseDatas(currentWorker, databaseWorker, noneDatabaseName);
+        }
+        List<WorkerData> inventoryWorkers = new List<WorkerData>();
+        List<int> inventoryWorkerIDs = ((List<object>)gameDatas["WorkersInInventoryIDs"]).Select(x => Convert.ToInt32(x)).ToList();
+        foreach (int id in inventoryWorkerIDs)
+        {
+            WorkerData databaseItem = allWorkers.Where(x => x.ID == id).SingleOrDefault().MyDatas;
+            inventoryWorkers.Add(databaseItem);
+        }
+
+
+        
         foreach (WorkerData worker in inventoryWorkers)
         {
             Worker w = WorkerManager.instance.GetWorkerToWorkerType(worker);
 
             if (w != null)
-                MuseumManager.instance.WorkersInInventory.Add(WorkerManager.instance.GetAllWorkers().Where(x => x.ID == w.ID).SingleOrDefault());
+                MuseumManager.instance.WorkersInInventory.Add(allWorkers.Where(x => x.ID == w.ID).SingleOrDefault());
             else
                 Debug.Log($"Veritabanindan gelen {worker.Name} adli, {worker.ID} ID'li npc iscilerimiz arasinda bulunmamaktadir.");
         }
+        
+        WorkerManager.instance.CreateWorkersToMarket();
+        int length4 = MuseumManager.instance.CurrentActiveWorkers.Count;
+        for (int i = 0; i < length4; i++)
+            MuseumManager.instance.CurrentActiveWorkers[i].gameObject.SetActive(true);
     }
     public async System.Threading.Tasks.Task LoadDailyRewardItems()
     {
@@ -753,7 +850,11 @@ public class GameManager : MonoBehaviour
     {
         if (pause)
         {
-            //Save();
+#if UNITY_EDITOR
+            FirestoreManager.instance.UpdateGameData("ahmet123");
+#else
+            FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
         }
     }
 }

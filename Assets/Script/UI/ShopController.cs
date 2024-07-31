@@ -192,6 +192,7 @@ public class ShopController : MonoBehaviour
                     TutorialTargetObjectHandler target = _newTable.transform.GetChild(5).transform.GetChild(3).gameObject.AddComponent<TutorialTargetObjectHandler>();
                     //TutorialTargetObjectHandler target = _newTable.gameObject.AddComponent<TutorialTargetObjectHandler>();
                     target.SetOptions(3, target.gameObject.GetComponent<RectTransform>());
+                    DialogueManager.instance.TargetObjectHandlers.Add(target);
                 }
         }
     }

@@ -70,29 +70,32 @@ public class NpcManager : MonoBehaviour
 #endif
         }
         UIController.instance.roomUISPanelController.InitializeRoomUIS();
-        RoomManager.instance.AddRooms(); // in app baglantisi kurulmadan once odalar yuklendi.
-        await GameManager.instance.LoadRooms();
+        RoomManager.instance.AddRooms(); // in app baglantisi kurulmadan once odalar yuklendi.        
         //GameManager.instance.LoadInventoryPictures();
         GameManager.instance.LoadStatues();
-        WorkerManager.instance.BaseAllWorkerOptions();
-        await GameManager.instance.LoadWorkers();
-        WorkerManager.instance.CreateWorkersToMarket();
+        GameManager.instance.LoadWorkers();
+        
         //Gaming Services Activation
 
         BuyingConsumables.instance.InitializePurchasing();
 
         //Start Method
         AudioManager.instance.PlayMusicOfGame();
-        Transform skillsContentTransform = UIController.instance.skillsContent.transform;
-        int length = skillsContentTransform.childCount;
+        int length = UIController.instance.skillsContents.Count;
         for (int i = 0; i < length; i++)
         {
-            if (skillsContentTransform.GetChild(i).TryGetComponent(out BaseSkillOptions component))
+            Transform skillsContentTransform = UIController.instance.skillsContents[i];
+            int length1 = skillsContentTransform.childCount;
+            for (int k = 0; k < length1; k++)
             {
-                SkillTreeManager.instance.AddSkillObject(skillsContentTransform.GetChild(i).gameObject);
+                if (skillsContentTransform.GetChild(k).TryGetComponent(out BaseSkillOptions component))
+                {
+                    SkillTreeManager.instance.AddSkillObject(skillsContentTransform.GetChild(k).gameObject);
 
+                }
             }
         }
+        
         GameManager.instance.LoadSkills();
         //GameManager.instance.LoadLastDailyRewardTime();
 
@@ -148,24 +151,11 @@ public class NpcManager : MonoBehaviour
         {
         }
         UIController.instance.SetUpdateWeeklyRewards();
-        await GameManager.instance.LoadRemoveAds();
-        if (GoogleAdsManager.instance.adsData == null)
-            GoogleAdsManager.instance.adsData = new AdverstingData();
-
-        if (GoogleAdsManager.instance.adsData.RemovedAllAds)
-        {
-            GoogleAdsManager.instance.StartInterstitialAdBool(false);
-            GoogleAdsManager.instance.StartBannerAdBool(false);
-        }
-        else
-        {
-            GoogleAdsManager.instance.StartInterstitialAdBool(true);
-            GoogleAdsManager.instance.StartBannerAdBool(true);
-        }
-        GoogleAdsManager.instance.StartRewardAdBool(true);
+        GameManager.instance.LoadRemoveAds();
+        await GameManager.instance.LoadRooms();
         //Start Method
-        Debug.Log("Database Loading Process Complated.");
         databaseProcessComplated = true;
+        Debug.Log("Database Loading Process Complated.");
     }
     public void MuseumDoorsProcess(bool _isOpen)
     {
