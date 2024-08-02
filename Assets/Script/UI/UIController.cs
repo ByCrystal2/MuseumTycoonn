@@ -140,6 +140,8 @@ public class UIController : MonoBehaviour
     public Image CultureFillBar;
     public Text CultureLevelText, GoldText, GemText;
     [SerializeField] GameObject MoneysObj;
+    [SerializeField] GameObject comingSoonTextPrefab;
+    [SerializeField] List<WorkerType> targetComingSoonWorkers = new List<WorkerType>();
     //UI
     [SerializeField] private RectTransform LeftUISBackground;
     [SerializeField] private Transform LeftUIArrow;
@@ -339,7 +341,10 @@ public class UIController : MonoBehaviour
         
         rightAnimOpen = !rightAnimOpen;
     }    
-
+    public void InstantiateComingSoonText(RectTransform _content)
+    {
+        Instantiate(comingSoonTextPrefab, _content);
+    }
     public string GetDropDownSelectedPainter()
     {
         TMP_Dropdown dropdown = GameObject.FindObjectOfType<TMP_Dropdown>();
@@ -1070,6 +1075,7 @@ public class UIController : MonoBehaviour
             else
                 newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(workers[i].ID, workers[i].MyScript.Name, workers[i].MyScript.Age, workers[i].MyScript.Height, workers[i].MyScript.Level);
         }
+        if (targetComingSoonWorkers.Contains(_wType)) InstantiateComingSoonText((RectTransform)WorkerContent);
         Debug.Log($"Worker Turu => {_wType} olan Isciler Listelendi.");
     }
     public void ForTutorialWorkerShopUnityEvent()
@@ -1256,6 +1262,7 @@ public class UIController : MonoBehaviour
                 DialogueManager.instance.TargetObjectHandlers.Add(target);
             }
         }
+        if (targetComingSoonWorkers.Contains(_wType)) InstantiateComingSoonText((RectTransform)WorkerInventoryContent);
         Debug.Log($"Worker Turu => {_wType} olan Isciler Envantere Listelendi.");
     }
 
