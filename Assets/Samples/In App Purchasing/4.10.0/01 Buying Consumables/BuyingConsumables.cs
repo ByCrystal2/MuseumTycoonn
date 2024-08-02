@@ -21,43 +21,50 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
 
     public void InitializePurchasing()
     {
-        var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
+        try
+        {
+            var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
 
-        foreach (var item in ItemManager.instance.GetAllIAPItemDatas())
-        {
-            if (item.CurrentItemType == ItemType.Gold || item.CurrentItemType == ItemType.Gem)
-                builder.AddProduct(item.IAP_ID, ProductType.Consumable);
-            else if (item.CurrentItemType == ItemType.Table || item.CurrentItemType == ItemType.Ads)
-                builder.AddProduct(item.IAP_ID, ProductType.NonConsumable);
-        }
-        if (RoomManager.instance != null)
-        {
-            List<RoomData> IAPRooms = RoomManager.instance.RoomDatas.Where(x => x.CurrentShoppingType == ShoppingType.RealMoney).ToList();
-            if (IAPRooms != null && IAPRooms.Count > 0)
+            foreach (var item in ItemManager.instance.GetAllIAPItemDatas())
             {
-                Debug.Log("IAP Rooms 0 index: " + IAPRooms[0].availableRoomCell.CellLetter + IAPRooms[0].availableRoomCell.CellNumber);
-                foreach (var room in IAPRooms)
+                if (item.CurrentItemType == ItemType.Gold || item.CurrentItemType == ItemType.Gem)
+                    builder.AddProduct(item.IAP_ID, ProductType.Consumable);
+                else if (item.CurrentItemType == ItemType.Table || item.CurrentItemType == ItemType.Ads)
+                    builder.AddProduct(item.IAP_ID, ProductType.NonConsumable);
+            }
+            if (RoomManager.instance != null)
+            {
+                List<RoomData> IAPRooms = RoomManager.instance.RoomDatas.Where(x => x.CurrentShoppingType == ShoppingType.RealMoney).ToList();
+                if (IAPRooms != null && IAPRooms.Count > 0)
                 {
-                    if (room.CurrentRoomType == RoomType.Normal) // item turu normal ise yapýlacak islemler...
+                    Debug.Log("IAP Rooms 0 index: " + IAPRooms[0].availableRoomCell.CellLetter + IAPRooms[0].availableRoomCell.CellNumber);
+                    foreach (var room in IAPRooms)
                     {
-                        builder.AddProduct(room.IAP_ID, ProductType.NonConsumable);
-                        Debug.Log("Oda Buildere Eklendi: " + room.ID + " " + room.IAP_ID + " " + room.availableRoomCell.CellLetter + room.availableRoomCell.CellNumber);
-                    }
-                    else if (room.CurrentRoomType == RoomType.Special) // item turu special ise yapýlacak islemler...
-                    {
-                        builder.AddProduct(room.IAP_ID, ProductType.NonConsumable);
-                        Debug.Log("Oda Buildere Eklendi: " + room.ID + " " + room.IAP_ID + " " + room.availableRoomCell.CellLetter + room.availableRoomCell.CellNumber);
-                    }
+                        if (room.CurrentRoomType == RoomType.Normal) // item turu normal ise yapýlacak islemler...
+                        {
+                            builder.AddProduct(room.IAP_ID, ProductType.NonConsumable);
+                            Debug.Log("Oda Buildere Eklendi: " + room.ID + " " + room.IAP_ID + " " + room.availableRoomCell.CellLetter + room.availableRoomCell.CellNumber);
+                        }
+                        else if (room.CurrentRoomType == RoomType.Special) // item turu special ise yapýlacak islemler...
+                        {
+                            builder.AddProduct(room.IAP_ID, ProductType.NonConsumable);
+                            Debug.Log("Oda Buildere Eklendi: " + room.ID + " " + room.IAP_ID + " " + room.availableRoomCell.CellLetter + room.availableRoomCell.CellNumber);
+                        }
 
+                    }
+                }
+                else
+                {
+                    Debug.Log("Para ile satilan oda bulunamadi.");
                 }
             }
-            else
-            {
-                Debug.Log("Para ile satilan oda bulunamadi.");
-            }
+
+            UnityPurchasing.Initialize(this, builder);
         }
-        
-        UnityPurchasing.Initialize(this, builder);
+        catch (System.Exception _Ex)
+        {
+            Debug.LogError("InitializePurchasing method caugth an error!!! => " + _Ex.Message);
+        }        
     }
 
     public void BuyItemFromStore(ItemData buyItem)

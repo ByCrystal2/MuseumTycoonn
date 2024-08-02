@@ -323,27 +323,24 @@ public class GameManager : MonoBehaviour
 #else
         userID = FirebaseAuthManager.instance.GetCurrentUser().UserId;
 #endif
+        Debug.Log("LoadRooms userID => " + userID);
         if (!IsFirstGame)
         {
             Dictionary<string, object> gameDatas = new Dictionary<string, object>();                
             gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(userID);
 
-            float activeRoomsRequiredMoney = Convert.ToSingle(gameDatas["ActiveRoomsRequiredMoney"]);
+            float activeRoomsRequiredMoney = gameDatas.ContainsKey("ActiveRoomsRequiredMoney") ? Convert.ToSingle(gameDatas["ActiveRoomsRequiredMoney"]) : 1000;
+            Debug.Log("LoadRooms activeRoomsRequiredMoney => " + activeRoomsRequiredMoney);
             ActiveRoomsRequiredMoney = activeRoomsRequiredMoney; 
         }
         
-
-        //MuseumManager.instance.AllPictureElements = FindObjectsOfType<PictureElement>().ToList();
-        List<int> AllRoomIDs = RoomManager.instance.RoomDatas.Select(x=> x.ID).ToList();
-        //RoomLoad
-        //foreach (var room in AllRooms)
-        //{
-        //      room.LoadThisRoom();
-        //}
-        List<RoomData> targetRooms = new List<RoomData>();
         List<RoomData> allRooms = RoomManager.instance.RoomDatas;
+        List<int> AllRoomIDs = allRooms.Select(x=> x.ID).ToList();
+        //RoomLoad
+        
         await FirestoreManager.instance.roomDatasHandler.GetRoomsInDatabase(userID, AllRoomIDs).ContinueWithOnMainThread(async (getTask) =>
         {
+            Debug.Log("Room test end complated.");
             try
             {
                 if (getTask.IsCompleted && !getTask.IsFaulted)
@@ -356,7 +353,7 @@ public class GameManager : MonoBehaviour
                         {
                             Debug.Log($"databaseRoom.ID => {databaseRoom.ID} databaseRoom.isActive => {databaseRoom.isActive} databaseRoom.StatueID => {databaseRoom.GetMyStatueInTheMyRoom()?.ID}");
 
-                            RoomData myRoom = RoomManager.instance.RoomDatas.Where(x=> x.ID == databaseRoom.ID).SingleOrDefault();
+                            RoomData myRoom = allRooms.Where(x=> x.ID == databaseRoom.ID).SingleOrDefault();
                             myRoom = databaseRoom;
                             Debug.Log("myRoom.ID is " + myRoom.ID + " databaseRoom.ID is " + databaseRoom.ID);
                             if (myRoom.GetMyStatueInTheMyRoom() != null)
@@ -370,7 +367,6 @@ public class GameManager : MonoBehaviour
                                 RoomManager.instance.statuesHandler.activeEditObjs.Add(myStatue);
                                 Debug.Log($"after myRoom.GetMyStatueInTheMyRoom().IsPurchased => {myRoom.GetMyStatueInTheMyRoom().IsPurchased}");
                             }
-                            myRoom.LoadThisRoom();
                         }
                     }
                     
@@ -386,38 +382,11 @@ public class GameManager : MonoBehaviour
             }
 
         });
-        int length = allRooms.Count;
-        for (int i = 0; i < length; i++)
-            if (!targetRooms.Contains(allRooms[i]))
-                allRooms[i].LoadThisRoom();
-        //MuseumManager.instance.InventoryPictures = CurrentSaveData.InventoryPictures;
-
-        //int adet = 0;
-        //int length = RoomManager.instance.transform.childCount;
-        //int length2 = CurrentSaveData.Rooms.Count;
-        //for (int x = 0; x < length; x++) //Odalarin listesi... 20...
-        //{
-        //    if (RoomManager.instance.transform.GetChild(x).TryGetComponent(out RoomData currentRoom))
-        //    {
-        //        for (int y = 0; y < length2; y++) //Save datalarimizin listesi... 20
-        //        {
-        //            RoomSaveData currentRoomSave = CurrentSaveData.Rooms[y];
-        //            string currentID = currentRoom.availableRoomCell.CellLetter.ToString() + currentRoom.availableRoomCell.CellNumber.ToString();
-        //            Debug.Log("Current checkID: " + currentID);
-        //            Debug.Log("currentRoomSave.availableRoomCell: " + currentRoomSave.availableRoomCell);
-        //            if (currentID == currentRoomSave.availableRoomCell)
-        //            {
-        //                currentRoom.isActive = currentRoomSave.isActive;
-        //                currentRoom.isLock = currentRoomSave.isLock;
-        //                currentRoom.RequiredMoney = currentRoomSave.RequiredMoney;
-
-        //                Debug.Log("kac adet oda bulundu: " + adet);
-        //                adet++;
-        //                break;
-        //            }
-        //        }
-        //    }
-        //}
+        Debug.Log("allRooms.Count => " + allRooms.Count);
+        foreach (var room in allRooms)
+        {
+            room.LoadThisRoom();
+        }
     }
 
     public void Load()
@@ -479,29 +448,41 @@ public class GameManager : MonoBehaviour
     }
     public async System.Threading.Tasks.Task LoadRemoveAds()
     {
-        Dictionary<string, object> gameDatas = new Dictionary<string, object>();
+        try
+        {
+            Debug.Log("LoadRemoveAds test 1 complated;");
+            Dictionary<string, object> gameDatas = new Dictionary<string, object>();
 #if UNITY_EDITOR
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
+            gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
 #else
             gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId);
 #endif
-        AdverstingData databaseAdversting = new AdverstingData();
-        bool removeAds = gameDatas.ContainsKey("RemoveAllAds") ? Convert.ToBoolean(gameDatas["RemoveAllAds"]) : false;
-        databaseAdversting.RemovedAllAds = removeAds;
-        if (GoogleAdsManager.instance != null)
-            GoogleAdsManager.instance.adsData = databaseAdversting;
+            AdverstingData databaseAdversting = new AdverstingData();
+            bool removeAds = gameDatas.ContainsKey("RemoveAllAds") ? Convert.ToBoolean(gameDatas["RemoveAllAds"]) : false;
+            databaseAdversting.RemovedAllAds = removeAds;
+            if (GoogleAdsManager.instance != null)
+                GoogleAdsManager.instance.adsData = databaseAdversting;
 
-        if (GoogleAdsManager.instance.adsData.RemovedAllAds)
-        {
-            GoogleAdsManager.instance.StartInterstitialAdBool(false);
-            GoogleAdsManager.instance.StartBannerAdBool(false);
+            Debug.Log("LoadRemoveAds test 2 complated;");
+            if (GoogleAdsManager.instance.adsData.RemovedAllAds)
+            {
+                GoogleAdsManager.instance.StartInterstitialAdBool(false);
+                GoogleAdsManager.instance.StartBannerAdBool(false);
+            }
+            else
+            {
+                GoogleAdsManager.instance.StartInterstitialAdBool(true);
+                GoogleAdsManager.instance.StartBannerAdBool(true);
+            }
+            GoogleAdsManager.instance.StartRewardAdBool(true);
+            Debug.Log("LoadRemoveAds test 3 complated;");
         }
-        else
+        catch (Exception _Ex)
         {
-            GoogleAdsManager.instance.StartInterstitialAdBool(true);
-            GoogleAdsManager.instance.StartBannerAdBool(true);
+            Debug.Log("LoadRemoveAds method caught an error => " + _Ex.Message);
         }
-        GoogleAdsManager.instance.StartRewardAdBool(true);
+       
+
     }
     public async void LoadMuseumNumeralDatas()
     {

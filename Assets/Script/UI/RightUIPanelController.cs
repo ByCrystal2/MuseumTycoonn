@@ -39,8 +39,7 @@ public class RightUIPanelController : MonoBehaviour
         EditModeButton.onClick.RemoveAllListeners();
         UIVisibleButton.onClick.RemoveAllListeners();
         EditModeButton.onClick.AddListener(EditMode);
-        UIVisibleButton.onClick.AddListener(UIVisibleClose);
-        EditMode();
+        UIVisibleButton.onClick.AddListener(UIVisibleClose);        
     }
     bool _uIVisible = true;
 

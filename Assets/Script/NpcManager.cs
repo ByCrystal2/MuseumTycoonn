@@ -57,6 +57,7 @@ public class NpcManager : MonoBehaviour
     public bool databaseProcessComplated = false;
     public async void AwakeLoadingProcesses()
     {
+        Debug.Log("Database load test 1 complated.");
         databaseProcessComplated = false;
         if (GameManager.instance.IsFirstGame)
         {
@@ -69,51 +70,71 @@ public class NpcManager : MonoBehaviour
             await FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
 #endif
         }
+        Debug.Log("Database load test 2 complated.");
         UIController.instance.roomUISPanelController.InitializeRoomUIS();
         RoomManager.instance.AddRooms(); // in app baglantisi kurulmadan once odalar yuklendi.        
         //GameManager.instance.LoadInventoryPictures();
         GameManager.instance.LoadStatues();
+        Debug.Log("Database load test 3 complated.");
         GameManager.instance.LoadWorkers();
-        
+        Debug.Log("Database load test 4 complated.");
         //Gaming Services Activation
 
         BuyingConsumables.instance.InitializePurchasing();
-
+        Debug.Log("Database load test 5 complated.");
         //Start Method
         AudioManager.instance.PlayMusicOfGame();
-        int length = UIController.instance.skillsContents.Count;
-        for (int i = 0; i < length; i++)
+        try
         {
-            Transform skillsContentTransform = UIController.instance.skillsContents[i];
-            int length1 = skillsContentTransform.childCount;
-            for (int k = 0; k < length1; k++)
+            int length = UIController.instance.skillsContents.Count;
+            for (int i = 0; i < length; i++)
             {
-                if (skillsContentTransform.GetChild(k).TryGetComponent(out BaseSkillOptions component))
+                Transform skillsContentTransform = UIController.instance.skillsContents[i];
+                int length1 = skillsContentTransform.childCount;
+                for (int k = 0; k < length1; k++)
                 {
-                    SkillTreeManager.instance.AddSkillObject(skillsContentTransform.GetChild(k).gameObject);
+                    if (skillsContentTransform.GetChild(k).TryGetComponent(out BaseSkillOptions component))
+                    {
+                        SkillTreeManager.instance.AddSkillObject(skillsContentTransform.GetChild(k).gameObject);
 
+                    }
                 }
             }
         }
+        catch (System.Exception _ex)
+        {
+            Debug.LogError("Skill Contents for processes are caugth an error! => " + _ex.Message);
+        }
         
+        Debug.Log("Database load test 6 complated.");
         GameManager.instance.LoadSkills();
         //GameManager.instance.LoadLastDailyRewardTime();
-
-        if (GameManager.instance != null)
+        Debug.Log("Database load test 7 complated.");
+        try
         {
-            if (!GameManager.instance.IsWatchTutorial)
+            if (GameManager.instance != null)
             {
-                DialogueTrigger firstDialog = GameObject.FindWithTag("TutorialNPC").GetComponent<DialogueTrigger>();
-                if (firstDialog != null)
-                    firstDialog.TriggerDialog(Steps.Step1);
-            }
-            else
-            {
-                DialogueManager.instance.SetActivationDialoguePanel(false);
-                GameObject.FindWithTag("TutorialNPC").SetActive(false); // Destroyda edilebilirdi fakat lazim olabilir ilerde.
-                Destroy(UIController.instance.tutorialUISPanel.gameObject);
+                if (!GameManager.instance.IsWatchTutorial)
+                {
+                    DialogueTrigger firstDialog = GameObject.FindWithTag("TutorialNPC").GetComponent<DialogueTrigger>();
+                    if (firstDialog != null)
+                        firstDialog.TriggerDialog(Steps.Step1);
+                    Debug.Log("Database load test 8 complated.");
+                }
+                else
+                {
+                    DialogueManager.instance.SetActivationDialoguePanel(false);
+                    GameObject.FindWithTag("TutorialNPC").SetActive(false); // Destroyda edilebilirdi fakat lazim olabilir ilerde.
+                    Destroy(UIController.instance.tutorialUISPanel.gameObject);
+                    Debug.Log("Database load test 9 complated.");
+                }
             }
         }
+        catch (System.Exception _ex)
+        {
+            Debug.Log("Tutorial Npc process form awake loading process method caught an error!. => " + _ex.Message);
+        }        
+        Debug.Log("Database load test 10 complated.");
         ItemData firstTableForPlayer = new ItemData(99999, "Vincent van Gogh", "Hediye Tablo", 1, 0, null, ItemType.Table, ShoppingType.Gold, 1, 3);
         if (GameManager.instance.IsFirstGame)
         {
@@ -150,9 +171,13 @@ public class NpcManager : MonoBehaviour
         else
         {
         }
+        Debug.Log("Database load test 11 complated.");
         UIController.instance.SetUpdateWeeklyRewards();
-        GameManager.instance.LoadRemoveAds();
+        Debug.Log("Database load test 12 complated.");
+        await GameManager.instance.LoadRemoveAds();
+        Debug.Log("Database load test 13 complated.");
         await GameManager.instance.LoadRooms();
+        Debug.Log("Database load test 14 complated.");
         //Start Method
         databaseProcessComplated = true;
         Debug.Log("Database Loading Process Complated.");

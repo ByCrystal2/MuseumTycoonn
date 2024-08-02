@@ -119,11 +119,10 @@ public class LoadingScene : MonoBehaviour
                 npc.enabled = true;
                 //npc.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = true;
             }
-            PlayerManager.instance.UnLockPlayer();
-            UIController.instance.CloseJoystickObj(false);
             NpcManager.instance.MuseumDoorsProcess(true);
         }
         
+        RightUIPanelController.instance.EditMode();
         Destroy(gameObject,0.2f);
     }
 }

@@ -169,7 +169,7 @@ public class FirestoreRoomDatasHandler : MonoBehaviour
     public async Task<List<RoomData>> GetRoomsInDatabase(string userId, List<int> roomIds)
     {
         List<RoomData> foundRooms = new List<RoomData>();
-
+        Debug.Log("Rooms test 1 complated.");
         try
         {
             //Kullanýcýya ait belgeleri sorgula
@@ -179,11 +179,14 @@ public class FirestoreRoomDatasHandler : MonoBehaviour
             {
                 if (documentSnapshot.Exists)
                 {
+                    Debug.Log("Rooms test 2 complated.");
                     // Belgenin RoomDatas alt koleksiyonuna eriþ
                     List<EditObjData> eobs = await FirestoreManager.instance.statueDatasHandler.GetStatuesInDatabase(userId, RoomManager.instance.statuesHandler.GetStatueDatas());
+                    Debug.Log("Statues test complated.");
                     CollectionReference roomDatasRef = documentSnapshot.Reference.Collection("RoomDatas");
                     foreach (int _id in roomIds)
                     {
+                        Debug.Log("Rooms test 3 complated.");
                         Query roomQuery = roomDatasRef.WhereEqualTo("ID", _id);
                         QuerySnapshot roomQuerySnapshot = await roomQuery.GetSnapshotAsync();
                         RoomData foundRoom;
@@ -231,7 +234,7 @@ public class FirestoreRoomDatasHandler : MonoBehaviour
         {
             Debug.LogError($"Error getting room data: {ex.Message}");
         }
-
+        Debug.Log("Rooms test 4 complated.");
         return foundRooms;
     }
 

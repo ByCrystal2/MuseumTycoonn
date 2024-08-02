@@ -227,7 +227,7 @@ public class RoomData : MonoBehaviour
                 }
             }
         }
-
+        Debug.Log("This Room is loaded => " + availableRoomCell.CellLetter.ToString() + availableRoomCell.CellNumber.ToString());
     }
 
 

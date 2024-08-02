@@ -328,11 +328,13 @@ public class FirestoreManager : MonoBehaviour
     public async Task<Dictionary<string, object>> GetGameDataInDatabase(string userId)
     {
         var gameDataDictonary = new Dictionary<string, object>();
+        Debug.Log("_gameDataQuerySnapshot GetGameDataInDatabase method is starting.");
         try
         {
             // Kullanýcýya ait belgeleri sorgula
             if (_gameDataQuerySnapshot == null)
             {
+                Debug.Log("_gameDataQuerySnapshot is null");
                 Query query = db.Collection("Users").WhereEqualTo("userID", userId);
                 QuerySnapshot querySnapshot = await query.GetSnapshotAsync();
 
@@ -340,6 +342,7 @@ public class FirestoreManager : MonoBehaviour
                 {
                     if (documentSnapshot.Exists)
                     {
+                        Debug.Log("_gameDataQuerySnapshot documentSnapshot.Exists true.");
                         CollectionReference gameDataRef = documentSnapshot.Reference.Collection("GameDatas");
                         QuerySnapshot gameDataQuerySnapshot = await gameDataRef.GetSnapshotAsync();
 
@@ -355,9 +358,16 @@ public class FirestoreManager : MonoBehaviour
                 } 
             }
             else
+            {
+                Debug.Log("_gameDataQuerySnapshot is not null");
                 foreach (DocumentSnapshot gameDataDocumentSnapshot in _gameDataQuerySnapshot.Documents)
                     if (gameDataDocumentSnapshot.Exists)
+                    {
                         gameDataDictonary = gameDataDocumentSnapshot.ToDictionary();
+                        Debug.Log("_gameDataQuerySnapshot documentSnapshot.Exists true.");
+                    }
+
+            }
         }
         catch (Exception ex)
         {

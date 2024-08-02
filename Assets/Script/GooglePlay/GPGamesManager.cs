@@ -17,6 +17,7 @@ public class GPGamesManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
+        achievementController.ResetValues();
     }
 
 }

@@ -123,7 +123,7 @@ public class FirestoreStatueDatasHandler : MonoBehaviour
     public async Task<List<EditObjData>> GetStatuesInDatabase(string userId, List<int> _statueIds)
     {
         List<EditObjData> foundStatues = new List<EditObjData>();
-
+        Debug.Log("Statues test 1 complated.");
         try
         {
             // Kullanýcýya ait belgeleri sorgula
@@ -134,6 +134,7 @@ public class FirestoreStatueDatasHandler : MonoBehaviour
             {
                 if (documentSnapshot.Exists)
                 {
+                    Debug.Log("Statues test 2 complated.");
                     CollectionReference statueIdsRef = documentSnapshot.Reference.Collection("StatueDatas");
 
                     foreach (int id in _statueIds)
@@ -190,7 +191,7 @@ public class FirestoreStatueDatasHandler : MonoBehaviour
         {
             Debug.LogError($"Error getting statue data: {ex.Message}");
         }
-
+        Debug.Log("Statues test 3 complated.");
         return foundStatues;
     }
 
