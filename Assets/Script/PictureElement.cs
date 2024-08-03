@@ -58,7 +58,7 @@ public class PictureElement : MonoBehaviour
                 break;  
         }
         Debug.Log("IEUpdateVisual after => " + _pictureData.id);
-        Image im = transform.GetChild(0).GetChild(0).GetComponent<Image>();
+        SpriteRenderer im = transform.GetChild(0).GetComponent<SpriteRenderer>();
         Debug.Log("_pictureData.TextureID : " + _pictureData.TextureID);
         PictureElementData ped = MuseumManager.instance.GetPictureElementData(_pictureData.TextureID);
         if (ped != null)

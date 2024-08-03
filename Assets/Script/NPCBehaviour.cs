@@ -27,7 +27,6 @@ public class NPCBehaviour : MonoBehaviour
     [SerializeField] private Camera myDefaultCamera;
     [SerializeField] private Camera myWorkCamera;
     [SerializeField] private List<Renderer> npcRenderers = new();
-    [SerializeField] private List<Canvas> myCanvasses = new();
 
     [Header("--NPC Data--")]
     [SerializeField] private NPCGeneralData GeneralData;
@@ -58,6 +57,7 @@ public class NPCBehaviour : MonoBehaviour
 
     private void FixedUpdate()
     {
+        MyNPCUI.LookAtCamera();
         RefreshVisibility();
 
         if (BusyUntil > Time.time)
@@ -342,20 +342,21 @@ public class NPCBehaviour : MonoBehaviour
         MuseumManager.instance.OnNpcPaid(NPCCurrentScore * multiplyScore);
         Debug.Log(name + " adli npc tablo yorumundan kazanilan para: " + "NPCCurrentScore * PE._pictureData.painterData.StarCount => " + NPCCurrentScore * multiplyScore);
 
+        Debug.Log("Current NPC Score: " + NPCCurrentScore);
         int center = 5;
         if (NPCCurrentScore < center)
         {
             AudioManager.instance.GetDialogAudios(DialogType.NpcLike, CurrentAudioSource, GeneralData.isMale);
-            ChangeCoreStressValue((5 - NPCCurrentScore) * 2);
-            ChangeCoreHappinessValue(Mathf.Round(GetNpcStress() * 0.2f));
+            ChangeCoreStressValue((NPCCurrentScore * 15));
+            ChangeCoreHappinessValue(Mathf.Round(GetNpcStress() * -0.25f));
             MyNPCUI.PlayEmotionEffect(NpcEmotionEffect.Sadness);
             _liked = false;
         }
         else
         {
             AudioManager.instance.GetDialogAudios(DialogType.NpcDisLike, CurrentAudioSource, GeneralData.isMale);
-            ChangeCoreStressValue((NPCCurrentScore - 5) * 2);
-            int _happiness = (int)Mathf.Round((100 - GetNpcStress()) * 0.05f);
+            ChangeCoreStressValue((NPCCurrentScore) * -2);
+            int _happiness = (int)Mathf.Round((100 - GetNpcStress()) * 0.25f);
             _happiness = (int)(_happiness + (float)_happiness * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.HappinessIncreaseRatio] / 100f));
             ChangeCoreHappinessValue(_happiness);
             MyNPCUI.PlayEmotionEffect(NpcEmotionEffect.Happiness);
@@ -705,13 +706,9 @@ public class NPCBehaviour : MonoBehaviour
     private void RefreshVisibility()
     {
         bool visible = npcRenderers[0].isVisible;
-        foreach (var item in myCanvasses)
-            item.gameObject.SetActive(visible);
         anim.enabled = visible;
         if (!visible)
-        {
             ResetAnimator();
-        }
     }
 
     public void OnBeginGuilty()
@@ -896,6 +893,8 @@ public class NPCBehaviour : MonoBehaviour
     {
         StatData.Stress += _changeAmount;
         StatData.Stress = Mathf.Clamp(StatData.Stress, 0, 100);
+        MyNPCUI.UpdateStressBar(GetNpcStress());
+        Debug.Log("Stress Updated to: " + GetNpcStress());
     }
 
     public void SetMyCamerasActivation(bool _DefaultCameraActivation, bool _WorkCameraActivation)
@@ -967,7 +966,6 @@ public class NPCBehaviour : MonoBehaviour
         MyNPCUI = GetComponent<NPCUI>();
 
         npcRenderers = GetComponentsInChildren<Renderer>().ToList();
-        myCanvasses = GetComponentsInChildren<Canvas>().ToList();
         int length = transform.childCount;
         for (int i = 0; i < length; i++)
         {

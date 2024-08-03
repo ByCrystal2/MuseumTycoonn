@@ -41,6 +41,8 @@ public class NpcManager : MonoBehaviour
     public static string AnimNoLikedParam = "NoLiked";
     public static string AnimMakeMessParam = "MakeMess";
 
+    public Transform TPSCamera;
+
     private void Awake()
     {
         if (instance)
