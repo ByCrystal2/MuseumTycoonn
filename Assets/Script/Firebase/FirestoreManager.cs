@@ -4,10 +4,9 @@ using UnityEngine;
 using Firebase.Firestore;
 using Firebase.Extensions;
 using Firebase;
-using System.Threading.Tasks;
 using System.Linq;
-using UnityEngine.Purchasing;
 using System;
+using TaskExtensions;
 
 public class FirestoreManager : MonoBehaviour
 {
@@ -202,6 +201,8 @@ public class FirestoreManager : MonoBehaviour
                 { "BaseWorkerHiringPrice", GameManager.instance.BaseWorkerHiringPrice },
                 { "PurchasedItemIDs", MuseumManager.instance.PurchasedItems.Select(x=> x.ID).ToList() },
                 { "DailyRewardItemIDs", ItemManager.instance.CurrentDailyRewardItems.Select(x=> x.ID).ToList() },
+                { "DailyRewardItemsPurchased", ItemManager.instance.CurrentDailyRewardItems.Select(x=> x.IsPurchased).ToList() },
+                { "DailyRewardItemsLocked", ItemManager.instance.CurrentDailyRewardItems.Select(x=> x.IsLocked).ToList() },
                 { "WorkersInInventoryIDs", MuseumManager.instance.WorkersInInventory.Select(x=> x.ID).ToList()},
                 { "LastDailyRewardTime", MuseumManager.instance.lastDailyRewardTime.ToString("yyyy-MM-dd HH:mm:ss") },
                 { "WhatDay", TimeManager.instance.WhatDay },
@@ -237,95 +238,80 @@ public class FirestoreManager : MonoBehaviour
             Debug.LogError($"Error updating game data: {_ex}");
         }
     }
+    string updatedLanguage = "";
     public async System.Threading.Tasks.Task UpdateGameLanguageInGameDatas(string userId)
     {
         // Kullanýcý ID'si ile belgeyi sorgula
+        if (updatedLanguage == GameManager.instance.GetGameLanguage()) return;
+
         Query query = db.Collection("Users").WhereEqualTo("userID", userId);
         Debug.Log("UpdateGameLanguageInGameDatas method is starting...");
+
         try
         {
-            await query.GetSnapshotAsync().ContinueWithOnMainThread(async task =>
+            QuerySnapshot snapshot = await query.GetSnapshotAsync().WithCancellation(GameManager.instance.GetFirebaseToken().Token);
+
+            if (snapshot.Documents.Count() > 0)
             {
-                if (task.IsCompleted)
+                DocumentSnapshot documentSnapshot = snapshot.Documents.FirstOrDefault();
+                DocumentReference documentReference = documentSnapshot.Reference;
+
+                // Belge varsa, alt koleksiyon olan GameDatas'ta tabloyu bul ve güncelle
+                CollectionReference gameDatasRef = documentReference.Collection("GameDatas");
+
+                QuerySnapshot gameDataSnapshot = await gameDatasRef.GetSnapshotAsync().WithCancellation(GameManager.instance.GetFirebaseToken().Token);
+
+                if (gameDataSnapshot.Documents.Count() > 0)
                 {
-                    QuerySnapshot snapshot = task.Result;
+                    Debug.Log("GameData exists with userId " + userId);
+                    DocumentSnapshot gameDataDocument = gameDataSnapshot.Documents.FirstOrDefault();
+                    DocumentReference gameDataRef = gameDataDocument.Reference;
 
-                    if (snapshot.Documents.Count() > 0)
+                    var museumDatas = MuseumManager.instance.GetSaveData();
+
+                    try
                     {
-                        DocumentSnapshot documentSnapshot = snapshot.Documents.FirstOrDefault();
-                        DocumentReference documentReference = documentSnapshot.Reference;
+                        Dictionary<string, object> updates = new Dictionary<string, object>
+                    {
+                        { "GameLanguage", GameManager.instance.GetGameLanguage() },
+                        { "Timestamp", FieldValue.ServerTimestamp }
+                        };
 
-                        // Belge varsa, alt koleksiyon olan PictureDatas'ta tabloyu bul ve güncelle
-                        CollectionReference gameDatasRef = documentReference.Collection("GameDatas");
-
-                        await gameDatasRef.GetSnapshotAsync().ContinueWithOnMainThread(async gameDataTask =>
+                        await gameDataRef.UpdateAsync(updates).ContinueWithOnMainThread(task =>
                         {
-                            if (gameDataTask.IsCompleted)
+                            if (task.IsCompleted && !task.IsFaulted)
                             {
-                                QuerySnapshot gameDataSnapshot = gameDataTask.Result;
-
-                                if (gameDataSnapshot.Documents.Count() > 0)
-                                {
-                                    Debug.Log("GameData is exits with " + userId + " userId");
-                                    DocumentSnapshot gameDataDocument = gameDataSnapshot.Documents.FirstOrDefault();
-                                    DocumentReference gameDataRef = gameDataDocument.Reference;
-                                    var museumDatas = MuseumManager.instance.GetSaveData();
-                                    try
-                                    {
-                                        Dictionary<string, object> updates = new Dictionary<string, object>
-                                    {
-                                        { "GameLanguage", GameManager.instance.GetGameLanguage() },                                 
-                                        { "Timestamp", FieldValue.ServerTimestamp }
-
-                                    };
-
-                                        await gameDataRef.UpdateAsync(updates).ContinueWithOnMainThread(updateTask =>
-                                        {
-                                            if (updateTask.IsCompleted)
-                                            {
-                                                Debug.Log($"Game data successfully updated for user {userId}");
-                                            }
-                                            else if (updateTask.IsFaulted)
-                                            {
-                                                Debug.LogError($"Failed to update game data: {updateTask.Exception}");
-                                            }
-                                        });
-                                    }
-                                    catch (Exception _ex)
-                                    {
-                                        Debug.LogError($"Error updating game data: {_ex}");
-                                    }
-
-                                }
-                                else
-                                {
-
-                                }
+                                Debug.Log($"Game data successfully updated for user {userId}");
+                                updatedLanguage = GameManager.instance.GetGameLanguage();
                             }
-                            else
-                            {
-                                Debug.LogError($"Error querying game data: {gameDataTask.Exception}");
-                            }
-                        });
+                        });                        
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        Debug.LogError($"No document found for user ID: {userId}");
+                        Debug.LogError($"Error updating game data: {ex.Message}");
                     }
                 }
                 else
                 {
-                    Debug.LogError($"Error querying documents: {task.Exception}");
+                    Debug.LogWarning("No game data documents found.");
                 }
-            });
+            }
+            else
+            {
+                Debug.LogWarning($"No document found for user ID: {userId}");
+            }
         }
-        catch (Exception _ex)
+        catch (System.Threading.Tasks.TaskCanceledException)
         {
-            Debug.LogError($"UpdateGameData method error cathing. Error: " + _ex.Message);
+            Debug.Log("UpdateGameLanguageInGameDatasAsync operation was canceled.");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error querying documents: {ex.Message}");
         }
     }
     QuerySnapshot _gameDataQuerySnapshot;
-    public async Task<Dictionary<string, object>> GetGameDataInDatabase(string userId)
+    public async System.Threading.Tasks.Task<Dictionary<string, object>> GetGameDataInDatabase(string userId)
     {
         var gameDataDictonary = new Dictionary<string, object>();
         Debug.Log("_gameDataQuerySnapshot GetGameDataInDatabase method is starting.");
@@ -405,6 +391,8 @@ public class FirestoreManager : MonoBehaviour
             userGameData.Add("BaseWorkerHiringPrice", GameManager.instance.BaseWorkerHiringPrice);
             userGameData.Add("PurchasedItemIDs", MuseumManager.instance.PurchasedItems.Select(x=> x.ID).ToList());
             userGameData.Add("DailyRewardItemIDs", ItemManager.instance.CurrentDailyRewardItems.Select(x=> x.ID).ToList());
+            userGameData.Add("DailyRewardItemsPurchased", ItemManager.instance.CurrentDailyRewardItems.Select(x=> x.IsPurchased).ToList());
+            userGameData.Add("DailyRewardItemsLocked", ItemManager.instance.CurrentDailyRewardItems.Select(x=> x.IsLocked).ToList());
             userGameData.Add("WorkersInInventoryIDs", MuseumManager.instance.WorkersInInventory.Select(x=> x.ID).ToList());
             userGameData.Add("LastDailyRewardTime", MuseumManager.instance.lastDailyRewardTime.ToString("yyyy-MM-dd HH:mm:ss"));
             userGameData.Add("WhatDay", TimeManager.instance.WhatDay);

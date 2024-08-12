@@ -79,7 +79,7 @@ public class DialogueManager : MonoBehaviour
         yield return new WaitForEndOfFrame();
         CinemachineTransition(true);
         //StartCoroutine(HoldAnimation(4, 1f,"startDialog",true));
-        PlayerManager.instance.LockPlayer();
+        if (PlayerManager.instance != null) PlayerManager.instance.LockPlayer();
         UIController.instance.CloseJoystickObj(true);
         if (_dialogs.Count <= 0)
         {
@@ -117,11 +117,12 @@ public class DialogueManager : MonoBehaviour
         PlayerManager.instance.UnLockPlayer();
         UIController.instance.CloseJoystickObj(false);
         UIController.instance.StartRightPanelUISBasePosAnim(false);
-        List<NPCBehaviour> nps = FindObjectsOfType<NPCBehaviour>().ToList();
-        foreach (var npc in nps)
-        {
-            npc.enabled = true;
-        }
+        //List<NPCBehaviour> nps = FindObjectsOfType<NPCBehaviour>().ToList();
+        //foreach (var npc in nps)
+        //{
+        //    npc.enabled = true;
+        //}
+        SpawnHandler.instance.StartSpawnProcess();
 #if UNITY_EDITOR
         FirestoreManager.instance.UpdateGameData("ahmet123", true);
 #else

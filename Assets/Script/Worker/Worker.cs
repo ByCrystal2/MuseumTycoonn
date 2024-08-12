@@ -1,3 +1,4 @@
+using GameTask;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -46,23 +47,27 @@ public abstract class Worker: ITaskAssignable
     public abstract bool CanPerformTask(Task task);
     public abstract void CompleteTask(Task task);
 }
-[System.Serializable]
-public class Task
+namespace GameTask
 {
-    public string taskName;
-    public bool isCompleted;
-
-    public Task(string name)
+    [System.Serializable]
+    public class Task
     {
-        taskName = name;
-        isCompleted = false;
-    }
+        public string taskName;
+        public bool isCompleted;
 
-    public void CompleteTask()
-    {
-        isCompleted = true;
+        public Task(string name)
+        {
+            taskName = name;
+            isCompleted = false;
+        }
+
+        public void CompleteTask()
+        {
+            isCompleted = true;
+        }
     }
 }
+
 public enum WorkerType
 {
     None,

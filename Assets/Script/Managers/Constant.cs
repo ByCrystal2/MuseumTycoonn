@@ -6,9 +6,12 @@ public static class Constant
 {
     private const string iAPIDCompany = "com_kosippysudio_";
     public static string IAPIDCompany { get { return iAPIDCompany; } }
-
     private const string iAPIDGame = "museumofexcesses_";
     public static string IAPIDGame { get { return iAPIDGame; } }
+
+    private const string MainFolderName = "Kosippy Studio";
+    private const string GameFolderName = "Museum of Excesses";
+    public static readonly string SaveLocation = $"{MainFolderName}/{GameFolderName}";
 
     public static List<string> NPCNamesMale = new List<string>()
     {
