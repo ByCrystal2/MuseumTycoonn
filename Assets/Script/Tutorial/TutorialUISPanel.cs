@@ -10,7 +10,7 @@ public class TutorialUISPanel : MonoBehaviour
 {
     [SerializeField] private GameObject dimPanel;
     [SerializeField] private GameObject highlightImage;
-    [SerializeField] private Text highlightText;
+    //[SerializeField] private Text highlightText;
 
     [SerializeField] GameObject arrow;
     // Referans çözünürlük
@@ -40,7 +40,7 @@ public class TutorialUISPanel : MonoBehaviour
         // Tutorial baþladýðýnda tüm UI elemanlarýný gizle
         dimPanel.SetActive(false);
         highlightImage.SetActive(false);
-        highlightText.gameObject.SetActive(false);
+        //highlightText.gameObject.SetActive(false);
     }
 
     public void SetTarget(RectTransform _target)//UnityEvent addlistener.
@@ -130,7 +130,7 @@ public class TutorialUISPanel : MonoBehaviour
         highlightImage.GetComponent<RectTransform>().sizeDelta = new Vector2(130, 130);
         
         //PlaceArrow();
-        highlightText.text = _message;
+        //highlightText.text = _message;
         StartCoroutine(WaitForHidingHighLight());
         target = null;
         tutorialTargetWithId = null;
@@ -151,7 +151,7 @@ public class TutorialUISPanel : MonoBehaviour
         }
         dimPanel.SetActive(true);
         highlightImage.SetActive(true);
-        highlightText.gameObject.SetActive(true);
+        //highlightText.gameObject.SetActive(true);
         arrow.SetActive(true);
         highlightImage.GetComponent<CanvasGroup>().alpha = 0.2f;
         hightLightTweener = highlightImage.GetComponent<CanvasGroup>().DOFade(1, 0.5f).SetLoops(-1, LoopType.Yoyo);
@@ -188,7 +188,7 @@ public class TutorialUISPanel : MonoBehaviour
             arrowTween.Kill();
             //dimPanel.SetActive(false);
             highlightImage.SetActive(false);
-            highlightText.gameObject.SetActive(false);
+            //highlightText.gameObject.SetActive(false);
             arrow.SetActive(false);
             hidingHighLigt = false;
         //});

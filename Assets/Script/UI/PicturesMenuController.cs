@@ -23,7 +23,7 @@ public class PicturesMenuController : MonoBehaviour
     [SerializeField] GameObject[] OpenStars;
     [SerializeField] GameObject[] CloseStars;
     [SerializeField] public TextMeshProUGUI txtPainterName;
-    [SerializeField] public TextMeshProUGUI txtDescription;
+    [SerializeField] public Text txtDescription;
     [SerializeField] public TextMeshProUGUI txtRequiredGold;
     [SerializeField] Image imgPicture;
     [SerializeField] Sprite defaultPicture;
