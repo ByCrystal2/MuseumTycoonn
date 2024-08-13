@@ -18,82 +18,74 @@ public class GoldStackHandler : MonoBehaviour
     private float changeAmountTemp;
     private float goldBeforeEarn;
 
-    private void Update()
+    private Coroutine OpenCoroutine;
+    private Coroutine CloseCoroutine;
+    private Coroutine AddCoroutine;
+
+    private float realMoney = 0;   // The player's real money
+    private Queue<float> moneyQueue = new Queue<float>(); // Queue to handle stacking of money
+
+    private bool isCounting = false;
+
+    private IEnumerator AnimateMoney()
     {
-        if (targetStackTimer > 0)
-        {
-            if (targetTempGold > 0)
-            {
-                targetStackTimer -= Time.deltaTime;
-                float change = Time.deltaTime * changeAmountTemp * 5;
-                if (change > targetTempGold)
-                {
-                    change = targetTempGold;
-                    targetTempGold = 0;
-                    targetStackTimer = 0;
-                    targetCollectTimer = 2;
-                }
-                else
-                    targetTempGold -= change;
+        isCounting = true;
 
-                currentTempGold += change;
-                TempGoldText.text = "+" + currentTempGold.ToString("F0");
-                return;
-            }
+        while (moneyQueue.Count > 0)
+        {
+            float amount = moneyQueue.Dequeue();
+            yield return StartCoroutine(AnimateMoneyRoutine(amount));
         }
 
-        if (targetTempGold > 0)
+        isCounting = false;
+    }
+
+    private IEnumerator AnimateMoneyRoutine(float amount)
+    {
+        float duration = 0.3f;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
         {
-            targetStackTimer = 2;
-            return;
+            elapsed += Time.deltaTime;
+            int currentTempMoney = Mathf.RoundToInt(Mathf.Lerp(0, amount, elapsed / duration));
+            TempGoldText.text = currentTempMoney.ToString();
+            yield return null;
         }
 
-        if (targetCollectTimer > 0)
-        {
-            if (currentTempGold > 0)
-            {
-                targetCollectTimer -= Time.deltaTime * 5;
-                float change = Time.deltaTime * changeAmountTemp * 5;
-                if (change > currentTempGold)
-                {
-                    change = currentTempGold;
-                    currentTempGold = 0;
-                    targetCollectTimer = 0;
-                    StartCoroutine(ClosePanel());
-                }
-                else
-                    currentTempGold -= change;
+        TempGoldText.text = amount.ToString();
 
-                TempGoldText.text = currentTempGold.ToString("F0");
-                MainGoldText.text = (goldBeforeEarn + change).ToString("F0");
-                goldBeforeEarn += change;
-                return;
-            }
-        }
-
-        if (currentTempGold > 0)
+        elapsed = 0f;
+        while (elapsed < duration)
         {
-            targetCollectTimer = 2;
-            return;
+            elapsed += Time.deltaTime;
+            int currentTempMoney = Mathf.RoundToInt(Mathf.Lerp(amount, 0, elapsed / duration));
+            TempGoldText.text = currentTempMoney.ToString();
+            realMoney += Mathf.RoundToInt((Time.deltaTime / duration) * amount);
+            MainGoldText.text = "" + realMoney;
+            yield return null;
         }
 
         TempGoldText.text = "";
+        MainGoldText.text = Mathf.FloorToInt(MuseumManager.instance.GetCurrentGold()).ToString("");
+
+        CloseCoroutine = StartCoroutine(ClosePanel());
     }
 
-    public void AddTempGold(float _earnedGold)
+    public void AddTempGold(float amount)
     {
-        if (!Panel.gameObject.activeSelf)
-        {
-            StopAllCoroutines();
-            goldBeforeEarn = MuseumManager.instance.GetCurrentGold();
-            Panel.gameObject.SetActive(true);
-            StartCoroutine(OpenPanel());
-        }
-       
-        targetStackTimer = 2;
-        targetTempGold += _earnedGold;
+        moneyQueue.Enqueue(amount);
 
-        changeAmountTemp = ((targetTempGold - currentTempGold) / 2);
+        if (!isCounting)
+        {
+            if (OpenCoroutine != null)
+                StopCoroutine(OpenCoroutine);
+            if (CloseCoroutine != null)
+                StopCoroutine(CloseCoroutine);
+            Panel.gameObject.SetActive(true);
+            OpenCoroutine = StartCoroutine(OpenPanel());
+            StartCoroutine(AnimateMoney());
+        }
     }
 
     IEnumerator OpenPanel()
