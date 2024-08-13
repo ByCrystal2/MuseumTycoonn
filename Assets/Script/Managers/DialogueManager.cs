@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Cryptography;
 using Unity.Entities;
 using UnityEngine;
@@ -12,7 +13,6 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] GameObject PlayerCinemachineBrain;
     [SerializeField] GameObject TutorialCinemachineBrain;
     [SerializeField] Transform sceneTransPanel;
-    [SerializeField] Text tutorialEndMessage;
     // UI
     [SerializeField] public GameObject DialoguePanel;
     public Animator tutorialNPCanimator;
@@ -240,36 +240,22 @@ public class DialogueManager : MonoBehaviour
         }
         waitFirstSentence = false;
     }
-    public void SceneTransPanelActivation(bool _active)
+    public IEnumerator SceneTransPanelActivation(bool _active)
     {
         if (_active)
         {
             sceneTransPanel.gameObject.SetActive(true);
-            string message = tutorialEndMessage.text;
-            tutorialEndMessage.text = "";
-            sceneTransPanel.DOLocalMove(new Vector3(169, 2383, 0),5).OnComplete(() =>
-            {
-                tutorialEndMessage.GetComponent<CanvasGroup>().DOFade(1, 1.4f).OnComplete(() =>
-                {
-                    StartCoroutine(textWaiting(message, tutorialEndMessage));
-                });
-            });
+            sceneTransPanel.DOLocalMove(new Vector3(169, 2383, 0), 5);
+            yield return new WaitForSeconds(5);
+            yield return StartCoroutine(TutorialEndPanelController.Instance.IEStartEndPanelProgress());
+            FirebaseAuthManager.instance.CreateNewLoading();
         }
         else
         {
             sceneTransPanel.gameObject.SetActive(false);
         }
     }
-    private IEnumerator textWaiting(string sentence, Text text)
-    {
-        foreach (char letter in sentence.ToCharArray())
-        {
-            text.text += letter;
-            yield return new WaitForEndOfFrame();
-        }
-        yield return new WaitForEndOfFrame();
-        FirebaseAuthManager.instance.CreateNewLoading();
-    }
+    
 }
 [System.Serializable]
 public class Dialog

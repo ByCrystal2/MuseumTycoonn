@@ -3562,6 +3562,7 @@ MonoBehaviour:
   BaseWorkerHiringPrice: 0
   IsFirstGame: 1
   IsWatchTutorial: 0
+  enableRuntimeDebugger: 0
 --- !u!4 &1202299727
 Transform:
   m_ObjectHideFlags: 0
@@ -4138,6 +4139,7 @@ MonoBehaviour:
     IsPurchased: 0
     buffs: 
     Amounts: 
+    defaultEffectString: 
   SelectedSkillGameObject: {fileID: 0}
   CurrentBuffs: 
   DefaultMaxSkillLevel: 10
@@ -5387,6 +5389,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1792637826}
     m_Modifications:
+    - target: {fileID: 96933209254340101, guid: 5a15cfd126e9c6c4c955fe01e02c5c0e,
+        type: 3}
+      propertyPath: m_Text
+      value: "\uFEDE\uFEF4\uFEE4\uFEA4\uFE97:"
+      objectReference: {fileID: 0}
+    - target: {fileID: 96933209254340101, guid: 5a15cfd126e9c6c4c955fe01e02c5c0e,
+        type: 3}
+      propertyPath: m_FontData.m_Alignment
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 3138435131541376661, guid: 5a15cfd126e9c6c4c955fe01e02c5c0e,
         type: 3}
       propertyPath: m_AnchorMax.x

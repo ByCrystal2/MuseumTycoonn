@@ -69,7 +69,7 @@ public class TutorialNPCBehaviour : MonoBehaviour
                     if (currentTime >= 0.7f)
                     {
                         playerAnim.SetBool("Walk", false);
-                        DialogueManager.instance.SceneTransPanelActivation(true);
+                        StartCoroutine(DialogueManager.instance.SceneTransPanelActivation(true));
                         this.enabled = false;
                     }
                 }

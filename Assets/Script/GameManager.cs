@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(this);
-        AutoSaveTimer = Time.time + 30;
+        AutoSaveTimer = Time.time + 300;
 #if UNITY_EDITOR
         UnityEngine.Rendering.DebugManager.instance.enableRuntimeUI = enableRuntimeDebugger;
 #endif
@@ -97,7 +97,7 @@ public class GameManager : MonoBehaviour
         if (AutoSaveTimer < Time.time)
         {
             Save();
-            AutoSaveTimer = Time.time + 30;
+            AutoSaveTimer = Time.time + 300;
 #if UNITY_EDITOR
             FirestoreManager.instance.UpdateGameData("ahmet123");
 #else
