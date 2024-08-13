@@ -49,7 +49,7 @@ public class GoldStackHandler : MonoBehaviour
         {
             elapsed += Time.deltaTime;
             int currentTempMoney = Mathf.RoundToInt(Mathf.Lerp(0, amount, elapsed / duration));
-            TempGoldText.text = currentTempMoney.ToString();
+            TempGoldText.text = "+" + currentTempMoney.ToString();
             yield return null;
         }
 
@@ -60,7 +60,7 @@ public class GoldStackHandler : MonoBehaviour
         {
             elapsed += Time.deltaTime;
             int currentTempMoney = Mathf.RoundToInt(Mathf.Lerp(amount, 0, elapsed / duration));
-            TempGoldText.text = currentTempMoney.ToString();
+            TempGoldText.text = "+" + currentTempMoney.ToString();
             realMoney += Mathf.RoundToInt((Time.deltaTime / duration) * amount);
             MainGoldText.text = "" + realMoney;
             yield return null;
