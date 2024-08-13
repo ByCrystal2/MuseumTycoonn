@@ -2,11 +2,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class InternetCheck : MonoBehaviour
 {
     private bool isInternetAvailable = true;
-
+    public List<string> InfoStrings = new List<string>(); // 0 => Internet Connection | 1 => Your internet connection has been lost. | 2 => Please check your connection.| 3 => Your internet connection has been restored.
     private InternetCheck instance;
     private void Awake()
     {
@@ -35,14 +36,14 @@ public class InternetCheck : MonoBehaviour
     void NoInternet()
     {// Pause the game
         Debug.Log("Internet connection is not available. The game is PAUSED.");
-        UIInteractHandler.instance.AskQuestion("Internet Connection", "Your internet connection has been lost.\nPlease check your connection.");
+        UIInteractHandler.instance.AskQuestion(InfoStrings[0], $"{InfoStrings[1]}\n{InfoStrings[2]}");
         Time.timeScale = 0.1f;
     }
 
     void InternetRestored()
     {// Resume the game
         Debug.Log("Internet connection available. The game is RESUME.");
-        UIInteractHandler.instance.AskQuestion("Internet Connection", "Your internet connection has been restored.", null, null, (x) => { Time.timeScale = 1; CleanupDontDestroyOnLoad(); SceneManager.LoadScene("Auth"); });
+        UIInteractHandler.instance.AskQuestion(InfoStrings[0], InfoStrings[3], null, null, (x) => { Time.timeScale = 1; /*CleanupDontDestroyOnLoad(); SceneManager.LoadScene("Auth");*/ });
     }
 
     void CleanupDontDestroyOnLoad()

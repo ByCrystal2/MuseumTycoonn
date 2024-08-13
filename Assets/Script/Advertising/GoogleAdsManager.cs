@@ -126,7 +126,7 @@ public class GoogleAdsManager : MonoBehaviour
             {
                 IsBannerAdShow = true;
                 BannerAdWaitingTime = 120;
-                _bannerView = null;
+                //_bannerView = null;
                 LoadBannerAd();
             }
         }
@@ -513,6 +513,7 @@ public class GoogleAdsManager : MonoBehaviour
             _interstitialAd.Destroy();
             _interstitialAd = null;
         }
+        Debug.Log("ads removed.");
     }
 }
 [System.Serializable]

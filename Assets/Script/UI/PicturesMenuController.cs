@@ -23,7 +23,7 @@ public class PicturesMenuController : MonoBehaviour
     [SerializeField] GameObject[] OpenStars;
     [SerializeField] GameObject[] CloseStars;
     [SerializeField] public TextMeshProUGUI txtPainterName;
-    [SerializeField] public TextMeshProUGUI txtDescription;
+    [SerializeField] public Text txtDescription;
     [SerializeField] public TextMeshProUGUI txtRequiredGold;
     [SerializeField] Image imgPicture;
     [SerializeField] Sprite defaultPicture;
@@ -47,6 +47,7 @@ public class PicturesMenuController : MonoBehaviour
 
     public int lastClickedIndex = -1;
 
+    public List<string> PictureStrings = new List<string>(); // 0 => eklendi | 1 => guncellendi (degistirildi) | 2 => tablo sec | 3 => yeterli | 4 => ekle | 5 => degistir | 6 => yetersiz
     public static PicturesMenuController instance { get; set; }
     private void Awake()
     {
@@ -207,7 +208,7 @@ public class PicturesMenuController : MonoBehaviour
             if (CurrentPicture._pictureData.isFirst)
             {
                 GPGamesManager.instance.achievementController.IncreaseNumberOfTablesPlaced();
-                SetPictureUpdateButton(false, "Eklendi", Color.white);
+                SetPictureUpdateButton(false, PictureStrings[0], Color.white);
                 CurrentPicture._pictureData.isActive = true;
                 //MuseumManager.instance.GetPictureElement(PictureChangeRequiredAmount = Mathf.RoundToInt(CurrentPicture._pictureData.RequiredGold * 0.5f);
                 txtRequiredGold.text = ""+ GameManager.instance.PictureChangeRequiredAmount;
@@ -215,7 +216,7 @@ public class PicturesMenuController : MonoBehaviour
             else
             {
                 isFirst = false;
-                SetPictureUpdateButton(false, "Deðiþtirildi", Color.white);
+                SetPictureUpdateButton(false, PictureStrings[1], Color.white);
                 CurrentPicture._pictureData.isActive = true;
             }
             //CurrentPicture._pictureData.isFirst = false;
@@ -294,7 +295,7 @@ public class PicturesMenuController : MonoBehaviour
         {
             imgPicture.sprite = defaultPicture;
         }
-        SetPictureUpdateButton(false, "Tablo Seç", Color.white);
+        SetPictureUpdateButton(false, PictureStrings[2], Color.white);
 
     }
     private bool tableClicked = false;
@@ -305,25 +306,25 @@ public class PicturesMenuController : MonoBehaviour
 
             if (imgPicture.sprite == null)
             {
-                SetPictureUpdateButton(false, "Yeterli", Color.white);
+                SetPictureUpdateButton(false, PictureStrings[3], Color.white);
             }
             else if (imgPicture.sprite != null && CurrentPicture._pictureData.isFirst && pictureContent.childCount >= 0)
             {
-                SetPictureUpdateButton(true, "Ekle", Color.green);
+                SetPictureUpdateButton(true, PictureStrings[4], Color.green);
             }
             else if (imgPicture.sprite != null && !CurrentPicture._pictureData.isFirst)
             {
-                SetPictureUpdateButton(true, "Deðiþtir", Color.Lerp(Color.green, new Color(1, 1, 0, 0.5f), 0.5f));
+                SetPictureUpdateButton(true, PictureStrings[5], Color.Lerp(Color.green, new Color(1, 1, 0, 0.5f), 0.5f));
             }
         }
         else if (GameManager.instance.PictureChangeRequiredAmount <= MuseumManager.instance.GetCurrentGold() && !tableClicked)
         {
-            SetPictureUpdateButton(false, "Tablo Seç", Color.white);
+            SetPictureUpdateButton(false, PictureStrings[2], Color.white);
         }
         else
         {
             Debug.Log("Picture Ýçin para Yetersiz.");
-            SetPictureUpdateButton(false, "Yetersiz", Color.red);
+            SetPictureUpdateButton(false, PictureStrings[6], Color.red);
         }
     }
     public void SetPicture(Texture2D texture2D)
@@ -337,17 +338,17 @@ public class PicturesMenuController : MonoBehaviour
 
             if (CurrentPicture._pictureData.isFirst)
             {
-                SetPictureUpdateButton(true, "Ekle", Color.green);
+                SetPictureUpdateButton(true, PictureStrings[4], Color.green);
             }
             
             else
             {
-                SetPictureUpdateButton(true, "Deðiþtir", Color.Lerp(Color.green, new Color(1, 1, 0, 0.5f), 0.5f));
+                SetPictureUpdateButton(true, PictureStrings[5], Color.Lerp(Color.green, new Color(1, 1, 0, 0.5f), 0.5f));
             }
         }
         else
         {
-            SetPictureUpdateButton(false, "Yetersiz", Color.red);
+            SetPictureUpdateButton(false, PictureStrings[6], Color.red);
         }     
     }    
     

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -79,31 +80,53 @@ public class LoadingScene : MonoBehaviour
             return Scenes.None;
         }
     }
+    static bool[] loadingSteps = new bool[] { false, false, false, false, false, false, false, false, false, false };
+    static int loadingCompletedIndex = 0;
+    static bool isProgress = false;
+
+    public static void ComplateLoadingStep()
+    {
+        if (loadingCompletedIndex < loadingSteps.Length)
+        {
+            loadingSteps[loadingCompletedIndex] = true;
+            loadingCompletedIndex++;
+            isProgress = true;
+            Debug.Log("Complate loading step. Next Step => " + loadingCompletedIndex);
+        }
+    }
     public IEnumerator LoadFirebaseData()
     {
-        Debug.Log("LoadFirebaseData is starting...");
-        yield return new WaitUntil(() => PlayerManager.instance != null);
-        PlayerManager.instance.LockPlayer();
+        Debug.Log("LoadFirebaseData is starting...");        
         UIController.instance.CloseJoystickObj(true);
-        List<NPCBehaviour> nps = FindObjectsOfType<NPCBehaviour>().ToList();
-        foreach (var npc in nps)
+
+        List<NPCBehaviour> npcs = FindObjectsOfType<NPCBehaviour>().ToList();
+        foreach (var npc in npcs)
         {
             npc.enabled = false;
-            //npc.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
-        }
-        float progressHelper = 0;
-        while (!NpcManager.instance.databaseProcessComplated)
-        {
-            // Yükleme ilerlemesini güncelle
-            int randomValue = UnityEngine.Random.Range(5, 10);
-            progressHelper += randomValue;
-            float progress = Mathf.Clamp01(progressHelper / 100f);
-            loadingSlider.value = progress;
-            loadingText.text = (int)(progress * 100) + "%";
-            yield return new WaitForEndOfFrame(); ;
         }
 
-        // Yükleme tamamlandýðýnda iþlemleri yap
+        float progressHelper = 0;
+        float totalSteps = loadingSteps.Length;
+        float stepProgress = 1f / totalSteps;
+
+        while (!NpcManager.instance.databaseProcessComplated)
+        {
+            if (isProgress)
+            {
+                Debug.Log("Progress..." + progressHelper);
+                isProgress = false;
+                progressHelper += stepProgress * 100;
+                float progress = Mathf.Clamp01(progressHelper / 100f);
+                loadingSlider.value = progress;
+                loadingText.text = (int)(progress * 100) + "%";
+
+                yield return new WaitForEndOfFrame();
+            }
+            else
+            {
+                yield return null;
+            }
+        }
         OnDataLoaded();
     }
 
@@ -113,15 +136,38 @@ public class LoadingScene : MonoBehaviour
         Debug.Log("LoadFirebaseData is ending...");
         if (GameManager.instance.IsWatchTutorial)
         {
-            List<NPCBehaviour> nps = FindObjectsOfType<NPCBehaviour>().ToList();
-            foreach (var npc in nps)
-            {
-                npc.enabled = true;
-                //npc.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = true;
-            }
+            //List<NPCBehaviour> nps = FindObjectsOfType<NPCBehaviour>().ToList();
+            //foreach (var npc in nps)
+            //{
+            //    npc.enabled = true;
+            //    //npc.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = true;
+            //}
             NpcManager.instance.MuseumDoorsProcess(true);
+            SpawnHandler.instance.StartSpawnProcess();
         }
-        
+        try
+        {
+            if (GameManager.instance != null)
+            {
+                if (!GameManager.instance.IsWatchTutorial)
+                {
+                    DialogueTrigger firstDialog = GameObject.FindWithTag("TutorialNPC").GetComponent<DialogueTrigger>();
+                    if (firstDialog != null)
+                        firstDialog.TriggerDialog(Steps.Step1);
+                }
+                else
+                {
+                    DialogueManager.instance.SetActivationDialoguePanel(false);
+                    GameObject.FindWithTag("TutorialNPC").SetActive(false); // Destroyda edilebilirdi fakat lazim olabilir ilerde.
+                    Destroy(UIController.instance.tutorialUISPanel.gameObject);
+                }
+            }
+        }
+        catch (System.Exception _ex)
+        {
+            Debug.Log("Tutorial Npc process form awake loading process method caught an error!. => " + _ex.Message);
+        }
+
         RightUIPanelController.instance.EditMode();
         Destroy(gameObject,0.2f);
     }

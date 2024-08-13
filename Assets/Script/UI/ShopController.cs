@@ -21,6 +21,7 @@ public class ShopController : MonoBehaviour
     public float DefaultShopTabAlpha = 1f;
 
     public ShopUIType currentShopUIType;
+    
     public static ShopController instance { get; set; }
     
     private void Awake()
@@ -275,7 +276,7 @@ public class ShopController : MonoBehaviour
         Debug.Log(_item.CurrentItemType + " Item tipinde ki " + _item.Amount + " miktarda  ürün " + _item.RequiredMoney + " " + _item.CurrentShoppingType + " karþýlýðýnda satýlmak istendi.");
         if (_item.CurrentShoppingType == ShoppingType.Gem)
         {
-             UIInteractHandler.instance.AskQuestion(_item.CurrentItemType.ToString() + " Satýn Alma Ýþlemi", $"Satýn alma iþlemini onaylýyor musunuz?\n(Mevcut Gem:{MuseumManager.instance.GetCurrentGem()} ürün ücreti:{_item.RequiredMoney} Gem)", (x) =>
+             UIInteractHandler.instance.AskQuestion($"{_item.CurrentItemType} {UIController.instance.SkillQuestionInfos[0]}", $"{UIController.instance.SkillQuestionInfos[1]}\n({UIController.instance.SkillQuestionInfos[2]} {UIController.instance.SkillQuestionInfos[3]}:{MuseumManager.instance.GetCurrentGem()} {UIController.instance.SkillQuestionInfos[5]}:{_item.RequiredMoney} {UIController.instance.SkillQuestionInfos[3]})", (x) =>
              {//Satin alma islemi onaylandiysa. (yes tusuna basildiysa)
                  if (MuseumManager.instance.GetCurrentGem() >= _item.RequiredMoney)
                  {                    
@@ -317,7 +318,7 @@ public class ShopController : MonoBehaviour
         }
         else if (_item.CurrentShoppingType == ShoppingType.Gold)
         {
-            UIInteractHandler.instance.AskQuestion(_item.CurrentItemType.ToString() + " Satýn Alma Ýþlemi", $"Satýn alma iþlemini onaylýyor musunuz?\n(Mevcut Gold:{MuseumManager.instance.GetCurrentGold()} ürün ücreti:{_item.RequiredMoney} Gold)", (x) =>
+            UIInteractHandler.instance.AskQuestion($"{_item.CurrentItemType} {UIController.instance.SkillQuestionInfos[0]}", $"{UIController.instance.SkillQuestionInfos[1]}\n({UIController.instance.SkillQuestionInfos[2]} {UIController.instance.SkillQuestionInfos[4]}:{MuseumManager.instance.GetCurrentGold()} {UIController.instance.SkillQuestionInfos[5]}:{_item.RequiredMoney} {UIController.instance.SkillQuestionInfos[4]})", (x) =>
             {//Satin alma islemi onaylandiysa. (yes tusuna basildiysa)
                 if (MuseumManager.instance.GetCurrentGold() >= _item.RequiredMoney)
                 {
@@ -354,7 +355,7 @@ public class ShopController : MonoBehaviour
         }
         else if (_item.CurrentShoppingType == ShoppingType.RealMoney)
         {
-            UIInteractHandler.instance.AskQuestion("Ücretli" + " Satýn Alma Ýþlemi", $"Satýn alma iþlemini onaylýyor musunuz?\n(Ürün ücreti:{_item.RequiredMoney})", (x) =>
+            UIInteractHandler.instance.AskQuestion($"{UIController.instance.SkillQuestionInfos[6]} {UIController.instance.SkillQuestionInfos[0]}", $"{UIController.instance.SkillQuestionInfos[1]}\n({UIController.instance.SkillQuestionInfos[5]}:{_item.RequiredMoney})", (x) =>
             {//Satin alma islemi onaylandiysa. (yes tusuna basildiysa)
                 BuyingConsumables.instance.BuyItemFromStore(_item);
                 GameManager.instance.Save();

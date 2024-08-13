@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-
+using TaskExtensions;
+using System.Threading.Tasks;
 public class NpcManager : MonoBehaviour
 {
     public static NpcManager instance { get; private set; }
@@ -52,7 +53,7 @@ public class NpcManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(this);
-        GameManager.instance._rewardManager = FindObjectOfType<RewardManager>();
+        GameManager.instance._rewardManager = FindObjectOfType<RewardManager>();        
         FirebaseAuthManager.instance.ForFireBaseLoading();
         AwakeLoadingProcesses();
     }
@@ -61,6 +62,7 @@ public class NpcManager : MonoBehaviour
     {
         Debug.Log("Database load test 1 complated.");
         databaseProcessComplated = false;
+        LoadingScene.ComplateLoadingStep();
         if (GameManager.instance.IsFirstGame)
         {
             GameManager.instance.ActiveRoomsRequiredMoney = 1000;
@@ -72,18 +74,21 @@ public class NpcManager : MonoBehaviour
             await FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
 #endif
         }
+        LoadingScene.ComplateLoadingStep();
         Debug.Log("Database load test 2 complated.");
         UIController.instance.roomUISPanelController.InitializeRoomUIS();
         RoomManager.instance.AddRooms(); // in app baglantisi kurulmadan once odalar yuklendi.        
         //GameManager.instance.LoadInventoryPictures();
-        GameManager.instance.LoadStatues();
+        //GameManager.instance.LoadStatues();
         Debug.Log("Database load test 3 complated.");
         GameManager.instance.LoadWorkers();
+        LoadingScene.ComplateLoadingStep();
         Debug.Log("Database load test 4 complated.");
         //Gaming Services Activation
 
         BuyingConsumables.instance.InitializePurchasing();
         Debug.Log("Database load test 5 complated.");
+        LoadingScene.ComplateLoadingStep();
         //Start Method
         AudioManager.instance.PlayMusicOfGame();
         try
@@ -107,37 +112,26 @@ public class NpcManager : MonoBehaviour
         {
             Debug.LogError("Skill Contents for processes are caugth an error! => " + _ex.Message);
         }
-        
         Debug.Log("Database load test 6 complated.");
+        LoadingScene.ComplateLoadingStep();
+        ItemData firstTableForPlayer = new ItemData(99999, "Vincent van Gogh", "Hediye Tablo", 1, 0, null, ItemType.Table, ShoppingType.Gold, 1, 3);
+
+        //TRANSLATE PROCESSES
+        if (LanguageDatabase.instance.TranslationWillBeProcessed)
+        {
+            await LanguageDatabase.instance.LoadLanguageData();
+            GameManager.instance.TranslateAllItems();
+            GameManager.instance.TranslateAllSkills();
+            GameManager.instance.TranslateCommendsEvulations();
+            GameManager.instance.TranslateSkillInfos();
+            GameManager.instance.TranslatePictureInfos();
+            GameManager.instance.TranslateShopQuestionInfos(); 
+        }
+        //TRANSLATE PROCESSES
         GameManager.instance.LoadSkills();
         //GameManager.instance.LoadLastDailyRewardTime();
         Debug.Log("Database load test 7 complated.");
-        try
-        {
-            if (GameManager.instance != null)
-            {
-                if (!GameManager.instance.IsWatchTutorial)
-                {
-                    DialogueTrigger firstDialog = GameObject.FindWithTag("TutorialNPC").GetComponent<DialogueTrigger>();
-                    if (firstDialog != null)
-                        firstDialog.TriggerDialog(Steps.Step1);
-                    Debug.Log("Database load test 8 complated.");
-                }
-                else
-                {
-                    DialogueManager.instance.SetActivationDialoguePanel(false);
-                    GameObject.FindWithTag("TutorialNPC").SetActive(false); // Destroyda edilebilirdi fakat lazim olabilir ilerde.
-                    Destroy(UIController.instance.tutorialUISPanel.gameObject);
-                    Debug.Log("Database load test 9 complated.");
-                }
-            }
-        }
-        catch (System.Exception _ex)
-        {
-            Debug.Log("Tutorial Npc process form awake loading process method caught an error!. => " + _ex.Message);
-        }        
-        Debug.Log("Database load test 10 complated.");
-        ItemData firstTableForPlayer = new ItemData(99999, "Vincent van Gogh", "Hediye Tablo", 1, 0, null, ItemType.Table, ShoppingType.Gold, 1, 3);
+        LoadingScene.ComplateLoadingStep();
         if (GameManager.instance.IsFirstGame)
         {
             Debug.Log("GameManager IsFirstGame True. And First Game Process Starting...");
@@ -145,12 +139,13 @@ public class NpcManager : MonoBehaviour
             MuseumManager.instance.lastDailyRewardTime = TimeManager.instance.CurrentDateTime;
             MuseumManager.instance.OnNpcPaid(2500);
 
+            ItemData firstTableForPlayerSub = ItemManager.instance.AllItems.Where(x => x.ID == firstTableForPlayer.ID).SingleOrDefault();
             PictureData newInventoryItem = new PictureData();
-            newInventoryItem.TextureID = firstTableForPlayer.textureID;
+            newInventoryItem.TextureID = firstTableForPlayerSub.textureID;
             newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
-            newInventoryItem.painterData = new PainterData(firstTableForPlayer.ID, firstTableForPlayer.Description, firstTableForPlayer.Name, firstTableForPlayer.StarCount);
+            newInventoryItem.painterData = new PainterData(firstTableForPlayerSub.ID, firstTableForPlayerSub.Description, firstTableForPlayerSub.Name, firstTableForPlayerSub.StarCount);
             MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
-            
+
             int index = TimeManager.instance.WhatDay;
             // Eðer bulunduysa
             if (index != -1)
@@ -170,16 +165,19 @@ public class NpcManager : MonoBehaviour
             //GameManager.instance._rewardManager.CheckRewards(true);
             GPGamesManager.instance.achievementController.FirstGameAchievement();
         }
-        else
-        {
-        }
-        Debug.Log("Database load test 11 complated.");
+        Debug.Log("Database load test 8 complated.");
+        LoadingScene.ComplateLoadingStep();
+        
+        LoadingScene.ComplateLoadingStep();
+        Debug.Log("Database load test 9 complated.");
         UIController.instance.SetUpdateWeeklyRewards();
-        Debug.Log("Database load test 12 complated.");
+        Debug.Log("Database load test 10 complated.");
         await GameManager.instance.LoadRemoveAds();
-        Debug.Log("Database load test 13 complated.");
+        LoadingScene.ComplateLoadingStep();
+        Debug.Log("Database load test 11 complated.");
         await GameManager.instance.LoadRooms();
-        Debug.Log("Database load test 14 complated.");
+        LoadingScene.ComplateLoadingStep();
+        Debug.Log("Database load test 12 complated.");
         //Start Method
         databaseProcessComplated = true;
         Debug.Log("Database Loading Process Complated.");
@@ -200,7 +198,7 @@ public class NpcManager : MonoBehaviour
 
     private void Start()
     {
-       
+        PlayerManager.instance.LockPlayer();
     }
 
     public void SetNpcPairsInDialog(NPCBehaviour npc1, NPCBehaviour npc2)

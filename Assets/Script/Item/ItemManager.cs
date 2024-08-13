@@ -247,8 +247,9 @@ public class ItemManager : MonoBehaviour
         {
             IAPItems.Add(item);
         }
-    }
 
+
+    }
     public void AddItemInShop(ItemData _item)
     {
         ShopItemDatas.Add(_item);
@@ -362,7 +363,7 @@ public class ItemManager : MonoBehaviour
     }
     public List<ItemData> GetAllDailyRewardItemDatas()
     {
-        return CurrentDailyRewardItems;
+        return DailyRewardItems;
     }
     public void SetCalculatedDailyRewardItems()
     {

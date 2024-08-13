@@ -5,9 +5,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using TaskExtensions;
+using Translator;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
 
 public class GameManager : MonoBehaviour
 {
@@ -28,6 +31,10 @@ public class GameManager : MonoBehaviour
     public float ActiveRoomsRequiredMoney;
     public float BaseWorkerHiringPrice;
     public bool IsFirstGame = true, IsWatchTutorial;
+    [SerializeField] bool enableRuntimeDebugger;
+
+    private System.Threading.CancellationTokenSource cts;
+    DynamicTranslation translation;
     private void Awake()
     {
         if (instance)
@@ -38,6 +45,11 @@ public class GameManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(this);
         AutoSaveTimer = Time.time + 30;
+#if UNITY_EDITOR
+        UnityEngine.Rendering.DebugManager.instance.enableRuntimeUI = enableRuntimeDebugger;
+#endif
+        cts = new System.Threading.CancellationTokenSource();
+        translation = new DynamicTranslation();
     }
 
     public void Start()
@@ -61,7 +73,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitUntil(() => task1.IsCompleted);
         if (IsFirstGame)
             ItemManager.instance.SetCalculatedDailyRewardItems();
-        LoadIsWatchTutorial();
+        LoadIsWatchTutorialAsync();
         LoadDailyRewardItems();
         LoadGooglePlayAchievements();
         LoadMuseumNumeralDatas();
@@ -95,39 +107,101 @@ public class GameManager : MonoBehaviour
         }
 
     }
+    public async System.Threading.Tasks.Task BulkTranslateAndAssignAsync(List<string> textsToTranslate, Action<List<string>> onTranslationComplete)
+    {
+        // 1. Adým: Tüm metinleri birleþtir
+        string combinedText = string.Join("|", textsToTranslate);
+
+        // 2. Adým: Birleþik metni çevir
+        string translatedText = await translation.TranslateTextAsync(combinedText, GetLanguageShortString(GetGameLanguage()));
+
+        // 3. Adým: Çevirilen metni parçalara ayýr
+        List<string> translatedParts = new List<string>(translatedText.Split('|'));
+
+        // Çeviri tamamlandýðýnda callback fonksiyonunu çaðýrýn
+        onTranslationComplete?.Invoke(translatedParts);
+    }
+    public async System.Threading.Tasks.Task BulkTranslateAndAssignAsync(string language, List<string> textsToTranslate, Action<List<string>> onTranslationComplete)
+    {
+        // 1. Adým: Tüm metinleri birleþtir
+        string combinedText = string.Join("|", textsToTranslate);
+
+        // 2. Adým: Birleþik metni çevir
+        string translatedText = await translation.TranslateTextAsync(combinedText, GetLanguageShortString(language));
+
+        // 3. Adým: Çevirilen metni parçalara ayýr
+        List<string> translatedParts = new List<string>(translatedText.Split('|'));
+
+        // Çeviri tamamlandýðýnda callback fonksiyonunu çaðýrýn
+        onTranslationComplete?.Invoke(translatedParts);
+    }
+    public string GetLanguageShortString(string language)
+    {
+        return (language) switch
+        {
+            "English" => "en",
+            "Turkish" => "tr",
+            "Thai" => "th",
+            "Spanish" => "es",
+            "Chinese (Traditional)" => "zh-TW",
+            "Chinese (Simplified)" => "zh-CN",
+            "Kurdish" => "ku",
+            "Russian" => "ru",
+            "German" => "de",
+            "French" => "fr",
+            "Japanese" => "ja",
+            "Korean" => "ko",
+            "Arabic" => "ar",
+            _ => "en"
+        };
+    }
     public async void LanguageControlInDatabase()
     {
-        string databaseLanguage = "";
+        string databaseLanguage = string.Empty;
 
-#if UNITY_EDITOR
-        await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").ContinueWithOnMainThread(getTask =>
+        try
         {
-            if (getTask.IsCompleted)
+            // Get user ID based on environment
+            string userId = Application.isEditor ? "ahmet123" : FirebaseAuthManager.instance.GetCurrentUser().UserId;
+
+            // Fetch game data from Firestore
+            Dictionary<string, object> gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(userId)
+                .WithCancellation(GameManager.instance.GetFirebaseToken().Token)
+                .ContinueWithOnMainThread(task =>
+                {
+                    if (task.IsFaulted)
+                    {
+                        Debug.LogError($"Error fetching game data: {task.Exception}");
+                        return new Dictionary<string, object>();
+                    }
+                    return task.Result;
+                });
+
+            // Retrieve the language from the fetched data
+            if (gameDatas != null && gameDatas.ContainsKey("GameLanguage"))
             {
-                Dictionary<string, object> gameDatas = getTask.Result;
                 databaseLanguage = gameDatas["GameLanguage"].ToString();
             }
-        });
-#else
-        await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).ContinueWithOnMainThread(getTask =>
-                {
-                    if (getTask.IsCompleted)
-                    {
-                        Dictionary<string, object> gameDatas = getTask.Result;
-                        databaseLanguage = gameDatas["GameLanguage"].ToString();
-                    }
-                });
-#endif
 
-        if (databaseLanguage == "" || databaseLanguage == null || databaseLanguage == string.Empty)
-        {
-            GameLanguage = "English";
-            LocalizationManager.CurrentLanguage = "English";
+            // Set the game language based on the retrieved data
+            if (string.IsNullOrEmpty(databaseLanguage))
+            {
+                GameLanguage = "English";
+                LocalizationManager.CurrentLanguage = "English";
+            }
+            else
+            {
+                GameLanguage = databaseLanguage;
+                LocalizationManager.CurrentLanguage = databaseLanguage;
+            }
         }
-        else
+        catch (System.Threading.Tasks.TaskCanceledException)
         {
-            GameLanguage = databaseLanguage;
-            LocalizationManager.CurrentLanguage = databaseLanguage;
+            Debug.Log("LoadGameLanguageAsync operation was canceled.");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error loading game language: {ex.Message}");
         }
     }
     public string GetGameLanguage()
@@ -141,7 +215,7 @@ public class GameManager : MonoBehaviour
 #if UNITY_EDITOR
         FirestoreManager.instance.UpdateGameLanguageInGameDatas("ahmet123");
 #else
-                    FirestoreManager.instance.UpdateGameLanguageInGameDatas(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+        FirestoreManager.instance.UpdateGameLanguageInGameDatas(FirebaseAuthManager.instance.GetCurrentUser().UserId);
 #endif
     }
     public GameMode GetCurrentGameMode()
@@ -323,65 +397,85 @@ public class GameManager : MonoBehaviour
 #else
         userID = FirebaseAuthManager.instance.GetCurrentUser().UserId;
 #endif
+
         Debug.Log("LoadRooms userID => " + userID);
+
         if (!IsFirstGame)
         {
-            Dictionary<string, object> gameDatas = new Dictionary<string, object>();                
-            gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(userID);
-
-            float activeRoomsRequiredMoney = gameDatas.ContainsKey("ActiveRoomsRequiredMoney") ? Convert.ToSingle(gameDatas["ActiveRoomsRequiredMoney"]) : 1000;
-            Debug.Log("LoadRooms activeRoomsRequiredMoney => " + activeRoomsRequiredMoney);
-            ActiveRoomsRequiredMoney = activeRoomsRequiredMoney; 
-        }
-        
-        List<RoomData> allRooms = RoomManager.instance.RoomDatas;
-        List<int> AllRoomIDs = allRooms.Select(x=> x.ID).ToList();
-        //RoomLoad
-        
-        await FirestoreManager.instance.roomDatasHandler.GetRoomsInDatabase(userID, AllRoomIDs).ContinueWithOnMainThread(async (getTask) =>
-        {
-            Debug.Log("Room test end complated.");
             try
             {
-                if (getTask.IsCompleted && !getTask.IsFaulted)
-                {
-                    List<RoomData> databaseRooms = getTask.Result;
-                    Debug.Log("Database room data retrieval completed.");
-                    foreach (RoomData databaseRoom in databaseRooms)
-                    {
-                        if (databaseRoom != null)
-                        {
-                            Debug.Log($"databaseRoom.ID => {databaseRoom.ID} databaseRoom.isActive => {databaseRoom.isActive} databaseRoom.StatueID => {databaseRoom.GetMyStatueInTheMyRoom()?.ID}");
+                Dictionary<string, object> gameDatas = await FirestoreManager.instance
+                    .GetGameDataInDatabase(userID)
+                    .WithCancellation(GetFirebaseToken().Token);
 
-                            RoomData myRoom = allRooms.Where(x=> x.ID == databaseRoom.ID).SingleOrDefault();
-                            myRoom = databaseRoom;
-                            Debug.Log("myRoom.ID is " + myRoom.ID + " databaseRoom.ID is " + databaseRoom.ID);
-                            if (myRoom.GetMyStatueInTheMyRoom() != null)
-                            {
-                                Debug.Log($"before myRoom.GetMyStatueInTheMyRoom().IsPurchased => {myRoom.GetMyStatueInTheMyRoom().IsPurchased}");
-                                var myStatue = myRoom.GetMyStatueInTheMyRoom();
-                                Debug.Log($"myStatue Infos: ID:{myStatue.ID} + Name:{myStatue.Name} + RoomCell:{myStatue._currentRoomCell.CellLetter.ToString() + myStatue._currentRoomCell.CellNumber} + Bonusses.Count:{myStatue.Bonusses.Count}");
-                                myStatue.SetIsPurchased();
-                                Debug.Log($"myStatue Infos: FocusedLevel:{myStatue.FocusedLevel}");
-                                RoomManager.instance.AddSavedStatues(myStatue);
-                                RoomManager.instance.statuesHandler.activeEditObjs.Add(myStatue);
-                                Debug.Log($"after myRoom.GetMyStatueInTheMyRoom().IsPurchased => {myRoom.GetMyStatueInTheMyRoom().IsPurchased}");
-                            }
-                        }
-                    }
-                    
-                }
-                else
-                {
-                    Debug.LogError("Error occurred: " + getTask.Exception + " Room count => " + getTask.Result.Count);
-                }
+                float activeRoomsRequiredMoney = gameDatas.ContainsKey("ActiveRoomsRequiredMoney")
+                    ? Convert.ToSingle(gameDatas["ActiveRoomsRequiredMoney"])
+                    : 1000;
+
+                Debug.Log("LoadRooms activeRoomsRequiredMoney => " + activeRoomsRequiredMoney);
+                ActiveRoomsRequiredMoney = activeRoomsRequiredMoney;
+            }
+            catch (System.Threading.Tasks.TaskCanceledException)
+            {
+                Debug.Log("LoadRooms operation was canceled.");
+                return; // Ýþlem iptal edildiðinde geri dön.
             }
             catch (Exception ex)
             {
-                Debug.LogError("Room Database Loading Error:" + ex.Message + " Room count => " + getTask.Result.Count);
+                Debug.LogError("Error loading game data: " + ex.Message);
+                return; // Hata durumunda geri dön.
             }
+        }
 
-        });
+        List<RoomData> allRooms = RoomManager.instance.RoomDatas;
+        List<int> AllRoomIDs = allRooms.Select(x => x.ID).ToList();
+
+        try
+        {
+            List<RoomData> databaseRooms = await FirestoreManager.instance
+                .roomDatasHandler
+                .GetRoomsInDatabase(userID, AllRoomIDs)
+                .WithCancellation(GetFirebaseToken().Token);
+
+            Debug.Log("Database room data retrieval completed.");
+
+            foreach (RoomData databaseRoom in databaseRooms)
+            {
+                if (databaseRoom != null)
+                {
+                    Debug.Log($"databaseRoom.ID => {databaseRoom.ID} databaseRoom.isActive => {databaseRoom.isActive} databaseRoom.StatueID => {databaseRoom.GetMyStatueInTheMyRoom()?.ID}");
+
+                    RoomData myRoom = allRooms.SingleOrDefault(x => x.ID == databaseRoom.ID);
+                    if (myRoom != null)
+                    {
+                        myRoom = databaseRoom;
+                        Debug.Log("myRoom.ID is " + myRoom.ID + " databaseRoom.ID is " + databaseRoom.ID);
+
+                        if (myRoom.GetMyStatueInTheMyRoom() != null)
+                        {
+                            Debug.Log($"before myRoom.GetMyStatueInTheMyRoom().IsPurchased => {myRoom.GetMyStatueInTheMyRoom().IsPurchased}");
+                            var myStatue = myRoom.GetMyStatueInTheMyRoom();
+                            Debug.Log($"myStatue Infos: ID:{myStatue.ID} + Name:{myStatue.Name} + RoomCell:{myStatue._currentRoomCell.CellLetter.ToString() + myStatue._currentRoomCell.CellNumber} + Bonusses.Count:{myStatue.Bonusses.Count}");
+                            myStatue.SetIsPurchased();
+                            Debug.Log($"myStatue Infos: FocusedLevel:{myStatue.FocusedLevel}");
+                            RoomManager.instance.AddSavedStatues(myStatue);
+                            RoomManager.instance.statuesHandler.activeEditObjs.Add(myStatue);
+                            Debug.Log($"after myRoom.GetMyStatueInTheMyRoom().IsPurchased => {myRoom.GetMyStatueInTheMyRoom().IsPurchased}");
+                        }
+                    }
+                }
+            }
+        }
+        catch (System.Threading.Tasks.TaskCanceledException)
+        {
+            Debug.Log("LoadRooms operation was canceled.");
+            return; // Ýþlem iptal edildiðinde geri dön.
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Room Database Loading Error:" + ex.Message);
+        }
+
         Debug.Log("allRooms.Count => " + allRooms.Count);
         foreach (var room in allRooms)
         {
@@ -419,9 +513,9 @@ public class GameManager : MonoBehaviour
     {
         Dictionary<string, object> gameDatas = new Dictionary<string, object>();
 #if UNITY_EDITOR
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").WithCancellation(GetFirebaseToken().Token);
 #else
-            gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).WithCancellation(GetFirebaseToken().Token);
 #endif
         int purchasedRoomCount = gameDatas.ContainsKey("PurchasedRoomCount") ? Convert.ToInt32(gameDatas["PurchasedRoomCount"]) : 0;
         int numberOfTablesPlaced = gameDatas.ContainsKey("NumberOfTablesPlaced") ? Convert.ToInt32(gameDatas["NumberOfTablesPlaced"]) : 0;
@@ -453,9 +547,9 @@ public class GameManager : MonoBehaviour
             Debug.Log("LoadRemoveAds test 1 complated;");
             Dictionary<string, object> gameDatas = new Dictionary<string, object>();
 #if UNITY_EDITOR
-            gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
+            gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").WithCancellation(GetFirebaseToken().Token);
 #else
-            gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+            gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).WithCancellation(GetFirebaseToken().Token);
 #endif
             AdverstingData databaseAdversting = new AdverstingData();
             bool removeAds = gameDatas.ContainsKey("RemoveAllAds") ? Convert.ToBoolean(gameDatas["RemoveAllAds"]) : false;
@@ -488,9 +582,9 @@ public class GameManager : MonoBehaviour
     {
         Dictionary<string, object> gameDatas = new Dictionary<string, object>();
 #if UNITY_EDITOR
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").WithCancellation(GetFirebaseToken().Token);
 #else
-            gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).WithCancellation(GetFirebaseToken().Token);
 #endif
         float _gold, _culture, _gem, _skillPoint;
         int _currentCultureLevel;
@@ -506,106 +600,111 @@ public class GameManager : MonoBehaviour
     {
         bool firstGameResult = false;
 
+        try
+        {
 #if UNITY_EDITOR
-        await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").ContinueWithOnMainThread(getTask =>
-        {
-            if (getTask.IsCompleted)
-            {
-                Dictionary<string, object> gameDatas = getTask.Result;
-                firstGameResult = gameDatas.ContainsKey("IsFirstGame") ? Convert.ToBoolean(gameDatas["IsFirstGame"]) : false;
-            }
-        });
+            Dictionary<string, object> gameDatas = await FirestoreManager.instance
+                .GetGameDataInDatabase("ahmet123")
+                .WithCancellation(GetFirebaseToken().Token);
 #else
-            await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).ContinueWithOnMainThread(getTask =>
-        {
-            if (getTask.IsCompleted)
-            {
-                Dictionary<string, object> gameDatas = getTask.Result;
-                firstGameResult = gameDatas.ContainsKey("IsFirstGame") ? Convert.ToBoolean(gameDatas["IsFirstGame"]) : false;
-            }
-        });
-#endif
-        Debug.Log("Is First Game ? = " + firstGameResult);
-        IsFirstGame = firstGameResult;
-    }
-    public async void LoadIsWatchTutorial()
-    {
-        bool watchTutorialResult = false;
-#if UNITY_EDITOR
-        await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").ContinueWithOnMainThread(getTask =>
-        {
-            if (getTask.IsCompleted)
-            {
-                Dictionary<string, object> gameDatas = getTask.Result;
-                watchTutorialResult = gameDatas.ContainsKey("IsWatchTutorial") ? Convert.ToBoolean(gameDatas["IsWatchTutorial"]) : false;
-            }
-        });
-#else
-            await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).ContinueWithOnMainThread(getTask =>
-        {
-            if (getTask.IsCompleted)
-            {
-                Dictionary<string, object> gameDatas = getTask.Result;
-                watchTutorialResult = gameDatas.ContainsKey("IsWatchTutorial") ? Convert.ToBoolean(gameDatas["IsWatchTutorial"]) : false;
-            }
-        });
+            Dictionary<string, object> gameDatas = await FirestoreManager.instance
+                .GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId)
+                .WithCancellation(GetFirebaseToken().Token);
 #endif
 
-        Debug.Log("Is Watch Tutorial ? = " + watchTutorialResult);
-        IsWatchTutorial = watchTutorialResult;
+            firstGameResult = gameDatas.ContainsKey("IsFirstGame")
+                ? Convert.ToBoolean(gameDatas["IsFirstGame"])
+                : false;
+
+            Debug.Log("Is First Game ? = " + firstGameResult);
+            IsFirstGame = firstGameResult;
+        }
+        catch (System.Threading.Tasks.TaskCanceledException)
+        {
+            Debug.Log("LoadIsFirstGame was canceled.");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Error loading IsFirstGame status: " + ex.Message);
+        }
     }
-    public void LoadInventoryPictures()
+    public async void LoadIsWatchTutorialAsync()
+    {
+        bool watchTutorialResult = false;
+
+        try
+        {
+#if UNITY_EDITOR
+            Dictionary<string, object> gameDatas = await FirestoreManager.instance
+                .GetGameDataInDatabase("ahmet123")
+                .WithCancellation(GetFirebaseToken().Token);
+#else
+            Dictionary<string, object> gameDatas = await FirestoreManager.instance
+                .GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId)
+                .WithCancellation(GetFirebaseToken().Token);
+#endif
+
+            watchTutorialResult = gameDatas.ContainsKey("IsWatchTutorial")
+                ? Convert.ToBoolean(gameDatas["IsWatchTutorial"])
+                : false;
+
+            Debug.Log("Is Watch Tutorial ? = " + watchTutorialResult);
+            IsWatchTutorial = watchTutorialResult;
+        }
+        catch (System.Threading.Tasks.TaskCanceledException)
+        {
+            Debug.Log("LoadIsWatchTutorial was canceled.");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Error loading watch tutorial status: " + ex.Message);
+        }
+    }
+    public async void LoadInventoryPictures()
     {
         List<PictureData> pictureDatas = new List<PictureData>();
+
+        try
+        {
+            List<PictureData> databasePictures;
+
 #if UNITY_EDITOR
-        FirestoreManager.instance.pictureDatasHandler.GetAllPictureInDatabase("ahmet123").ContinueWithOnMainThread(task =>
-        {
-            if (task.IsCompleted && !task.IsFaulted)
-            {
-                List<PictureData> databasePictures = task.Result;
-                foreach (PictureData picture in databasePictures)
-                {
-                    if (!picture.isActive)
-                    {
-                        pictureDatas.Add(picture);
-                    }
-                }
-            }
-            else
-            {
-                Debug.LogError("Hata olustu: " + task.Exception);
-            }
-        });
+            databasePictures = await FirestoreManager.instance.pictureDatasHandler
+            .GetAllPictureInDatabase("ahmet123")
+                .WithCancellation(GetFirebaseToken().Token);
 #else
-        FirestoreManager.instance.pictureDatasHandler.GetAllPictureInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).ContinueWithOnMainThread(task =>
-        {
-            if (task.IsCompleted && !task.IsFaulted)
+            databasePictures = await FirestoreManager.instance.pictureDatasHandler
+                .GetAllPictureInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId)
+                .WithCancellation(GetFirebaseToken().Token);
+#endif
+
+            foreach (PictureData picture in databasePictures)
             {
-                List<PictureData> databasePictures = task.Result;
-                foreach (PictureData picture in databasePictures)
+                if (!picture.isActive)
                 {
-                    if (!picture.isActive)
-                    {
-                        pictureDatas.Add(picture);
-                    }
+                    pictureDatas.Add(picture);
                 }
             }
-            else
-            {
-                Debug.LogError("Hata olustu: " + task.Exception);
-            }
-        });
-#endif
-        MuseumManager.instance.InventoryPictures = pictureDatas;
+
+            MuseumManager.instance.InventoryPictures = pictureDatas;
+        }
+        catch (System.Threading.Tasks.TaskCanceledException)
+        {
+            Debug.Log("LoadInventoryPictures was canceled.");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Error loading inventory pictures: " + ex.Message);
+        }
     }
     public async void LoadPurchasedItems()
     {
         List<ItemData> purchasedItems = new List<ItemData>();
         Dictionary<string, object> gameDatas = new Dictionary<string, object>();
 #if UNITY_EDITOR
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").WithCancellation(GetFirebaseToken().Token);
 #else
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).WithCancellation(GetFirebaseToken().Token);
 #endif
         List<int> itemIDs = ((List<object>)gameDatas["PurchasedItemIDs"]).Select(x => Convert.ToInt32(x)).ToList();
         foreach (int id in itemIDs)
@@ -627,34 +726,91 @@ public class GameManager : MonoBehaviour
             ItemData removeItem = ItemManager.instance.RItems.Where(x => x.ID == item.ID).SingleOrDefault();
             Debug.Log($"Silinecek Item: {removeItem.ID}:{removeItem.Name}");
             ItemManager.instance.RItems.Remove(removeItem);
+        }        
+    }
+    
+    public void TranslateAllItems()
+    {        
+        List<LanguageData> databaseItemDescLanguages = LanguageDatabase.instance.Language.ItemDescriptions;
+        List<ItemData> allItems = ItemManager.instance.AllItems;
+        int allItemLength = allItems.Count;
+        List<ItemData> translatedAllItems = ItemManager.instance.AllItems;
+        for (int i = 0; i < allItemLength; i++)
+        {
+            ItemData item = translatedAllItems[i]; //begin
+            LanguageData targetLanguageData = databaseItemDescLanguages.Where(x => x.TargetID == item.ID).SingleOrDefault();
+            //process
+            if (MuseumManager.instance.PurchasedItems.Any(x => x.ID == item.ID))
+            {
+                Debug.Log($"this item {item.Name} is contain in the PurchasedItems list.");
+                ItemData purchItem = MuseumManager.instance.PurchasedItems.Where(x => x.ID == item.ID).SingleOrDefault();
+                if (item.Description != string.Empty)
+                {
+                    if (targetLanguageData is not null)
+                        purchItem.Description = targetLanguageData.ActiveLanguage;
+                    else
+                        Debug.Log($"{purchItem.ID} idli item null (Birden fazla item olabilir mi => {databaseItemDescLanguages.Where(x => x.TargetID == item.ID).Count() > 1})");
+                }
+                int index = MuseumManager.instance.PurchasedItems.IndexOf(item);
+                MuseumManager.instance.PurchasedItems[index] = purchItem;
+            }
+            if (ItemManager.instance.ShopItemDatas.Any(x => x.ID == item.ID))
+            {
+                Debug.Log($"this item {item.Name} is contain in the ShopItemDatas list.");
+                ItemData purchItem = ItemManager.instance.ShopItemDatas.Where(x => x.ID == item.ID).SingleOrDefault();
+                if (item.Description != string.Empty)
+                {
+                    if (targetLanguageData is not null)
+                        purchItem.Description = targetLanguageData.ActiveLanguage;
+                    else
+                        Debug.Log($"{purchItem.ID} idli item null (Birden fazla item olabilir mi => {databaseItemDescLanguages.Where(x => x.TargetID == item.ID).Count() > 1})");
+                }
+                int index = ItemManager.instance.ShopItemDatas.IndexOf(item);
+                ItemManager.instance.ShopItemDatas[index] = purchItem;
+            }
+            if (ItemManager.instance.IAPItems.Any(x => x.ID == item.ID))
+            {
+                Debug.Log($"this item {item.Name} is contain in the IAPItems list.");
+                ItemData purchItem = ItemManager.instance.IAPItems.Where(x => x.ID == item.ID).SingleOrDefault();
+                if (item.Description != string.Empty)
+                {
+                    if (targetLanguageData is not null)
+                        purchItem.Description = targetLanguageData.ActiveLanguage;
+                    else
+                        Debug.Log($"{purchItem.ID} idli item null (Birden fazla item olabilir mi => {databaseItemDescLanguages.Where(x => x.TargetID == item.ID).Count() > 1})");
+                }
+                int index = ItemManager.instance.IAPItems.IndexOf(item);
+                ItemManager.instance.IAPItems[index] = purchItem;
+            }
+            if (item.Description != string.Empty)
+            {
+                if (targetLanguageData is not null)
+                    item.Description = targetLanguageData.ActiveLanguage;
+                else
+                    Debug.Log($"{item.ID} idli item null (Birden fazla item olabilir mi => {databaseItemDescLanguages.Where(x => x.TargetID == item.ID).Count() > 1})");
+            }
+            //process
+            translatedAllItems[i] = item;//end
         }
-
+        Debug.Log("All Items Localized.");
+        ItemManager.instance.AllItems = translatedAllItems;
     }
     public async System.Threading.Tasks.Task LoadSkills()
     {
         List<SkillNode> afterDatabaseSkills = new List<SkillNode>();
         List<SkillNode> allSkills = SkillTreeManager.instance.skillNodes.ToList();
-        //        foreach (var skill in SkillTreeManager.instance.skillNodes)
-        //        {
-        //            SkillNode s = null;
-        //#if UNITY_EDITOR
-        //            await FirestoreManager.instance.skillDatasHandler.GetSkillsInDatabase("ahmet123", skill.ID);
-        //#else
-        //            await FirestoreManager.instance.skillDatasHandler.GetSkillsInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId, skill.ID);
-        //#endif
-        //            if (s != null)
-        //                afterDatabaseSkills.Add(s);
-        //            else
-        //                afterDatabaseSkills.Add(skill);
-
-        //        }
         List<int> skillNodeIDs = allSkills.Select(x => x.ID).ToList();
+
 #if UNITY_EDITOR
-        afterDatabaseSkills = await FirestoreManager.instance.skillDatasHandler.GetSkillsInDatabase("ahmet123", skillNodeIDs);
+        afterDatabaseSkills = await FirestoreManager.instance.skillDatasHandler.GetSkillsInDatabase("ahmet123", skillNodeIDs).WithCancellation(GetFirebaseToken().Token);
 #else
-            afterDatabaseSkills = await FirestoreManager.instance.skillDatasHandler.GetSkillsInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId, skillNodeIDs);
+    afterDatabaseSkills = await FirestoreManager.instance.skillDatasHandler.GetSkillsInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId, skillNodeIDs).WithCancellation(GetFirebaseToken().Token);
 #endif
-        int length = allSkills.Count;
+
+        int length = allSkills.Count; 
+
+        SkillTreeManager.instance.RefreshSkillBonuses();
+
         for (int i = 0; i < length; i++)
         {
             if (i < afterDatabaseSkills.Count)
@@ -664,19 +820,78 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                allSkills[i].SkillEffect = allSkills[i].SkillEffect = $"+{allSkills[i].Amounts[allSkills[i].SkillCurrentLevel > 0 ? allSkills[i].SkillCurrentLevel - 1 : 0]} {allSkills[i].defaultEffectString}";
+                allSkills[i].SkillEffect = $"+{allSkills[i].Amounts[allSkills[i].SkillCurrentLevel > 0 ? allSkills[i].SkillCurrentLevel - 1 : 0]} {allSkills[i].defaultEffectString}";
                 SkillTreeManager.instance.SetSkillTextProcess(allSkills[i]);
                 Debug.Log(allSkills[i].ID + " li skill UI guncellenmistir.");
             }
-            if (i == length - 1)
-            {
-                SkillTreeManager.instance.RefreshSkillBonuses();
-                break;
-            }
-        }        
-        
+        }
+    }
+    public void TranslateAllSkills()
+    {
+        //Çeviri iþlemlerini baþlat
+        List<SkillNode> allSkills = SkillTreeManager.instance.skillNodes;
+
+        List<LanguageData> skillNamesDatas = LanguageDatabase.instance.Language.SkillNames;
+        List<LanguageData> skillDescDatas = LanguageDatabase.instance.Language.SkillDescriptions;
+        List<LanguageData> skillEffectDatas = LanguageDatabase.instance.Language.SkillEffects;
+        List<LanguageData> skillDefaultEffectStringDatas = LanguageDatabase.instance.Language.SkillDefaultStrings;
+        int length = allSkills.Count;
+        for (int i = 0; i < length; i++)
+        {
+            SkillNode currentSkill = allSkills[i];
+            currentSkill.SkillName = skillNamesDatas.Where(x => x.TargetID == currentSkill.ID).SingleOrDefault().ActiveLanguage;
+            currentSkill.SkillDescription = skillDescDatas.Where(x => x.TargetID == currentSkill.ID).SingleOrDefault().ActiveLanguage;
+            currentSkill.SkillEffect = skillEffectDatas.Where(x => x.TargetID == currentSkill.ID).SingleOrDefault().ActiveLanguage;
+            currentSkill.defaultEffectString = skillDefaultEffectStringDatas.Where(x => x.TargetID == currentSkill.ID).SingleOrDefault().ActiveLanguage;
+        }
+    }
+    public void TranslateCommendsEvulations()
+    {
+        List<TableCommentEvaluationData> allDatas = TableCommentEvaluationManager.instance.datas;
+        List<LanguageData> commendLanguageDatas = LanguageDatabase.instance.Language.CommendEvulations;
+        int length = allDatas.Count;
+        for (int i = 0; i < length; i++)
+        {
+            allDatas[i].Message = commendLanguageDatas[i].ActiveLanguage;
+        }
+    }
+    public void TranslateSkillInfos()
+    {
+        List<LanguageData> skillInfoLanguageDatas = LanguageDatabase.instance.Language.SkillInfoStrings;
+        int length = skillInfoLanguageDatas.Count;
+        for (int i = 0; i < length; i++)
+        {
+            UIController.instance.languageStrings.Add(skillInfoLanguageDatas[i].ActiveLanguage);
+        }
+    }
+    public void TranslatePictureInfos()
+    {
+        List<LanguageData> pictureInfoLanguageDatas = LanguageDatabase.instance.Language.PictureInfoStrings;
+        int length = pictureInfoLanguageDatas.Count;
+        for (int i = 0; i < length; i++)
+        {
+            PicturesMenuController.instance.PictureStrings.Add(pictureInfoLanguageDatas[i].ActiveLanguage);
+        }
     }
 
+    public void TranslateShopQuestionInfos()
+    {
+        List<LanguageData> questionInfoLanguageDatas = LanguageDatabase.instance.Language.ShopQuestionInfoStrings;
+        int length = questionInfoLanguageDatas.Count;
+        for (int i = 0; i < length; i++)
+        {
+            UIController.instance.SkillQuestionInfos.Add(questionInfoLanguageDatas[i].ActiveLanguage);
+        }
+    }
+    // Ceviri islemlerinin tamamlanip tamamlanmadigini kontrol eder.
+    private void CheckAndSetCompletion(ref int completedProcesses, System.Threading.Tasks.TaskCompletionSource<bool> tcs)
+    {
+        completedProcesses++;
+        if (completedProcesses >= 4)
+        {
+            tcs.SetResult(true);
+        }
+    }
     public async System.Threading.Tasks.Task LoadWorkers()
     {
         int length = WorkerManager.instance.WorkersContent.childCount;
@@ -697,9 +912,9 @@ public class GameManager : MonoBehaviour
         Dictionary<string, object> gameDatas = new Dictionary<string, object>();
         List<WorkerBehaviour> allWorkers = WorkerManager.instance.GetAllWorkers();
 #if UNITY_EDITOR
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").WithCancellation(GetFirebaseToken().Token);
 #else
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).WithCancellation(GetFirebaseToken().Token);
 #endif
         BaseWorkerHiringPrice = Convert.ToSingle(gameDatas["BaseWorkerHiringPrice"]);
 
@@ -708,9 +923,9 @@ public class GameManager : MonoBehaviour
         List<int> workerIds = allWorkers.Select(x => x.ID).ToList();
         Debug.Log("workerIds.Count => " + workerIds.Count);
 #if UNITY_EDITOR
-        currentActiveWorkers = await FirestoreManager.instance.workerDatasHandler.GetWorkersInDatabase("ahmet123", workerIds);
+        currentActiveWorkers = await FirestoreManager.instance.workerDatasHandler.GetWorkersInDatabase("ahmet123", workerIds).WithCancellation(GetFirebaseToken().Token);
 #else
-        currentActiveWorkers = await FirestoreManager.instance.workerDatasHandler.GetWorkersInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId, workerIds);
+        currentActiveWorkers = await FirestoreManager.instance.workerDatasHandler.GetWorkersInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId, workerIds).WithCancellation(GetFirebaseToken().Token);
 #endif
         foreach (WorkerData databaseWorker in currentActiveWorkers)
         {
@@ -780,14 +995,20 @@ public class GameManager : MonoBehaviour
         List<ItemData> dailyRewardItems = new List<ItemData>();
         Dictionary<string, object> gameDatas = new Dictionary<string, object>();
 #if UNITY_EDITOR
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").WithCancellation(GetFirebaseToken().Token);
 #else
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).WithCancellation(GetFirebaseToken().Token);
 #endif
         List<int> itemIDs = ((List<object>)gameDatas["DailyRewardItemIDs"]).Select(x => Convert.ToInt32(x)).ToList();
-        foreach (int id in itemIDs)
+        List<bool> itemsPurchased = ((List<object>)gameDatas["DailyRewardItemsPurchased"]).Select(x => Convert.ToBoolean(x)).ToList();
+        List<bool> itemsLocked = ((List<object>)gameDatas["DailyRewardItemsLocked"]).Select(x => Convert.ToBoolean(x)).ToList();
+        int length = itemIDs.Count;
+        for (int i = 0; i < length; i++)
         {
-            ItemData databaseItem = ItemManager.instance.GetAllDailyRewardItemDatas().Where(x=> x.ID == id).SingleOrDefault();
+            ItemData databaseItem = ItemManager.instance.GetAllDailyRewardItemDatas().Where(x => x.ID == itemIDs[i]).SingleOrDefault();
+            databaseItem.IsPurchased = itemsPurchased[i];
+            databaseItem.IsLocked = itemsLocked[i];
+            Debug.Log($"DailyRewardDatabase id:{itemIDs[i]} and ItemManager item id {databaseItem.ID}");
             dailyRewardItems.Add(databaseItem);
         }
         if (dailyRewardItems.Count > 0)
@@ -797,9 +1018,9 @@ public class GameManager : MonoBehaviour
     {
         Dictionary<string, object> gameDatas = new Dictionary<string, object>();
 #if UNITY_EDITOR
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123");
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").WithCancellation(GetFirebaseToken().Token);
 #else
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).WithCancellation(GetFirebaseToken().Token);
 #endif
         string lastDateTimeString = gameDatas.ContainsKey("LastDailyRewardTime")? gameDatas["LastDailyRewardTime"].ToString(): "";
         byte whatDay = gameDatas.ContainsKey("WhatDay") ? Convert.ToByte(gameDatas["WhatDay"]): (byte)0;
@@ -811,21 +1032,29 @@ public class GameManager : MonoBehaviour
             TimeManager.instance.WhatDay = whatDay;
         }
     }
-
-    public void LoadStatues()
+    public System.Threading.CancellationTokenSource GetFirebaseToken()
     {
-        //RoomManager.instance.statuesHandler.activeEditObjs = CurrentSaveData.StatueDatas;
-
-        //foreach (var statue in RoomManager.instance.statuesHandler.activeEditObjs)
-        //{
-        //    RoomManager.instance.AddSavedStatues(statue);
-        //}
+        return cts;
+    }
+    private void CancelFirebaseOperations()
+    {
+        if (cts != null)
+        {
+            cts.Cancel();
+            cts.Dispose();
+            cts = new System.Threading.CancellationTokenSource(); // Yeni bir token oluþtur.
+        }
     }
 
     private void OnApplicationQuit()
     {
-        //TimeManager.instance.FirstOpen = true;
-        //Save();
+        // Oyun arka plana alýndýðýnda Firebase ile veri güncelleme
+#if UNITY_EDITOR
+         FirestoreManager.instance.UpdateGameData("ahmet123");
+#else
+         FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+#endif
+        CancelFirebaseOperations();
     }
     private void OnApplicationPause(bool pause)
     {
@@ -836,7 +1065,11 @@ public class GameManager : MonoBehaviour
 #else
             FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
 #endif
+            CancelFirebaseOperations();
+            Time.timeScale = 0;
         }
+        else
+            Time.timeScale = 1;
     }
 }
 
@@ -876,7 +1109,29 @@ public class PlayerSaveData
     //DailyReward
     public string LastDailyRewardTime = "";
     public byte WhatDay;
-}    
+}
+namespace TaskExtensions
+{
+    using System.Threading.Tasks;
+    using System.Threading;
+    public static class TaskHelper
+    {
+        public static async Task<T> WithCancellation<T>(this Task<T> task, CancellationToken cancellationToken)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            using (cancellationToken.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs))
+            {
+                if (task != await Task.WhenAny(task, tcs.Task))
+                {
+                    throw new TaskCanceledException(task);
+                }
+            }
+
+            return await task; // task baþarýyla tamamlandý, sonucu dön.
+        }
+    }
+}
 
 public enum GameMode
 {
@@ -885,4 +1140,34 @@ public enum GameMode
     FPS,
     Ghost,
     RoomEditing
+}
+namespace Translator
+{
+    using UnityEngine;
+    using I2.Loc;
+    using System.Collections;
+    using System.Threading.Tasks;
+
+    public class DynamicTranslation : MonoBehaviour
+    {
+        public async Task<string> TranslateTextAsync(string text, string targetLanguage)
+        {
+            // I2 Localization kullanarak çeviri iþlemi
+            // ForceTranslate fonksiyonunu doðrudan çaðýrýyoruz.
+            string localizedText = GoogleTranslation.ForceTranslate(text, "auto", targetLanguage);
+
+            Debug.Log("LocalizedText => " + localizedText);
+
+            // Çevirinin baþarýlý olup olmadýðýný kontrol edin
+            if (!string.IsNullOrEmpty(localizedText))
+            {
+                return localizedText;
+            }
+            else
+            {
+                Debug.LogError("Çeviri baþarýsýz oldu.");
+                return text; // Çeviri baþarýsýzsa, orijinal metni döndür
+            }
+        }
+    }
 }

@@ -128,6 +128,7 @@ public class SkillTreeManager : MonoBehaviour
 
     public void RefreshSkillBonuses()
     {
+        Debug.Log("RefreshSkillBonuses method is starting...");
         CurrentBuffs = new List<int>();
         for (int i = 0; i < 40; i++)
         {
@@ -137,15 +138,21 @@ public class SkillTreeManager : MonoBehaviour
         foreach (var skill in activeSkills)
         {
             int _currentStatAmount = skill.buffs.Count;
+            Debug.Log(skill.ID + " idli skillin mevcut buff sayisi => " + _currentStatAmount);
             for (int i = 0; i < _currentStatAmount; i++)
             {
                 int _currentAmount = skill.Amounts[(i) * skill.SkillMaxLevel + (skill.SkillCurrentLevel - 1)];
+                Debug.Log($"{skill.ID} id li skillin {skill.buffs[i]} buffunun degeri {skill.Amounts[(i) * skill.SkillMaxLevel + (skill.SkillCurrentLevel - 1)]}dir. currentAmount:{_currentAmount}");
                 CurrentBuffs[(int)skill.buffs[i]] += _currentAmount;
                 if ( skill.buffs[i] == eStat.VisitorCapacity)
                 {
                     //skill.SkillRequiredPoint = _currentAmount;
                 }
             }
+        }
+        if (SpawnHandler.instance != null && GameManager.instance.IsWatchTutorial)
+        {
+            SpawnHandler.instance.StartSpawnProcess();
         }
     }
     public void SetSkillTextProcess(SkillNode skill)

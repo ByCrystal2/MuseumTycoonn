@@ -67,9 +67,10 @@ public class UIController : MonoBehaviour
     public Button unlockButton;
     [SerializeField] private GameObject[] InfoPointerUIs;
     [SerializeField] private Transform[] InfoPointers;
-
+    [SerializeField] Button AddCultureLevelButton; //Only Editor!
     [Header("Skill Tree RequiredPanel")]
     public GameObject SkillRequiredInfoPanel;
+    [SerializeField] Transform[] SubPanelLocations;
     public GameObject RequiredPoint;
     public GameObject RequiredMoney;
     public GameObject YeterliPoint;
@@ -154,7 +155,10 @@ public class UIController : MonoBehaviour
     [SerializeField] private Transform ActivePnlBtnBookDefaultPos;
     [SerializeField] private Transform ActivePnlBtnWorkerMarketDefaultPos;
     [SerializeField] private Transform ActivePnlBtnWorkerAssignmentDefaultPos;
-
+    public List<string> SkillQuestionInfos = new List<string>(); // 0 => Purchase Process | 1 => Do you confirm the purchase? | 2 => Available | 3 => Gem | 4 => Gold | 5 => Product Price | 6 => Paid
+    #region Language string proparties
+    public List<string> languageStrings = new List<string>();
+    #endregion
     //[SerializeField] GameObject EditModeCanvas;
     private Vector3 defaultBtnBookPos, defaultBtnWorkerMarketPos, defaultBtnWorkerAssignmentPos;
     public static UIController instance { get; private set; }
@@ -175,7 +179,7 @@ public class UIController : MonoBehaviour
         CultureLevelText.text = "" + MuseumManager.instance.GetCurrentCultureLevel();
         WorkerPanelDefaultPos = WorkerContent.position;
         defaultGemTextPos = GemText.transform.localPosition;
-        defaultGoldTextPos = GoldText.transform.localPosition;
+        defaultGoldTextPos = GoldText.transform.localPosition;        
     }
     private void Start()
     {
@@ -213,6 +217,12 @@ public class UIController : MonoBehaviour
         DailyRewardPanelOnButton.onClick.AddListener(() => ActiveInHierarchyDailyRewardPanelControl());
 
         MuseumManager.instance.CalculateAndAddTextAllInfos();
+#if UNITY_EDITOR
+        AddCultureLevelButton.gameObject.SetActive(true);
+        AddCultureLevelButton.onClick.AddListener(()=> MuseumManager.instance.AddCultureExp(MuseumManager.instance.GetRequiredCultureExp()));
+#else
+        AddCultureLevelButton.gameObject.SetActive(false);
+#endif
         
     }
 
@@ -477,14 +487,45 @@ public class UIController : MonoBehaviour
         Debug.Log("Selected Skill Gameobject => " + SkillTreeManager.instance.SelectedSkillGameObject.gameObject);
         if (SkillTreeManager.instance.SelectedSkillGameObject != null)
         {
-            int point = (int)SkillTreeManager.instance.SelectedSkillGameObject.GetComponent<BaseSkillOptions>().MyPoint;
+            BaseSkillOptions baseSkillOptions = SkillTreeManager.instance.SelectedSkillGameObject.GetComponent<BaseSkillOptions>();
+            int point = (int)baseSkillOptions.MyPoint;
             foreach (GameObject pointUI in InfoPointerUIs)
             {
                 pointUI.SetActive(false);
+            }            
+            
+
+            // Pozisyonu belirlemek için bir switch-case yapýsý kullan
+            skillInfoPanel.transform.position = baseSkillOptions.transform.position;
+            RectTransform panelRectTransform = skillInfoPanel.GetComponent<RectTransform>();
+
+            Vector3 oldSkillRequierdPanelPos = SkillRequiredInfoPanel.transform.position;
+            Vector3 newSkillRequierdPanelPos = new Vector3(SubPanelLocations[0].position.x, oldSkillRequierdPanelPos.y);
+            SkillRequiredInfoPanel.transform.position = newSkillRequierdPanelPos;
+            int pointerIndex = 0;
+            switch ((BaseSkillOptions.SkillPoint)point)
+            {
+                case BaseSkillOptions.SkillPoint.Point1: // Sol üst köþe
+                    panelRectTransform.pivot = new Vector2(1, 0);
+                    pointerIndex = 3;
+                    break;
+                case BaseSkillOptions.SkillPoint.Point2: // Sað üst köþe
+                    panelRectTransform.pivot = new Vector2(0, 0);
+                    pointerIndex = 2;
+                    break;
+                case BaseSkillOptions.SkillPoint.Point3: // Sol alt köþe
+                    panelRectTransform.pivot = new Vector2(1, 1);
+                    pointerIndex = 1;
+                    Vector3 oldSkillRequierdPanelPos1 = SkillRequiredInfoPanel.transform.position;
+                    Vector3 newSkillRequierdPanelPos1 = new Vector3(SubPanelLocations[1].position.x, oldSkillRequierdPanelPos1.y);
+                    SkillRequiredInfoPanel.transform.position = newSkillRequierdPanelPos1;
+                    break;
+                case BaseSkillOptions.SkillPoint.Point4: // Sað alt köþe
+                    panelRectTransform.pivot = new Vector2(0, 1);
+                    pointerIndex = 0;
+                    break;
             }
-            InfoPointerUIs[point].SetActive(true);
-            // InfoPointers[point].position;
-            skillInfoPanel.transform.position = SkillTreeManager.instance.SelectedSkillGameObject.GetComponent<BaseSkillOptions>().GetMyCurrentPointTransform().position;
+            InfoPointerUIs[pointerIndex].SetActive(true);
         }
         // Yetenek adi, aciklama ve etkiyi guncelle
         skillNameText.text = selectedSkill.SkillName;
@@ -492,7 +533,7 @@ public class UIController : MonoBehaviour
         skillEffectText.text = selectedSkill.SkillEffect;
         if (selectedSkill.SkillCurrentLevel < selectedSkill.SkillMaxLevel)
         {
-            skillRequiredPointText.text = "Requires Point: " + selectedSkill.SkillRequiredPoint;
+            skillRequiredPointText.text = languageStrings[0] + ": " + selectedSkill.SkillRequiredPoint;
             skillRequiredMoneyText.text = "$" + selectedSkill.SkillRequiredMoney;
         }
         else
@@ -506,12 +547,45 @@ public class UIController : MonoBehaviour
         skillInfoPanel.SetActive(true);
         if (selectedSkill.IsPurchased && selectedSkill.SkillCurrentLevel == selectedSkill.SkillMaxLevel)
         {
-            ChangedUnlockButton(false, "Max Seviye", Color.white);
+            ChangedUnlockButton(false, languageStrings[1], Color.white);
             SkillRequiredInfoPanel.SetActive(false);
             return;
         }
         SkillUnLockButtonControl(selectedSkill);
         UpdateSkillInfos(selectedSkill);
+    }
+    Canvas mainCanvas;
+    private void PositionSkillInfoPanel(BaseSkillOptions baseSkillOptions)
+    {
+        int pointIndex = (int)baseSkillOptions.MyPoint;
+        Transform selectedPoint = baseSkillOptions.GetMyCurrentPointTransform();
+        Vector3 worldPosition = selectedPoint.position;
+        Vector2 screenPosition = Camera.main.WorldToScreenPoint(worldPosition);
+
+        RectTransform panelRectTransform = skillInfoPanel.GetComponent<RectTransform>();
+        Vector2 anchoredPosition;
+        if (mainCanvas == null)
+            mainCanvas = skillInfoPanel.GetComponentInParent<Canvas>();
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                mainCanvas.GetComponent<RectTransform>(), screenPosition, mainCanvas.worldCamera, out anchoredPosition))
+        {
+            switch (baseSkillOptions.MyPoint)
+            {
+                case BaseSkillOptions.SkillPoint.Point1:
+                    panelRectTransform.pivot = new Vector2(1, 0);
+                    break;
+                case BaseSkillOptions.SkillPoint.Point2:
+                    panelRectTransform.pivot = new Vector2(0, 0);
+                    break;
+                case BaseSkillOptions.SkillPoint.Point3:
+                    panelRectTransform.pivot = new Vector2(1, 1);
+                    break;
+                case BaseSkillOptions.SkillPoint.Point4:
+                    panelRectTransform.pivot = new Vector2(0, 1);
+                    break;
+            }
+            panelRectTransform.anchoredPosition = anchoredPosition;
+        }
     }
     public void ForTutorialUnityEventSkillInfoShow(GameObject _selectedSkillObj)
     {
@@ -540,7 +614,7 @@ public class UIController : MonoBehaviour
         skillEffectText.text = selectedSkill.SkillEffect;
         if (selectedSkill.SkillCurrentLevel < selectedSkill.SkillMaxLevel)
         {
-            skillRequiredPointText.text = "Requires Point: " + selectedSkill.SkillRequiredPoint;
+            skillRequiredPointText.text = languageStrings[0] + ": " + selectedSkill.SkillRequiredPoint;
             skillRequiredMoneyText.text = "$" + selectedSkill.SkillRequiredMoney;
         }
         else
@@ -554,7 +628,7 @@ public class UIController : MonoBehaviour
         skillInfoPanel.SetActive(true);
         if (selectedSkill.IsPurchased && selectedSkill.SkillCurrentLevel == selectedSkill.SkillMaxLevel)
         {
-            ChangedUnlockButton(false, "Max Seviye", Color.white);
+            ChangedUnlockButton(false, languageStrings[1], Color.white);
             SkillRequiredInfoPanel.SetActive(false);
             return;
         }
@@ -586,7 +660,7 @@ public class UIController : MonoBehaviour
                     skillNameText.text = currentSkill.SkillName;
                     skillDescriptionText.text = currentSkill.SkillDescription;
                     skillEffectText.text = currentSkill.SkillEffect;
-                    skillRequiredPointText.text = "Requires Point: " + currentSkill.SkillRequiredPoint;
+                    skillRequiredPointText.text = languageStrings[0] + ": " + currentSkill.SkillRequiredPoint;
                     skillRequiredMoneyText.text = "$" + currentSkill.SkillRequiredMoney;
                 }
                 else
@@ -607,7 +681,7 @@ public class UIController : MonoBehaviour
                 }
                 if (currentSkill.SkillCurrentLevel == currentSkill.SkillMaxLevel)
                 {
-                    ChangedUnlockButton(false, "Max Seviye", Color.white);
+                    ChangedUnlockButton(false, languageStrings[1], Color.white);
                 }
 
                 currentSkill.Purchased(true);
@@ -688,17 +762,17 @@ public class UIController : MonoBehaviour
         SkillNode currentSkill = SkillTreeManager.instance.SelectedSkill;
         if (currentSkill.IsPurchased && currentSkill.SkillCurrentLevel == currentSkill.SkillMaxLevel)
         {
-            ChangedUnlockButton(false, "Max Seviye", Color.white);
+            ChangedUnlockButton(false, languageStrings[1], Color.white);
             return;
         }
         else if (currentSkill.IsPurchased && currentSkill.SkillCurrentLevel != currentSkill.SkillMaxLevel && MuseumManager.instance.GetCurrentSkillPoint() >= currentSkill.SkillRequiredPoint && MuseumManager.instance.GetCurrentGold() >= currentSkill.SkillRequiredMoney)
         {
-            ChangedUnlockButton(true, "Seviye Arttýr", Color.green);
+            ChangedUnlockButton(true, languageStrings[2], Color.green);
             return;
         }
         else if (currentSkill.IsPurchased && currentSkill.SkillCurrentLevel != currentSkill.SkillMaxLevel && MuseumManager.instance.GetCurrentSkillPoint() < currentSkill.SkillRequiredPoint)
         {
-            ChangedUnlockButton(false, "Kilitli", Color.red);
+            ChangedUnlockButton(false, languageStrings[3], Color.red);
             return;
         }
         SkillTreeManager.instance.CalculateForCurrentSkillEnoughLevelAndMoney(currentSkill);
@@ -710,11 +784,11 @@ public class UIController : MonoBehaviour
 
         if (!_selectedSkill.IsLocked && _selectedSkill.SkillCurrentLevel != _selectedSkill.SkillMaxLevel)
         {
-            ChangedUnlockButton(true, "Seviye Arttýr", Color.green);
+            ChangedUnlockButton(true, languageStrings[2], Color.green);
         }
         else
         {
-            ChangedUnlockButton(false, "Kilitli", Color.red);
+            ChangedUnlockButton(false, languageStrings[3], Color.red);
         }
     }
 
