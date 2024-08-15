@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -229,6 +230,10 @@ public class AchievementController : ScriptableObject
     }
     public void IncreasePurchasedRoomCount()
     {
+        int maxTargetNumber = purchasedRoomAchievements.Last().TargetNumber;
+
+        if (PurchasedRoomCount >= maxTargetNumber)
+            return;
         PurchasedRoomCount++;
 //#if UNITY_EDITOR
 //        FirestoreManager.instance.UpdateGameData("ahmet123");
@@ -238,6 +243,10 @@ public class AchievementController : ScriptableObject
     }
     public void IncreaseNumberOfTablesPlaced()
     {
+        int maxTargetNumber = placedTableAchievements.Last().TargetNumber;
+
+        if (NumberOfTablesPlaced >= maxTargetNumber)
+            return;
         NumberOfTablesPlaced++;
 //#if UNITY_EDITOR
 //        FirestoreManager.instance.UpdateGameData("ahmet123");
@@ -247,6 +256,10 @@ public class AchievementController : ScriptableObject
     }
     public void IncreaseNumberOfVisitors()
     {
+        int maxTargetNumber = visitorCountAchievements.Last().TargetNumber;
+
+        if (NumberOfVisitors >= maxTargetNumber)
+            return;
         NumberOfVisitors++;
 //#if UNITY_EDITOR
 //        FirestoreManager.instance.UpdateGameData("ahmet123");
@@ -256,55 +269,115 @@ public class AchievementController : ScriptableObject
     }
     public void IncreaseNumberOfStatuesPlaced()
     {
+        int maxTargetNumber = statuesPlacedCountAchievements.Last().TargetNumber;
+
+        if (NumberOfStatuesPlaced >= maxTargetNumber)
+            return;
+
         NumberOfStatuesPlaced++;
-//#if UNITY_EDITOR
-//        FirestoreManager.instance.UpdateGameData("ahmet123");
-//#else
-//        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-//#endif
+        //#if UNITY_EDITOR
+        //    FirestoreManager.instance.UpdateGameData("ahmet123");
+        //#else
+        //FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+        //#endif
     }
+
     public void IncreaseOrDecreaseTotalNumberOfMuseumVisitor(bool _increase)
     {
+        int maxTargetNumber = totalVisitorCountAchievements.Last().TargetNumber;
+
+        if (TotalNumberOfMuseumVisitors >= maxTargetNumber)
+        {
+            Debug.LogWarning("Total number of museum visitors has already reached the maximum target number.");
+            return;
+        }
+
+        if (!_increase && TotalNumberOfMuseumVisitors <= 0)
+        {
+            Debug.LogWarning("Total number of museum visitors cannot be less than 0.");
+            return;
+        }
+
         if (_increase)
             TotalNumberOfMuseumVisitors++;
         else
-        {
-            if (TotalNumberOfMuseumVisitors - 1 < 0)
-                return;
             TotalNumberOfMuseumVisitors--;
-        }
-//#if UNITY_EDITOR
-//        FirestoreManager.instance.UpdateGameData("ahmet123");
-//#else
-//        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-//#endif
+
+        //#if UNITY_EDITOR
+        //    FirestoreManager.instance.UpdateGameData("ahmet123");
+        //#else
+        //FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+        //#endif
     }
+
     public void IncreaseWorkerHiringCount(WorkerType _workerType)
     {
-        int index = (int)(_workerType + 1);
-        WorkerAchievement workerAchievement = WorkerHiringAchievementControl[index];
-        workerAchievement.NumberOfWorkersOwned++;
-        WorkerHiringAchievementControl[index] = workerAchievement;
-        TotalWorkerHiringCount++;
-//#if UNITY_EDITOR
-//        FirestoreManager.instance.UpdateGameData("ahmet123");
-//#else
-//        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-//#endif
+        int index = (int)_workerType - 1;
+        if (index >= 0 && index < WorkerHiringAchievementControl.Count)
+        {
+            WorkerAchievement workerAchievement = WorkerHiringAchievementControl[index];
+
+            // Son elemanýn TargetNumber'ýný alýyoruz
+            int maxTargetNumber = workerAchievement.WorkerAchievements.Last().Controls.Max(control => control.TargetNumber);
+
+            // Eðer mevcut iþçi sayýsý maxTargetNumber'dan büyükse, metottan çýk
+            if (workerAchievement.NumberOfWorkersOwned > maxTargetNumber)
+            {
+                Debug.LogWarning($"WorkerHiringCount has already reached the maximum target number for {workerAchievement}");
+                return;
+            }
+
+            workerAchievement.NumberOfWorkersOwned++;
+            WorkerHiringAchievementControl[index] = workerAchievement;
+            TotalWorkerHiringCount++;
+
+            //#if UNITY_EDITOR
+            //        FirestoreManager.instance.UpdateGameData("ahmet123");
+            //#else
+            //FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+            //#endif
+        }
+        else
+        {
+            Debug.LogError($"index:{index} | WorkerHiringAchievementControl.Count:{WorkerHiringAchievementControl.Count}");
+        }
     }
+
+
     public void IncreaseWorkerAssignCount(WorkerType _workerType)
     {
-        int index = (int)(_workerType + 1);
-        WorkerAchievement workerAchievement = WorkerAssignAchievementControl[index];
-        workerAchievement.NumberOfWorkersOwned++;
-        WorkerAssignAchievementControl[index] = workerAchievement;
-        TotalWorkerAssignCount++;
-//#if UNITY_EDITOR
-//        FirestoreManager.instance.UpdateGameData("ahmet123");
-//#else
-//        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-//#endif
+        int index = (int)_workerType - 1;
+        if (index >= 0 && index < WorkerAssignAchievementControl.Count)
+        {
+            WorkerAchievement workerAchievement = WorkerAssignAchievementControl[index];
+
+            // Son elemanýn TargetNumber'ýný alýyoruz
+            int maxTargetNumber = workerAchievement.WorkerAchievements.Last().Controls.Max(control => control.TargetNumber);
+
+            // Eðer mevcut iþçi sayýsý maxTargetNumber'dan büyükse, metottan çýk
+            if (workerAchievement.NumberOfWorkersOwned > maxTargetNumber)
+            {
+                Debug.LogWarning($"WorkerAssignCount has already reached the maximum target number for {workerAchievement}");
+                return;
+            }
+
+            workerAchievement.NumberOfWorkersOwned++;
+            WorkerAssignAchievementControl[index] = workerAchievement;
+            TotalWorkerAssignCount++;
+
+            //#if UNITY_EDITOR
+            //        FirestoreManager.instance.UpdateGameData("ahmet123");
+            //#else
+            //FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+            //#endif
+        }
+        else
+        {
+            Debug.LogError($"index:{index} | WorkerAssignAchievementControl.Count:{WorkerAssignAchievementControl.Count}");
+        }
     }
+
+
     private void TotalWorkerHiringControler()
     {//toplam satin alinan isci sayisi controlu        
         foreach (var control in totalWorkerHiringAchievements)
@@ -325,36 +398,47 @@ public class AchievementController : ScriptableObject
             }
         }
     }
-    public void WorkerHiringControl(WorkerType _workerType) 
-    {//isci satin alma sayisi contorlu
-        int index = (int)(_workerType + 1);
-        WorkerAchievement workerAchievement = WorkerHiringAchievementControl[index];
-        foreach (var helper in workerAchievement.WorkerAchievements)
+    public void WorkerHiringControl(WorkerType _workerType)
+    {
+        int index = (int)_workerType - 1;
+        if (index >= 0 && index < WorkerHiringAchievementControl.Count)
         {
-            foreach (var control in helper.Controls)
+            WorkerAchievement workerAchievement = WorkerHiringAchievementControl[index];
+            foreach (var helper in workerAchievement.WorkerAchievements)
             {
-                if (workerAchievement.NumberOfWorkersOwned >= control.TargetNumber)
+                foreach (var control in helper.Controls)
                 {
-                    _achievements.ShowAchievementInSentId(control.AchievementID);
+                    if (workerAchievement.NumberOfWorkersOwned >= control.TargetNumber)
+                    {
+                        _achievements.ShowAchievementInSentId(control.AchievementID);
+                    }
                 }
             }
         }
+        else
+            Debug.LogError($"index:{index} | WorkerHiringAchievementControl.Count:{WorkerHiringAchievementControl.Count}");
         TotalWorkerHiringControler();
     }
+
     public void WorkerAssignControl(WorkerType _workerType)
     {//isci gorev atama sayisi contorlu
-        int index = (int)(_workerType + 1);
-        WorkerAchievement workerAchievement = WorkerAssignAchievementControl[index];
-        foreach (var helper in workerAchievement.WorkerAchievements)
+        int index = (int)_workerType - 1;
+        if (index >= 0 && index < WorkerAssignAchievementControl.Count)
         {
-            foreach (var control in helper.Controls)
+            WorkerAchievement workerAchievement = WorkerAssignAchievementControl[index];
+            foreach (var helper in workerAchievement.WorkerAchievements)
             {
-                if (workerAchievement.NumberOfWorkersOwned >= control.TargetNumber)
+                foreach (var control in helper.Controls)
                 {
-                    _achievements.ShowAchievementInSentId(control.AchievementID);
+                    if (workerAchievement.NumberOfWorkersOwned >= control.TargetNumber)
+                    {
+                        _achievements.ShowAchievementInSentId(control.AchievementID);
+                    }
                 }
             }
         }
+        else
+            Debug.LogError($"index:{index} | WorkerAssignAchievementControl.Count:{WorkerAssignAchievementControl.Count}");
         TotalWorkerAssignControler();
     }
     public void PurchasedRoomControl()
