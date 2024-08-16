@@ -355,16 +355,17 @@ public class ShopController : MonoBehaviour
         }
         else if (_item.CurrentShoppingType == ShoppingType.RealMoney)
         {
-            UIInteractHandler.instance.AskQuestion($"{UIController.instance.SkillQuestionInfos[6]} {UIController.instance.SkillQuestionInfos[0]}", $"{UIController.instance.SkillQuestionInfos[1]}\n({UIController.instance.SkillQuestionInfos[5]}:{_item.RequiredMoney})", (x) =>
-            {//Satin alma islemi onaylandiysa. (yes tusuna basildiysa)
-                BuyingConsumables.instance.BuyItemFromStore(_item);
-                GameManager.instance.Save();
-            }
-             , (y) =>
-             {//Satin alma islemi iptalse. (no tusuna basildiysa)
+            //UIInteractHandler.instance.AskQuestion($"{UIController.instance.SkillQuestionInfos[6]} {UIController.instance.SkillQuestionInfos[0]}", $"{UIController.instance.SkillQuestionInfos[1]}\n({UIController.instance.SkillQuestionInfos[5]}:{_item.RequiredMoney})", (x) =>
+            //{//Satin alma islemi onaylandiysa. (yes tusuna basildiysa)
+            //    BuyingConsumables.instance.BuyItemFromStore(_item);
+            //    GameManager.instance.Save();
+            //}
+            // , (y) =>
+            // {//Satin alma islemi iptalse. (no tusuna basildiysa)
 
-             }, null, null, null, null);
-            
+            // }, null, null, null, null);
+            BuyingConsumables.instance.BuyItemFromStore(_item);
+            GameManager.instance.Save();
         }
 
     }

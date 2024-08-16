@@ -13,6 +13,7 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] GameObject PlayerCinemachineBrain;
     [SerializeField] GameObject TutorialCinemachineBrain;
     [SerializeField] Transform sceneTransPanel;
+    [SerializeField] GameObject skipObj;
     // UI
     [SerializeField] public GameObject DialoguePanel;
     public Animator tutorialNPCanimator;
@@ -60,12 +61,13 @@ public class DialogueManager : MonoBehaviour
     bool coroutineControl = false;
     public void StartTutorial()//DialogueTrigger UnityEvents...
     {
-        
+
         //if (currentCoroutine != null)
         //{
         //    StopCoroutine(currentCoroutine);
         //}
         //currentCoroutine = StartCoroutine(StartTutorialDialogue(currentHelper.Dialogs));
+        skipObj.SetActive(true);
         StartCoroutine(StartTutorialDialogue(currentHelper.Dialogs));
     }
     private IEnumerator StartTutorialDialogue(List<Dialog> _dialogs)
@@ -229,16 +231,36 @@ public class DialogueManager : MonoBehaviour
         tutorialNPCanimator.SetBool(_animString, _animStart);
     }
     private bool waitFirstSentence = false;
+    public bool skipped;
+    public void SkipCurrnetDialogs() //Dialogue Panels Skip Buttons Listening this method.
+    {
+        skipped = true;
+        Debug.Log("Current dialogs is skipped.");
+    }
     IEnumerator TypeSentence(string sentence)
     {
         waitFirstSentence = true;
         currentDialogPanel.dialogText.text = "";
         foreach (char letter in sentence.ToCharArray())
         {
+            if (skipped)
+            {
+                OnSkipProgress();
+                break;
+            }
             currentDialogPanel.dialogText.text += letter;
             yield return new WaitForEndOfFrame();
         }
         waitFirstSentence = false;
+    }
+    void OnSkipProgress()
+    {
+        Debug.Log($"{currentTrigger.Name} adli dialog sahibinin, {(int)currentHelper.WhichStep}. adimi atlandi...");
+        skipped = false;
+        StopAllCoroutines();
+        SetActivationDialoguePanel(false);
+        skipObj.SetActive(false);
+        currentHelper.EventEndingCovered.Invoke();
     }
     public IEnumerator SceneTransPanelActivation(bool _active)
     {
