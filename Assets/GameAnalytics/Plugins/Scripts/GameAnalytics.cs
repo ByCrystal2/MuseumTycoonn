@@ -732,10 +732,10 @@ namespace GameAnalyticsSDK
         }
 
         /// <summary>
-        /// Set up custom error events in the game. You can group the events by severity level and attach a message.
+        /// Set up custom error events in the game. You can group the events by severity level and attach a Message.
         /// </summary>
         /// <param name="severity">Severity of error.</param>
-        /// <param name="message">Error message (Optional, can be nil).</param>
+        /// <param name="message">Error Message (Optional, can be nil).</param>
         public static void NewErrorEvent(GAErrorSeverity severity, string message)
         {
             if(!GameAnalytics._hasInitializeBeenCalled)
@@ -747,10 +747,10 @@ namespace GameAnalyticsSDK
         }
 
         /// <summary>
-        /// Set up custom error events in the game. You can group the events by severity level and attach a message.
+        /// Set up custom error events in the game. You can group the events by severity level and attach a Message.
         /// </summary>
         /// <param name="severity">Severity of error.</param>
-        /// <param name="message">Error message (Optional, can be nil).</param>
+        /// <param name="message">Error Message (Optional, can be nil).</param>
         /// <param name="customFields">Custom fields to add to the event. Dictionary of key-value pairs. Only string or numbers allowed as values. Custom fields are only stored in raw events and can only be used for data export (i.e. not visible in the tool).</param>
         public static void NewErrorEvent(GAErrorSeverity severity, string message, IDictionary<string, object> customFields, bool mergeFields = false)
         {

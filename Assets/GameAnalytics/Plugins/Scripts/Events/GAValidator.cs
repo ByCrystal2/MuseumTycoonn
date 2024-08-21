@@ -222,7 +222,7 @@ namespace GameAnalyticsSDK.Validators
 			}
 			if (!ValidateLongString(message, true))
 			{
-				Debug.Log("Validation fail - error event - message: Message cannot be above 8192 characters.");
+				Debug.Log("Validation fail - error event - Message: Message cannot be above 8192 characters.");
 				return false;
 			}
 			return true;
@@ -242,12 +242,12 @@ namespace GameAnalyticsSDK.Validators
             }
             if (!ValidateShortString(adSdkName, false))
             {
-                Debug.Log("Validation fail - ad event - message: Ad SDK name cannot be above 32 characters.");
+                Debug.Log("Validation fail - ad event - Message: Ad SDK name cannot be above 32 characters.");
                 return false;
             }
             if (!ValidateString(adPlacement, false))
             {
-                Debug.Log("Validation fail - ad event - message: Ad placement cannot be above 64 characters.");
+                Debug.Log("Validation fail - ad event - Message: Ad placement cannot be above 64 characters.");
                 return false;
             }
             return true;

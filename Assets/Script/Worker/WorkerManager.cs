@@ -43,27 +43,31 @@ public class WorkerManager : MonoBehaviour
         int length = RequiredExpsPerLevel.Count;
         for (int i = length - 1; i >= 0; i--)
             if (_myExp >= RequiredExpsPerLevel[i])
-                level = i + 1;
+                return i + 1;
 
         return level;
     }
 
-    public bool CanEarnExp(float _myExp, int _rank)
+    public bool CanEarnExp(float _myExp, int _rank, WorkerBehaviour _worker)
     {
         int level = CalculateCurrentLevel(_myExp);
         bool can = true;
-        if (_rank == 1 && level >= 5)
+        if (RankAndLevelControl(_worker.StarRank, level))
+        {
+            _worker.StarRank++;
             can = false;
-        if (_rank == 2 && level >= 10)
-            can = false;
-        if (_rank == 3 && level >= 15)
-            can = false;
-        if (_rank == 4 && level >= 20)
-            can = false;
+        }
 
         return can;
     }
-
+    bool RankAndLevelControl(int _rank, int _level)
+    {
+        Debug.Log($"rank:{_rank} - _level{_level}");
+        if (_rank < Mathf.FloorToInt(_level / 5) + 1 && _level > _rank * 5)
+            return true;
+        else
+            return false;
+    }
     public void CreateWorkersToMarket()
     {
         int length = MuseumManager.instance.WorkersInInventory.Count;
@@ -94,7 +98,13 @@ public class WorkerManager : MonoBehaviour
             }
         }
     }
-    
+    public int GetRankWithLevel(int level)
+    {
+        int rank = Mathf.CeilToInt(level / 5.0f);
+        Debug.Log($"Level: {level}, Rank: {rank}");
+        return rank;
+    }
+
     public void SetDatabaseDatas(WorkerBehaviour worker, WorkerData databaseWorker, string noneDatabaseName)
     {
         switch (worker.workerType)

@@ -254,10 +254,17 @@ public class WorkerBehaviour : MonoBehaviour
             }
 
             m.EndMusic();
-            if (WorkerManager.instance.CanEarnExp(CurrentXp, StarRank))
+            if (WorkerManager.instance.CanEarnExp(CurrentXp, StarRank,this))
             {
-                CurrentXp += Random.Range(7, 14);
+                byte multiplier = 1;
+#if UNITY_EDITOR
+                multiplier = 10;
+#endif
+                CurrentXp += Random.Range(7, 14) * multiplier;
                 int newLevel = WorkerManager.instance.CalculateCurrentLevel(CurrentXp);
+                Debug.Log("newLevel => " + newLevel);
+                MyDatas.Level = newLevel;
+                MyDatas.Xp = CurrentXp;
                 if (newLevel > m.Level)
                     OnLevelUP();
                 m.Level = newLevel;
@@ -269,10 +276,12 @@ public class WorkerBehaviour : MonoBehaviour
             if (MyScript is Housekeeper hk)
             {
                 hk.EndClean();
-                if (WorkerManager.instance.CanEarnExp(CurrentXp, StarRank))
+                if (WorkerManager.instance.CanEarnExp(CurrentXp, StarRank, this))
                 {
                     CurrentXp += Random.Range(7, 14);
                     int newLevel = WorkerManager.instance.CalculateCurrentLevel(CurrentXp);
+                    MyDatas.Level = newLevel;
+                    MyDatas.Xp = CurrentXp;
                     if (newLevel > hk.Level)
                         OnLevelUP();
                     hk.Level = newLevel;
@@ -281,10 +290,12 @@ public class WorkerBehaviour : MonoBehaviour
             else if (MyScript is Security sc)
             {
                 sc.CaughtGuilty();
-                if (WorkerManager.instance.CanEarnExp(CurrentXp, StarRank))
+                if (WorkerManager.instance.CanEarnExp(CurrentXp, StarRank, this))
                 {
                     CurrentXp += Random.Range(7, 14);
                     int newLevel = WorkerManager.instance.CalculateCurrentLevel(CurrentXp);
+                    MyDatas.Level = newLevel;
+                    MyDatas.Xp = CurrentXp;
                     if (newLevel > sc.Level)
                         OnLevelUP();
                     sc.Level = newLevel;
@@ -365,5 +376,16 @@ public sealed class WorkerData
         WorkRoomsIDs.Clear();
         foreach (int i in _workRoomsIDs) { WorkRoomsIDs.Add(i); }
         this.WorkerType = workerType;
+    }
+    public WorkerData(WorkerData _copyData)
+    {
+        ID = _copyData.ID;
+        Name = _copyData.Name;
+        Level = _copyData.Level;
+        Xp = _copyData.Xp;
+        WorkRoomsIDs.Clear();
+        int length = _copyData.WorkRoomsIDs.Count;
+        for (int i = 0; i < length; i++)
+            WorkRoomsIDs.Add(_copyData.WorkRoomsIDs[i]);
     }
 }

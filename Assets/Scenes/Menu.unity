@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -136,6 +136,8 @@ GameObject:
   - component: {fileID: 67000432}
   - component: {fileID: 67000431}
   - component: {fileID: 67000430}
+  - component: {fileID: 67000434}
+  - component: {fileID: 67000435}
   m_Layer: 5
   m_Name: Language1 (6)
   m_TagString: Untagged
@@ -270,6 +272,39 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 67000428}
   m_CullTransparentMesh: 1
+--- !u!114 &67000434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 67000428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &67000435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 67000428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb25948d95da074aa651d8a662803cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LanguageString: Kurdish
 --- !u!1 &94198157
 GameObject:
   m_ObjectHideFlags: 0
@@ -283,6 +318,8 @@ GameObject:
   - component: {fileID: 94198161}
   - component: {fileID: 94198160}
   - component: {fileID: 94198159}
+  - component: {fileID: 94198163}
+  - component: {fileID: 94198164}
   m_Layer: 5
   m_Name: Language1 (2)
   m_TagString: Untagged
@@ -417,6 +454,39 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 94198157}
   m_CullTransparentMesh: 1
+--- !u!114 &94198163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 94198157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &94198164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 94198157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb25948d95da074aa651d8a662803cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LanguageString: Thai
 --- !u!1 &105958339
 GameObject:
   m_ObjectHideFlags: 0
@@ -548,6 +618,8 @@ GameObject:
   - component: {fileID: 109453675}
   - component: {fileID: 109453674}
   - component: {fileID: 109453673}
+  - component: {fileID: 109453677}
+  - component: {fileID: 109453678}
   m_Layer: 5
   m_Name: Language1 (11)
   m_TagString: Untagged
@@ -682,6 +754,39 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 109453671}
   m_CullTransparentMesh: 1
+--- !u!114 &109453677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109453671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &109453678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109453671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb25948d95da074aa651d8a662803cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LanguageString: Korean
 --- !u!1 &117323724
 GameObject:
   m_ObjectHideFlags: 0
@@ -695,6 +800,8 @@ GameObject:
   - component: {fileID: 117323728}
   - component: {fileID: 117323727}
   - component: {fileID: 117323726}
+  - component: {fileID: 117323730}
+  - component: {fileID: 117323731}
   m_Layer: 5
   m_Name: Language1 (4)
   m_TagString: Untagged
@@ -830,6 +937,39 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 117323724}
   m_CullTransparentMesh: 1
+--- !u!114 &117323730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 117323724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &117323731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 117323724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb25948d95da074aa651d8a662803cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LanguageString: Chinese (Traditional)
 --- !u!1 &195269953
 GameObject:
   m_ObjectHideFlags: 0
@@ -843,6 +983,8 @@ GameObject:
   - component: {fileID: 195269957}
   - component: {fileID: 195269956}
   - component: {fileID: 195269955}
+  - component: {fileID: 195269959}
+  - component: {fileID: 195269960}
   m_Layer: 5
   m_Name: Language1 (9)
   m_TagString: Untagged
@@ -977,6 +1119,39 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 195269953}
   m_CullTransparentMesh: 1
+--- !u!114 &195269959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195269953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &195269960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195269953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb25948d95da074aa651d8a662803cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LanguageString: French
 --- !u!1 &266732827
 GameObject:
   m_ObjectHideFlags: 0
@@ -1054,6 +1229,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 266732827}
   m_CullTransparentMesh: 1
+--- !u!114 &276351282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd8b481d182cbcd4293524eb92ee520c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mTarget: {fileID: 0}
 --- !u!114 &281160777
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1081,6 +1269,8 @@ GameObject:
   - component: {fileID: 337498102}
   - component: {fileID: 337498101}
   - component: {fileID: 337498105}
+  - component: {fileID: 337498106}
+  - component: {fileID: 337498107}
   m_Layer: 5
   m_Name: Language1
   m_TagString: Untagged
@@ -1213,8 +1403,8 @@ MonoBehaviour:
   mGUI_ShowReferences: 0
   mGUI_ShowTems: 1
   mGUI_ShowCallback: 0
-  mLocalizeTarget: {fileID: 467711587}
-  mLocalizeTargetName: I2.Loc.LocalizeTarget_UnityUI_Image
+  mLocalizeTarget: {fileID: 276351282}
+  mLocalizeTargetName: I2.Loc.LocalizeTarget_UnityStandard_Prefab
 --- !u!114 &337498103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1267,6 +1457,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _Language: English
   mSource: {fileID: 0}
+--- !u!114 &337498106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 337498098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &337498107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 337498098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb25948d95da074aa651d8a662803cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LanguageString: English
 --- !u!1 &342525304
 GameObject:
   m_ObjectHideFlags: 0
@@ -1280,6 +1503,8 @@ GameObject:
   - component: {fileID: 342525308}
   - component: {fileID: 342525307}
   - component: {fileID: 342525306}
+  - component: {fileID: 342525310}
+  - component: {fileID: 342525311}
   m_Layer: 5
   m_Name: Language1 (3)
   m_TagString: Untagged
@@ -1414,6 +1639,39 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 342525304}
   m_CullTransparentMesh: 1
+--- !u!114 &342525310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342525304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &342525311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342525304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb25948d95da074aa651d8a662803cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LanguageString: Spanish
 --- !u!1 &346077376
 GameObject:
   m_ObjectHideFlags: 0
@@ -1427,6 +1685,8 @@ GameObject:
   - component: {fileID: 346077380}
   - component: {fileID: 346077379}
   - component: {fileID: 346077378}
+  - component: {fileID: 346077382}
+  - component: {fileID: 346077383}
   m_Layer: 5
   m_Name: Language1 (5)
   m_TagString: Untagged
@@ -1562,6 +1822,39 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 346077376}
   m_CullTransparentMesh: 1
+--- !u!114 &346077382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 346077376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &346077383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 346077376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb25948d95da074aa651d8a662803cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LanguageString: Chinese (Simplified)
 --- !u!1 &350280911
 GameObject:
   m_ObjectHideFlags: 0
@@ -1796,19 +2089,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &467711587
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bedef2aeaac8da04faa9a07b7241d0ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mTarget: {fileID: 337498103}
 --- !u!1001 &508825228
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1965,6 +2245,8 @@ GameObject:
   - component: {fileID: 529506257}
   - component: {fileID: 529506256}
   - component: {fileID: 529506255}
+  - component: {fileID: 529506259}
+  - component: {fileID: 529506260}
   m_Layer: 5
   m_Name: Language1 (7)
   m_TagString: Untagged
@@ -2099,6 +2381,39 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 529506253}
   m_CullTransparentMesh: 1
+--- !u!114 &529506259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529506253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &529506260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529506253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb25948d95da074aa651d8a662803cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LanguageString: Russian
 --- !u!1 &682958501
 GameObject:
   m_ObjectHideFlags: 0
@@ -2112,6 +2427,8 @@ GameObject:
   - component: {fileID: 682958505}
   - component: {fileID: 682958504}
   - component: {fileID: 682958503}
+  - component: {fileID: 682958507}
+  - component: {fileID: 682958508}
   m_Layer: 5
   m_Name: Language1 (8)
   m_TagString: Untagged
@@ -2246,6 +2563,39 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 682958501}
   m_CullTransparentMesh: 1
+--- !u!114 &682958507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682958501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &682958508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682958501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb25948d95da074aa651d8a662803cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LanguageString: German
 --- !u!1 &736551289
 GameObject:
   m_ObjectHideFlags: 0
@@ -2259,6 +2609,8 @@ GameObject:
   - component: {fileID: 736551293}
   - component: {fileID: 736551292}
   - component: {fileID: 736551291}
+  - component: {fileID: 736551295}
+  - component: {fileID: 736551296}
   m_Layer: 5
   m_Name: Language1 (10)
   m_TagString: Untagged
@@ -2393,6 +2745,39 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 736551289}
   m_CullTransparentMesh: 1
+--- !u!114 &736551295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 736551289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &736551296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 736551289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb25948d95da074aa651d8a662803cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LanguageString: Japanese
 --- !u!1 &758415312
 GameObject:
   m_ObjectHideFlags: 0
@@ -2696,7 +3081,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 992125811}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
   m_Name: 
@@ -3020,6 +3405,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartGameButton: {fileID: 374356584}
+  LanguageButtonsContent: {fileID: 1411176781}
+  emptyObj: {fileID: 5510872237460461718, guid: 78efb58af220ff540ae080f8fe8f63a1,
+    type: 3}
+  CanSetNewLanguage: 1
 --- !u!114 &1372941381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3260,6 +3649,8 @@ GameObject:
   - component: {fileID: 1636321203}
   - component: {fileID: 1636321202}
   - component: {fileID: 1636321201}
+  - component: {fileID: 1636321205}
+  - component: {fileID: 1636321206}
   m_Layer: 5
   m_Name: Language1 (12)
   m_TagString: Untagged
@@ -3394,6 +3785,39 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1636321199}
   m_CullTransparentMesh: 1
+--- !u!114 &1636321205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1636321199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &1636321206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1636321199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb25948d95da074aa651d8a662803cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LanguageString: Arabic
 --- !u!1 &1663747084
 GameObject:
   m_ObjectHideFlags: 0
@@ -3407,6 +3831,8 @@ GameObject:
   - component: {fileID: 1663747088}
   - component: {fileID: 1663747087}
   - component: {fileID: 1663747086}
+  - component: {fileID: 1663747090}
+  - component: {fileID: 1663747091}
   m_Layer: 5
   m_Name: Language1 (1)
   m_TagString: Untagged
@@ -3541,6 +3967,39 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1663747084}
   m_CullTransparentMesh: 1
+--- !u!114 &1663747090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1663747084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &1663747091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1663747084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb25948d95da074aa651d8a662803cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LanguageString: Turkish
 --- !u!1 &1744318205
 GameObject:
   m_ObjectHideFlags: 0

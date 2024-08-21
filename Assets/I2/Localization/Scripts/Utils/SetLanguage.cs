@@ -4,7 +4,7 @@ namespace I2.Loc
 {
 	[AddComponentMenu("I2/Localization/SetLanguage Button")]
 	public class SetLanguage : MonoBehaviour 
-	{
+	{		
 		public string _Language;
 
 #if UNITY_EDITOR
@@ -13,6 +13,7 @@ namespace I2.Loc
 		
 		public void OnClick()
 		{
+			if (!MainMenu.instance.CanSetNewLanguage) return;
 			ApplyLanguage();
         }
 

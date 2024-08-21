@@ -12,10 +12,10 @@ public class UIFade : MonoBehaviour
         canvasGroup = GetComponent<CanvasGroup>();
     }
 
-    public void FadeIn(float alpha, float speed) => StartCoroutine(IEFadeIn(alpha, speed));
-    IEnumerator IEFadeIn(float alpha, float speed)
-    {
-        canvasGroup.DOFade(alpha, speed);
-        yield return null;
-    }
+    public Tween Fade(float alpha, float delay) { return canvasGroup.DOFade(alpha, delay); }
+    //IEnumerator<Tween> IEFadeIn(float alpha, float delay)
+    //{
+    //    yield return canvasGroup.DOFade(alpha, delay);
+    //    yield return null;
+    //}
 }

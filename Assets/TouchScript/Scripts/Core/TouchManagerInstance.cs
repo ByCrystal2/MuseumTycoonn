@@ -595,7 +595,7 @@ namespace TouchScript.Core
                 {
                     if (Application.isEditor)
                         Debug.Log(
-                            "[TouchScript] No touch layers found, adding StandardLayer for the main camera. (this message is harmless)");
+                            "[TouchScript] No touch layers found, adding StandardLayer for the main camera. (this Message is harmless)");
                     var layer = Camera.main.gameObject.AddComponent<StandardLayer>();
                     layerManager.AddLayer(layer);
                 }
@@ -607,7 +607,7 @@ namespace TouchScript.Core
             if (inputCount == 0 && shouldCreateStandardInput)
             {
                 if (Application.isEditor)
-                    Debug.Log("[TouchScript] No input source found, adding StandardInput. (this message is harmless)");
+                    Debug.Log("[TouchScript] No input source found, adding StandardInput. (this Message is harmless)");
                 GameObject obj = null;
                 var objects = FindObjectsOfType<TouchManager>();
                 if (objects.Length == 0)

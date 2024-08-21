@@ -22,13 +22,13 @@ namespace GameAnalyticsSDK.Events
         /// If SubmitErrors is enabled on the GA object this makes sure that any exceptions or errors are submitted to the GA server
         /// </summary>
         /// <param name="logString">
-        /// The message <see cref="System.String"/>
+        /// The Message <see cref="System.String"/>
         /// </param>
         /// <param name="stackTrace">
         /// The exception stack trace <see cref="System.String"/>
         /// </param>
         /// <param name="type">
-        /// The type of the log message (we only submit errors and exceptions to the GA server) <see cref="LogType"/>
+        /// The type of the log Message (we only submit errors and exceptions to the GA server) <see cref="LogType"/>
         /// </param>
         public static void HandleLog(string logString, string stackTrace, LogType type)
         {

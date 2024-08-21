@@ -1190,10 +1190,10 @@ namespace GameAnalyticsSDK.Editor
                     };
                 case 8:
                     return new StringWithType[] {
-                        new StringWithType { Text = "You can use the Error event to log errors or warnings that players generate in your game. You can group the events by severity level and attach a message, such as the stack trace." },
+                        new StringWithType { Text = "You can use the Error event to log errors or warnings that players generate in your game. You can group the events by severity level and attach a Message, such as the stack trace." },
                         new StringWithType { Text = "To add a custom error event call the following function:" },
                         new StringWithType {
-                            Text = "GameAnalytics.NewErrorEvent (GA_Error.GAErrorSeverity severity, string message);",
+                            Text = "GameAnalytics.NewErrorEvent (GA_Error.GAErrorSeverity severity, string Message);",
                             Type = StringType.TextBox
                         },
                         new StringWithType { Text = "" },

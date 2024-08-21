@@ -112,6 +112,16 @@ public class LanguageDatabase : MonoBehaviour
         }
         //NPCCommends
 
+        //Notifications
+        List<Notification> allNotifications = NotificationManager.instance.Notifications;
+        int allNotificationLength = allNotifications.Count;
+        for (int i = 0; i < allNotificationLength; i++)
+        {
+            if (allNotifications[i].Message == string.Empty)
+                continue;
+            Language.NotificationMessages.Add(new LanguageData(allNotifications[i].ID, allNotifications[i].Message));
+        }
+        //Notifications
         //General
         Language.PictureInfoStrings = new List<LanguageData>() { new LanguageData(0, "Added"), new LanguageData(1, "Updated"), new LanguageData(2, "Select Painting"), new LanguageData(3, "Enough"), new LanguageData(4, "Add"), new LanguageData(5, "Update"), new LanguageData(6, "Insufficient") };
 
@@ -151,6 +161,10 @@ public class LanguageDatabase : MonoBehaviour
         List<string> npcCommendTranslatedTexts = new List<string>();
         //NPCCOMMENDS
 
+        //NOTIFICATIONS
+        List<string> notificationKeysToTranslate = new List<string>();
+        List<string> notificationTranslatedTexts = new List<string>();
+        //NOTIFICATIONS
         //General
         List<string> pictureInfoKeysToTranslate = new List<string>();
         List<string> pictureInfoTranslatedTexts = new List<string>();
@@ -241,6 +255,20 @@ public class LanguageDatabase : MonoBehaviour
         });
         //NPCCOMMEND
 
+        //NOTIFICATIONS
+        foreach (var item in Language.NotificationMessages)
+        {
+            if (item.Key == string.Empty)
+                continue;
+            notificationKeysToTranslate.Add(item.Key);
+        }
+
+        await GameManager.instance.BulkTranslateAndAssignAsync(notificationKeysToTranslate, (result) =>
+        {
+            notificationTranslatedTexts = result;
+        });
+        //NOTIFICATIONS
+
         //GENERAL
         foreach (var item in Language.PictureInfoStrings)
         {
@@ -324,6 +352,14 @@ public class LanguageDatabase : MonoBehaviour
         }
         //NPCCommendAdding
 
+        //NotificationAdding
+        Debug.Log("Language.NotificationMessages.Count => " + Language.NotificationMessages.Count + "notificationTranslatedTexts.Count => " + notificationTranslatedTexts.Count);
+        for (int i = 0; i < notificationTranslatedTexts.Count; i++)
+        {
+            Language.NotificationMessages[i].ActiveLanguage = notificationTranslatedTexts[i];
+        }
+        //NotificationAdding
+
         //GeneralAdding
         Debug.Log("Language.PictureInfoStrings.Count => " + Language.PictureInfoStrings.Count + "pictureInfoTranslatedTexts.Count => " + pictureInfoTranslatedTexts.Count);
         for (int i = 0; i < pictureInfoTranslatedTexts.Count; i++)
@@ -392,6 +428,11 @@ public class LanguageDatabase : MonoBehaviour
             List<string> npcCommendKeysToTranslate = new List<string>();
             List<string> npcCommendTranslatedTexts = new List<string>();
             //NPCCOMMENDS
+
+            //NOTIFICATIONS
+            List<string> notificationKeysToTranslate = new List<string>();
+            List<string> notificationTranslatedTexts = new List<string>();
+            //NOTIFICATIONS
 
             //General
             List<string> pictureInfoKeysToTranslate = new List<string>();
@@ -483,6 +524,20 @@ public class LanguageDatabase : MonoBehaviour
             });
             //NPCCOMMEND
 
+            //NOTIFICATIONS
+            foreach (var item in Language.NotificationMessages)
+            {
+                if (item.Key == string.Empty)
+                    continue;
+                notificationKeysToTranslate.Add(item.Key);
+            }
+
+            await GameManager.instance.BulkTranslateAndAssignAsync(notificationKeysToTranslate, (result) =>
+            {
+                notificationTranslatedTexts = result;
+            });
+            //NOTIFICATIONS
+
             //GENERAL
             foreach (var item in Language.PictureInfoStrings)
             {
@@ -564,6 +619,14 @@ public class LanguageDatabase : MonoBehaviour
                 Language.CommendEvulations[i].ActiveLanguage = npcCommendTranslatedTexts[i];
             }
             //NPCCommendAdding
+
+            //NotificationAdding
+            Debug.Log("Language.NotificationMessages.Count => " + Language.NotificationMessages.Count + "notificationTranslatedTexts.Count => " + notificationTranslatedTexts.Count);
+            for (int i = 0; i < notificationTranslatedTexts.Count; i++)
+            {
+                Language.NotificationMessages[i].ActiveLanguage = notificationTranslatedTexts[i];
+            }
+            //NotificationAdding
 
             //GeneralAdding
             Debug.Log("Language.PictureInfoStrings.Count => " + Language.PictureInfoStrings.Count + "pictureInfoTranslatedTexts.Count => " + pictureInfoTranslatedTexts.Count);
@@ -647,6 +710,9 @@ public class MainLanguageData
     //NPCCommend
     public List<LanguageData> CommendEvulations = new List<LanguageData>();
     //NPCCommend
+    //Notifications
+    public List<LanguageData> NotificationMessages = new List<LanguageData>();
+    //Notifications
     //General
     public List<LanguageData> PictureInfoStrings = new List<LanguageData>();
     public List<LanguageData> InternetCheckInfoStrings = new List<LanguageData>();

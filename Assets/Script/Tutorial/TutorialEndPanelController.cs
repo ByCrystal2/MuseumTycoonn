@@ -28,13 +28,13 @@ public class TutorialEndPanelController : MonoBehaviour
         int myChild = transform.childCount;
         for (int i = 0; i < myChild; i++)
             transform.GetChild(i).gameObject.SetActive(true);
-        imgBackground.FadeIn(0.9f, 0.8f);
+        imgBackground.Fade(0.9f, 0.8f);
         yield return new WaitForSeconds(0.9f);
         int length = pnlTopContent.childCount;
         for (int i = 0; i < length; i++)
             if (pnlTopContent.GetChild(i).TryGetComponent(out UIFade uIFade))
             {
-                uIFade.FadeIn(1, 0.5f);
+                uIFade.Fade(1, 0.5f);
                 yield return new WaitForSeconds(0.25f);
             }
 
@@ -44,7 +44,7 @@ public class TutorialEndPanelController : MonoBehaviour
         for (int i = 0; i < length1; i++)
             if (pnlBottomContent.GetChild(i).TryGetComponent(out UIFade uIFade))
             {
-                uIFade.FadeIn(1, 0.5f);
+                uIFade.Fade(1, 0.5f);
                 yield return new WaitForSeconds(0.25f);
             }
         journeyBeginsText.GetComponent<CanvasGroup>().alpha = 1;

@@ -38,7 +38,7 @@ namespace GameAnalyticsSDK.Setup
         ;
 
         /// <summary>
-        /// A message and message type for the help box displayed on the GUI inspector
+        /// A Message and Message type for the help box displayed on the GUI inspector
         /// </summary>
         public struct HelpInfo
         {

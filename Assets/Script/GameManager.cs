@@ -89,7 +89,8 @@ public class GameManager : MonoBehaviour
         TableCommentEvaluationManager.instance.AddAllNPCComments();
         SkillTreeManager.instance.AddSkillsForSkillTree();
         ItemManager.instance.AddItems();
-        AudioManager.instance.AllAudioSourcesOptions();    
+        AudioManager.instance.AllAudioSourcesOptions();
+        NotificationManager.instance.NotificationInit();
     }
 
     private void FixedUpdate()
@@ -155,8 +156,10 @@ public class GameManager : MonoBehaviour
             _ => "en"
         };
     }
+    public bool DatabaseLanguageProgressComplated;
     public async void LanguageControlInDatabase()
     {
+        DatabaseLanguageProgressComplated = false;
         string databaseLanguage = string.Empty;
 
         try
@@ -203,6 +206,7 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogError($"Error loading game language: {ex.Message}");
         }
+        DatabaseLanguageProgressComplated = true;
     }
     public string GetGameLanguage()
     {
@@ -883,6 +887,16 @@ public class GameManager : MonoBehaviour
             UIController.instance.SkillQuestionInfos.Add(questionInfoLanguageDatas[i].ActiveLanguage);
         }
     }
+    public void TranslateNotificationMessages()
+    {
+        List<Notification> allDatas = NotificationManager.instance.Notifications;
+        List<LanguageData> notificationLanguageDatas = LanguageDatabase.instance.Language.NotificationMessages;
+        int length = allDatas.Count;
+        for (int i = 0; i < length; i++)
+        {
+            allDatas[i].Message = notificationLanguageDatas[i].ActiveLanguage;
+        }
+    }
     // Ceviri islemlerinin tamamlanip tamamlanmadigini kontrol eder.
     private void CheckAndSetCompletion(ref int completedProcesses, System.Threading.Tasks.TaskCompletionSource<bool> tcs)
     {
@@ -937,8 +951,11 @@ public class GameManager : MonoBehaviour
             }
             Worker w = WorkerManager.instance.GetWorkerToWorkerType(databaseWorker);
             WorkerBehaviour wb = allWorkers.Where(x => x.ID == w.ID).SingleOrDefault();
+            Debug.Log($"Database active worker infos: id:{databaseWorker.ID}, name:{databaseWorker.Name}, level:{databaseWorker.Level}, Work Room Count: {databaseWorker.WorkRoomsIDs.Count}");
             w.Name = databaseWorker.Name;
             w.Level = databaseWorker.Level;
+            wb.StarRank = WorkerManager.instance.GetRankWithLevel(databaseWorker.Level);
+            wb.MyDatas = new WorkerData(databaseWorker);
             w.IWorkRoomsIDs.Clear();
             wb.MyDatas.WorkRoomsIDs.Clear();
             int length2 = iWorkRoomIds.Count;

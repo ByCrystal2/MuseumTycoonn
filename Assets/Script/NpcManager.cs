@@ -125,7 +125,8 @@ public class NpcManager : MonoBehaviour
             GameManager.instance.TranslateCommendsEvulations();
             GameManager.instance.TranslateSkillInfos();
             GameManager.instance.TranslatePictureInfos();
-            GameManager.instance.TranslateShopQuestionInfos(); 
+            GameManager.instance.TranslateShopQuestionInfos();
+            GameManager.instance.TranslateNotificationMessages();
         }
         //TRANSLATE PROCESSES
         GameManager.instance.LoadSkills();
@@ -202,6 +203,10 @@ public class NpcManager : MonoBehaviour
     }
 
     public void SetNpcPairsInDialog(NPCBehaviour npc1, NPCBehaviour npc2)
+    {
+
+    }
+    public void OnGettingSalary() // NPCs salary
     {
 
     }
