@@ -201,16 +201,17 @@ public class MuseumManager : MonoBehaviour
 //        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
 //#endif
     }
-    public void SpendingGold(float _gold)
+    public bool SpendingGold(float _gold)
     {
         if (Gold - _gold < 0)
         {
             Debug.LogWarning("Para miktari 0'dan kucuk olamaz!");
-            return;
+            return false;
         }
         Gold -= _gold;
         UIController.instance.GoldText.text = "" + Gold;
         Debug.Log("Spending Successful. New gold: " + Gold);
+        return true;
 //#if UNITY_EDITOR
 //        FirestoreManager.instance.UpdateGameData("ahmet123");
 //#else

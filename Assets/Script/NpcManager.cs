@@ -206,9 +206,46 @@ public class NpcManager : MonoBehaviour
     {
 
     }
+
     public void OnGettingSalary() // NPCs salary
     {
+        List<WorkerBehaviour> priority = new();
+        List<WorkerBehaviour> main = MuseumManager.instance.CurrentActiveWorkers;
+        foreach (var item in main)
+        {
+            if (item.NotPaidCounter == 2)
+                priority.Insert(0, item);
+            if (item.NotPaidCounter == 1)
+                priority.Add(item);
+        }
 
+        foreach (var item in main)
+            if(!priority.Contains(item))
+                priority.Add(item);
+
+        string debug = "Salary Report for npcs;\n";
+        foreach (var item in priority)
+        {
+            int id = item.ID;
+            float currentSalary = (item.MyDatas.baseSalary * ((item.StarRank + 1) / 0.5f) * (item.NotPaidCounter + 1)); //Eger 2 sefer maasini alamamissa (2 + 1 = 3) su anki maasida dahil 3 maas odenmeli. Yani geriye donuk alinmamis maaslari silmiyoruz. SIlmek istersen ''* (item.NotPaidCounter + 1)'' bu kismi silebilirsin;
+            float currentGold = MuseumManager.instance.GetCurrentGold();
+
+            bool success = MuseumManager.instance.SpendingGold(currentSalary);
+            if (success)
+                item.SetSalaryAsPaid();
+            else
+                item.SetSalaryAsNotPaid();
+
+            string debugAdd = "WorkerID: <color=cyan>" + id + "</color> - Salary: <color=blue>" + currentSalary + "</color> / Paid: " + (success ? "<color=green>Paid</color>" : "<color=red>Could not PAID!</color>");
+            debug += debugAdd + "\n";
+        }
+        debug += "<color=magenta>End of Report!</color>";
+        Debug.Log(debug);
+    }
+
+    public int GetTotalMessCount()
+    {
+        return NPCMessParent.childCount;
     }
 
     #region Npc Mess

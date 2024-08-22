@@ -17,6 +17,7 @@ public class WorkerBehaviour : MonoBehaviour
     [SerializeField] public float PatrolRadius;
     [SerializeField] public float Energy;
     [SerializeField] public float MaxEnergy;
+    [SerializeField] public int NotPaidCounter;
 
     [SerializeField] public WorkerType workerType;
     [SerializeField] public bool IsMale;
@@ -357,7 +358,25 @@ public class WorkerBehaviour : MonoBehaviour
         Energy = MaxEnergy;
         RestIcon.SetActive(false);
     }
+
+    public void SetSalaryAsPaid()
+    {
+        NotPaidCounter = 0;
+    }
+
+    public void SetSalaryAsNotPaid()
+    {
+        NotPaidCounter++;
+        Debug.LogError("Isci maasini " + NotPaidCounter + " seferdir alamadi. Burada uyari verilebilir.");
+        if (NotPaidCounter >= 3)
+        {
+            NotPaidCounter = 0;
+            Debug.LogError("isci maaisini 3 seferdir alamadi, envantere kaldirilmali", transform);
+        }
+    }
+    public static float BaseSalary = 10;
 }
+
 [System.Serializable]
 public sealed class WorkerData
 {
@@ -365,9 +384,10 @@ public sealed class WorkerData
     public string Name;
     public int Level;
     public float Xp;
+    public float baseSalary;
     public List<int> WorkRoomsIDs = new List<int>();
     [HideInInspector]public WorkerType WorkerType;
-    public WorkerData(int _id,string _name, int level, float _Xp, List<int> _workRoomsIDs, WorkerType workerType)
+    public WorkerData(int _id,string _name, int level, float _Xp, List<int> _workRoomsIDs, WorkerType workerType, float baseSalary = -1)
     {
         this.ID = _id;
         this.Name = _name;
@@ -376,6 +396,9 @@ public sealed class WorkerData
         WorkRoomsIDs.Clear();
         foreach (int i in _workRoomsIDs) { WorkRoomsIDs.Add(i); }
         this.WorkerType = workerType;
+        this.baseSalary = baseSalary;
+        if(this.baseSalary == -1)
+            this.baseSalary = WorkerBehaviour.BaseSalary;
     }
     public WorkerData(WorkerData _copyData)
     {

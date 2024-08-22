@@ -316,7 +316,14 @@ public class NPCBehaviour : MonoBehaviour
 
 
         NPCCurrentScore = Random.Range(NPCMinScore, NPCMaxScore + 1);
-        MuseumManager.instance.AddCultureExp(NPCCurrentScore * 3);
+        float totalExp = NPCCurrentScore * 3;
+        int messCount = NpcManager.instance.GetTotalMessCount();
+        float finalExp = totalExp - totalExp * messCount * 0.01f;
+        if (finalExp <= 1)
+            finalExp = 1;
+        if (messCount > 1)
+            Debug.Log(messCount + " adet pislik yuzunden xp kazancin dusuruldu => " + totalExp + " dan " + finalExp + " e");
+        MuseumManager.instance.AddCultureExp(finalExp);
         int multiplyScore = 0;
         switch (PE._pictureData.painterData.StarCount)
         {
@@ -339,6 +346,12 @@ public class NPCBehaviour : MonoBehaviour
             default:
                 break;
         }
+        float totalgold = NPCCurrentScore * 3;
+        float finalGold = totalgold - totalgold * messCount * 0.01f;
+        if (finalGold <= 1)
+            finalGold = 1;
+        if (messCount > 1)
+            Debug.Log(messCount + " adet pislik yuzunden gold kazancin dusuruldu => " + totalgold + " dan " + finalGold + " e");
         MuseumManager.instance.OnNpcPaid(NPCCurrentScore * multiplyScore);
         Debug.Log(name + " adli npc tablo yorumundan kazanilan para: " + "NPCCurrentScore * PE._pictureData.painterData.StarCount => " + NPCCurrentScore * multiplyScore);
 
@@ -408,7 +421,7 @@ public class NPCBehaviour : MonoBehaviour
                 int Stress = (int)GetNpcStress();
                 int partnerStress = (int)DialogTarget.GetNpcStress();
 
-                int luck = Random.Range(0 + (int)Stress, 101);
+                int luck = Random.Range(0 + (int)Stress, 101) + (NpcManager.instance.GetTotalMessCount() * 2);
                 if (luck >= (70 - Stress))
                 {
                     bool amIbeat;
