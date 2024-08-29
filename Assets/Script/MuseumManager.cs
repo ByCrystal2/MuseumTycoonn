@@ -282,6 +282,11 @@ public class MuseumManager : MonoBehaviour
 
     public void AddCultureExp(float _xp)
     {
+        if (CurrentCultureLevel >= CultureLevel.Count)
+        {
+            Debug.Log("Son levele ulasilmis. Daha fazla exp alinamaz! Mevcut level:"+CurrentCultureLevel);
+            return;
+        }
         int newXP = (int)((float)_xp + (float)_xp * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.CultureExp] / 100f));
         Culture += newXP;
         if (Culture > GetRequiredCultureExp())
@@ -386,11 +391,21 @@ public class MuseumManager : MonoBehaviour
 
     public int GetRequiredCultureExp()
     {
+        if (CurrentCultureLevel >= CultureLevel.Count)
+        {
+            Debug.Log("Son levele ulasilmis!");
+            return CultureLevel[CultureLevel.Count - 1];
+        }
         return CultureLevel[CurrentCultureLevel];
     }
 
     public float GetMuseumCurrentCapacity()
     {
+        if (CurrentCultureLevel >= MaxVisitorPerCultureLevel.Count)
+        {
+            Debug.Log("Son levele ulasilmis!");
+            return SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorCapacity] + MaxVisitorPerCultureLevel[MaxVisitorPerCultureLevel.Count - 1];
+        }
         float capasity = SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorCapacity] + MaxVisitorPerCultureLevel[CurrentCultureLevel];
         Debug.Log("GetMuseumCurrentCapacity => " + capasity);
         return capasity;
@@ -398,6 +413,11 @@ public class MuseumManager : MonoBehaviour
 
     public float GetTicketPrice()
     {
+        if (CurrentCultureLevel >= TicketPricePerCultureLevel.Count)
+        {
+            Debug.Log("Son levele ulasilmis!");
+            return SkillTreeManager.instance.CurrentBuffs[(int)eStat.MuseumEnterPrice] + TicketPricePerCultureLevel[TicketPricePerCultureLevel.Count - 1];
+        }
         Debug.Log("Ticket price: " + (SkillTreeManager.instance.CurrentBuffs[(int)eStat.MuseumEnterPrice] + TicketPricePerCultureLevel[CurrentCultureLevel]));
         int result = SkillTreeManager.instance.CurrentBuffs[(int)eStat.MuseumEnterPrice] + TicketPricePerCultureLevel[CurrentCultureLevel];
         if (result <= 0)
@@ -408,6 +428,11 @@ public class MuseumManager : MonoBehaviour
 
     public int GetRequiredSkillPointExp()
     {
+        if (CurrentCultureLevel >= RequiredSkillPointExp.Count)
+        {
+            Debug.Log("Son levele ulasilmis!");
+            return RequiredSkillPointExp[RequiredSkillPointExp.Count - 1];
+        }
         return RequiredSkillPointExp[CurrentCultureLevel];
     }
 

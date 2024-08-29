@@ -368,10 +368,14 @@ public class WorkerBehaviour : MonoBehaviour
     {
         NotPaidCounter++;
         Debug.LogError("Isci maasini " + NotPaidCounter + " seferdir alamadi. Burada uyari verilebilir.");
+        Notification notPaidNotification = NotificationManager.instance.GetNotificationWithID(2);
+        NotificationManager.instance.SendNotification(notPaidNotification, new SenderHelper(WhoSends.Worker, ID));
         if (NotPaidCounter >= 3)
         {
             NotPaidCounter = 0;
-            Debug.LogError("isci maaisini 3 seferdir alamadi, envantere kaldirilmali", transform);
+            WorkerManager.instance.TransferCurrentWorkerToInventory(ID);
+            NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(3), new SenderHelper(WhoSends.System, 9999));
+            Debug.LogError("isci maaisini 3 seferdir alamadi, envantere kaldirildi", transform);
         }
     }
     public static float BaseSalary = 10;

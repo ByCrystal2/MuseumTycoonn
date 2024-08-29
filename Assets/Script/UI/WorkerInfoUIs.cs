@@ -16,16 +16,16 @@ public class WorkerInfoUIs : MonoBehaviour
     [SerializeField] public Transform OpenStarsObj;
 
     private float myPrice;
-    public void SetWorkerInfoUIs(int _id, string _fullName, int _age, float _height, int _level, Image _avatar = null)
+    public void SetWorkerInfoUIs(int _id, string _fullName, int _age, float _height, int _rank, Image _avatar = null)
     {
         workerID = _id;
         txtFullName.text = _fullName;
         txtAge.text = _age.ToString();
         txtHeight.text = _height.ToString("000");
-        myPrice = (GameManager.instance.BaseWorkerHiringPrice * _level) + WorkerManager.instance.GetBaseHiringWorkerWithMuseumLevel();
-        Debug.Log("MyPrice => " + (GameManager.instance.BaseWorkerHiringPrice * _level).ToString() + WorkerManager.instance.GetBaseHiringWorkerWithMuseumLevel().ToString());
+        myPrice = (GameManager.instance.BaseWorkerHiringPrice * _rank) + WorkerManager.instance.GetBaseHiringWorkerWithMuseumLevel();
+        Debug.Log("MyPrice => " + (GameManager.instance.BaseWorkerHiringPrice * _rank).ToString() + WorkerManager.instance.GetBaseHiringWorkerWithMuseumLevel().ToString());
         txtPrice.text = myPrice.ToString();
-        if (_level != 0)
+        if (_rank != 0)
         {
             int length = CloseStarsObj.childCount;
             for (int i = 0; i < length; i++)
@@ -33,7 +33,7 @@ public class WorkerInfoUIs : MonoBehaviour
                 CloseStarsObj.GetChild(i).gameObject.SetActive(true);
                 OpenStarsObj.GetChild(i).gameObject.SetActive(false);
             }
-            int length1 = _level;
+            int length1 = _rank;
             for (int i = 0; i < length1; i++)
             {
                 OpenStarsObj.GetChild(i).gameObject.SetActive(true);

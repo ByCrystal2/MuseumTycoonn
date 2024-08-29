@@ -13,12 +13,14 @@ public class RightUIPanelController : MonoBehaviour
 
     [SerializeField] public GameObject EditObj;
     [SerializeField] GameObject VisibleUIObj;
+    [SerializeField] GameObject UINotVisibleObj;
 
     [SerializeField] Button EditModeButton;
     [SerializeField] Button UIVisibleButton;
-    [SerializeField] GameObject UINotVisibleObj;
 
     [SerializeField] GameObject btnDailyRewardObj;
+
+    [SerializeField] GameObject notificationsObj;
     private Vector3 defaultDailyRewardPos;
     [SerializeField] Transform fpsModeDailyRewardTransform;
     public static RightUIPanelController instance { get; private set; }
@@ -39,7 +41,7 @@ public class RightUIPanelController : MonoBehaviour
         EditModeButton.onClick.RemoveAllListeners();
         UIVisibleButton.onClick.RemoveAllListeners();
         EditModeButton.onClick.AddListener(EditMode);
-        UIVisibleButton.onClick.AddListener(UIVisibleClose);        
+        UIVisibleButton.onClick.AddListener(UIVisibleClose);
     }
     bool _uIVisible = true;
 
@@ -53,6 +55,7 @@ public class RightUIPanelController : MonoBehaviour
                 // FPS Moduna gecis.
                 //UIController.instance.CloseEditModeCanvas(true);
                 FPSModeObj.SetActive(true);
+                notificationsObj.SetActive(true);
                 VisibleUIObj.SetActive(false);
                 GameManager.instance.SetCurrenGameMode(GameMode.FPS);
                 if (GameManager.instance.IsWatchTutorial)
@@ -64,6 +67,7 @@ public class RightUIPanelController : MonoBehaviour
                 // Ghost Moduna Gecis.
                 //UIController.instance.CloseEditModeCanvas(false);
                 EditModeObj.SetActive(true);
+                notificationsObj.SetActive(true);
                 VisibleUIObj.SetActive(true);
                 UINotVisibleObj.SetActive(false);
                 GameManager.instance.SetCurrenGameMode(GameMode.MuseumEditing);
@@ -91,6 +95,7 @@ public class RightUIPanelController : MonoBehaviour
                 UIController.instance.SetActivationRoomEditingPanel(false);
                 EditModeObj.SetActive(true);
                 VisibleUIObj.SetActive(true);
+                notificationsObj.SetActive(true);
                 UINotVisibleObj.SetActive(false);
                 btnDailyRewardObj.transform.position = defaultDailyRewardPos;
                 GameManager.instance.SetCurrenGameMode(GameMode.MuseumEditing);
@@ -110,6 +115,7 @@ public class RightUIPanelController : MonoBehaviour
             {
                 UINotVisibleObj.SetActive(true);
                 EditObj.SetActive(false);
+                notificationsObj.SetActive(false);
                 PicturesMenuController.instance.ExitPicturePanel();
                 //if (GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
                 //    UIController.instance.SetActivationRoomEditingPanel(true);
@@ -131,6 +137,7 @@ public class RightUIPanelController : MonoBehaviour
                 //if (GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
                 //    UIController.instance.SetActivationRoomEditingPanel(false);
                 EditObj.SetActive(true);
+                notificationsObj.SetActive(true);
                 UIController.instance.CloseCultureExpObj(false);
                 UIController.instance.CloseLeftUIsPanel(false);
                 UIController.instance.CloseMoneysObj(false);
@@ -146,6 +153,7 @@ public class RightUIPanelController : MonoBehaviour
         {
             UINotVisibleObj.SetActive(true);
             EditObj.SetActive(false);
+            notificationsObj.SetActive(false);
             //PicturesMenuController.instance.ExitPicturePanel();
 
             UIController.instance.CloseNPCInformationPanel();
@@ -163,6 +171,7 @@ public class RightUIPanelController : MonoBehaviour
         {
             UINotVisibleObj.SetActive(false);
             EditObj.SetActive(true);
+            notificationsObj.SetActive(true);
             UIController.instance.CloseCultureExpObj(false);
             UIController.instance.CloseLeftUIsPanel(false);
             UIController.instance.CloseMoneysObj(false);

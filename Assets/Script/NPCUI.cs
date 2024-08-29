@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class NPCUI : MonoBehaviour
 {
+    public Sprite ProfileSprite;
     [Header("Edit Mode")]
     public GameObject GuiltyImage;
     public SpriteRenderer StressBackgroundImage;

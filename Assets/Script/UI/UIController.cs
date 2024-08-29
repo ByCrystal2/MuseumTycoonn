@@ -133,6 +133,8 @@ public class UIController : MonoBehaviour
     [SerializeField] GameObject DailyRewardGemPrefab;
     [SerializeField] GameObject DailyRewardGoldPrefab;
     [SerializeField] GameObject DailyRewardTablePrefab;
+    [Header("Notification Canvas")]
+    [SerializeField] Button NotificationCanvasOnButton;
 
     [Header("Room Editing Panel")]
     [SerializeField] GameObject RoomEditingPanel;
@@ -215,6 +217,8 @@ public class UIController : MonoBehaviour
 
         // DailyRewardPanel 
         DailyRewardPanelOnButton.onClick.AddListener(() => ActiveInHierarchyDailyRewardPanelControl());
+        //NotificationCanvas
+        NotificationCanvasOnButton.onClick.AddListener(() => ActiveInHierarchyNotificationPanelControl());
 
         MuseumManager.instance.CalculateAndAddTextAllInfos();
 #if UNITY_EDITOR
@@ -250,6 +254,7 @@ public class UIController : MonoBehaviour
             WorkerPanelOnButton.enabled = false;
             WorkerAssignmentPanelOnButton.enabled = false;
             DailyRewardPanelOnButton.enabled = false;
+            NotificationCanvasOnButton.enabled = false;
             if (!rightAnimOpenOverWrite)
             {
                 leftUIArrowClickable = false;
@@ -263,6 +268,7 @@ public class UIController : MonoBehaviour
                     WorkerPanelOnButton.enabled = true;
                     WorkerAssignmentPanelOnButton.enabled = true;
                     DailyRewardPanelOnButton.enabled = true;
+                    NotificationCanvasOnButton.enabled = true;
                 });
                 LeftUISBackground.DOScaleY(1, 0.2f).SetEase(Ease.Linear).OnComplete(() =>
                 {
@@ -274,13 +280,14 @@ public class UIController : MonoBehaviour
                 leftUIArrowClickable = false;
                 btnLeftUIOpen.gameObject.SetActive(true);
                 LeftUISBackground.gameObject.SetActive(true);
-                LeftUISBackground.DOScaleX(14, 0.05f).SetEase(Ease.Linear);
-                LeftUISBackground.DOScaleY(50, 0.1f).OnUpdate(() =>
+                LeftUISBackground.DOScaleX(12, 0.05f).SetEase(Ease.Linear);
+                LeftUISBackground.DOScaleY(40, 0.1f).OnUpdate(() =>
                 {
                     museumStatButton.gameObject.SetActive(true);
                     WorkerPanelOnButton.gameObject.SetActive(true);
                     WorkerAssignmentPanelOnButton.gameObject.SetActive(true);
                     DailyRewardPanelOnButton.gameObject.SetActive(true);
+                    NotificationCanvasOnButton.gameObject.SetActive(true);
                 }).SetEase(Ease.Linear).OnComplete(() =>
                 {
                     leftUIArrowClickable = true;
@@ -288,6 +295,7 @@ public class UIController : MonoBehaviour
                     WorkerPanelOnButton.enabled = true;
                     WorkerAssignmentPanelOnButton.enabled = true;
                     DailyRewardPanelOnButton.enabled = true;
+                    NotificationCanvasOnButton.enabled = true;
                 });
             }
             rightAnimOpen = !rightAnimOpen;
@@ -299,15 +307,16 @@ public class UIController : MonoBehaviour
         WorkerPanelOnButton.enabled = false;
         WorkerAssignmentPanelOnButton.enabled = false;
         DailyRewardPanelOnButton.enabled = false;
+        NotificationCanvasOnButton.enabled = false;
         if (!rightAnimOpen)
         {
             leftUIArrowClickable = false;
             btnLeftUIOpen.GetComponent<Button>().enabled = false;
             LeftUISBackground.gameObject.SetActive(true);
             LeftUIArrow.DOLocalRotate(new Vector3(0, 0, 0), 0.2f);
-            LeftUISBackground.DOScaleX(14, 0.2f).SetEase(Ease.Linear).OnComplete(() =>
+            LeftUISBackground.DOScaleX(12, 0.2f).SetEase(Ease.Linear).OnComplete(() =>
             {
-                LeftUISBackground.DOScaleY(50, 0.3f).SetEase(Ease.Linear).OnComplete(() =>
+                LeftUISBackground.DOScaleY(40, 0.3f).SetEase(Ease.Linear).OnComplete(() =>
                 {
                     museumStatButton.transform.DOMove(BaseBtnBookPos.position, 0.1f).SetEase(Ease.Linear);
                     WorkerPanelOnButton.transform.DOMove(BaseBtnWorkerMarketPos.position, 0.1f).SetEase(Ease.Linear);
@@ -319,6 +328,7 @@ public class UIController : MonoBehaviour
                         WorkerPanelOnButton.enabled = true;
                         WorkerAssignmentPanelOnButton.enabled = true;
                         DailyRewardPanelOnButton.enabled = true;
+                        NotificationCanvasOnButton.enabled = true;
                     });
                     
                 });
@@ -344,6 +354,7 @@ public class UIController : MonoBehaviour
                     WorkerPanelOnButton.enabled = true;
                     WorkerAssignmentPanelOnButton.enabled = true;
                     DailyRewardPanelOnButton.enabled = true;
+                    NotificationCanvasOnButton.enabled = true;
                 });
                 LeftUISBackground.DOScaleY(1, 0.2f).SetEase(Ease.Linear);
             });
@@ -1069,6 +1080,24 @@ public class UIController : MonoBehaviour
             dailyRewardActive = false;
         }
     }
+    public void ActiveInHierarchyNotificationPanelControl()
+    {
+        if (!NotificationManager.instance.notificationsCanvas_V1.activeSelf)
+        {
+            GeneralButtonActivation(true, NotificationCanvasOnButton);
+            RightUIPanelController.instance.CloseEditObj(true);
+            CloseJoystickObj(true);
+            NotificationManager.instance.FillNotificationPanelContent(NotificationType.All);
+            NotificationManager.instance.notificationsCanvas_V1.SetActive(true);
+        }
+        else
+        {
+            CloseJoystickObj(false);
+            RightUIPanelController.instance.CloseEditObj(false);
+            NotificationManager.instance.notificationsCanvas_V1.SetActive(false);
+            GeneralButtonActivation(false, NotificationCanvasOnButton);
+        }
+    }
     public void CloseMuseumStatsPanel(bool _close)
     {
         pnlMuseumStats.SetActive(!_close);
@@ -1134,7 +1163,7 @@ public class UIController : MonoBehaviour
             {
                 if (GameManager.instance != null && !GameManager.instance.IsWatchTutorial)
                 {
-                    newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(workers[i].ID, workers[i].MyScript.Name, workers[i].MyScript.Age, workers[i].MyScript.Height, workers[i].MyScript.Level);
+                    newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(workers[i].ID, workers[i].MyScript.Name, workers[i].MyScript.Age, workers[i].MyScript.Height, workers[i].StarRank);
                     newSecurityObj.GetComponent<WorkerInfoUIs>().SetMyPrice(0);
                     newSecurityObj.GetComponent<WorkerInfoUIs>().txtPrice.text = "0";
 
@@ -1147,7 +1176,7 @@ public class UIController : MonoBehaviour
                 }
             }
             else
-                newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(workers[i].ID, workers[i].MyScript.Name, workers[i].MyScript.Age, workers[i].MyScript.Height, workers[i].MyScript.Level);
+                newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(workers[i].ID, workers[i].MyScript.Name, workers[i].MyScript.Age, workers[i].MyScript.Height, workers[i].StarRank);
         }
         if (targetComingSoonWorkers.Contains(_wType)) InstantiateComingSoonText((RectTransform)WorkerContent);
         Debug.Log($"Worker Turu => {_wType} olan Isciler Listelendi.");
@@ -1184,6 +1213,7 @@ public class UIController : MonoBehaviour
             WorkerPanelOnButton.gameObject.SetActive(!_buttonActive);
             WorkerAssignmentPanelOnButton.gameObject.SetActive(!_buttonActive);
             DailyRewardPanelOnButton.gameObject.SetActive(!_buttonActive);
+            NotificationCanvasOnButton.gameObject.SetActive(!_buttonActive);
             //pnlFortuneWheelOnButton.gameObject.SetActive(!_buttonActive);
 
             GameObject _activeGO = _activePnlButton.gameObject;
@@ -1223,15 +1253,35 @@ public class UIController : MonoBehaviour
                 rightAnimOpenOverWrite = false;
                 rightAnimOpen = false;
             }
+            else if (_activeGO == NotificationCanvasOnButton.gameObject)
+            {
+                //_activePnlButton.gameObject.transform.position = ActivePnlBtnWorkerAssignmentDefaultPos.position;
+                _activePnlButton.gameObject.SetActive(_buttonActive);
+                btnLeftUIOpen.gameObject.SetActive(false);
+                LeftUIArrow.DOLocalRotate(new Vector3(0, 0, 180), 0.2f);
+                museumStatButton.transform.DOMove(defaultBtnBookPos, 0.05f).SetEase(Ease.Linear);
+                WorkerPanelOnButton.transform.DOMove(defaultBtnWorkerMarketPos, 0.05f).SetEase(Ease.Linear);
+                WorkerAssignmentPanelOnButton.transform.DOMove(defaultBtnWorkerAssignmentPos, 0.05f).SetEase(Ease.Linear).OnComplete(() =>
+                {
+                    LeftUISBackground.DOScaleX(1, 0.4f).SetEase(Ease.Linear).OnComplete(() =>
+                    {
+                        LeftUISBackground.gameObject.SetActive(false);
+                    });
+                    LeftUISBackground.DOScaleY(1, 0.2f).SetEase(Ease.Linear);
+                });
+                rightAnimOpenOverWrite = false;
+                rightAnimOpen = false;
+            }
         }
         else
         {
-            if (_activePnlButton != null && _activePnlButton.gameObject == DailyRewardPanelOnButton.gameObject)
+            if (_activePnlButton != null && (_activePnlButton.gameObject == DailyRewardPanelOnButton.gameObject || _activePnlButton.gameObject == NotificationCanvasOnButton.gameObject))
             {
                 museumStatButton.gameObject.SetActive(true);
                 WorkerPanelOnButton.gameObject.SetActive(true);
                 WorkerAssignmentPanelOnButton.gameObject.SetActive(true);
                 DailyRewardPanelOnButton.gameObject.SetActive(true);
+                NotificationCanvasOnButton.gameObject.SetActive(true);
                 btnLeftUIOpen.gameObject.SetActive(true);
                 //StartRightPanelUISBasePosAnim(true);
                 Debug.Log("_activePnlButton.gameObject => " + _activePnlButton.gameObject);
@@ -1244,6 +1294,7 @@ public class UIController : MonoBehaviour
             WorkerPanelOnButton.gameObject.SetActive(true);
             WorkerAssignmentPanelOnButton.gameObject.SetActive(true);
             DailyRewardPanelOnButton.gameObject.SetActive(true);
+            NotificationCanvasOnButton.gameObject.SetActive(true);
             //pnlFortuneWheelOnButton.gameObject.SetActive(true);
             StartRightPanelUISBasePosAnim(true);
         }
@@ -1326,7 +1377,7 @@ public class UIController : MonoBehaviour
         {
             GameObject newWorkerObj = Instantiate(InventoryWorkerPrefab_V1, WorkerInventoryContent);
             Debug.Log("worker.MyScript.Level => " + worker.MyScript.Level);
-            newWorkerObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(worker.ID, worker.MyScript.Name, worker.MyScript.Age, worker.MyScript.Height, worker.MyScript.Level);
+            newWorkerObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(worker.ID, worker.MyScript.Name, worker.MyScript.Age, worker.MyScript.Height, worker.StarRank);
             if (!GameManager.instance.IsWatchTutorial)
             {
                 GameObject hiringObject = newWorkerObj.GetComponentInChildren<WorkerInventoryChooseRoomsButton>().transform.GetChild(1).gameObject;

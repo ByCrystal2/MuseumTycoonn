@@ -154,6 +154,7 @@ public class FirestoreWorkerDatasHandler : MonoBehaviour
                                 List<int> workerRoomIds = new List<int>();
                                 workerRoomIds = workerData.ContainsKey("WorkRoomsIDs") ? ((List<object>)workerData["WorkRoomsIDs"]).Select(x => Convert.ToInt32(x)).ToList() : new List<int>();
                                 Debug.Log("database workerRoomIds Count => " + workerRoomIds.Count);
+                                if (workerRoomIds.Count <= 0) helperWorkerData = null;
                                 //Debug.Log("workerData[\"WorkRoomsIDs\"" + ((List<int>)workerData["WorkRoomsIDs"]).Count);
                                 if (helperWorkerData != null)
                                 {

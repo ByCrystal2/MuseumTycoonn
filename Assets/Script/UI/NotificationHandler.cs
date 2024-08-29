@@ -10,9 +10,7 @@ public class NotificationHandler : MonoBehaviour
     [SerializeField] private Text messageText;
 
     private Notification notification;
-    private UIFade uiFade;
-
-    public bool IsProcessStarted;
+    public UIFade uiFade { get; private set; }    
     private void Awake()
     {
         uiFade = GetComponent<UIFade>();
@@ -25,37 +23,6 @@ public class NotificationHandler : MonoBehaviour
         SetIcon();
         messageText.text = notification.Message;
     }
-
-    public async Task<Tween> StartNotificationProcess()
-    {
-        if (transform.GetSiblingIndex() > 4) return await NotificationManager.instance.emptyTween.Task;
-        IsProcessStarted = true;
-        var tcs = new TaskCompletionSource<Tween>();
-
-        Tween fadeInTween = uiFade.Fade(1, 0.2f);
-        await fadeInTween.AsyncWaitForCompletion();
-
-        if (notification.IsDestroyable)
-        {
-            Tween fadeOutTween = uiFade.Fade(0.2f, notification.DelayTime);
-            await fadeOutTween.AsyncWaitForCompletion();
-            DestroyImmediate(gameObject);
-            tcs.SetResult(fadeInTween);
-        }
-        else
-        {
-            
-            notification.AlertCount++;            
-            await notification.StartComplateFunction(); // Burada asenkron fonksiyonun tamamlanmasýný bekliyoruz
-            notification.IsDestroyable = true;
-            await StartNotificationProcess();
-            Debug.Log("StartComplateFunction() await end.");
-            tcs.SetResult(fadeInTween);
-        }
-        IsProcessStarted = false;
-        return await tcs.Task;
-    }
-
 
     public Notification GetNotification() { return notification; }
 

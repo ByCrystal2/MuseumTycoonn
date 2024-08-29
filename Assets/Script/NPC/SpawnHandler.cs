@@ -26,6 +26,7 @@ public class SpawnHandler : MonoBehaviour
         Debug.Log("NPC Spawn Process is starting... Current Capacity is => " + capacity);
         float multiplier = 0.75f;
         int targetNpcCount = ((int)((capacity * multiplier) / 8) + 3);
+
         SpawnNpcs(targetNpcCount);
     }
 

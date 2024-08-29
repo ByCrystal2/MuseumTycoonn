@@ -181,6 +181,7 @@ public class NpcManager : MonoBehaviour
         Debug.Log("Database load test 12 complated.");
         //Start Method
         databaseProcessComplated = true;
+        TimeManager.instance.OnMinutePassed += OnGettingSalary;
         Debug.Log("Database Loading Process Complated.");
     }
     public void MuseumDoorsProcess(bool _isOpen)
@@ -201,7 +202,10 @@ public class NpcManager : MonoBehaviour
     {
         PlayerManager.instance.LockPlayer();
     }
-
+    private void OnDisable()
+    {
+        TimeManager.instance.OnMinutePassed -= OnGettingSalary;
+    }
     public void SetNpcPairsInDialog(NPCBehaviour npc1, NPCBehaviour npc2)
     {
 
@@ -226,8 +230,11 @@ public class NpcManager : MonoBehaviour
         string debug = "Salary Report for npcs;\n";
         foreach (var item in priority)
         {
-            int id = item.ID;
-            float currentSalary = (item.MyDatas.baseSalary * ((item.StarRank + 1) / 0.5f) * (item.NotPaidCounter + 1)); //Eger 2 sefer maasini alamamissa (2 + 1 = 3) su anki maasida dahil 3 maas odenmeli. Yani geriye donuk alinmamis maaslari silmiyoruz. SIlmek istersen ''* (item.NotPaidCounter + 1)'' bu kismi silebilirsin;
+            int id = item.ID;            
+            float currentSalary = (item.MyDatas.baseSalary * ((item.StarRank + 1) / 0.5f) * (item.NotPaidCounter > 0 ? item.NotPaidCounter : 1)); //Eger 2 sefer maasini alamamissa (2 + 1 = 3) su anki maasida dahil 3 maas odenmeli. Yani geriye donuk alinmamis maaslari silmiyoruz. SIlmek istersen ''* (item.NotPaidCounter + 1)'' bu kismi silebilirsin;
+#if UNITY_EDITOR
+            currentSalary *= 10;
+#endif
             float currentGold = MuseumManager.instance.GetCurrentGold();
 
             bool success = MuseumManager.instance.SpendingGold(currentSalary);

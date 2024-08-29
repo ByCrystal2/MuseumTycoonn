@@ -35,7 +35,9 @@ public class MainMenu : MonoBehaviour
         AudioManager.instance.PlayMusicOfMenu();
         StartGameButton.onClick.AddListener(OnStartButtonClick);
         NewLanguageButtonAnim();
+        languageChangedNotification = NotificationManager.instance.GetNotificationWithID(1);
     }
+    Notification languageChangedNotification;
     float maxLanguageChangedTime = 10, currentTime = 0f;
     int languageChangedCount;
     private void Update()
@@ -44,18 +46,18 @@ public class MainMenu : MonoBehaviour
         currentTime += Time.deltaTime;
         if (currentTime <= maxLanguageChangedTime)
         {
-            if (languageChangedCount >= 5)
+            if (languageChangedNotification.AlertCount >= languageChangedNotification.TriggerAlertNumber)
             {
                 CanSetNewLanguage = false;
                 currentTime = 0f;
                 languageChangedCount = 0;
-                NotificationManager.instance.SendNotification(NotificationManager.instance.Notifications.Where(x => x.ID == 1).SingleOrDefault());
-            }
+            }            
         }
         else
         {
             currentTime = 0f;
             languageChangedCount = 0;
+            languageChangedNotification.ResetNotification();
         }
     }
     public void ResetLanguageChangedValues()
@@ -77,8 +79,8 @@ public class MainMenu : MonoBehaviour
     public IEnumerator IENewLanguageButtonAnim()
     {
         yield return new WaitUntil(() => GameManager.instance.DatabaseLanguageProgressComplated);
-
-        int length = LanguageButtonsContent.childCount;
+        if (languageChangedNotification.AlertCount >= languageChangedNotification.TriggerAlertNumber) yield return null;
+            int length = LanguageButtonsContent.childCount;
         for (int i = 0; i < length; i++)
         {
             Transform child = LanguageButtonsContent.GetChild(i);
@@ -111,6 +113,7 @@ public class MainMenu : MonoBehaviour
                     rectTransform.sizeDelta = defaultSizeDelta;
                     rectTransform.DOAnchorPosY(rectTransform.anchoredPosition.y + 40, 0.3f);
                     rectTransform.DOScale(1.2f, 0.3f);
+                    NotificationManager.instance.SendNotification(languageChangedNotification, new SenderHelper(WhoSends.System,9999),2);
                     languageChangedCount++;
                     Debug.Log("languageChangedCount++ => " + languageChangedCount);
                     break;

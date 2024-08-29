@@ -64,7 +64,9 @@ public class GameManager : MonoBehaviour
         }
         System.Threading.Tasks.Task task = LoadLastDailyRewardTime();
         yield return new WaitUntil(() => task.IsCompleted);
-        TimeManager.instance.InvokeRepeating(nameof(TimeManager.instance.UpdateCurrentTime), 1, 1f);
+        //TimeManager.instance.InvokeRepeating(nameof(TimeManager.instance.UpdateCurrentTime), 1, 1f);
+        TimeManager.instance.UpdateCurrentTime();
+        TimeManager.instance.StartProgressCoroutine();
         DateTime dateControl = new DateTime(0001,01,01,01,01,01);
         yield return new WaitUntil(() => TimeManager.instance.CurrentDateTime.Second > dateControl.Second);
         Init();
@@ -1065,7 +1067,6 @@ public class GameManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        // Oyun arka plana alýndýðýnda Firebase ile veri güncelleme
 #if UNITY_EDITOR
          FirestoreManager.instance.UpdateGameData("ahmet123");
 #else
@@ -1083,10 +1084,15 @@ public class GameManager : MonoBehaviour
             FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
 #endif
             CancelFirebaseOperations();
+            TimeManager.instance.StopProgressCoroutine();
             Time.timeScale = 0;
         }
         else
+        {
             Time.timeScale = 1;
+            TimeManager.instance.UpdateCurrentTime();
+            TimeManager.instance.StartProgressCoroutine();
+        }
     }
 }
 

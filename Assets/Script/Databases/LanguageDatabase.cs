@@ -532,7 +532,7 @@ public class LanguageDatabase : MonoBehaviour
                 notificationKeysToTranslate.Add(item.Key);
             }
 
-            await GameManager.instance.BulkTranslateAndAssignAsync(notificationKeysToTranslate, (result) =>
+            await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), notificationKeysToTranslate, (result) =>
             {
                 notificationTranslatedTexts = result;
             });

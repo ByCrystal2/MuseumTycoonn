@@ -112,13 +112,13 @@ public class DialogueManager : MonoBehaviour
         GameManager.instance.IsWatchTutorial = true;
         GameManager.instance.IsFirstGame = false;
         SetActivationDialoguePanel(false);
-        NpcManager.instance.MuseumDoorsProcess(true);
         await DatabaseWaitingDatas();
         currentTrigger.gameObject.SetActive(false);
         UIController.instance.tutorialUISPanel.gameObject.SetActive(false);
         PlayerManager.instance.UnLockPlayer();
         UIController.instance.CloseJoystickObj(false);
         UIController.instance.StartRightPanelUISBasePosAnim(false);
+        NpcManager.instance.MuseumDoorsProcess(true);
         //List<NPCBehaviour> nps = FindObjectsOfType<NPCBehaviour>().ToList();
         //foreach (var npc in nps)
         //{

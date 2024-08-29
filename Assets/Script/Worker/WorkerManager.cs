@@ -1,5 +1,6 @@
 using Firebase.Extensions;
 using GameTask;
+using NSubstitute;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -272,6 +273,44 @@ public class WorkerManager : MonoBehaviour
         {
             return (int)(4000 + GameManager.instance.BaseWorkerHiringPrice);
         }
+    }
+    public void TransferCurrentWorkerToInventory(int _currentWorkerID)
+    {
+        WorkerBehaviour worker = GetAllWorkers().Where(x => x.ID == _currentWorkerID).SingleOrDefault();
+        List<int> workerRoomsIds = worker.MyScript.IWorkRoomsIDs;
+        List<RoomData> workerRooms = RoomManager.instance.GetRoomWithIDs(workerRoomsIds);
+        foreach (var data in workerRooms)
+        {
+            data.MyRoomWorkersIDs.Clear();
+        }
+
+#if UNITY_EDITOR
+        FirestoreManager.instance.roomDatasHandler.AddRoomsWithUserId("ahmet123", workerRooms);
+#else
+        FirestoreManager.instance.roomDatasHandler.AddRoomsWithUserId(FirebaseAuthManager.instance.GetCurrentUser().UserId,workerRooms);
+#endif
+        worker.MyDatas.WorkRoomsIDs.Clear();
+        worker.MyScript.IWorkRoomsIDs.Clear();
+
+#if UNITY_EDITOR
+FirestoreManager.instance.workerDatasHandler.UpdateWorkerData("ahmet123",worker.MyDatas);
+#else
+FirestoreManager.instance.workerDatasHandler.UpdateWorkerData(FirebaseAuthManager.instance.GetCurrentUser().UserId,worker.MyDatas);
+#endif
+        MuseumManager.instance.CurrentActiveWorkers.Remove(worker);
+        MuseumManager.instance.WorkersInInventory.Add(worker);
+        worker.gameObject.SetActive(false);
+    }
+    public void TransferInventoryWorkerToCurrents(int _inventoryWorkerID)
+    {
+        WorkerBehaviour worker = GetAllWorkers().Where(x => x.ID == _inventoryWorkerID).SingleOrDefault();
+        MuseumManager.instance.WorkersInInventory.Remove(worker);
+        MuseumManager.instance.CurrentActiveWorkers.Add(worker);
+    }
+    public void TransferMarketWorkerToInventory(int _marketWorkerID)
+    {
+        GetWorkersInMarket().Remove(GetWorkersInMarket().Where(x => x.ID == _marketWorkerID).SingleOrDefault());
+        AddWorkerToInventory(GetAllWorkers().Where(x => x.ID == _marketWorkerID).SingleOrDefault());
     }
 }
 [System.Serializable]
