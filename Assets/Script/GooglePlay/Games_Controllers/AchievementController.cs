@@ -350,9 +350,14 @@ public class AchievementController : ScriptableObject
         if (index >= 0 && index < WorkerAssignAchievementControl.Count)
         {
             WorkerAchievement workerAchievement = WorkerAssignAchievementControl[index];
-
+            WorkerAchievementHelper helper = workerAchievement.WorkerAchievements.Last();
+            if (helper.Controls.Count <= 0)
+            {
+                Debug.Log("Bu tur herhangi bir basarým bulundurmamaktadir. Tur:" + _workerType + " basarim icerigi sayisi:" + helper.Controls.Count);
+                return;
+            }
             // Son elemanýn TargetNumber'ýný alýyoruz
-            int maxTargetNumber = workerAchievement.WorkerAchievements.Last().Controls.Max(control => control.TargetNumber);
+            int maxTargetNumber = helper.Controls.Max(control => control.TargetNumber);
 
             // Eðer mevcut iþçi sayýsý maxTargetNumber'dan büyükse, metottan çýk
             if (workerAchievement.NumberOfWorkersOwned > maxTargetNumber)
@@ -502,6 +507,7 @@ public class AchievementController : ScriptableObject
         }
     }
 }
+[System.Serializable]
 public struct WorkerAchievement
 {
     public int NumberOfWorkersOwned;
@@ -512,6 +518,7 @@ public struct WorkerAchievement
         WorkerAchievements = _workerAchievementLists;
     }
 }
+[System.Serializable]
 public struct WorkerAchievementHelper
 {
     public List<AchievementControl> Controls;
@@ -520,6 +527,7 @@ public struct WorkerAchievementHelper
         Controls = _controls;
     }
 }
+[System.Serializable]
 public struct AchievementControl
 {
     public string AchievementID;
