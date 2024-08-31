@@ -181,20 +181,22 @@ public class ShopController : MonoBehaviour
         ClearAllItemsInShop();
         List<ItemData> tableItems = new List<ItemData>();
         tableItems =ItemManager.instance.GetItemTypeItems(ItemType.Table);
-        int length = tableItems.Count;
-        for (int i = 0; i < length; i++)// ItemData gemItem = gemItems[0] ItemData gemItem = gemItems[1]
+        int index = 0;
+        foreach (var tableItem in tableItems)
         {
             GameObject _newTable = Instantiate(itemPrefabv2, itemContent);
-            _newTable.transform.GetChild(5).GetComponent<Button>().onClick.AddListener(() => BuyItem(tableItems[i]));
-            SetNewItemProparties(_newTable, tableItems[i], ItemType.Table);
+            Debug.Log("tableItems[i].Name => " + tableItem.Name);
+            _newTable.transform.GetChild(5).GetComponent<Button>().onClick.AddListener(() => BuyItem(tableItem));
+            SetNewItemProparties(_newTable, tableItem, ItemType.Table);
             if (!GameManager.instance.IsWatchTutorial)
-                if (i == 0)
+                if (index == 0)
                 {
                     TutorialTargetObjectHandler target = _newTable.transform.GetChild(5).transform.GetChild(3).gameObject.AddComponent<TutorialTargetObjectHandler>();
                     //TutorialTargetObjectHandler target = _newTable.gameObject.AddComponent<TutorialTargetObjectHandler>();
                     target.SetOptions(3, target.gameObject.GetComponent<RectTransform>());
                     DialogueManager.instance.TargetObjectHandlers.Add(target);
                 }
+            index++;
         }
     }
     public void SetButtonsAlphaValue()
