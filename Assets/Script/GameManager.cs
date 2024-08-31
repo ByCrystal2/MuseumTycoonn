@@ -101,11 +101,7 @@ public class GameManager : MonoBehaviour
         {
             Save();
             AutoSaveTimer = Time.time + 300;
-#if UNITY_EDITOR
-            FirestoreManager.instance.UpdateGameData("ahmet123");
-#else
-            FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-#endif
+            FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
             Debug.Log("Auto Save!");
         }
 
@@ -167,7 +163,7 @@ public class GameManager : MonoBehaviour
         try
         {
             // Get user ID based on environment
-            string userId = Application.isEditor ? "ahmet123" : FirebaseAuthManager.instance.GetCurrentUser().UserId;
+            string userId = FirebaseAuthManager.instance.GetCurrentUserWithID().UserID;
 
             // Fetch game data from Firestore
             Dictionary<string, object> gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(userId)
@@ -219,7 +215,7 @@ public class GameManager : MonoBehaviour
         GameLanguage = _language;
         LocalizationManager.CurrentLanguage = _language;
 #if UNITY_EDITOR
-        FirestoreManager.instance.UpdateGameLanguageInGameDatas("ahmet123");
+        FirestoreManager.instance.UpdateGameLanguageInGameDatas(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
 #else
         FirestoreManager.instance.UpdateGameLanguageInGameDatas(FirebaseAuthManager.instance.GetCurrentUser().UserId);
 #endif
@@ -397,12 +393,7 @@ public class GameManager : MonoBehaviour
 
     public async System.Threading.Tasks.Task LoadRooms()
     {
-        string userID = "";
-#if UNITY_EDITOR
-        userID = "ahmet123";
-#else
-        userID = FirebaseAuthManager.instance.GetCurrentUser().UserId;
-#endif
+        string userID = FirebaseAuthManager.instance.GetCurrentUserWithID().UserID;
 
         Debug.Log("LoadRooms userID => " + userID);
 
@@ -518,11 +509,9 @@ public class GameManager : MonoBehaviour
     public async void LoadGooglePlayAchievements()
     {
         Dictionary<string, object> gameDatas = new Dictionary<string, object>();
-#if UNITY_EDITOR
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").WithCancellation(GetFirebaseToken().Token);
-#else
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).WithCancellation(GetFirebaseToken().Token);
-#endif
+
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID).WithCancellation(GetFirebaseToken().Token);
+
         int purchasedRoomCount = gameDatas.ContainsKey("PurchasedRoomCount") ? Convert.ToInt32(gameDatas["PurchasedRoomCount"]) : 0;
         int numberOfTablesPlaced = gameDatas.ContainsKey("NumberOfTablesPlaced") ? Convert.ToInt32(gameDatas["NumberOfTablesPlaced"]) : 0;
         int numberOfVisitors = gameDatas.ContainsKey("NumberOfVisitors") ? Convert.ToInt32(gameDatas["NumberOfVisitors"]) : 0;
@@ -552,11 +541,9 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("LoadRemoveAds test 1 complated;");
             Dictionary<string, object> gameDatas = new Dictionary<string, object>();
-#if UNITY_EDITOR
-            gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").WithCancellation(GetFirebaseToken().Token);
-#else
-            gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).WithCancellation(GetFirebaseToken().Token);
-#endif
+
+            gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID).WithCancellation(GetFirebaseToken().Token);
+
             AdverstingData databaseAdversting = new AdverstingData();
             bool removeAds = gameDatas.ContainsKey("RemoveAllAds") ? Convert.ToBoolean(gameDatas["RemoveAllAds"]) : false;
             databaseAdversting.RemovedAllAds = removeAds;
@@ -587,11 +574,9 @@ public class GameManager : MonoBehaviour
     public async void LoadMuseumNumeralDatas()
     {
         Dictionary<string, object> gameDatas = new Dictionary<string, object>();
-#if UNITY_EDITOR
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").WithCancellation(GetFirebaseToken().Token);
-#else
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).WithCancellation(GetFirebaseToken().Token);
-#endif
+
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID).WithCancellation(GetFirebaseToken().Token);
+
         float _gold, _culture, _gem, _skillPoint;
         int _currentCultureLevel;
         _gold = Convert.ToSingle(gameDatas["Gold"]);
@@ -608,15 +593,9 @@ public class GameManager : MonoBehaviour
 
         try
         {
-#if UNITY_EDITOR
             Dictionary<string, object> gameDatas = await FirestoreManager.instance
-                .GetGameDataInDatabase("ahmet123")
+                .GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID)
                 .WithCancellation(GetFirebaseToken().Token);
-#else
-            Dictionary<string, object> gameDatas = await FirestoreManager.instance
-                .GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId)
-                .WithCancellation(GetFirebaseToken().Token);
-#endif
 
             firstGameResult = gameDatas.ContainsKey("IsFirstGame")
                 ? Convert.ToBoolean(gameDatas["IsFirstGame"])
@@ -640,15 +619,9 @@ public class GameManager : MonoBehaviour
 
         try
         {
-#if UNITY_EDITOR
             Dictionary<string, object> gameDatas = await FirestoreManager.instance
-                .GetGameDataInDatabase("ahmet123")
+                .GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID)
                 .WithCancellation(GetFirebaseToken().Token);
-#else
-            Dictionary<string, object> gameDatas = await FirestoreManager.instance
-                .GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId)
-                .WithCancellation(GetFirebaseToken().Token);
-#endif
 
             watchTutorialResult = gameDatas.ContainsKey("IsWatchTutorial")
                 ? Convert.ToBoolean(gameDatas["IsWatchTutorial"])
@@ -674,15 +647,9 @@ public class GameManager : MonoBehaviour
         {
             List<PictureData> databasePictures;
 
-#if UNITY_EDITOR
             databasePictures = await FirestoreManager.instance.pictureDatasHandler
-            .GetAllPictureInDatabase("ahmet123")
+            .GetAllPictureInDatabase(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID)
                 .WithCancellation(GetFirebaseToken().Token);
-#else
-            databasePictures = await FirestoreManager.instance.pictureDatasHandler
-                .GetAllPictureInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId)
-                .WithCancellation(GetFirebaseToken().Token);
-#endif
 
             foreach (PictureData picture in databasePictures)
             {
@@ -707,11 +674,9 @@ public class GameManager : MonoBehaviour
     {
         List<ItemData> purchasedItems = new List<ItemData>();
         Dictionary<string, object> gameDatas = new Dictionary<string, object>();
-#if UNITY_EDITOR
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").WithCancellation(GetFirebaseToken().Token);
-#else
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).WithCancellation(GetFirebaseToken().Token);
-#endif
+
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID).WithCancellation(GetFirebaseToken().Token);
+
         List<int> itemIDs = ((List<object>)gameDatas["PurchasedItemIDs"]).Select(x => Convert.ToInt32(x)).ToList();
         foreach (int id in itemIDs)
         {
@@ -807,11 +772,7 @@ public class GameManager : MonoBehaviour
         List<SkillNode> allSkills = SkillTreeManager.instance.skillNodes.ToList();
         List<int> skillNodeIDs = allSkills.Select(x => x.ID).ToList();
 
-#if UNITY_EDITOR
-        afterDatabaseSkills = await FirestoreManager.instance.skillDatasHandler.GetSkillsInDatabase("ahmet123", skillNodeIDs).WithCancellation(GetFirebaseToken().Token);
-#else
-    afterDatabaseSkills = await FirestoreManager.instance.skillDatasHandler.GetSkillsInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId, skillNodeIDs).WithCancellation(GetFirebaseToken().Token);
-#endif
+        afterDatabaseSkills = await FirestoreManager.instance.skillDatasHandler.GetSkillsInDatabase(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, skillNodeIDs).WithCancellation(GetFirebaseToken().Token);
 
         int length = allSkills.Count; 
 
@@ -927,22 +888,18 @@ public class GameManager : MonoBehaviour
         Debug.Log("WorkerManager.instance.AllWorkers.Count => " + WorkerManager.instance.AllWorkers.Count);
         Dictionary<string, object> gameDatas = new Dictionary<string, object>();
         List<WorkerBehaviour> allWorkers = WorkerManager.instance.GetAllWorkers();
-#if UNITY_EDITOR
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").WithCancellation(GetFirebaseToken().Token);
-#else
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).WithCancellation(GetFirebaseToken().Token);
-#endif
+
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID).WithCancellation(GetFirebaseToken().Token);
+
         BaseWorkerHiringPrice = Convert.ToSingle(gameDatas["BaseWorkerHiringPrice"]);
 
         List<WorkerData> currentActiveWorkers = new List<WorkerData>();
 
         List<int> workerIds = allWorkers.Select(x => x.ID).ToList();
         Debug.Log("workerIds.Count => " + workerIds.Count);
-#if UNITY_EDITOR
-        currentActiveWorkers = await FirestoreManager.instance.workerDatasHandler.GetWorkersInDatabase("ahmet123", workerIds).WithCancellation(GetFirebaseToken().Token);
-#else
-        currentActiveWorkers = await FirestoreManager.instance.workerDatasHandler.GetWorkersInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId, workerIds).WithCancellation(GetFirebaseToken().Token);
-#endif
+
+        currentActiveWorkers = await FirestoreManager.instance.workerDatasHandler.GetWorkersInDatabase(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, workerIds).WithCancellation(GetFirebaseToken().Token);
+
         foreach (WorkerData databaseWorker in currentActiveWorkers)
         {
             List<int> iWorkRoomIds = new List<int>();
@@ -1013,11 +970,9 @@ public class GameManager : MonoBehaviour
     {
         List<ItemData> dailyRewardItems = new List<ItemData>();
         Dictionary<string, object> gameDatas = new Dictionary<string, object>();
-#if UNITY_EDITOR
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").WithCancellation(GetFirebaseToken().Token);
-#else
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).WithCancellation(GetFirebaseToken().Token);
-#endif
+
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID).WithCancellation(GetFirebaseToken().Token);
+
         List<int> itemIDs = ((List<object>)gameDatas["DailyRewardItemIDs"]).Select(x => Convert.ToInt32(x)).ToList();
         List<bool> itemsPurchased = ((List<object>)gameDatas["DailyRewardItemsPurchased"]).Select(x => Convert.ToBoolean(x)).ToList();
         List<bool> itemsLocked = ((List<object>)gameDatas["DailyRewardItemsLocked"]).Select(x => Convert.ToBoolean(x)).ToList();
@@ -1036,11 +991,9 @@ public class GameManager : MonoBehaviour
     public async System.Threading.Tasks.Task LoadLastDailyRewardTime()
     {
         Dictionary<string, object> gameDatas = new Dictionary<string, object>();
-#if UNITY_EDITOR
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase("ahmet123").WithCancellation(GetFirebaseToken().Token);
-#else
-        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUser().UserId).WithCancellation(GetFirebaseToken().Token);
-#endif
+
+        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID).WithCancellation(GetFirebaseToken().Token);
+
         string lastDateTimeString = gameDatas.ContainsKey("LastDailyRewardTime")? gameDatas["LastDailyRewardTime"].ToString(): "";
         byte whatDay = gameDatas.ContainsKey("WhatDay") ? Convert.ToByte(gameDatas["WhatDay"]): (byte)0;
         Debug.Log("Loading LastDailyRewardTime => " + lastDateTimeString);
@@ -1067,22 +1020,17 @@ public class GameManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-#if UNITY_EDITOR
-         FirestoreManager.instance.UpdateGameData("ahmet123");
-#else
-         FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-#endif
+
+         FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
+
         CancelFirebaseOperations();
     }
     private void OnApplicationPause(bool pause)
     {
         if (pause)
         {
-#if UNITY_EDITOR
-            FirestoreManager.instance.UpdateGameData("ahmet123");
-#else
-            FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-#endif
+            FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
+
             CancelFirebaseOperations();
             TimeManager.instance.StopProgressCoroutine();
             Time.timeScale = 0;

@@ -247,11 +247,8 @@ public class WorkerManager : MonoBehaviour
     public void AddWorkerToInventory(WorkerBehaviour _newWorker)
     {
         MuseumManager.instance.WorkersInInventory.Add(_newWorker);
-#if UNITY_EDITOR
-        FirestoreManager.instance.UpdateGameData("ahmet123");
-#else
-             FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-#endif
+
+        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
     }
     public int GetBaseHiringWorkerWithMuseumLevel()
     {
@@ -284,19 +281,13 @@ public class WorkerManager : MonoBehaviour
             data.MyRoomWorkersIDs.Clear();
         }
 
-#if UNITY_EDITOR
-        FirestoreManager.instance.roomDatasHandler.AddRoomsWithUserId("ahmet123", workerRooms);
-#else
-        FirestoreManager.instance.roomDatasHandler.AddRoomsWithUserId(FirebaseAuthManager.instance.GetCurrentUser().UserId,workerRooms);
-#endif
+        FirestoreManager.instance.roomDatasHandler.AddRoomsWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, workerRooms);
+
         worker.MyDatas.WorkRoomsIDs.Clear();
         worker.MyScript.IWorkRoomsIDs.Clear();
 
-#if UNITY_EDITOR
-FirestoreManager.instance.workerDatasHandler.UpdateWorkerData("ahmet123",worker.MyDatas);
-#else
-FirestoreManager.instance.workerDatasHandler.UpdateWorkerData(FirebaseAuthManager.instance.GetCurrentUser().UserId,worker.MyDatas);
-#endif
+        FirestoreManager.instance.workerDatasHandler.UpdateWorkerData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, worker.MyDatas);
+
         MuseumManager.instance.CurrentActiveWorkers.Remove(worker);
         MuseumManager.instance.WorkersInInventory.Add(worker);
         worker.gameObject.SetActive(false);

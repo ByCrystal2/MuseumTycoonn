@@ -77,12 +77,7 @@ public class RoomData : MonoBehaviour
     }
     public async void LoadThisRoom()
     {
-        string userID = "";
-#if UNITY_EDITOR
-        userID = "ahmet123";
-#else
-        userID = FirebaseAuthManager.instance.GetCurrentUser().UserId;
-#endif
+        string userID = FirebaseAuthManager.instance.GetCurrentUserWithID().UserID;
         
 
         if (CurrentShoppingType == ShoppingType.RealMoney)

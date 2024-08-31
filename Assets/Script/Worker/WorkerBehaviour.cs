@@ -322,11 +322,7 @@ public class WorkerBehaviour : MonoBehaviour
             item.Stop();
             item.Play();
         }
-#if UNITY_EDITOR
-        FirestoreManager.instance.workerDatasHandler.UpdateWorkerData("ahmet123", MyDatas);
-#else
-        FirestoreManager.instance.workerDatasHandler.UpdateWorkerData(FirebaseAuthManager.instance.GetCurrentUser().UserId, MyDatas);
-#endif
+        FirestoreManager.instance.workerDatasHandler.UpdateWorkerData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, MyDatas);
     }
 
     private void OnEnergyRunOut()

@@ -68,11 +68,7 @@ public class NpcManager : MonoBehaviour
             GameManager.instance.ActiveRoomsRequiredMoney = 1000;
             GameManager.instance.BaseWorkerHiringPrice = 500;
 
-#if UNITY_EDITOR
-            await FirestoreManager.instance.UpdateGameData("ahmet123");
-#else
-            await FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-#endif
+            await FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
         }
         LoadingScene.ComplateLoadingStep();
         Debug.Log("Database load test 2 complated.");

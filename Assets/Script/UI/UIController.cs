@@ -698,11 +698,7 @@ public class UIController : MonoBehaviour
                 currentSkill.Purchased(true);
 
                 //Database skill Adding
-#if UNITY_EDITOR
-                FirestoreManager.instance.skillDatasHandler.AddSkillWithUserId("ahmet123", currentSkill);
-#else
-                FirestoreManager.instance.skillDatasHandler.AddSkillWithUserId(FirebaseAuthManager.instance.GetCurrentUser().UserId, currentSkill);
-#endif
+                FirestoreManager.instance.skillDatasHandler.AddSkillWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, currentSkill);
 
                 SkillTreeManager.instance.RefreshSkillBonuses();
                 GoogleAdsManager.instance.ShowInterstitialAd();

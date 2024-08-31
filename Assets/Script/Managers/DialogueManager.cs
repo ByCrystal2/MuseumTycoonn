@@ -125,11 +125,9 @@ public class DialogueManager : MonoBehaviour
         //    npc.enabled = true;
         //}
         SpawnHandler.instance.StartSpawnProcess();
-#if UNITY_EDITOR
-        FirestoreManager.instance.UpdateGameData("ahmet123", true);
-#else
-        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId,true);        
-#endif
+
+        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, true);
+
         CinemachineTransition(false);
         //GameManager.instance.Save();
     }
@@ -144,12 +142,8 @@ public class DialogueManager : MonoBehaviour
         newDatabaseItem.isFirst = false;
         newDatabaseItem.isLocked = false;
         newDatabaseItem.id = 208;
-        string userID = "";
-#if UNITY_EDITOR
-        userID = "ahmet123";
-#else
-        userID = FirebaseAuthManager.instance.GetCurrentUser().UserId;
-#endif
+        string userID = FirebaseAuthManager.instance.GetCurrentUserWithID().UserID;
+
          await FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId(userID, newDatabaseItem);
          FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId(userID, MuseumManager.instance.InventoryPictures.Where(x => x.painterData.ID == 9999).SingleOrDefault());
         List<RoomData> activeRoomDatas = RoomManager.instance.RoomDatas.Where(x => x.isActive).ToList();
@@ -232,10 +226,12 @@ public class DialogueManager : MonoBehaviour
     }
     private bool waitFirstSentence = false;
     public bool skipped;
+    public int skipSteps;
     public void SkipCurrnetDialogs() //Dialogue Panels Skip Buttons Listening this method.
     {
         skipped = true;
-        Debug.Log("Current dialogs is skipped.");
+        skipSteps++;
+        
     }
     IEnumerator TypeSentence(string sentence)
     {
@@ -245,6 +241,8 @@ public class DialogueManager : MonoBehaviour
         {
             if (skipped)
             {
+                OnSkipProgress(sentence);
+                yield return new WaitUntil(() => skipSteps == 2);
                 OnSkipProgress();
                 break;
             }
@@ -253,14 +251,24 @@ public class DialogueManager : MonoBehaviour
         }
         waitFirstSentence = false;
     }
-    void OnSkipProgress()
+    void OnSkipProgress(string sentence = "")
     {
-        Debug.Log($"{currentTrigger.Name} adli dialog sahibinin, {(int)currentHelper.WhichStep}. adimi atlandi...");
-        skipped = false;
-        StopAllCoroutines();
-        SetActivationDialoguePanel(false);
-        skipObj.SetActive(false);
-        currentHelper.EventEndingCovered.Invoke();
+        if (skipSteps == 1)
+        {
+            currentDialogPanel.dialogText.text += sentence;
+        }
+        else if (skipSteps == 2)
+        {
+            Debug.Log($"{currentTrigger.Name} adli dialog sahibinin, {(int)currentHelper.WhichStep}. adimi atlandi...");
+            skipped = false;
+            skipSteps = 0;
+            StopAllCoroutines();
+            SetActivationDialoguePanel(false);
+            skipObj.SetActive(false);
+            currentHelper.EventEndingCovered.Invoke();
+            Debug.Log("Current dialogs is skipped.");
+        }
+        
     }
     public IEnumerator SceneTransPanelActivation(bool _active)
     {

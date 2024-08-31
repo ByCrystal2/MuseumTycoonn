@@ -123,11 +123,8 @@ public class DailyRewardsPanelController : MonoBehaviour
             newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount; ;
             newInventoryItem.painterData = new PainterData(_currentRewardItem.ID, _currentRewardItem.Description, _currentRewardItem.Name, _currentRewardItem.StarCount);
             MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
-#if UNITY_EDITOR
-             FirestoreManager.instance.UpdateGameData("ahmet123");
-#else
-             FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-#endif
+
+             FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
         }
         //GameManager.instance.Save();
     }

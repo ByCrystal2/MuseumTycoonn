@@ -80,11 +80,8 @@ public class FirestoreWorkerDatasHandler : MonoBehaviour
                 if (snapshot.Documents.Count() > 0)
                 {
                     Debug.Log($"Worker with ID {_worker.ID} already exists for user.");
-#if UNITY_EDITOR
-                    UpdateWorkerData("ahmet123", _worker);
-#else
-                    UpdateWorkerData(FirebaseAuthManager.instance.GetCurrentUser().UserId, _worker);
-#endif
+
+                    UpdateWorkerData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, _worker);
                 }
                 else
                 {

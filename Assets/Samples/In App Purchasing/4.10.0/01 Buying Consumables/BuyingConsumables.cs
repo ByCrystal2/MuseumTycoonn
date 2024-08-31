@@ -147,11 +147,8 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
                 currentItem.IsPurchased = true;
                 if (currentItem.CurrentItemType == ItemType.Table || currentItem.CurrentItemType == ItemType.Ads)
                 {
-#if UNITY_EDITOR
-                    FirestoreManager.instance.UpdateGameData("ahmet123");
-#else
-                    FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-#endif
+
+                    FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
                 }
                 //We return Complete, informing IAP that the processing on our side is done and the transaction can be closed.
                 return PurchaseProcessingResult.Complete;
@@ -206,11 +203,8 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
         newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
         newInventoryItem.painterData = new PainterData(_table.ID, _table.Description, _table.Name, _table.StarCount);
         MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
-#if UNITY_EDITOR
-        FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId("ahmet123", newInventoryItem);
-#else
-        FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId(FirebaseAuthManager.instance.GetCurrentUser().UserId,newInventoryItem);
-#endif
+
+        FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, newInventoryItem);
 
         ItemManager.instance.GetAllItemDatas().Remove(_table);
         ItemManager.instance.GetAllIAPItemDatas().Remove(_table);

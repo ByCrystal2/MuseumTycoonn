@@ -253,12 +253,8 @@ public class PicturesMenuController : MonoBehaviour
             if(!isFirst)
                 MuseumManager.instance.InventoryPictures.Add(inventoryData);
             MuseumManager.instance.GetPictureElement(CurrentPicture._pictureData.id).UpdateVisual();
-            string userID = "";
-#if UNITY_EDITOR
-            userID = "ahmet123";
-#else
-            userID = FirebaseAuthManager.instance.GetCurrentUser().UserId;
-#endif
+            string userID = FirebaseAuthManager.instance.GetCurrentUserWithID().UserID;
+
             FirestoreManager.instance.pictureDatasHandler.UpdatePictureData(userID, wallData.painterData.ID, inventoryData);
             FirestoreManager.instance.pictureDatasHandler.UpdatePictureData(userID, inventoryData.painterData.ID, wallData);
             Debug.Log("inventoryData.painterData.ID => " + inventoryData.painterData.ID + " wallData.painterData.ID => " + wallData.painterData.ID);

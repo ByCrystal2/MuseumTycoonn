@@ -33,7 +33,7 @@ public class UIInteractHandler : MonoBehaviour
 
     public void AskQuestion(string header, string explanation, QuestionAction yesAction = null, QuestionAction noAction = null, QuestionAction okayAction = null, object parameterYes = null, object parameterNo = null, object parameterOkay = null)
     {
-        Canvas gameSceneCanvas = FindObjectOfType<PicturesMenuController>().GetComponent<Canvas>();
+        Canvas gameSceneCanvas = GameObject.FindWithTag("MainCanvas").GetComponent<Canvas>();
         if (gameSceneCanvas != null)
         {
             int childCount = gameSceneCanvas.transform.childCount;
@@ -87,7 +87,7 @@ public class UIInteractHandler : MonoBehaviour
             noButton.gameObject.SetActive(!okayUI);
             okayButton.gameObject.SetActive(okayUI);
         }
-        if (!GameManager.instance.IsWatchTutorial)
+        if (GameManager.instance != null && !GameManager.instance.IsWatchTutorial)
         {
             TutorialTargetObjectHandler target = yesButton.transform.GetChild(2).gameObject.AddComponent<TutorialTargetObjectHandler>();
             target.SetOptions(4, target.GetComponent<RectTransform>());

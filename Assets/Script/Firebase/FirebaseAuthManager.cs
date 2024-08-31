@@ -13,6 +13,12 @@ public class FirebaseAuthManager : MonoBehaviour
     [SerializeField] string[] loadingCanvasIgnoringTags;
     FirebaseAuth auth;
     FirebaseUser currentUser;
+
+    [Header("Editor")]
+    [SerializeField] EditorUserSignCanvasController EditorSingInController;
+    public List<DatabaseUser> editorUsers = new List<DatabaseUser>();
+    DatabaseUser databaseUser;
+
     public static FirebaseAuthManager instance { get; private set; }
 
     private void Awake()
@@ -24,10 +30,27 @@ public class FirebaseAuthManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
+
     }
 
     void Start()
     {
+#if UNITY_EDITOR
+        if (System.IO.File.Exists(Application.persistentDataPath + "/" + "Admin/" + "LoggedIn_EditorUser" + ".json"))
+        {
+            EditorSingInController.gameObject.SetActive(false);
+            string jsonString = System.IO.File.ReadAllText(Application.persistentDataPath + "/" + "Admin/" + "LoggedIn_EditorUser" + ".json"); // read the json file from the file system
+            DatabaseUser user = JsonUtility.FromJson<DatabaseUser>(jsonString); // de-serialize the data to your myData object
+            SetDatabaseUser(user);
+            StartCoroutine(FirestoreManager.instance.CheckIfUserExists(databaseUser.UserID, databaseUser.Email, databaseUser.PhoneNumber, databaseUser.Name));
+            CreateNewLoading();
+        }
+        else
+        {
+            EditorSingInController.gameObject.SetActive(true);
+        }
+        return;
+#endif
         PlayGamesPlatform.Activate();
         PlayGamesPlatform.Instance.Authenticate(ProcessAuthentication);
     }
@@ -53,10 +76,7 @@ public class FirebaseAuthManager : MonoBehaviour
         }
         else
         {
-#if UNITY_EDITOR
-            StartCoroutine(FirestoreManager.instance.CheckIfUserExists("ahmet123", "ahmetburak04.ab@gmail.com","+905456984055","ByCrystal"));
-            CreateNewLoading();
-#endif
+
             Debug.Log("Auth Failed! result => " + status.ToString());
         }
     }
@@ -79,6 +99,7 @@ public class FirebaseAuthManager : MonoBehaviour
         else
         {
             currentUser = task.Result;
+            databaseUser = new DatabaseUser(currentUser.DisplayName,currentUser.Email,currentUser.PhoneNumber,currentUser.UserId);
             StartCoroutine(FirestoreManager.instance.CheckIfUserExists());
             Debug.Log("Auth Success => " + currentUser.UserId);
             CreateNewLoading();
@@ -125,5 +146,29 @@ public class FirebaseAuthManager : MonoBehaviour
     public FirebaseUser GetCurrentUser()
     {
         return currentUser;
+    }
+    public DatabaseUser GetCurrentUserWithID()
+    {
+        return databaseUser;
+    }
+    public void SetDatabaseUser(DatabaseUser user)
+    {
+        databaseUser = new DatabaseUser(user.Name,user.Email,user.PhoneNumber,user.UserID);
+    }
+}
+[System.Serializable]
+public class DatabaseUser
+{
+    public string Name;
+    public string Email;
+    public string PhoneNumber;
+    public string UserID;
+
+    public DatabaseUser(string _name, string _eMail, string _phoneNumber, string _UserID)
+    {
+        Name = _name;
+        Email = _eMail;
+        PhoneNumber = _phoneNumber;
+        UserID = _UserID;
     }
 }

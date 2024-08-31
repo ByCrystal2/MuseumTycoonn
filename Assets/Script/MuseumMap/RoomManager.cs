@@ -205,11 +205,9 @@ public partial class RoomManager : MonoBehaviour
             Debug.Log("aktif odalarin fiyatlari guncellendi => " + GameManager.instance.ActiveRoomsRequiredMoney);
         }
         forDatabaseRoomDatas.Add(purchasedRoom);
-#if UNITY_EDITOR
-        FirestoreManager.instance.roomDatasHandler.AddRoomsWithUserId("ahmet123", forDatabaseRoomDatas);
-#else
-        FirestoreManager.instance.roomDatasHandler.AddRoomsWithUserId(FirebaseAuthManager.instance.GetCurrentUser().UserId, forDatabaseRoomDatas); 
-#endif
+
+        FirestoreManager.instance.roomDatasHandler.AddRoomsWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, forDatabaseRoomDatas);
+
         GPGamesManager.instance.achievementController.PurchasedRoomControl();
     }
 
