@@ -49,6 +49,9 @@ public class PictureElement : MonoBehaviour
     
     public IEnumerator IEUpdateVisual(bool _isLoadGame)
     {
+        for (int i = 0; i < 5; i++)
+            yield return new WaitForEndOfFrame();
+
         int stack = 100;
         while (_pictureData.TextureID == 0)
         {

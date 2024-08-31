@@ -290,7 +290,7 @@ public class NpcManager : MonoBehaviour
         for (int a = 0; a < allMessedCount; a++)
             for (int b = 0; b < myRoomsCount; b++)
                 if (AllMessedRooms[a] == myRooms[b])
-                    MyMessedRooms.Add(myRooms[a]);
+                    MyMessedRooms.Add(myRooms[b]);
 
         NpcMess NearestMess = null;
         float nearest = 100000;

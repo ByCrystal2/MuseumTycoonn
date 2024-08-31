@@ -240,7 +240,7 @@ public class PicturesMenuController : MonoBehaviour
             PictureData wallData = new PictureData();
             wallData.painterData = new PainterData(currentInventory.painterData);
             wallData.TextureID = currentInventory.TextureID;
-            wallData.id = 0;
+            wallData.id = keepID;
             wallData.isFirst = false;
             wallData.isActive = false;
             wallData.isLocked = keepisLocked;

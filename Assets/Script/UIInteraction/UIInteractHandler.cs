@@ -47,6 +47,9 @@ public class UIInteractHandler : MonoBehaviour
             }
         }
 
+        yesButton.interactable = true;
+        noButton.interactable = true;
+        okayButton.interactable = true;
 
         headerText.text = header;
         explanationText.text = explanation;
@@ -103,6 +106,9 @@ public class UIInteractHandler : MonoBehaviour
 
     private void HidePanel()
     {
+        yesButton.interactable = false;
+        noButton.interactable = false;
+        okayButton.interactable = false;
         FadeOut();
     }
 
