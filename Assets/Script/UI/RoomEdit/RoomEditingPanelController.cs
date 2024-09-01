@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,6 +73,7 @@ public class RoomEditingPanelController : MonoBehaviour
         List<EditObjData> _statues = new List<EditObjData>();
         _statues = RoomManager.instance.statuesHandler.currentEditObjs.Where(x=> x.EditType == EditObjType.Statue).ToList();
         int length = _statues.Count;
+        int index = 0;
         for (int i = 0; i < length; i++)
         {
             GameObject _newStatue = Instantiate(EditObj_StatueVariant, EditObjsContent);
@@ -107,6 +109,16 @@ public class RoomEditingPanelController : MonoBehaviour
                 MyEditObj.data.Bonusses.Add(_newData.Bonusses[j]);
             }
             _newStatue.transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = _newData.ImageSprite;
+            if (!GameManager.instance.IsWatchTutorial)
+                if (index == 0)
+                {
+                    TutorialTargetObjectHandler target = _newStatue.gameObject.AddComponent<TutorialTargetObjectHandler>();                    
+                    target.SetOptions(8, target.gameObject.GetComponent<RectTransform>());
+                    MyEditObj.data.Price = 0;
+                    DialogueManager.instance.TargetObjectHandlers.Add(target);
+                    _newStatue.transform.SetSiblingIndex(0);
+                }
+            index++;
         }
         EditObjPanel.SetActive(true);
     }
@@ -172,7 +184,6 @@ public class RoomEditingPanelController : MonoBehaviour
         else
             MuseumManager.instance.SpendingGold(ClickedEditObjBehaviour.data.Price);
 
-        GPGamesManager.instance.achievementController.IncreaseNumberOfStatuesPlaced();
         ClickedEditObjBehaviour.data._currentRoomCell = RoomManager.instance.CurrentEditedRoom.availableRoomCell;
         ClickedEditObjBehaviour.data.SetIsPurchased();
         StatueSlotHandler currentStateContent = FindObjectsOfType<StatueSlotHandler>().Where(x => x.MyRoomCode == (ClickedEditObjBehaviour.data._currentRoomCell.CellLetter.ToString() + ClickedEditObjBehaviour.data._currentRoomCell.CellNumber.ToString())).SingleOrDefault();
@@ -193,17 +204,22 @@ public class RoomEditingPanelController : MonoBehaviour
         RoomManager.instance.statuesHandler.activeEditObjs.Add(ClickedEditObjBehaviour.data);
 
         RoomManager.instance.statuesHandler.currentEditObjs.Remove(ClickedEditObjBehaviour.data);
-        string userID = FirebaseAuthManager.instance.GetCurrentUserWithID().UserID;
+        if (GameManager.instance.IsWatchTutorial)
+        {
+            string userID = FirebaseAuthManager.instance.GetCurrentUserWithID().UserID;
 
-        await FirestoreManager.instance.roomDatasHandler.IERoomDataProcces(userID, RoomManager.instance.CurrentEditedRoom);
-        FirestoreManager.instance.statueDatasHandler.AddStatueWithUserId(userID, ClickedEditObjBehaviour.data);
+            await FirestoreManager.instance.roomDatasHandler.IERoomDataProcces(userID, RoomManager.instance.CurrentEditedRoom);
+            FirestoreManager.instance.statueDatasHandler.AddStatueWithUserId(userID, ClickedEditObjBehaviour.data);
+
+            GPGamesManager.instance.achievementController.IncreaseNumberOfStatuesPlaced();
+            GPGamesManager.instance.achievementController.StatuesPlacedCountControl();
+        }
         ClickedEditObjBehaviour = null;
         //UIController.instance.SetActivationRoomEditingPanel(false);
         AddStatuesInContent();
         UIController.instance.SetActivationRoomEditingPanel(false);
         RightUIPanelController.instance.UIVisibleClose(false);
         UIController.instance.CloseJoystickObj(false);
-        GPGamesManager.instance.achievementController.StatuesPlacedCountControl();
         GameManager.instance.Save();
     }
 
@@ -243,6 +259,11 @@ public class RoomEditingPanelController : MonoBehaviour
             Text newBonusText = newBonusObj.GetComponent<Text>();
             newBonusText.text = $"{bonus.BonusType} => +{bonus.Value}";
         }
+    }
+    public void ForTutorialUnityEvent()
+    {
+        EditObjBehaviour tutorialStatue = EditObjsContent.GetChild(0).GetComponent<EditObjBehaviour>();
+        tutorialStatue.OnClick();
     }
 }
 

@@ -12,7 +12,7 @@ public class StatueSlotHandler : MonoBehaviour
         MyStatue = _myStatue;
     }
 
-    IEnumerator WaitingForIsPointer()
+    IEnumerator IEWaitingForIsPointer()
     {
         //for (int i = 0; i < 3; i++)
             yield return new WaitForEndOfFrame();
@@ -36,9 +36,24 @@ public class StatueSlotHandler : MonoBehaviour
         }
         
     }
+    IEnumerator IEWaitingForIsPointerOverride()
+    {
+        yield return new WaitForEndOfFrame();
+
+        UIController.instance.SetActivationRoomEditingPanel(true);
+        RoomEditingPanelController.instance.BuyEditObjPanel.SetActive(false);
+        RoomEditingPanelController.instance.EditObjPanel.SetActive(false);
+        RoomManager.instance.CurrentEditedRoom = RoomManager.instance.RoomDatas.Where(x => (x.availableRoomCell.CellLetter.ToString() + x.availableRoomCell.CellNumber.ToString()) == MyRoomCode).SingleOrDefault();
+        RightUIPanelController.instance.UIVisibleClose(true);
+        UIController.instance.CloseJoystickObj(true);
+    }
+    public void WaitingForIsPointer() //Tutorial unity event
+    {
+        StartCoroutine(IEWaitingForIsPointerOverride());
+    }
     private void OnMouseDown()
     {
         StopAllCoroutines();
-        StartCoroutine(WaitingForIsPointer());
+        StartCoroutine(IEWaitingForIsPointer());
     }
 }

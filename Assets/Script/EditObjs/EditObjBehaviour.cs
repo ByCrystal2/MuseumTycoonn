@@ -10,6 +10,10 @@ public class EditObjBehaviour : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         if (!data.isClickable) return;
+        OnClick();
+    }
+    public void OnClick()
+    {
         RoomEditingPanelController.instance.ClickedEditObjBehaviour = this;
         RoomEditingPanelController.instance.ClickedEditObjBehaviour.data = this.data;
         RoomEditingPanelController.instance.SetStatueBuyingPanelUIs(this.data);

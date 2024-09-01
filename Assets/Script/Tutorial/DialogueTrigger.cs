@@ -56,6 +56,27 @@ public class DialogueTrigger : MonoBehaviour
         helper.EventToBeCovered.Invoke();
         helpers.Remove(helper);
     }
+    private void OnValidate()
+    {
+        for (int i = 0; i < helpers.Count; i++)
+        {
+            // Liste öðesini geçici bir deðiþkene atýyoruz
+            var helper = helpers[i];
+
+            // Enum deðerini doðru þekilde atamak için açýk bir dönüþüm yapýyoruz
+            if (i < System.Enum.GetValues(typeof(Steps)).Length)
+            {
+                helper.WhichStep = (Steps)i;  // i deðerini Steps enum'ýna dönüþtürerek atama yapýyoruz
+            }
+            else
+            {
+                Debug.LogWarning("Enum Steps'deki eleman sayýsý helpers listesindeki eleman sayýsýndan az.");
+            }
+
+            // Deðiþtirilen öðeyi geri listeye atýyoruz
+            helpers[i] = helper;
+        }
+    }
 }
 [System.Serializable]
 public struct DialogHelper

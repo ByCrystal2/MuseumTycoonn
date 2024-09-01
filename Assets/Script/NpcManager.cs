@@ -112,6 +112,9 @@ public class NpcManager : MonoBehaviour
         LoadingScene.ComplateLoadingStep();
         ItemData firstTableForPlayer = new ItemData(99999, "Vincent van Gogh", "Hediye Tablo", 1, 0, null, ItemType.Table, ShoppingType.Gold, 1, 3);
 
+        EditObjData objDataForTutorial = new EditObjData(9999, "Statue1", 1000, (Texture2D)RoomManager.instance.statuesHandler.statueResults[0], EditObjType.Statue, RoomManager.instance.statuesHandler.bonuss, 0, 0); //Tutorial
+        RoomManager.instance.statuesHandler.editObjs.Add(objDataForTutorial);
+
         //TRANSLATE PROCESSES
         if (LanguageDatabase.instance.TranslationWillBeProcessed)
         {
@@ -209,6 +212,7 @@ public class NpcManager : MonoBehaviour
 
     public void OnGettingSalary() // NPCs salary
     {
+        if (!GameManager.instance.IsWatchTutorial) return;
         List<WorkerBehaviour> priority = new();
         List<WorkerBehaviour> main = MuseumManager.instance.CurrentActiveWorkers;
         foreach (var item in main)

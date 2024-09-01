@@ -119,6 +119,7 @@ public class DialogueManager : MonoBehaviour
         UIController.instance.CloseJoystickObj(false);
         UIController.instance.StartRightPanelUISBasePosAnim(false);
         NpcManager.instance.MuseumDoorsProcess(true);
+        UIController.instance.CurrentShopUIType = ShopUIType.All;
         //List<NPCBehaviour> nps = FindObjectsOfType<NPCBehaviour>().ToList();
         //foreach (var npc in nps)
         //{
@@ -142,13 +143,21 @@ public class DialogueManager : MonoBehaviour
         newDatabaseItem.isFirst = false;
         newDatabaseItem.isLocked = false;
         newDatabaseItem.id = 208;
+
+
         string userID = FirebaseAuthManager.instance.GetCurrentUserWithID().UserID;
 
-         await FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId(userID, newDatabaseItem);
+        await FirestoreManager.instance.roomDatasHandler.IERoomDataProcces(userID, RoomManager.instance.CurrentEditedRoom);
+        EditObjData clickedEditObjBehaviour = RoomManager.instance.statuesHandler.editObjs.Where(x => x.ID == 9999).SingleOrDefault();
+        FirestoreManager.instance.statueDatasHandler.AddStatueWithUserId(userID, clickedEditObjBehaviour);
+
+        await FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId(userID, newDatabaseItem);
          FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId(userID, MuseumManager.instance.InventoryPictures.Where(x => x.painterData.ID == 9999).SingleOrDefault());
-        List<RoomData> activeRoomDatas = RoomManager.instance.RoomDatas.Where(x => x.isActive).ToList();
+
          await FirestoreManager.instance.skillDatasHandler.AddSkillWithUserId(userID, SkillTreeManager.instance.skillNodes.Where(x=> x.ID == 0).SingleOrDefault());
          FirestoreManager.instance.skillDatasHandler.AddSkillWithUserId(userID, SkillTreeManager.instance.skillNodes.Where(x=> x.ID == 1).SingleOrDefault());
+
+        List<RoomData> activeRoomDatas = RoomManager.instance.RoomDatas.Where(x => x.isActive).ToList();
         await FirestoreManager.instance.roomDatasHandler.AddRoomsWithUserId(userID, activeRoomDatas);
          FirestoreManager.instance.workerDatasHandler.AddWorkerWithUserId(userID, MuseumManager.instance.CurrentActiveWorkers.FirstOrDefault().MyDatas);
     }
@@ -208,13 +217,16 @@ public class DialogueManager : MonoBehaviour
         yield return new WaitForSeconds(0.8f);
         SetActivationDialoguePanel(false);
         yield return new WaitForSeconds(0.4f);
+        Debug.Log("Sentence writing is ended. EventEndingCovered event is starting...");
         currentHelper.EventEndingCovered.Invoke();
         //EndTutorialDialogue();
     }
     public void NextDialogueTriggerOverride()
     {
         Debug.Log("NextDialogueTriggerOverride Step => " + ((int)currentTrigger.currentStep + 1));
+        StopAllCoroutines();
         currentTrigger.TriggerDialog(currentTrigger.currentStep + 1);
+        //skipObj.SetActive(true);
     }
     IEnumerator HoldAnimation(int _duration, float _transitDuration, string _animString, bool _animStart)
     {
@@ -229,8 +241,9 @@ public class DialogueManager : MonoBehaviour
     public int skipSteps;
     public void SkipCurrnetDialogs() //Dialogue Panels Skip Buttons Listening this method.
     {
-        skipped = true;
-        skipSteps++;
+        if (skipSteps >= 2) return;
+         skipped = true;
+         skipSteps++;
         
     }
     IEnumerator TypeSentence(string sentence)
@@ -239,33 +252,37 @@ public class DialogueManager : MonoBehaviour
         currentDialogPanel.dialogText.text = "";
         foreach (char letter in sentence.ToCharArray())
         {
+            skipObj.GetComponentInChildren<Button>().interactable = true;
             if (skipped)
             {
                 OnSkipProgress(sentence);
-                yield return new WaitUntil(() => skipSteps == 2);
+                yield return new WaitUntil(() => skipSteps >= 2);
                 OnSkipProgress();
                 break;
             }
             currentDialogPanel.dialogText.text += letter;
             yield return new WaitForEndOfFrame();
         }
+        skipObj.GetComponentInChildren<Button>().interactable = false;
         waitFirstSentence = false;
     }
     void OnSkipProgress(string sentence = "")
     {
         if (skipSteps == 1)
         {
-            currentDialogPanel.dialogText.text += sentence;
+            currentDialogPanel.dialogText.text = sentence;
+            skipped = false;
         }
         else if (skipSteps == 2)
         {
             Debug.Log($"{currentTrigger.Name} adli dialog sahibinin, {(int)currentHelper.WhichStep}. adimi atlandi...");
             skipped = false;
             skipSteps = 0;
-            StopAllCoroutines();
-            SetActivationDialoguePanel(false);
-            skipObj.SetActive(false);
-            currentHelper.EventEndingCovered.Invoke();
+            skipObj.GetComponentInChildren<Button>().interactable = false;
+            //StopAllCoroutines();
+            //SetActivationDialoguePanel(false);
+            //skipObj.SetActive(false);
+            //currentHelper.EventEndingCovered.Invoke();
             Debug.Log("Current dialogs is skipped.");
         }
         

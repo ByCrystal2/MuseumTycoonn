@@ -62,7 +62,7 @@ public class TutorialUISPanel : MonoBehaviour
             tutorialTargetWithId = target;
         }            
         else
-            Debug.Log("Tutorial target is not found and null. Sent ID:"+_targetID);
+            Debug.Log("Tutorial target object is not found and null. Sent ID:"+_targetID);
 
         EventSending();
     }

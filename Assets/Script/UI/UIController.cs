@@ -59,10 +59,10 @@ public class UIController : MonoBehaviour
     //skill info
     public GameObject skillInfoPanel;
     public TextMeshProUGUI SkillPointText;
-    public TextMeshProUGUI skillNameText;
-    public TextMeshProUGUI skillDescriptionText;
-    public TextMeshProUGUI skillEffectText;
-    public TextMeshProUGUI skillRequiredPointText;
+    public Text skillNameText;
+    public Text skillDescriptionText;
+    public Text skillEffectText;
+    public Text skillRequiredPointText;
     public TextMeshProUGUI skillRequiredMoneyText;
     public Button unlockButton;
     [SerializeField] private GameObject[] InfoPointerUIs;
@@ -75,11 +75,12 @@ public class UIController : MonoBehaviour
     public GameObject RequiredMoney;
     public GameObject YeterliPoint;
     public GameObject YeterliMoney;
-
-
-
     public TextMeshProUGUI RequiredPointText;
     public TextMeshProUGUI RequiredMoneyText;
+
+    [Header("Shop Controller")]
+    public ShopUIType CurrentShopUIType;
+    
     [Header("NPC InformationPanel")]
     public GameObject NpcInformationPanel;
     [SerializeField] private Button NpcInfoPanelExitButton;
@@ -921,6 +922,12 @@ public class UIController : MonoBehaviour
     }
     public void AddCommentInGlobalTab(Sprite _profilPic, string _npcName, string _npcMessage, string _currentDate)
     {
+        if (commentParent.childCount >= 10)
+        {
+            Transform child = commentParent.GetChild(commentParent.childCount - 1);
+            child.gameObject.SetActive(false);
+            Destroy(commentParent.GetChild(commentParent.childCount - 1));
+        }
         GameObject newComment = Instantiate(commentPrefab, commentParent);
         newComment.transform.GetChild(1).GetComponent<Image>().sprite = _profilPic;
         newComment.transform.GetChild(2).GetComponent<Text>().text = _npcName;

@@ -20,8 +20,9 @@ public class ShopController : MonoBehaviour
     public float ClikedShopTabAlpha = 0.2f;
     public float DefaultShopTabAlpha = 1f;
 
-    public ShopUIType currentShopUIType;
-    
+    public ShopUIType currentShopUIType {get => UIController.instance.CurrentShopUIType; set => UIController.instance.CurrentShopUIType = value; }
+
+
     public static ShopController instance { get; set; }
     
     private void Awake()

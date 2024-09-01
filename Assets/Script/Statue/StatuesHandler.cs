@@ -18,20 +18,22 @@ public class StatuesHandler
 
     private const string statueSpritesResourcesPath = "StatueSprites";
     private const string decorationSpritesResourcesPath = "DecorationSprites";
+    public Object[] statueResults;
+    public List<Bonus> bonuss = new List<Bonus>();
     public StatuesHandler()
     {
     }
     public void AddEditObjs()
     {
         Statues = Resources.LoadAll<GameObject>(statuesResourcesPath);
-        Object[] statueResults = Resources.LoadAll(statueSpritesResourcesPath, typeof(Texture2D));
+        statueResults = Resources.LoadAll(statueSpritesResourcesPath, typeof(Texture2D));
         Object[] decorationResults = Resources.LoadAll(decorationSpritesResourcesPath, typeof(Texture2D));
 
 
-        List<Bonus> bonuss = new List<Bonus>();
+        
         Bonus bonus1 = new Bonus(1,EditObjBonusType.IncreaseNPCHappiness, 10);
         bonuss.Add(bonus1); // EXAMPLE!!!
-        allStatueBonusses.Add(bonus1);
+        allStatueBonusses.Add(bonus1);        
 
         EditObjData objData = new EditObjData(1, "Statue1", 1000, (Texture2D)statueResults[0], EditObjType.Statue, bonuss, 0, 0);
         EditObjData objData1 = new EditObjData(2, "Statue2", 2000, (Texture2D)statueResults[1], EditObjType.Statue, bonuss, 5, 1);
