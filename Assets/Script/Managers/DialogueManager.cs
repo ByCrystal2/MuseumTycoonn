@@ -149,6 +149,7 @@ public class DialogueManager : MonoBehaviour
 
         await FirestoreManager.instance.roomDatasHandler.IERoomDataProcces(userID, RoomManager.instance.CurrentEditedRoom);
         EditObjData clickedEditObjBehaviour = RoomManager.instance.statuesHandler.editObjs.Where(x => x.ID == 9999).SingleOrDefault();
+        clickedEditObjBehaviour._currentRoomCell = new RoomCell(CellLetter.A, 5);
         FirestoreManager.instance.statueDatasHandler.AddStatueWithUserId(userID, clickedEditObjBehaviour);
 
         await FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId(userID, newDatabaseItem);

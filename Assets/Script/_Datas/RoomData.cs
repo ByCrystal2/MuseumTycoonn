@@ -24,7 +24,7 @@ public class RoomData : MonoBehaviour
     public List<int> MyRoomWorkersIDs = new List<int>();
 
     [SerializeField] public RoomCell availableRoomCell = new RoomCell();
-    [SerializeField] GameObject RoomEditingCamera; 
+    [SerializeField] Camera[] RoomEditingCameras; 
     //UI
     public List<GameObject> Doors = new List<GameObject>();
     private GameObject RoomBlok;
@@ -255,9 +255,17 @@ public class RoomData : MonoBehaviour
             requiredText.text = _RequiredMoney;
         }
     }
-    public void SetActivationMyRoomEditingCamera(bool _active)
+    public void SetActivationMyRoomEditingCamera(int _index,bool _active)
     {
-        RoomEditingCamera.SetActive(_active);
+        CloseAllMyRoomEditingCameras();
+        Debug.Log("SetActivationMyRoomEditingCamera index is " + _index);
+        RoomEditingCameras[_index].gameObject.SetActive(_active);
+    }
+    public void CloseAllMyRoomEditingCameras()
+    {
+        int length = RoomEditingCameras.Length;
+        for (int i = 0; i < length; i++)
+            RoomEditingCameras[i].gameObject.SetActive(false);
     }
     public void IsPurchased(bool _isPurchased)
     {

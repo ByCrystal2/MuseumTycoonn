@@ -1,6 +1,8 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,6 +25,10 @@ public class RightUIPanelController : MonoBehaviour
     [SerializeField] GameObject notificationsObj;
     private Vector3 defaultDailyRewardPos;
     [SerializeField] Transform fpsModeDailyRewardTransform;
+
+    [SerializeField] GameObject SelectionCamsPanel;
+    [SerializeField] Button CamUISActivetonButton;
+    [SerializeField] Button[] CamButtons;
     public static RightUIPanelController instance { get; private set; }
     private void Awake()
     {
@@ -37,11 +43,22 @@ public class RightUIPanelController : MonoBehaviour
     private void Start()
     {
         GameManager.instance.SetCurrenGameMode(GameMode.MuseumEditing);
-
+        SetActivationSelectionCamsCanvas(false);
+        CamUISActivetonButton.onClick.RemoveAllListeners();
         EditModeButton.onClick.RemoveAllListeners();
         UIVisibleButton.onClick.RemoveAllListeners();
         EditModeButton.onClick.AddListener(EditMode);
         UIVisibleButton.onClick.AddListener(UIVisibleClose);
+        CamUISActivetonButton.onClick.AddListener(SetActivationCamUIS);
+
+        int index = 0;
+        foreach (Button camButton in CamButtons)
+        {
+            int capturedIndex = index; // Yerel deðiþken oluþturuyoruz
+            camButton.onClick.AddListener(() => RoomManager.instance.CurrentEditedRoom.SetActivationMyRoomEditingCamera(capturedIndex, true));
+            index++;
+        }
+
     }
     bool _uIVisible = true;
 
@@ -91,7 +108,8 @@ public class RightUIPanelController : MonoBehaviour
             case GameMode.RoomEditing:
                 // Muze Edit Moduna Gecis.
                 //UIController.instance.CloseEditModeCanvas(false);
-                RoomManager.instance.CurrentEditedRoom.SetActivationMyRoomEditingCamera(false);
+                SetActivationSelectionCamsCanvas(false);
+                RoomManager.instance.CurrentEditedRoom.CloseAllMyRoomEditingCameras();
                 UIController.instance.SetActivationRoomEditingPanel(false);
                 EditModeObj.SetActive(true);
                 VisibleUIObj.SetActive(true);
@@ -116,6 +134,7 @@ public class RightUIPanelController : MonoBehaviour
                 UINotVisibleObj.SetActive(true);
                 EditObj.SetActive(false);
                 notificationsObj.SetActive(false);
+                SetActivationSelectionCamsCanvas(false);
                 PicturesMenuController.instance.ExitPicturePanel();
                 //if (GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
                 //    UIController.instance.SetActivationRoomEditingPanel(true);
@@ -138,6 +157,9 @@ public class RightUIPanelController : MonoBehaviour
                 //    UIController.instance.SetActivationRoomEditingPanel(false);
                 EditObj.SetActive(true);
                 notificationsObj.SetActive(true);
+                if (GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
+                    SetActivationSelectionCamsCanvas(true);
+
                 UIController.instance.CloseCultureExpObj(false);
                 UIController.instance.CloseLeftUIsPanel(false);
                 UIController.instance.CloseMoneysObj(false);
@@ -154,6 +176,7 @@ public class RightUIPanelController : MonoBehaviour
             UINotVisibleObj.SetActive(true);
             EditObj.SetActive(false);
             notificationsObj.SetActive(false);
+            SetActivationSelectionCamsCanvas(false);
             //PicturesMenuController.instance.ExitPicturePanel();
 
             UIController.instance.CloseNPCInformationPanel();
@@ -172,6 +195,8 @@ public class RightUIPanelController : MonoBehaviour
             UINotVisibleObj.SetActive(false);
             EditObj.SetActive(true);
             notificationsObj.SetActive(true);
+            if (GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
+                SetActivationSelectionCamsCanvas(true);
             UIController.instance.CloseCultureExpObj(false);
             UIController.instance.CloseLeftUIsPanel(false);
             UIController.instance.CloseMoneysObj(false);
@@ -183,7 +208,7 @@ public class RightUIPanelController : MonoBehaviour
     {
         EditObj.SetActive(!_close);
         VisibleUIObj.SetActive(false);
-        if (GameManager.instance.GetCurrentGameMode() == GameMode.MuseumEditing)
+        if (GameManager.instance.GetCurrentGameMode() == GameMode.MuseumEditing || GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
         {
             VisibleUIObj.SetActive(!_close);
         }
@@ -193,5 +218,45 @@ public class RightUIPanelController : MonoBehaviour
         EditModeObj.SetActive(false);
         FPSModeObj.SetActive(false);
         GhostModeObj.SetActive(false);
+    }
+    bool camUIActive = false;
+    public void SetActivationCamUIS()
+    {
+        Debug.Log("SetActivationCamUIS method is starting..");
+        StartCoroutine(IESetActivationCamUIS());
+    }
+    IEnumerator IESetActivationCamUIS()
+    {
+        int length = CamButtons.Length;
+        for (int i = 0; i < length; i++)
+        {
+            Button currentButton = CamButtons[i];
+            if (!camUIActive)
+            {
+                currentButton.gameObject.SetActive(true);
+                currentButton.gameObject.transform.DOLocalRotate(new Vector3(0, 360, 0), 0.6f).SetEase(Ease.OutCirc);
+                yield return new WaitForSeconds(0.08f);
+            }
+            else
+            {
+                currentButton.gameObject.transform.DOLocalRotate(new Vector3(0, 0, 0), 0.3f).SetEase(Ease.InCirc);
+                yield return new WaitForSeconds(0.04f);
+                currentButton.gameObject.SetActive(false);
+            }
+        }
+            camUIActive = !camUIActive;
+    }
+    public void SetActivationSelectionCamsCanvas(bool _active)
+    {
+        if (!_active)
+        {
+            int length = CamButtons.Length;
+            for (int i = 0; i < length; i++)
+            {
+                Button currentButton = CamButtons[i];
+                currentButton.gameObject.SetActive(false);
+            }
+        }
+        SelectionCamsPanel.SetActive(_active);
     }
 }

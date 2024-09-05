@@ -60,7 +60,7 @@ public class RoomBlokClickHandler : MonoBehaviour
                 Debug.Log("Oda Aktif Ve Kilitli Degil!");
                 Debug.Log("Oda Duzenleme Moduna Giris Yapildi. Oda Hucre No =>" + ClickedRoom.availableRoomCell.CellLetter + ClickedRoom.availableRoomCell.CellNumber);
                 RightUIPanelController.instance.EditModeObj.SetActive(false);
-                ClickedRoom.SetActivationMyRoomEditingCamera(true);
+                ClickedRoom.SetActivationMyRoomEditingCamera(0,true);
                 GameManager.instance.SetCurrenGameMode(GameMode.RoomEditing);
                 RoomManager.instance.CurrentEditedRoom = ClickedRoom;
                 //UIController.instance.CloseEditModeCanvas(true);

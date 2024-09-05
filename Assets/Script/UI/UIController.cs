@@ -256,6 +256,7 @@ public class UIController : MonoBehaviour
             WorkerAssignmentPanelOnButton.enabled = false;
             DailyRewardPanelOnButton.enabled = false;
             NotificationCanvasOnButton.enabled = false;
+            //RightUIPanelController.instance.SetActivationSelectionCamsCanvas(false);
             if (!rightAnimOpenOverWrite)
             {
                 leftUIArrowClickable = false;
@@ -270,6 +271,7 @@ public class UIController : MonoBehaviour
                     WorkerAssignmentPanelOnButton.enabled = true;
                     DailyRewardPanelOnButton.enabled = true;
                     NotificationCanvasOnButton.enabled = true;
+                    //RightUIPanelController.instance.SetActivationSelectionCamsCanvas(true);
                 });
                 LeftUISBackground.DOScaleY(1, 0.2f).SetEase(Ease.Linear).OnComplete(() =>
                 {
@@ -289,6 +291,7 @@ public class UIController : MonoBehaviour
                     WorkerAssignmentPanelOnButton.gameObject.SetActive(true);
                     DailyRewardPanelOnButton.gameObject.SetActive(true);
                     NotificationCanvasOnButton.gameObject.SetActive(true);
+                    //RightUIPanelController.instance.SetActivationSelectionCamsCanvas(true);
                 }).SetEase(Ease.Linear).OnComplete(() =>
                 {
                     leftUIArrowClickable = true;
@@ -297,6 +300,7 @@ public class UIController : MonoBehaviour
                     WorkerAssignmentPanelOnButton.enabled = true;
                     DailyRewardPanelOnButton.enabled = true;
                     NotificationCanvasOnButton.enabled = true;
+                    //RightUIPanelController.instance.SetActivationSelectionCamsCanvas(true);
                 });
             }
             rightAnimOpen = !rightAnimOpen;
@@ -309,6 +313,7 @@ public class UIController : MonoBehaviour
         WorkerAssignmentPanelOnButton.enabled = false;
         DailyRewardPanelOnButton.enabled = false;
         NotificationCanvasOnButton.enabled = false;
+        //RightUIPanelController.instance.SetActivationSelectionCamsCanvas(false);
         if (!rightAnimOpen)
         {
             leftUIArrowClickable = false;
@@ -330,6 +335,7 @@ public class UIController : MonoBehaviour
                         WorkerAssignmentPanelOnButton.enabled = true;
                         DailyRewardPanelOnButton.enabled = true;
                         NotificationCanvasOnButton.enabled = true;
+                        //RightUIPanelController.instance.SetActivationSelectionCamsCanvas(true);
                     });
                     
                 });
@@ -356,6 +362,7 @@ public class UIController : MonoBehaviour
                     WorkerAssignmentPanelOnButton.enabled = true;
                     DailyRewardPanelOnButton.enabled = true;
                     NotificationCanvasOnButton.enabled = true;
+                    //RightUIPanelController.instance.SetActivationSelectionCamsCanvas(true);
                 });
                 LeftUISBackground.DOScaleY(1, 0.2f).SetEase(Ease.Linear);
             });
@@ -1217,6 +1224,8 @@ public class UIController : MonoBehaviour
             WorkerAssignmentPanelOnButton.gameObject.SetActive(!_buttonActive);
             DailyRewardPanelOnButton.gameObject.SetActive(!_buttonActive);
             NotificationCanvasOnButton.gameObject.SetActive(!_buttonActive);
+            if (GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
+            RightUIPanelController.instance.SetActivationSelectionCamsCanvas(false);
             //pnlFortuneWheelOnButton.gameObject.SetActive(!_buttonActive);
 
             GameObject _activeGO = _activePnlButton.gameObject;
@@ -1278,6 +1287,8 @@ public class UIController : MonoBehaviour
         }
         else
         {
+            if (GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
+                RightUIPanelController.instance.SetActivationSelectionCamsCanvas(true);
             if (_activePnlButton != null && (_activePnlButton.gameObject == DailyRewardPanelOnButton.gameObject || _activePnlButton.gameObject == NotificationCanvasOnButton.gameObject))
             {
                 museumStatButton.gameObject.SetActive(true);

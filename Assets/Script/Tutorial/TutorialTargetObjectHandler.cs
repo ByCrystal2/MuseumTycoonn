@@ -28,7 +28,7 @@ public class TutorialTargetObjectHandler : MonoBehaviour
         ID = _id;
         targetTransform = _targetTransform;
         isTargetSettingComplated = false;
-        Debug.Log("Tutorial Target from void SetOptions method. => " + targetTransform.position);
+        Debug.Log("Tutorial Target from void SetOptions method. name => "+targetTransform.name + " Position: " + targetTransform.position, targetTransform);
     }
     IEnumerator IESetOptions(int _id, RectTransform _targetTransform)
     {
