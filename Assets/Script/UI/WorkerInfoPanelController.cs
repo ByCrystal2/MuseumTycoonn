@@ -19,12 +19,14 @@ public class WorkerInfoPanelController : MonoBehaviour
     [SerializeField] Transform openStarsContent;
     [SerializeField] Transform closeStarsContent;
 
+    [SerializeField] Button btnDismissWorker;
     [SerializeField] Button btnExit;
 
     private WorkerBehaviour currentWorker;
 
     private void Start()
     {
+        btnDismissWorker.onClick.AddListener(DissmisWorker);
         btnExit.onClick.AddListener(ExitPanel);
     }
     public void SetWorker(WorkerBehaviour _worker)
@@ -80,6 +82,10 @@ public class WorkerInfoPanelController : MonoBehaviour
     public void ExitPanel()
     {
         gameObject.SetActive(false);
+    }
+    public void DissmisWorker()
+    {
+        WorkerManager.instance.TransferCurrentWorkerToInventory(currentWorker.MyScript.ID);
     }
 
     private void OnEnable()
