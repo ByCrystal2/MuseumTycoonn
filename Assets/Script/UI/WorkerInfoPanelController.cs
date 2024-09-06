@@ -86,6 +86,7 @@ public class WorkerInfoPanelController : MonoBehaviour
     public void DissmisWorker()
     {
         WorkerManager.instance.TransferCurrentWorkerToInventory(currentWorker.MyScript.ID);
+        ExitPanel();
     }
 
     private void OnEnable()
