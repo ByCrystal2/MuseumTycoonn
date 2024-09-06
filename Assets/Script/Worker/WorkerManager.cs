@@ -302,6 +302,17 @@ public class WorkerManager : MonoBehaviour
         GetWorkersInMarket().Remove(GetWorkersInMarket().Where(x => x.ID == _marketWorkerID).SingleOrDefault());
         AddWorkerToInventory(GetAllWorkers().Where(x => x.ID == _marketWorkerID).SingleOrDefault());
     }
+    public string GetWorkerTypeFormatToString(WorkerType _workerType)
+    {
+        string result = "";
+        if (_workerType == WorkerType.None) return "None";
+        result = LanguageDatabase.instance.Language.WorkerInfoStrings[(int)_workerType - 1].ActiveLanguage;
+        return result;
+    }
+    public int GetRequiredNextLevelExp(int _level)
+    {
+        return RequiredExpsPerLevel[_level];
+    }
 }
 [System.Serializable]
 public class WorkerAndTasks

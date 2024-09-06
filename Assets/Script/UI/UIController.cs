@@ -14,6 +14,7 @@ public class UIController : MonoBehaviour
     [SerializeField] public pnlRewardAdController RewardAdController;
     [SerializeField] public RoomUISPanelController roomUISPanelController;
     [SerializeField] public TutorialUISPanel tutorialUISPanel;
+    [SerializeField] public WorkerInfoPanelController workerInfoPanelController;
     [SerializeField] List<GameObject> IsGameObjectOverPanels;
     [Header("MuseumInfos")]
     [SerializeField] GameObject pnlMuseumStats;

@@ -21,6 +21,10 @@ public class WorkerBehaviour : MonoBehaviour
 
     [SerializeField] public WorkerType workerType;
     [SerializeField] public bool IsMale;
+
+    //UI
+    public Camera forWorkerInfoPanelCam;
+    //UI
     public WorkerData MyDatas;
     public Worker MyScript;
     public Transform EffectParent;
@@ -375,6 +379,12 @@ public class WorkerBehaviour : MonoBehaviour
         }
     }
     public static float BaseSalary = 10;
+
+    private void OnMouseDown()
+    {
+        UIController.instance.workerInfoPanelController.SetWorker(this);
+        UIController.instance.workerInfoPanelController.gameObject.SetActive(true);
+    }
 }
 
 [System.Serializable]

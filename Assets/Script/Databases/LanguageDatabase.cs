@@ -128,6 +128,8 @@ public class LanguageDatabase : MonoBehaviour
         Language.InternetCheckInfoStrings = new List<LanguageData>() { new LanguageData(0, "Internet Connection"), new LanguageData(1, "Your internet connection has been lost."), new LanguageData(2, "Please check your connection."), new LanguageData(3, "Your internet connection has been restored.") };
 
         Language.ShopQuestionInfoStrings = new List<LanguageData>() { new LanguageData(0, "Purchase Process"), new LanguageData(1, "Do you confirm the purchase?"), new LanguageData(2, "Available"), new LanguageData(3, "Gem"), new LanguageData(4, "Gold"), new LanguageData(5, "Product Price"), new LanguageData(6, "Paid") };
+
+        Language.WorkerInfoStrings = new List<LanguageData>() { new LanguageData(0, "Security"), new LanguageData(1, "Housekeeper"), new LanguageData(2, "Musician"), new LanguageData(3, "Receptionist"), new LanguageData(4, "Brochure Seller") };
         //General
     }
     bool waitBeforeTranslate;
@@ -174,6 +176,9 @@ public class LanguageDatabase : MonoBehaviour
 
         List<string> shopQuestionInfoKeysToTranslate = new List<string>();
         List<string> shopQuestionInfoTranslatedTexts = new List<string>();
+
+        List<string> workerInfoKeysToTranslate = new List<string>();
+        List<string> workerInfoTranslatedTexts = new List<string>();
         //General
 
         //SKILLS
@@ -305,6 +310,18 @@ public class LanguageDatabase : MonoBehaviour
         {
             shopQuestionInfoTranslatedTexts = result;
         });
+
+        foreach (var item in Language.WorkerInfoStrings)
+        {
+            if (item.Key == string.Empty)
+                continue;
+            workerInfoKeysToTranslate.Add(item.Key);
+        }
+
+        await GameManager.instance.BulkTranslateAndAssignAsync(workerInfoKeysToTranslate, (result) =>
+        {
+            workerInfoTranslatedTexts = result;
+        });
         //GENERAL
 
         //ItemAdding
@@ -378,6 +395,12 @@ public class LanguageDatabase : MonoBehaviour
         {
             Language.ShopQuestionInfoStrings[i].ActiveLanguage = shopQuestionInfoTranslatedTexts[i];
         }
+
+        Debug.Log("Language.WorkerInfoStrings.Count => " + Language.WorkerInfoStrings.Count + "workerInfoTranslatedTexts.Count => " + workerInfoTranslatedTexts.Count);
+        for (int i = 0; i < workerInfoTranslatedTexts.Count; i++)
+        {
+            Language.WorkerInfoStrings[i].ActiveLanguage = workerInfoTranslatedTexts[i];
+        }
         //GeneralAdding
         // JSON dosyasýný kaydet
         string jsonString = JsonUtility.ToJson(Language);
@@ -443,6 +466,9 @@ public class LanguageDatabase : MonoBehaviour
 
             List<string> shopQuestionInfoKeysToTranslate = new List<string>();
             List<string> shopQuestionInfoTranslatedTexts = new List<string>();
+
+            List<string> workerInfoKeysToTranslate = new List<string>();
+            List<string> workerInfoTranslatedTexts = new List<string>();
             //General
 
             //SKILLS
@@ -573,6 +599,18 @@ public class LanguageDatabase : MonoBehaviour
             {
                 shopQuestionInfoTranslatedTexts = result;
             });
+
+            foreach (var item in Language.WorkerInfoStrings)
+            {
+                if (item.Key == string.Empty)
+                    continue;
+                workerInfoKeysToTranslate.Add(item.Key);
+            }
+
+            await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), workerInfoKeysToTranslate, (result) =>
+            {
+                workerInfoTranslatedTexts = result;
+            });
             //GENERAL
 
             //ItemAdding
@@ -646,6 +684,12 @@ public class LanguageDatabase : MonoBehaviour
             {
                 Language.ShopQuestionInfoStrings[i].ActiveLanguage = shopQuestionInfoTranslatedTexts[i];
             }
+
+            Debug.Log("Language.WorkerInfoStrings.Count => " + Language.WorkerInfoStrings.Count + "workerInfoTranslatedTexts.Count => " + workerInfoTranslatedTexts.Count);
+            for (int i = 0; i < workerInfoTranslatedTexts.Count; i++)
+            {
+                Language.WorkerInfoStrings[i].ActiveLanguage = workerInfoTranslatedTexts[i];
+            }
             //GeneralAdding
             // JSON dosyasýný kaydet
             string jsonString = JsonUtility.ToJson(Language);
@@ -717,6 +761,7 @@ public class MainLanguageData
     public List<LanguageData> PictureInfoStrings = new List<LanguageData>();
     public List<LanguageData> InternetCheckInfoStrings = new List<LanguageData>();
     public List<LanguageData> ShopQuestionInfoStrings = new List<LanguageData>();
+    public List<LanguageData> WorkerInfoStrings = new List<LanguageData>();
     //General
 }
 

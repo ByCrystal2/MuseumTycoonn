@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using static Cinemachine.DocumentationSortingAttribute;
 
 [System.Serializable]
 public abstract class Worker: ITaskAssignable

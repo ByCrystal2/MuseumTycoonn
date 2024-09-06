@@ -263,6 +263,11 @@ public partial class RoomManager : MonoBehaviour
 
         return Rooms;
     }
+    public RoomCell GetRoomCellWithID(int _id)
+    {
+        RoomData room = RoomDatas.Where(x => x.ID == _id).SingleOrDefault();
+        return room.availableRoomCell;
+    }
     public RoomData GetRoomWithRoomCell(RoomCell _cell)
     {
         return RoomDatas.Where(x=> x.availableRoomCell.CellLetter.ToString() + x.availableRoomCell.CellNumber.ToString()  == _cell.CellLetter.ToString() + _cell.CellNumber.ToString()).SingleOrDefault();
