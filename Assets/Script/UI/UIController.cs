@@ -934,7 +934,7 @@ public class UIController : MonoBehaviour
         {
             Transform child = commentParent.GetChild(commentParent.childCount - 1);
             child.gameObject.SetActive(false);
-            Destroy(commentParent.GetChild(commentParent.childCount - 1));
+            Destroy(child.gameObject);
         }
         GameObject newComment = Instantiate(commentPrefab, commentParent);
         newComment.transform.GetChild(1).GetComponent<Image>().sprite = _profilPic;
