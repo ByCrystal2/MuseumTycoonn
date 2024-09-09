@@ -98,6 +98,7 @@ public class UIController : MonoBehaviour
     [Header("Worker Market Panel")]
     public Transform WorkerContent;
     public GameObject WorkerPrefabV2_V1;
+    public Sprite[] workerPP;
     //UI
     public GameObject WorkerPanel;
     private Vector3 WorkerPanelDefaultPos;
@@ -1156,6 +1157,7 @@ public class UIController : MonoBehaviour
     private bool tutorialControl = false;
     public void GetDesiredWorkersInContent(WorkerType _wType, Button _clikedButton = null)
     {
+
         if (_clikedButton != null)
         {
             WorkerTabButtonsOn();
@@ -1168,26 +1170,24 @@ public class UIController : MonoBehaviour
         int length = workers.Count;
         for (int i = 0; i < length; i++)
         {
-            GameObject newSecurityObj = Instantiate(WorkerPrefabV2_V1, WorkerContent);
+            GameObject workerObje = Instantiate(WorkerPrefabV2_V1, WorkerContent);
             Debug.Log("worker.MyScript.Level => " + workers[i].MyScript.Level);
-            if (i == 0 && _wType == WorkerType.Housekeeper && !tutorialControl)
+            WorkerInfoUIs workerInfoUIs = workerObje.GetComponent<WorkerInfoUIs>();
+            if (GameManager.instance != null && !GameManager.instance.IsWatchTutorial&&i==0&&_wType==WorkerType.Housekeeper)
             {
-                if (GameManager.instance != null && !GameManager.instance.IsWatchTutorial)
-                {
-                    newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(workers[i].ID, workers[i].MyScript.Name, workers[i].MyScript.Age, workers[i].MyScript.Height, workers[i].StarRank);
-                    newSecurityObj.GetComponent<WorkerInfoUIs>().SetMyPrice(0);
-                    newSecurityObj.GetComponent<WorkerInfoUIs>().txtPrice.text = "0";
+                workerInfoUIs.SetWorkerInfoUIs(workers[i].ID, workers[i].MyScript.Name, workers[i].MyScript.Age, workers[i].MyScript.Height, workers[i].StarRank, workerPP[(int)_wType - 1]);
+                workerInfoUIs.SetMyPrice(0);
+                workerInfoUIs.txtPrice.text = "0";
 
-                    GameObject workerHiringObj = newSecurityObj.GetComponentInChildren<WorkerHiringButton>().transform.GetChild(2).gameObject;
-                    Debug.Log("workerHiringObj.name => " + workerHiringObj.name);
-                    TutorialTargetObjectHandler target = workerHiringObj.AddComponent<TutorialTargetObjectHandler>();
-                    target.SetOptions(5, workerHiringObj.GetComponent<RectTransform>());
-                    tutorialControl = true;
-                    DialogueManager.instance.TargetObjectHandlers.Add(target);
-                }
+                GameObject workerHiringObj = workerObje.GetComponentInChildren<WorkerHiringButton>().transform.GetChild(2).gameObject;
+                Debug.Log("workerHiringObj.name => " + workerHiringObj.name);
+                TutorialTargetObjectHandler target = workerHiringObj.AddComponent<TutorialTargetObjectHandler>();
+                target.SetOptions(5, workerHiringObj.GetComponent<RectTransform>());
+                tutorialControl = true;
+                DialogueManager.instance.TargetObjectHandlers.Add(target);
             }
-            else
-                newSecurityObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(workers[i].ID, workers[i].MyScript.Name, workers[i].MyScript.Age, workers[i].MyScript.Height, workers[i].StarRank);
+            else 
+            workerInfoUIs.SetWorkerInfoUIs(workers[i].ID, workers[i].MyScript.Name, workers[i].MyScript.Age, workers[i].MyScript.Height, workers[i].StarRank, workerPP[(int)_wType - 1]);
         }
         if (targetComingSoonWorkers.Contains(_wType)) InstantiateComingSoonText((RectTransform)WorkerContent);
         Debug.Log($"Worker Turu => {_wType} olan Isciler Listelendi.");
@@ -1392,7 +1392,7 @@ public class UIController : MonoBehaviour
         {
             GameObject newWorkerObj = Instantiate(InventoryWorkerPrefab_V1, WorkerInventoryContent);
             Debug.Log("worker.MyScript.Level => " + worker.MyScript.Level);
-            newWorkerObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(worker.ID, worker.MyScript.Name, worker.MyScript.Age, worker.MyScript.Height, worker.StarRank);
+            newWorkerObj.GetComponent<WorkerInfoUIs>().SetWorkerInfoUIs(worker.ID, worker.MyScript.Name, worker.MyScript.Age, worker.MyScript.Height, worker.StarRank, workerPP[(int)_wType - 1]);
             if (!GameManager.instance.IsWatchTutorial)
             {
                 GameObject hiringObject = newWorkerObj.GetComponentInChildren<WorkerInventoryChooseRoomsButton>().transform.GetChild(1).gameObject;

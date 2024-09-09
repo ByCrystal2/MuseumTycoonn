@@ -16,7 +16,7 @@ public class WorkerInfoUIs : MonoBehaviour
     [SerializeField] public Transform OpenStarsObj;
 
     private float myPrice;
-    public void SetWorkerInfoUIs(int _id, string _fullName, int _age, float _height, int _rank, Image _avatar = null)
+    public void SetWorkerInfoUIs(int _id, string _fullName, int _age, float _height, int _rank, Sprite _avatar)
     {
         workerID = _id;
         txtFullName.text = _fullName;
@@ -40,7 +40,7 @@ public class WorkerInfoUIs : MonoBehaviour
             }
         }
         if (_avatar != null)
-            imgAvatar = _avatar;
+            imgAvatar.sprite =  _avatar;
     }
     public float GetMyPrice()
     {
