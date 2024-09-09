@@ -62,9 +62,12 @@ public class MainMenu : MonoBehaviour
     }
     public void ResetLanguageChangedValues()
     {
+        languageChangedNotification.ResetNotification();
+        languageChangedNotification.DelayTime *= 2.0f;
         currentTime = 0f;
         languageChangedCount = 0;
         CanSetNewLanguage = true;
+        AllLanguageButtonInteractable(true);
         Debug.Log("ResetLanguageChangedValues");
     }
     void OnStartButtonClick()
@@ -121,7 +124,18 @@ public class MainMenu : MonoBehaviour
             }
         }
     }
-
+    public void AllLanguageButtonInteractable(bool _interactable)
+    {
+        int length = LanguageButtonsContent.childCount;
+        for (int i = 0; i < length; i++)
+        {
+            if (LanguageButtonsContent.GetChild(i).TryGetComponent(out Language languageButton))
+            {
+                Button currentButton = languageButton.GetComponent<Button>();
+                currentButton.interactable = _interactable;
+            }
+        }
+    }
     private void ResetEffectAllButtons()
     {
         int length = LanguageButtonsContent.childCount;

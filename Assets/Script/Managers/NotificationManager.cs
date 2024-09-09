@@ -17,7 +17,7 @@ public class NotificationManager : MonoBehaviour
     NotificationType currentNotificationType_V1;
     [Header("V2 Notification")]
     [SerializeField] GameObject notificationsCanvas_V2;
-    [SerializeField] Transform notificationContent_V2;
+    [SerializeField] public Transform notificationContent_V2;
     [SerializeField] NotificationHandler notificationPrefab_V2;
     [SerializeField] private float notificationCheckInterval_V2 = 0.05f;
     private NotificationIconHandler[] icons;
@@ -90,24 +90,25 @@ public class NotificationManager : MonoBehaviour
     {
         Notification n1 = null, n2 = null, n3 = null, n4 = null;
         n1 = new Notification(1,
-            "You have changed the language frequently. Please wait a while before changing it again.", NotificationType.System,
+            "You have changed the language frequently. Please wait a while before changing it again.",10.0f, NotificationType.System,
             NotificationState.Error,
             async () =>
             {
-                await Task.Delay((2 * 5) * 1000);
+                MainMenu.instance.AllLanguageButtonInteractable(false);
+                await Task.Delay(((int)n1.DelayTime) * 1000);
                 MainMenu.instance.ResetLanguageChangedValues();
                 Debug.Log("Notification completed.");
                 return true;
             },5);
         n2 = new Notification(2,
-            "A worker didn't get his salary", NotificationType.System,
+            "A worker didn't get his salary", 10.0f, NotificationType.System,
             NotificationState.Warning,
             async () =>
             {                
                 return true;
             }, 3);
         n3 = new Notification(3,
-            "Was transferred to inventory because a worker was not paid his salary.", NotificationType.System,
+            "Was transferred to inventory because a worker was not paid his salary.", 10.0f, NotificationType.System,
             NotificationState.Error,
             async () =>
             {
@@ -131,6 +132,9 @@ public class NotificationManager : MonoBehaviour
         NotificationHelper result = ActiveNotifications.Where(x => x.Notification.ID == _id).SingleOrDefault();
         return result;
     }
+    // Sýnýfýn içinde bir alan olarak tanýmlayýn
+    private bool isNotificationLoopRunning = false;
+
     private IEnumerator V2NotificationLoop()
     {
         while (true)
@@ -151,38 +155,41 @@ public class NotificationManager : MonoBehaviour
                     // Bildirimi göster
                     if (!currentNotification.IsProcessStarted)
                     {
-                        Debug.Log("Step4");
+                        Debug.Log("Starting notification process...");
                         yield return currentNotification.StartNotificationProcess();
-                        Debug.Log("yield return StartNotificationProcess");
+                        Debug.Log("Notification process complete.");
                     }
 
                     // Fade iþlemi ve bildirim yok etme
                     if (currentNotification.IsDestroyable)
                     {
-                        Debug.Log("Step2");
+                        Debug.Log("Fading out notification...");
                         Tween fadeOutTween = notificationHandler.uiFade.Fade(0.2f, currentNotification.DelayTime);
                         yield return fadeOutTween.AsyncWaitForCompletion();  // Fade-out iþlemi tamamlanana kadar bekle
-                        Destroy(notificationHandler.gameObject, currentNotification.DelayTime);  // Bildirimi yok et
+
+                        // Tween tamamlandýktan sonra bildirimi yok et
+                        Destroy(notificationHandler.gameObject);
                     }
                     else
                     {
-                        Debug.Log("Step3");
+                        Debug.Log("Fading in notification...");
                         Tween fadeInTween = notificationHandler.uiFade.Fade(1, 0.2f);
                         yield return fadeInTween.AsyncWaitForCompletion();  // Fade-in iþlemi tamamlanana kadar bekle
                     }
                 }
             }
 
-            // Eðer hiç bildirim yoksa canvas'ý kapat
+            // Eðer hiç bildirim yoksa canvas'ý kapat ve Coroutine'i durdur
             if (notificationContent_V2.childCount == 0 && notificationsCanvas_V2.activeSelf)
             {
                 notificationsCanvas_V2.SetActive(false);
+                isNotificationLoopRunning = false;  // Coroutine durdurulduðu için kontrolü sýfýrla
+                yield break;  // Coroutine'i sonlandýr
             }
 
             yield return new WaitForSeconds(notificationCheckInterval_V2);
         }
     }
-
 
     public void SendNotification(Notification _notification, SenderHelper _sender, int _whichVersion = 1)
     {
@@ -210,9 +217,20 @@ public class NotificationManager : MonoBehaviour
         else if (_whichVersion == 2)
         {
             if (_notification.AlertCount >= _notification.TriggerAlertNumber)
+            {
                 CreateNotificationInContent(notificationPrefab_V2, _notification, notificationContent_V2);
+
+                // Coroutine'i baþlatmak için kontrol ekleyin
+                if (!isNotificationLoopRunning)
+                {
+                    StartCoroutine(V2NotificationLoop());
+                    isNotificationLoopRunning = true;  // Coroutine baþlatýldýðýnda kontrolü iþaretle
+                }
+            }
         }
     }
+
+
 
     public void FillNotificationPanelContent(NotificationType _notificationType)
     {
@@ -346,20 +364,21 @@ public class Notification
         NotificationState = notificationState;
         AlertCount = 0;
         TriggerAlertNumber = triggerAlertNumber;
-        defaultNotification = this;
+        defaultNotification = new Notification(this);
         IsProcessStarted = false;
     }
-    public Notification(int _id, string _message, NotificationType _notificationType, NotificationState notificationState,System.Func<Task<bool>> _onComplate, int triggerAlertNumber)
+    public Notification(int _id, string _message, float _delayTime, NotificationType _notificationType, NotificationState notificationState,System.Func<Task<bool>> _onComplate, int triggerAlertNumber)
     {
         ID = _id;
         Message = _message;
+        DelayTime = _delayTime;
         IsDestroyable = false;
         NotificationType = _notificationType;
         NotificationState = notificationState;
         OnComplate = _onComplate;
         AlertCount = 0;
         TriggerAlertNumber = triggerAlertNumber;
-        defaultNotification = this;
+        defaultNotification = new Notification(this);
         IsProcessStarted = false;
     }
     public Notification(Notification copy)
@@ -382,7 +401,18 @@ public class Notification
         IsProcessStarted = true;
         if (IsDestroyable)
         {
-
+            int length = NotificationManager.instance.notificationContent_V2.childCount;
+            for (int i = 0; i < length; i++)
+            {
+                if (NotificationManager.instance.notificationContent_V2.GetChild(i).TryGetComponent(out NotificationHandler handler))
+                {
+                    Notification notification = handler.GetNotification();
+                    if (notification.ID == this.ID)
+                    {
+                        
+                    }
+                }
+            }
         }
         else
         {
@@ -390,7 +420,6 @@ public class Notification
             {
                 await StartComplateFunction(); // Burada asenkron fonksiyonun tamamlanmasýný bekliyoruz
                 IsDestroyable = true;
-                await StartNotificationProcess();
                 Debug.Log("StartComplateFunction() await end.");
             }
         }
@@ -399,9 +428,10 @@ public class Notification
     public async Task<bool> StartComplateFunction()
     {
         Debug.Log($"Complate function of this notification (id:{ID}) has been initialized.");
-        if (OnComplate != null)
+        var onComplate = OnComplate;
+        if (onComplate != null)
         {
-            return await OnComplate.Invoke();
+            return await onComplate.Invoke();
         }
         return true;
     }
@@ -409,7 +439,7 @@ public class Notification
     {
         ID = defaultNotification.ID;
         Message = defaultNotification.Message;
-        DelayTime = defaultNotification.DelayTime;
+        //DelayTime = defaultNotification.DelayTime;
         IsDestroyable = defaultNotification.IsDestroyable;
         NotificationType = defaultNotification.NotificationType;
         NotificationState = defaultNotification.NotificationState;

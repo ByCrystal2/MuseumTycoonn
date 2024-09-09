@@ -12,6 +12,12 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private List<AudioSource> SoundEffectsSources;
     [SerializeField] private List<AudioSource> DialogsSources;
 
+    [Header("Audio Pool Settings")]
+    [SerializeField] private int poolSize = 10;  // Pool'daki Audio Source sayýsý
+    [SerializeField] private AudioSource audioSourcePrefab;  // Kullanýlacak Audio Source prefabý
+
+    private Queue<AudioSource> audioSourcePool = new Queue<AudioSource>();
+
     List<SoundData> SoundEffects = new List<SoundData>();
     List<DialogData> Dialogs = new List<DialogData>();
 
@@ -27,11 +33,21 @@ public class AudioManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(this);
+        InitializePool();
     }
 
     private void Start()
     {
        
+    }
+    private void InitializePool()
+    {
+        for (int i = 0; i < poolSize; i++)
+        {
+            AudioSource newSource = Instantiate(audioSourcePrefab, transform);
+            newSource.gameObject.SetActive(false);
+            audioSourcePool.Enqueue(newSource);
+        }
     }
     public void PlayGoldPaidSound()
     {
@@ -231,6 +247,51 @@ public class AudioManager : MonoBehaviour
         int soundEffectCount = SoundEffects.Where(x => x.EffectType == _soundEffectType).ToList().Count;
         SoundEffectsSources[Random.Range(0, SoundEffectsSources.Count)].PlayOneShot(SoundEffects.Where(x => x.EffectType == _soundEffectType).ToList()[Random.Range(0,soundEffectCount)].MyClip);
     }
+    public void PlaySound(AudioClip clip, Vector3 position, float volume = 1f, float pitch = 1f)
+    {
+        if (clip == null) return;
+
+        AudioSource source = GetPooledAudioSource();
+        if (source == null) return;
+
+        source.transform.position = position;
+        source.clip = clip;
+        source.volume = volume;
+        source.pitch = pitch;
+        source.gameObject.SetActive(true);
+        source.Play();
+
+        // Ses bittikten sonra kaynaðý yeniden pool'a ekler
+        StartCoroutine(DisableAfterPlayback(source));
+    }
+    private AudioSource GetPooledAudioSource()
+    {
+        if (audioSourcePool.Count > 0)
+        {
+            return audioSourcePool.Dequeue();
+        }
+        else
+        {
+            Debug.LogWarning("AudioManager: No available AudioSource in the pool.");
+            return null;
+        }
+    }
+    private System.Collections.IEnumerator DisableAfterPlayback(AudioSource source)
+    {
+        yield return new WaitUntil(() => !source.isPlaying);
+        source.gameObject.SetActive(false);
+        audioSourcePool.Enqueue(source);
+    }
+    // Manuel olarak ses durdurma ve kaynaðý geri ekleme
+    public void StopSound(AudioSource source)
+    {
+        if (source.isPlaying)
+        {
+            source.Stop();
+            source.gameObject.SetActive(false);
+            audioSourcePool.Enqueue(source);
+        }
+    }
 }
 public enum SoundEffectType
 {   
@@ -255,6 +316,10 @@ public enum DialogType
     NpcPunch,
     NpcHmm,
     NpcTalking
+
+}
+public class AudioSourceData
+{
 
 }
 

@@ -138,6 +138,7 @@ GameObject:
   - component: {fileID: 67000430}
   - component: {fileID: 67000434}
   - component: {fileID: 67000435}
+  - component: {fileID: 67000436}
   m_Layer: 5
   m_Name: Language1 (6)
   m_TagString: Untagged
@@ -305,6 +306,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LanguageString: Kurdish
+--- !u!114 &67000436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 67000428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
 --- !u!1 &94198157
 GameObject:
   m_ObjectHideFlags: 0
@@ -320,6 +334,7 @@ GameObject:
   - component: {fileID: 94198159}
   - component: {fileID: 94198163}
   - component: {fileID: 94198164}
+  - component: {fileID: 94198165}
   m_Layer: 5
   m_Name: Language1 (2)
   m_TagString: Untagged
@@ -487,6 +502,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LanguageString: Thai
+--- !u!114 &94198165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 94198157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
 --- !u!1 &105958339
 GameObject:
   m_ObjectHideFlags: 0
@@ -620,6 +648,7 @@ GameObject:
   - component: {fileID: 109453673}
   - component: {fileID: 109453677}
   - component: {fileID: 109453678}
+  - component: {fileID: 109453679}
   m_Layer: 5
   m_Name: Language1 (11)
   m_TagString: Untagged
@@ -787,6 +816,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LanguageString: Korean
+--- !u!114 &109453679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109453671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
 --- !u!1 &117323724
 GameObject:
   m_ObjectHideFlags: 0
@@ -802,6 +844,7 @@ GameObject:
   - component: {fileID: 117323726}
   - component: {fileID: 117323730}
   - component: {fileID: 117323731}
+  - component: {fileID: 117323732}
   m_Layer: 5
   m_Name: Language1 (4)
   m_TagString: Untagged
@@ -970,6 +1013,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LanguageString: Chinese (Traditional)
+--- !u!114 &117323732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 117323724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
 --- !u!1 &195269953
 GameObject:
   m_ObjectHideFlags: 0
@@ -985,6 +1041,7 @@ GameObject:
   - component: {fileID: 195269955}
   - component: {fileID: 195269959}
   - component: {fileID: 195269960}
+  - component: {fileID: 195269961}
   m_Layer: 5
   m_Name: Language1 (9)
   m_TagString: Untagged
@@ -1152,6 +1209,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LanguageString: French
+--- !u!114 &195269961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195269953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
 --- !u!1 &266732827
 GameObject:
   m_ObjectHideFlags: 0
@@ -1271,6 +1341,7 @@ GameObject:
   - component: {fileID: 337498105}
   - component: {fileID: 337498106}
   - component: {fileID: 337498107}
+  - component: {fileID: 337498108}
   m_Layer: 5
   m_Name: Language1
   m_TagString: Untagged
@@ -1490,6 +1561,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LanguageString: English
+--- !u!114 &337498108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 337498098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
 --- !u!1 &342525304
 GameObject:
   m_ObjectHideFlags: 0
@@ -1505,6 +1589,7 @@ GameObject:
   - component: {fileID: 342525306}
   - component: {fileID: 342525310}
   - component: {fileID: 342525311}
+  - component: {fileID: 342525312}
   m_Layer: 5
   m_Name: Language1 (3)
   m_TagString: Untagged
@@ -1672,6 +1757,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LanguageString: Spanish
+--- !u!114 &342525312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342525304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
 --- !u!1 &346077376
 GameObject:
   m_ObjectHideFlags: 0
@@ -1687,6 +1785,7 @@ GameObject:
   - component: {fileID: 346077378}
   - component: {fileID: 346077382}
   - component: {fileID: 346077383}
+  - component: {fileID: 346077384}
   m_Layer: 5
   m_Name: Language1 (5)
   m_TagString: Untagged
@@ -1855,6 +1954,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LanguageString: Chinese (Simplified)
+--- !u!114 &346077384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 346077376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
 --- !u!1 &350280911
 GameObject:
   m_ObjectHideFlags: 0
@@ -2055,7 +2167,7 @@ PrefabInstance:
     - target: {fileID: 3258659360799924861, guid: d8eabff0c8f589e4db323e0fff6e7e48,
         type: 3}
       propertyPath: m_Text
-      value: Oyna
+      value: Play
       objectReference: {fileID: 0}
     - target: {fileID: 4977895035244509877, guid: d8eabff0c8f589e4db323e0fff6e7e48,
         type: 3}
@@ -2217,6 +2329,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: MediumButtonFrame (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 4977895035244509877, guid: d8eabff0c8f589e4db323e0fff6e7e48,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2247,6 +2364,7 @@ GameObject:
   - component: {fileID: 529506255}
   - component: {fileID: 529506259}
   - component: {fileID: 529506260}
+  - component: {fileID: 529506261}
   m_Layer: 5
   m_Name: Language1 (7)
   m_TagString: Untagged
@@ -2414,6 +2532,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LanguageString: Russian
+--- !u!114 &529506261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529506253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
 --- !u!1 &682958501
 GameObject:
   m_ObjectHideFlags: 0
@@ -2429,6 +2560,7 @@ GameObject:
   - component: {fileID: 682958503}
   - component: {fileID: 682958507}
   - component: {fileID: 682958508}
+  - component: {fileID: 682958509}
   m_Layer: 5
   m_Name: Language1 (8)
   m_TagString: Untagged
@@ -2596,6 +2728,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LanguageString: German
+--- !u!114 &682958509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682958501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
 --- !u!1 &736551289
 GameObject:
   m_ObjectHideFlags: 0
@@ -2611,6 +2756,7 @@ GameObject:
   - component: {fileID: 736551291}
   - component: {fileID: 736551295}
   - component: {fileID: 736551296}
+  - component: {fileID: 736551297}
   m_Layer: 5
   m_Name: Language1 (10)
   m_TagString: Untagged
@@ -2778,6 +2924,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LanguageString: Japanese
+--- !u!114 &736551297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 736551289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
 --- !u!1 &758415312
 GameObject:
   m_ObjectHideFlags: 0
@@ -3270,6 +3429,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: MediumButtonFrame (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 4977895035244509877, guid: d8eabff0c8f589e4db323e0fff6e7e48,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3651,6 +3815,7 @@ GameObject:
   - component: {fileID: 1636321201}
   - component: {fileID: 1636321205}
   - component: {fileID: 1636321206}
+  - component: {fileID: 1636321207}
   m_Layer: 5
   m_Name: Language1 (12)
   m_TagString: Untagged
@@ -3818,6 +3983,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LanguageString: Arabic
+--- !u!114 &1636321207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1636321199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
 --- !u!1 &1663747084
 GameObject:
   m_ObjectHideFlags: 0
@@ -3833,6 +4011,7 @@ GameObject:
   - component: {fileID: 1663747086}
   - component: {fileID: 1663747090}
   - component: {fileID: 1663747091}
+  - component: {fileID: 1663747092}
   m_Layer: 5
   m_Name: Language1 (1)
   m_TagString: Untagged
@@ -4000,6 +4179,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LanguageString: Turkish
+--- !u!114 &1663747092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1663747084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
 --- !u!1 &1744318205
 GameObject:
   m_ObjectHideFlags: 0
@@ -4035,7 +4227,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 127}
+  m_AnchoredPosition: {x: 0, y: 53}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1776976723
