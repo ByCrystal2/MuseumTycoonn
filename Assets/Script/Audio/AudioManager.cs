@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class AudioManager : MonoBehaviour
 {
@@ -22,7 +24,8 @@ public class AudioManager : MonoBehaviour
     List<SoundData> SoundEffects = new List<SoundData>();
     List<DialogData> Dialogs = new List<DialogData>();
 
-    
+    AudioSettingsData currentVolumeDatas;
+    private string audioSettingsPath;
     public static AudioManager instance { get; private set; }
 
     private void Awake()
@@ -36,10 +39,48 @@ public class AudioManager : MonoBehaviour
         DontDestroyOnLoad(this);
         InitializePool();
     }
-
     private void Start()
     {
-       
+        // Kaydedilecek dosya yolunu belirle
+        audioSettingsPath = Path.Combine(Application.persistentDataPath, "audioSettings.json");
+        LoadAudioSettings(); // Oyun baþlarken ses ayarlarýný yükle
+    }
+    public void SaveAudioSettings()
+    {
+        // JSON formatýnda serialize et
+        string jsonData = JsonUtility.ToJson(currentVolumeDatas, true);
+        File.WriteAllText(audioSettingsPath, jsonData);
+
+        Debug.Log("Audio settings saved: " + jsonData);
+    }
+    // Ses ayarlarýný JSON dosyasýndan yükle
+    public void LoadAudioSettings()
+    {
+        if (File.Exists(audioSettingsPath))
+        {
+            string jsonData = File.ReadAllText(audioSettingsPath);
+            AudioSettingsData settingsData = JsonUtility.FromJson<AudioSettingsData>(jsonData);
+            currentVolumeDatas = new AudioSettingsData(settingsData);
+            // Ses ayarlarýný geri yükle
+            SetAudioVolumes(settingsData.generalVolume, settingsData.musicVolume, settingsData.sfxVolume, settingsData.voiceVolume);
+            Debug.Log("Audio settings loaded: " + jsonData);
+        }
+        else
+        {
+            Debug.Log("No audio settings found. Using default values.");
+            currentVolumeDatas = new AudioSettingsData();
+            SetAudioVolumes(1, 1, 1, 1);
+        }
+    }
+    // Ses seviyelerini UI veya AudioManager'a ayarla
+    private void SetAudioVolumes(float generalVolume, float musicVolume, float sfxVolume, float voiceVolume)
+    {
+        // Burada AudioManager veya UI slider'larýna ses seviyelerini uygula
+        Debug.Log($"Set volumes - Music: {musicVolume}, SFX: {sfxVolume}, Voice: {voiceVolume}");
+        SetGeneralVolume(generalVolume);
+        SetMusicVolume(musicVolume);
+        SetSoundEffectsVolume(sfxVolume);
+        SetDialogsVolume(voiceVolume);
     }
     private void InitializePool()
     {
@@ -53,7 +94,7 @@ public class AudioManager : MonoBehaviour
     public void PlayGoldPaidSound()
     {
         List<AudioClip> Sources = GetSoundEffects(SoundEffectType.EarnGold).Select(x => x.MyClip).ToList();
-        SoundEffectsSources[Random.Range(0, SoundEffectsSources.Count)].PlayOneShot(Sources[Random.Range(0,Sources.Count)]);
+        SoundEffectsSources[Random.Range(0, SoundEffectsSources.Count)].PlayOneShot(Sources[Random.Range(0, Sources.Count)]);
     }
     public void PlayPunchSound(AudioSource _npcSource)
     {
@@ -101,14 +142,29 @@ public class AudioManager : MonoBehaviour
         int randomIndex = Random.Range(0, GameSources.Count);
         if (MenuSources.Find(x => x.isPlaying == true) != null)
         {
-            MenuSources.Find(x=> x.isPlaying == true).Stop();
+            MenuSources.Find(x => x.isPlaying == true).Stop();
         }
         GameSources[randomIndex].Play();
     }
+    public void SetGeneralVolume(float volume)
+    {
+        // Ses aralýðýný kontrol et (0 ile 1 arasýnda olmalý)
+        volume = Mathf.Clamp(volume, 0f, 1f);
 
-    public void SetMusicVolume(float volume) 
-    {        
-        Debug.Log("Gelen Music Volume Deðeri: " + volume);
+        // Gelen ses seviyesini logla
+        Debug.Log("Gelen Genel Volume Degeri: " + volume);
+
+        // currentVolumeDatas nesnesinin genel ses seviyesini güncelle
+        currentVolumeDatas.generalVolume = volume;
+
+        // AudioListener veya diðer ses sistemine bu deðiþikliði uygula
+        AudioListener.volume = volume;
+    }
+
+    public void SetMusicVolume(float volume)
+    {
+        Debug.Log("Gelen Music Volume Degeri: " + volume);
+        currentVolumeDatas.musicVolume = volume;
         foreach (AudioSource audioSource in GameSources)
         {
             audioSource.volume = volume;
@@ -119,25 +175,27 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void SetSoundEffectsVolume(float volume) 
+    public void SetSoundEffectsVolume(float volume)
     {
-        Debug.Log("Gelen SoundEffects Volume Deðeri: " + volume);
+        Debug.Log("Gelen SoundEffects Volume Degeri: " + volume);
+        currentVolumeDatas.sfxVolume = volume;
         foreach (AudioSource audioSource in SoundEffectsSources)
         {
             audioSource.volume = volume;
         }
     }
 
-    public void SetDialogsVolume(float volume) 
+    public void SetDialogsVolume(float volume)
     {
         Debug.Log("Gelen Dialogs Volume Deðeri: " + volume);
+        currentVolumeDatas.voiceVolume = volume;
         List<GameObject> gos = FindObjectsOfType<NPCBehaviour>().Select(x => x.gameObject).ToList();
 
         //for (int i = 0; i < gos.Count; i++)
         //{
         //    GetDialogAudios(gos[i].GetComponent<NPCBehaviour>().MySources)[i].volume = volume;
         //}
-        
+
     }
 
     public void AllAudioSourcesOptions()
@@ -149,20 +207,20 @@ public class AudioManager : MonoBehaviour
 
         AddingSoundEffects();
         AddingDialogs();
-        
+
         AudioSource[] audioSourcesInScene = FindObjectsOfType<AudioSource>();
         GameManager.instance.allAudioSources.AddRange(audioSourcesInScene);
     }
     public void AddingSoundEffects()
     {
         //Ses Effectleri eklenecek.
-        SoundData sd1 = new SoundData(0, SoundEffectsSources[0],SoundEffectType.EarnGold);
-        SoundData sd2 = new SoundData(1, SoundEffectsSources[1],SoundEffectType.Punch);
-        SoundData sd3 = new SoundData(2, SoundEffectsSources[2],SoundEffectType.ComeToKing);
-        SoundData sd4 = new SoundData(3, SoundEffectsSources[3],SoundEffectType.GoldBoxOpen);
-        SoundData sd5 = new SoundData(4, SoundEffectsSources[4],SoundEffectType.Victory);
-        SoundData sd6 = new SoundData(5, SoundEffectsSources[5],SoundEffectType.Writing);
-        SoundData sd7 = new SoundData(6, SoundEffectsSources[6],SoundEffectType.InsufficientGoldAndGem);
+        SoundData sd1 = new SoundData(0, SoundEffectsSources[0], SoundEffectType.EarnGold);
+        SoundData sd2 = new SoundData(1, SoundEffectsSources[1], SoundEffectType.Punch);
+        SoundData sd3 = new SoundData(2, SoundEffectsSources[2], SoundEffectType.ComeToKing);
+        SoundData sd4 = new SoundData(3, SoundEffectsSources[3], SoundEffectType.GoldBoxOpen);
+        SoundData sd5 = new SoundData(4, SoundEffectsSources[4], SoundEffectType.Victory);
+        SoundData sd6 = new SoundData(5, SoundEffectsSources[5], SoundEffectType.Writing);
+        SoundData sd7 = new SoundData(6, SoundEffectsSources[6], SoundEffectType.InsufficientGoldAndGem);
 
         //Adding
         SoundEffects.Add(sd1);
@@ -178,16 +236,16 @@ public class AudioManager : MonoBehaviour
         //Dialoglar eklenecek.
 
         //Male
-        DialogData dd1 = new DialogData(0, DialogsSources[0], DialogType.NpcAngry,true,false);
+        DialogData dd1 = new DialogData(0, DialogsSources[0], DialogType.NpcAngry, true, false);
         DialogData dd2 = new DialogData(1, DialogsSources[1], DialogType.NpcHappiness, true, false);
         DialogData dd3 = new DialogData(2, DialogsSources[2], DialogType.NpcHmm, true, false);
         DialogData dd4 = new DialogData(3, DialogsSources[3], DialogType.NpcHmm, true, false);
         DialogData dd5 = new DialogData(4, DialogsSources[4], DialogType.NpcSad, true, false);
         DialogData dd6 = new DialogData(5, DialogsSources[5], DialogType.NpcTalking, true, false);
-        DialogData dd18 = new DialogData(16, DialogsSources[17], DialogType.NpcByeBye, true, false  );
-        DialogData dd19 = new DialogData(17, DialogsSources[18], DialogType.NpcDisLike, true, false  );
-        DialogData dd20 = new DialogData(18, DialogsSources[19], DialogType.NpcLike, true, false  );
-        DialogData dd21 = new DialogData(19, DialogsSources[20], DialogType.NpcLike, true, false  );
+        DialogData dd18 = new DialogData(16, DialogsSources[17], DialogType.NpcByeBye, true, false);
+        DialogData dd19 = new DialogData(17, DialogsSources[18], DialogType.NpcDisLike, true, false);
+        DialogData dd20 = new DialogData(18, DialogsSources[19], DialogType.NpcLike, true, false);
+        DialogData dd21 = new DialogData(19, DialogsSources[20], DialogType.NpcLike, true, false);
         //Female
         DialogData dd7 = new DialogData(6, DialogsSources[6], DialogType.NpcLike, false, false);
         DialogData dd8 = new DialogData(7, DialogsSources[7], DialogType.NpcHmm, false, false);
@@ -229,7 +287,7 @@ public class AudioManager : MonoBehaviour
 
     public List<SoundData> GetSoundEffects(SoundEffectType _effectType)
     {
-        return SoundEffects.Where(x =>  x.EffectType == _effectType).ToList();
+        return SoundEffects.Where(x => x.EffectType == _effectType).ToList();
     }
     public List<DialogData> GetDialogs(bool _isMale)
     {
@@ -237,17 +295,17 @@ public class AudioManager : MonoBehaviour
     }
     public List<DialogData> GetDialogs(bool _isMale, DialogType _dialogType, bool _isGlobal)
     {
-        return Dialogs.Where(x=> x.IsMale == _isMale && x.DiaType == _dialogType && x.IsGlobal == _isGlobal).ToList();
+        return Dialogs.Where(x => x.IsMale == _isMale && x.DiaType == _dialogType && x.IsGlobal == _isGlobal).ToList();
     }
 
     public void GetDialogAudios(DialogType _dialogType, AudioSource _audioSource, bool _isMale)
     {
         _audioSource.Stop();
-        List<AudioClip> audioSources = Dialogs.Where(x=> x.DiaType == _dialogType && x.IsMale == _isMale).Select(x => x.MyClip).ToList();
+        List<AudioClip> audioSources = Dialogs.Where(x => x.DiaType == _dialogType && x.IsMale == _isMale).Select(x => x.MyClip).ToList();
         Debug.Log("_dialogType => " + _dialogType + " _audioSource NPC => " + _audioSource.gameObject.name + " _isMale => " + _isMale);
-        if(audioSources.Count > 0)
+        if (audioSources.Count > 0)
         {
-            _audioSource.clip = audioSources[Random.Range(0,audioSources.Count)];
+            _audioSource.clip = audioSources[Random.Range(0, audioSources.Count)];
             _audioSource.Play();
         }
     }
@@ -259,7 +317,7 @@ public class AudioManager : MonoBehaviour
     public void PlayDesiredSoundEffect(SoundEffectType _soundEffectType)
     {
         int soundEffectCount = SoundEffects.Where(x => x.EffectType == _soundEffectType).ToList().Count;
-        SoundEffectsSources[Random.Range(0, SoundEffectsSources.Count)].PlayOneShot(SoundEffects.Where(x => x.EffectType == _soundEffectType).ToList()[Random.Range(0,soundEffectCount)].MyClip);
+        SoundEffectsSources[Random.Range(0, SoundEffectsSources.Count)].PlayOneShot(SoundEffects.Where(x => x.EffectType == _soundEffectType).ToList()[Random.Range(0, soundEffectCount)].MyClip);
     }
     public void PlaySound(AudioClip clip, Vector3 position, float volume = 1f, float pitch = 1f)
     {
@@ -306,6 +364,23 @@ public class AudioManager : MonoBehaviour
             audioSourcePool.Enqueue(source);
         }
     }
+
+    public float GetGeneralVolume()
+    {
+        return currentVolumeDatas.generalVolume;
+    }
+    public float GetMusicVolume()
+    {
+        return currentVolumeDatas.musicVolume;
+    }
+    public float GetSoundEffectsVolume()
+    {
+        return currentVolumeDatas.sfxVolume;
+    }
+    public float GetDialogsVolume()
+    {
+        return currentVolumeDatas.voiceVolume;
+    }
 }
 public enum SoundEffectType
 {   
@@ -335,5 +410,24 @@ public enum DialogType
 public class AudioSourceData
 {
 
+}
+[System.Serializable]
+public class AudioSettingsData
+{
+    public float generalVolume;
+    public float musicVolume;
+    public float sfxVolume;
+    public float voiceVolume;
+    public AudioSettingsData(AudioSettingsData _copy)
+    {
+        generalVolume = _copy.generalVolume;
+        musicVolume = _copy.musicVolume;
+        sfxVolume = _copy.sfxVolume;
+        voiceVolume = _copy.voiceVolume;
+    }
+    public AudioSettingsData()
+    {
+
+    }
 }
 

@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -7,105 +7,154 @@ using UnityEngine.UI;
 
 public class SettingsController : MonoBehaviour
 {
-    [SerializeField] Button _achievementButton;
+    [SerializeField] private Button achievementButton;
+    [SerializeField] private GameObject settingsPanel;
 
-    public Slider musicVolumeSlider;
-    public Slider soundEffectSlider;
-    public Slider dialogVolumeSlider;
-    public Dropdown GraphicQualityDropdown;
-    public Dropdown ResolutionDropdown;
+    [Header("Audio Settings")]
+    [SerializeField] private Slider generalVolumeSlider;
+    [SerializeField] private Slider musicVolumeSlider;
+    [SerializeField] private Slider soundEffectSlider;
+    [SerializeField] private Slider dialogVolumeSlider;
 
-    public UniversalRenderPipelineAsset highFidelityURPAsset;
-    public UniversalRenderPipelineAsset balancedURPAsset;
-    public UniversalRenderPipelineAsset performantURPAsset;
+    [Header("Graphics Settings")]
+    [SerializeField] private Dropdown graphicQualityDropdown;
+    [SerializeField] private Dropdown resolutionDropdown;
+
+    [Header("URP Assets")]
+    [SerializeField] private UniversalRenderPipelineAsset highFidelityURPAsset;
+    [SerializeField] private UniversalRenderPipelineAsset balancedURPAsset;
+    [SerializeField] private UniversalRenderPipelineAsset performantURPAsset;
+
     private void Awake()
     {
-        _achievementButton.onClick.AddListener(ShowAchievementUIS);
+        achievementButton.onClick.AddListener(ShowAchievementsUI);
     }
-    void Start()
+
+    private void Start()
     {
+        InitializeSettings();
+    }
+
+    private void OnEnable()
+    {
+        OnSettingsPanelOpened();
+    }
+    public void OnSettingsPanelOpened()
+    {
+        LoadCurrentAudioSettings();
+        LoadCurrentGraphicSettings();
+    }
+
+    private void InitializeSettings()
+    {
+        // Slider ayarlarý
+        generalVolumeSlider.maxValue = 100f;
         musicVolumeSlider.maxValue = 100f;
-        soundEffectSlider.maxValue = 100f; 
-        dialogVolumeSlider.maxValue = 100f; 
+        soundEffectSlider.maxValue = 100f;
+        dialogVolumeSlider.maxValue = 100f;
 
-        musicVolumeSlider.value = 50f;
-        soundEffectSlider.value = 50f; 
-        dialogVolumeSlider.value = 50f;
+        // Dinleyicileri ekle
+        generalVolumeSlider.onValueChanged.AddListener(_ => SetGeneralVolume());
+        musicVolumeSlider.onValueChanged.AddListener(_ => SetMusicVolume());
+        soundEffectSlider.onValueChanged.AddListener(_ => SetSoundEffectsVolume());
+        dialogVolumeSlider.onValueChanged.AddListener(_ => SetDialogVolume());
 
-        RefreshDropdownText(); 
+        // Grafik ve çözünürlük dropdown'larýný hazýrla
+        RefreshDropdowns();
     }
 
-    private void OnDestroy()
+    
+
+    private void LoadCurrentAudioSettings()
     {
-        GraphicQualityDropdown.onValueChanged.RemoveAllListeners();
+        // Mevcut ses ayarlarýný AudioManager'dan çek
+        generalVolumeSlider.value = AudioManager.instance.GetGeneralVolume() * 100f;
+        musicVolumeSlider.value = AudioManager.instance.GetMusicVolume() * 100f;
+        soundEffectSlider.value = AudioManager.instance.GetSoundEffectsVolume() * 100f;
+        dialogVolumeSlider.value = AudioManager.instance.GetDialogsVolume() * 100f;
     }
 
-    public void RefreshDropdownText()
+    private void LoadCurrentGraphicSettings()
     {
-        GraphicQualityDropdown.onValueChanged.RemoveAllListeners();
-        GraphicQualityDropdown.ClearOptions();
-        List<string> graphicStrings = new List<string>();
-        graphicStrings.Add("Low");
-        graphicStrings.Add("Medium");
-        graphicStrings.Add("High");
-        GraphicQualityDropdown.AddOptions(graphicStrings);
-        GraphicQualityDropdown.onValueChanged.AddListener((int x) => OnGraphicDropdownValueChanged(x));
-
-        ResolutionDropdown.onValueChanged.RemoveAllListeners();
-        ResolutionDropdown.ClearOptions();
-        List<string> resolutioncStrings = new List<string>();
-        resolutioncStrings.Add("1280x720");
-        resolutioncStrings.Add("1600x900");
-        resolutioncStrings.Add("1920x1080");
-        ResolutionDropdown.AddOptions(resolutioncStrings);
-        ResolutionDropdown.onValueChanged.AddListener((int x) => OnResolutionDropdownValueChanged(x));
+        // Grafik kalitesi ayarýný ve çözünürlüðü güncelle
+        graphicQualityDropdown.value = QualitySettings.GetQualityLevel();
+        resolutionDropdown.value = GetResolutionDropdownIndex(Screen.currentResolution);
     }
 
-    public void SetMusicSlider()
+    private int GetResolutionDropdownIndex(Resolution resolution)
     {
-        float volume = musicVolumeSlider.value;
-        AudioManager.instance.SetMusicVolume(volume * 0.01f);
+        if (resolution.width == 1280 && resolution.height == 720) return 0;
+        if (resolution.width == 1600 && resolution.height == 900) return 1;
+        if (resolution.width == 1920 && resolution.height == 1080) return 2;
+        return 0; // Varsayýlan olarak 720p
     }
 
-    public void SetSoundEffectsSlider()
+    private void RefreshDropdowns()
     {
-        float volume = soundEffectSlider.value;
-        AudioManager.instance.SetSoundEffectsVolume(volume * 0.01f);
+        ConfigureDropdown(graphicQualityDropdown, new List<string> { "Low", "Medium", "High" }, OnGraphicQualityChanged);
+        ConfigureDropdown(resolutionDropdown, new List<string> { "1280x720", "1600x900", "1920x1080" }, OnResolutionChanged);
     }
 
-    public void SetDialogsSlider()
+    private void ConfigureDropdown(Dropdown dropdown, List<string> options, UnityEngine.Events.UnityAction<int> callback)
     {
-        float volume = dialogVolumeSlider.value;
-        AudioManager.instance.SetDialogsVolume(volume * 0.01f);
+        dropdown.ClearOptions();
+        dropdown.AddOptions(options);
+        dropdown.onValueChanged.RemoveAllListeners();
+        dropdown.onValueChanged.AddListener(callback);
+    }
+    private void SetGeneralVolume()
+    {
+        float volume = generalVolumeSlider.value * 0.01f;
+        AudioManager.instance.SetGeneralVolume(volume);
+    }
+    private void SetMusicVolume()
+    {
+        float volume = musicVolumeSlider.value * 0.01f;
+        AudioManager.instance.SetMusicVolume(volume);
     }
 
-    public void OnGraphicDropdownValueChanged(int x)
+    private void SetSoundEffectsVolume()
     {
-        Debug.Log("Graphic value changed: " + GraphicQualityDropdown.value);
-        if (GraphicQualityDropdown.value == 0)
-            GraphicsSettings.defaultRenderPipeline = performantURPAsset;
-        else if (GraphicQualityDropdown.value == 1)
-            GraphicsSettings.defaultRenderPipeline = balancedURPAsset;
-        else if (GraphicQualityDropdown.value == 2)
-            GraphicsSettings.defaultRenderPipeline = highFidelityURPAsset;
-
-        QualitySettings.SetQualityLevel(GraphicQualityDropdown.value, true);
+        float volume = soundEffectSlider.value * 0.01f;
+        AudioManager.instance.SetSoundEffectsVolume(volume);
     }
 
-    public void OnResolutionDropdownValueChanged(int x)
+    private void SetDialogVolume()
     {
-        Debug.Log("Resolution value changed: " + ResolutionDropdown.value);
-        Vector2Int resolution = Vector2Int.zero;
-        if (ResolutionDropdown.value == 0)
-            resolution = new Vector2Int(1280, 720);
-        else if (ResolutionDropdown.value == 1)
-            resolution = new Vector2Int(1600, 900);
-        else if (ResolutionDropdown.value == 2)
-            resolution = new Vector2Int(1920, 1080);
+        float volume = dialogVolumeSlider.value * 0.01f;
+        AudioManager.instance.SetDialogsVolume(volume);
+    }
+
+    private void OnGraphicQualityChanged(int value)
+    {
+        UniversalRenderPipelineAsset selectedURPAsset = value switch
+        {
+            0 => performantURPAsset,
+            1 => balancedURPAsset,
+            2 => highFidelityURPAsset,
+            _ => performantURPAsset
+        };
+
+        GraphicsSettings.defaultRenderPipeline = selectedURPAsset;
+        QualitySettings.SetQualityLevel(value, true);
+        Debug.Log($"Graphic quality changed to: {graphicQualityDropdown.options[value].text}");
+    }
+
+    private void OnResolutionChanged(int value)
+    {
+        Vector2Int resolution = value switch
+        {
+            0 => new Vector2Int(1280, 720),
+            1 => new Vector2Int(1600, 900),
+            2 => new Vector2Int(1920, 1080),
+            _ => new Vector2Int(Screen.width, Screen.height)
+        };
 
         Screen.SetResolution(resolution.x, resolution.y, true);
+        Debug.Log($"Resolution changed to: {resolution.x}x{resolution.y}");
     }
-    public void ShowAchievementUIS() //pnlContent/mask/Settings/pnlMiddle => btnShowAchievement.onClick event~
+
+    private void ShowAchievementsUI()
     {
         GPGamesManager.instance.achievementController.ShowAchievements();
     }

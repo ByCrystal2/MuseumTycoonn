@@ -82,6 +82,8 @@ public class WorkerInfoPanelController : MonoBehaviour
     public void ExitPanel()
     {
         gameObject.SetActive(false);
+        if (GameManager.instance.GetCurrentGameMode() == GameMode.FPS)
+            PlayerManager.instance.UnLockPlayer();
     }
     public void DissmisWorker()
     {

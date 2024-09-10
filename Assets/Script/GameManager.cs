@@ -1020,15 +1020,15 @@ public class GameManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-
-         FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
-
+        AudioManager.instance.SaveAudioSettings();
+        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
         CancelFirebaseOperations();
     }
     private void OnApplicationPause(bool pause)
     {
         if (pause)
         {
+            AudioManager.instance.SaveAudioSettings();
             FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
 
             CancelFirebaseOperations();

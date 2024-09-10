@@ -382,6 +382,9 @@ public class WorkerBehaviour : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (UIController.instance.IsPointerOverAnyUI()) return;
+        if (GameManager.instance.GetCurrentGameMode() == GameMode.FPS)
+            PlayerManager.instance.LockPlayer();
         UIController.instance.workerInfoPanelController.SetWorker(this);
         UIController.instance.workerInfoPanelController.gameObject.SetActive(true);
     }
