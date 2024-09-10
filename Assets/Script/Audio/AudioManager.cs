@@ -23,6 +23,7 @@ public class AudioManager : MonoBehaviour
 
     List<SoundData> SoundEffects = new List<SoundData>();
     List<DialogData> Dialogs = new List<DialogData>();
+    public List<ButtonSoundHandler> buttonSoundHandlers = new List<ButtonSoundHandler>();
 
     AudioSettingsData currentVolumeDatas;
     private string audioSettingsPath;
@@ -182,6 +183,10 @@ public class AudioManager : MonoBehaviour
         foreach (AudioSource audioSource in SoundEffectsSources)
         {
             audioSource.volume = volume;
+        }
+        foreach (ButtonSoundHandler button in buttonSoundHandlers)
+        {
+            button.SetVolume(volume);
         }
     }
 

@@ -22,4 +22,8 @@ public class ButtonSoundHandler : MonoBehaviour
     {
         AudioManager.instance.PlaySound(sFX, transform.position,volume,pitch);
     }
+    public void SetVolume(float _volume)
+    {
+        volume = _volume;
+    }
 }
