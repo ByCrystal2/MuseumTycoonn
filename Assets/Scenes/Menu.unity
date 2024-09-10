@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -318,7 +318,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
+  sFX: {fileID: 8300000, guid: 9a0754250718bd1428287b714ad42f89, type: 3}
+  volume: 0.2
+  pitch: 1
 --- !u!1 &94198157
 GameObject:
   m_ObjectHideFlags: 0
@@ -514,7 +516,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
+  sFX: {fileID: 8300000, guid: 9a0754250718bd1428287b714ad42f89, type: 3}
+  volume: 0.2
+  pitch: 1
 --- !u!1 &105958339
 GameObject:
   m_ObjectHideFlags: 0
@@ -828,7 +832,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
+  sFX: {fileID: 8300000, guid: 9a0754250718bd1428287b714ad42f89, type: 3}
+  volume: 0.2
+  pitch: 1
 --- !u!1 &117323724
 GameObject:
   m_ObjectHideFlags: 0
@@ -1025,7 +1031,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
+  sFX: {fileID: 8300000, guid: 9a0754250718bd1428287b714ad42f89, type: 3}
+  volume: 0.2
+  pitch: 1
 --- !u!1 &195269953
 GameObject:
   m_ObjectHideFlags: 0
@@ -1221,7 +1229,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
+  sFX: {fileID: 8300000, guid: 9a0754250718bd1428287b714ad42f89, type: 3}
+  volume: 0.2
+  pitch: 1
 --- !u!1 &266732827
 GameObject:
   m_ObjectHideFlags: 0
@@ -1573,7 +1583,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
+  sFX: {fileID: 8300000, guid: 9a0754250718bd1428287b714ad42f89, type: 3}
+  volume: 0.2
+  pitch: 1
 --- !u!1 &342525304
 GameObject:
   m_ObjectHideFlags: 0
@@ -1769,7 +1781,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
+  sFX: {fileID: 8300000, guid: 9a0754250718bd1428287b714ad42f89, type: 3}
+  volume: 0.2
+  pitch: 1
 --- !u!1 &346077376
 GameObject:
   m_ObjectHideFlags: 0
@@ -1966,7 +1980,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
+  sFX: {fileID: 8300000, guid: 9a0754250718bd1428287b714ad42f89, type: 3}
+  volume: 0.2
+  pitch: 1
 --- !u!1 &350280911
 GameObject:
   m_ObjectHideFlags: 0
@@ -2167,12 +2183,22 @@ PrefabInstance:
     - target: {fileID: 3258659360799924861, guid: d8eabff0c8f589e4db323e0fff6e7e48,
         type: 3}
       propertyPath: m_Text
-      value: Play
+      value: Oyna
       objectReference: {fileID: 0}
     - target: {fileID: 4977895035244509877, guid: d8eabff0c8f589e4db323e0fff6e7e48,
         type: 3}
       propertyPath: m_Name
       value: MediumButtonFrame
+      objectReference: {fileID: 0}
+    - target: {fileID: 6531866525570392628, guid: d8eabff0c8f589e4db323e0fff6e7e48,
+        type: 3}
+      propertyPath: sFX
+      value: 
+      objectReference: {fileID: 8300000, guid: b0e7d5b7b9d581c4fa10625e5fcc6273, type: 3}
+    - target: {fileID: 6531866525570392628, guid: d8eabff0c8f589e4db323e0fff6e7e48,
+        type: 3}
+      propertyPath: volume
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2544,7 +2570,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
+  sFX: {fileID: 8300000, guid: 9a0754250718bd1428287b714ad42f89, type: 3}
+  volume: 0.2
+  pitch: 1
 --- !u!1 &682958501
 GameObject:
   m_ObjectHideFlags: 0
@@ -2740,7 +2768,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
+  sFX: {fileID: 8300000, guid: 9a0754250718bd1428287b714ad42f89, type: 3}
+  volume: 0.2
+  pitch: 1
 --- !u!1 &736551289
 GameObject:
   m_ObjectHideFlags: 0
@@ -2936,7 +2966,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
+  sFX: {fileID: 8300000, guid: 9a0754250718bd1428287b714ad42f89, type: 3}
+  volume: 0.2
+  pitch: 1
 --- !u!1 &758415312
 GameObject:
   m_ObjectHideFlags: 0
@@ -3995,7 +4027,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
+  sFX: {fileID: 8300000, guid: 9a0754250718bd1428287b714ad42f89, type: 3}
+  volume: 0.2
+  pitch: 1
 --- !u!1 &1663747084
 GameObject:
   m_ObjectHideFlags: 0
@@ -4191,7 +4225,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca56e0712af0f44ba5d34742902e240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sFX: {fileID: 8300000, guid: cd7fb4f32c5a0b74d9ddabbaa1b8a98d, type: 3}
+  sFX: {fileID: 8300000, guid: 9a0754250718bd1428287b714ad42f89, type: 3}
+  volume: 0.2
+  pitch: 1
 --- !u!1 &1744318205
 GameObject:
   m_ObjectHideFlags: 0

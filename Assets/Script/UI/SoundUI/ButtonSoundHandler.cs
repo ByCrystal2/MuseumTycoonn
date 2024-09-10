@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class ButtonSoundHandler : MonoBehaviour
 {
     [SerializeField] AudioClip sFX;
+    [SerializeField,Range(0,1)] float volume=1;
+    [SerializeField,Range(0,1)] float pitch=1;
     Button m_Button;
     private void Awake()
     {
@@ -18,6 +20,6 @@ public class ButtonSoundHandler : MonoBehaviour
     }
     void SendSoundToAudioManager()
     {
-        AudioManager.instance.PlaySound(sFX, transform.position);
+        AudioManager.instance.PlaySound(sFX, transform.position,volume,pitch);
     }
 }
