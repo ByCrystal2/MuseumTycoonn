@@ -113,6 +113,8 @@ public class DialogueManager : MonoBehaviour
         GameManager.instance.IsFirstGame = false;
         SetActivationDialoguePanel(false);
         await DatabaseWaitingDatas();
+        GPGamesManager.instance.achievementController.IncreaseNumberOfStatuesPlaced();
+        GPGamesManager.instance.achievementController.StatuesPlacedCountControl();
         currentTrigger.gameObject.SetActive(false);
         UIController.instance.tutorialUISPanel.gameObject.SetActive(false);
         PlayerManager.instance.UnLockPlayer();

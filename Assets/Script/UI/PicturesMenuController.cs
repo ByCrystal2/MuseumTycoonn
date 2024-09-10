@@ -100,7 +100,7 @@ public class PicturesMenuController : MonoBehaviour
             int u = i;
             newPicture.GetComponent<Button>().onClick.AddListener(() => GetClickedImage(u, ped));
             newPicture.GetComponent<Image>().sprite = CatchTheColors.instance.TextureToSprite(ped.texture);
-            newPicture.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = i+1.ToString();
+            newPicture.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = (newPicture.transform.GetSiblingIndex() + 1).ToString();
             pictureCount++;
         }
     }

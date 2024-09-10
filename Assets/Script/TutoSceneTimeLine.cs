@@ -20,7 +20,7 @@ public class TutoSceneTimeLine : MonoBehaviour
     private void Awake()
     {
         if (AudioManager.instance != null)
-         AudioManager.instance.PlayMusicOfTutorial();
+         AudioManager.instance.PlayMusicOfTrailer();
 
         playerCamera.gameObject.SetActive(false);
     }
@@ -698,6 +698,7 @@ public class TutoSceneTimeLine : MonoBehaviour
     {
         foreach (var item in CloseEndVideo)
             item.gameObject.SetActive(false);
+        videoPlayer.Stop();
         TutorialLevelManager.instance.OnEndFlyCutscene(playerCamera);
     }
 

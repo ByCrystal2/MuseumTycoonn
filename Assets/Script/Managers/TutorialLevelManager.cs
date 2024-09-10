@@ -31,7 +31,7 @@ public class TutorialLevelManager : MonoBehaviour
     public void OnEndFlyCutscene(Camera targetCamera)
     {
         if (AudioManager.instance != null)
-        AudioManager.instance.TutorialSource.Stop();
+        AudioManager.instance.TrailerSource.Stop();
         targetCamera.gameObject.SetActive(true);
         DialogueTrigger kingTrigger = GameObject.FindWithTag("TutorialNPC").GetComponent<DialogueTrigger>();
         kingTrigger.TriggerDialog(Steps.Step1);
@@ -40,6 +40,7 @@ public class TutorialLevelManager : MonoBehaviour
     IEnumerator WaitingForAnim(DialogueTrigger kingTrigger)
     {
         yield return new WaitForSeconds(0.5f);
+        AudioManager.instance.PlayMusicOfTutorial();
         kingTrigger.GetComponent<TutorialNPCBehaviour>().ProcessAnim("Sit", false);
     }
 }
