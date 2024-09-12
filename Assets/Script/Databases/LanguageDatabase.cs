@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 
 public class LanguageDatabase : MonoBehaviour
@@ -122,6 +123,26 @@ public class LanguageDatabase : MonoBehaviour
             Language.NotificationMessages.Add(new LanguageData(allNotifications[i].ID, allNotifications[i].Message));
         }
         //Notifications
+        //DialogsMessages
+        if (TutorialLevelManager.instance != null)
+        {
+            var dialogs = TutorialLevelManager.instance.DialogsMessages;
+            int allDialogLength = dialogs.Count;
+            for (int i = 0; i < allDialogLength; i++)
+            {
+                var dialog = dialogs[i];
+                int dialogId = dialog.id;
+                int messagesLength = dialog.messages.Count;
+                for (int k = 0; k < messagesLength; k++)
+                {
+                    if (dialog.messages[k] == string.Empty)
+                        continue;
+                    Language.NotificationMessages.Add(new LanguageData(dialogId, dialog.messages[k]));
+                }                
+            }
+
+        }
+        //DialogsMessages
         //General
         Language.PictureInfoStrings = new List<LanguageData>() { new LanguageData(0, "Added"), new LanguageData(1, "Updated"), new LanguageData(2, "Select Painting"), new LanguageData(3, "Enough"), new LanguageData(4, "Add"), new LanguageData(5, "Update"), new LanguageData(6, "Insufficient") };
 
@@ -158,15 +179,21 @@ public class LanguageDatabase : MonoBehaviour
         List<string> skillInfoTranslatedTexts = new List<string>();
         //SKILLS
 
-        //NPCCOMMENDS
+        //NPCS
         List<string> npcCommendKeysToTranslate = new List<string>();
         List<string> npcCommendTranslatedTexts = new List<string>();
-        //NPCCOMMENDS
+        //NPCS
 
         //NOTIFICATIONS
         List<string> notificationKeysToTranslate = new List<string>();
         List<string> notificationTranslatedTexts = new List<string>();
         //NOTIFICATIONS
+
+        //Dialogs
+        List<string> dialogKeysToTranslate = new List<string>();
+        List<string> dialogTranslatedTexts = new List<string>();
+        //Dialogs
+
         //General
         List<string> pictureInfoKeysToTranslate = new List<string>();
         List<string> pictureInfoTranslatedTexts = new List<string>();
@@ -246,7 +273,7 @@ public class LanguageDatabase : MonoBehaviour
         });
         //ITEM
 
-        //NPCCOMMEND
+        //NPCS
         foreach (var item in Language.CommendEvulations)
         {
             if (item.Key == string.Empty)
@@ -258,7 +285,21 @@ public class LanguageDatabase : MonoBehaviour
         {
             npcCommendTranslatedTexts = result;
         });
-        //NPCCOMMEND
+        //NPCS
+
+        //DIALOGS
+        foreach (var item in Language.DialogsMessages)
+        {
+            if (item.Key == string.Empty)
+                continue;
+            dialogKeysToTranslate.Add(item.Key);
+        }
+
+        await GameManager.instance.BulkTranslateAndAssignAsync(dialogKeysToTranslate, (result) =>
+        {
+            dialogTranslatedTexts = result;
+        });
+        //DIALOGS
 
         //NOTIFICATIONS
         foreach (var item in Language.NotificationMessages)
@@ -325,7 +366,7 @@ public class LanguageDatabase : MonoBehaviour
         //GENERAL
 
         //ItemAdding
-        Debug.Log("Language.ItemDescriptions.Count => " + Language.ItemDescriptions.Count + "itemDescTranslatedTexts.Count => " + itemDescTranslatedTexts.Count);
+        Debug.Log("Language.ItemDescriptions.Count => " + Language.ItemDescriptions.Count + " itemDescTranslatedTexts.Count => " + itemDescTranslatedTexts.Count);
         for (int i = 0; i < itemDescTranslatedTexts.Count; i++)
         {
             Debug.Log("itemDescTranslatedTexts[i] => " + itemDescTranslatedTexts[i] + " and i => " + i);
@@ -333,18 +374,18 @@ public class LanguageDatabase : MonoBehaviour
         }
         //ItemAdding
         //SkillAdding
-        Debug.Log("Language.SkillNames.Count => " + Language.SkillNames.Count + "skillNameTranslatedTexts.Count => " + skillNameTranslatedTexts.Count);
+        Debug.Log("Language.SkillNames.Count => " + Language.SkillNames.Count + " skillNameTranslatedTexts.Count => " + skillNameTranslatedTexts.Count);
         for (int i = 0; i < skillNameTranslatedTexts.Count; i++)
         {
             Language.SkillNames[i].ActiveLanguage = skillNameTranslatedTexts[i];
         }
-        Debug.Log("Language.SkillDescriptions.Count => " + Language.SkillDescriptions.Count + "skillDescTranslatedTexts.Count => " + skillDescTranslatedTexts.Count);
+        Debug.Log("Language.SkillDescriptions.Count => " + Language.SkillDescriptions.Count + " skillDescTranslatedTexts.Count => " + skillDescTranslatedTexts.Count);
         for (int i = 0; i < skillDescTranslatedTexts.Count; i++)
         {
             if (i >= Language.SkillDescriptions.Count) break;
             Language.SkillDescriptions[i].ActiveLanguage = skillDescTranslatedTexts[i];
         }
-        Debug.Log("Language.SkillEffects.Count => " + Language.SkillEffects.Count + "skillEffectTranslatedTexts.Count => " + skillEffectTranslatedTexts.Count);
+        Debug.Log("Language.SkillEffects.Count => " + Language.SkillEffects.Count + " skillEffectTranslatedTexts.Count => " + skillEffectTranslatedTexts.Count);
         for (int i = 0; i < skillEffectTranslatedTexts.Count; i++)
         {
             Language.SkillEffects[i].ActiveLanguage = skillEffectTranslatedTexts[i];
@@ -354,23 +395,31 @@ public class LanguageDatabase : MonoBehaviour
         {
             Language.SkillDefaultStrings[i].ActiveLanguage = skillDefaultStringTranslatedTexts[i];
         }
-        Debug.Log("Language.SkillInfoStrings.Count => " + Language.SkillInfoStrings.Count + "skillInfoTranslatedTexts.Count => " + skillInfoTranslatedTexts.Count);
+        Debug.Log("Language.SkillInfoStrings.Count => " + Language.SkillInfoStrings.Count + " skillInfoTranslatedTexts.Count => " + skillInfoTranslatedTexts.Count);
         for (int i = 0; i < skillInfoTranslatedTexts.Count; i++)
         {
             Language.SkillInfoStrings[i].ActiveLanguage = skillInfoTranslatedTexts[i];
         }
         //SkillAdding
 
-        //NPCCommendAdding
-        Debug.Log("Language.CommendEvulations.Count => " + Language.CommendEvulations.Count + "npcCommendTranslatedTexts.Count => " + npcCommendTranslatedTexts.Count);
+        //NPCAdding
+        Debug.Log("Language.CommendEvulations.Count => " + Language.CommendEvulations.Count + " npcCommendTranslatedTexts.Count => " + npcCommendTranslatedTexts.Count);
         for (int i = 0; i < npcCommendTranslatedTexts.Count; i++)
         {
             Language.CommendEvulations[i].ActiveLanguage = npcCommendTranslatedTexts[i];
         }
-        //NPCCommendAdding
+        //NPCAdding
+
+        //DialogAdding
+        Debug.Log("Language.DialogsMessages.Count => " + Language.DialogsMessages.Count + " dialogTranslatedTexts.Count => " + dialogTranslatedTexts.Count);
+        for (int i = 0; i < dialogTranslatedTexts.Count; i++)
+        {
+            Language.DialogsMessages[i].ActiveLanguage = dialogTranslatedTexts[i];
+        }
+        //DialogAdding
 
         //NotificationAdding
-        Debug.Log("Language.NotificationMessages.Count => " + Language.NotificationMessages.Count + "notificationTranslatedTexts.Count => " + notificationTranslatedTexts.Count);
+        Debug.Log("Language.NotificationMessages.Count => " + Language.NotificationMessages.Count + " notificationTranslatedTexts.Count => " + notificationTranslatedTexts.Count);
         for (int i = 0; i < notificationTranslatedTexts.Count; i++)
         {
             Language.NotificationMessages[i].ActiveLanguage = notificationTranslatedTexts[i];
@@ -447,10 +496,15 @@ public class LanguageDatabase : MonoBehaviour
             List<string> skillInfoTranslatedTexts = new List<string>();
             //SKILLS
 
-            //NPCCOMMENDS
+            //NPCS
             List<string> npcCommendKeysToTranslate = new List<string>();
             List<string> npcCommendTranslatedTexts = new List<string>();
-            //NPCCOMMENDS
+            //NPCS
+
+            //Dialogs
+            List<string> dialogKeysToTranslate = new List<string>();
+            List<string> dialogTranslatedTexts = new List<string>();
+            //Dialogs
 
             //NOTIFICATIONS
             List<string> notificationKeysToTranslate = new List<string>();
@@ -536,19 +590,19 @@ public class LanguageDatabase : MonoBehaviour
             });
             //ITEM
 
-            //NPCCOMMEND
-            foreach (var item in Language.CommendEvulations)
+            //NPCS
+            foreach (var item in Language.DialogsMessages)
             {
                 if (item.Key == string.Empty)
                     continue;
-                npcCommendKeysToTranslate.Add(item.Key);
+                dialogKeysToTranslate.Add(item.Key);
             }
 
-            await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), npcCommendKeysToTranslate, (result) =>
+            await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), dialogKeysToTranslate, (result) =>
             {
-                npcCommendTranslatedTexts = result;
+                dialogTranslatedTexts = result;
             });
-            //NPCCOMMEND
+            //NPCS
 
             //NOTIFICATIONS
             foreach (var item in Language.NotificationMessages)
@@ -658,6 +712,14 @@ public class LanguageDatabase : MonoBehaviour
             }
             //NPCCommendAdding
 
+            //NPCSAdding
+            Debug.Log("Language.DialogsMessages.Count => " + Language.DialogsMessages.Count + "dialogTranslatedTexts.Count => " + dialogTranslatedTexts.Count);
+            for (int i = 0; i < dialogTranslatedTexts.Count; i++)
+            {
+                Language.DialogsMessages[i].ActiveLanguage = dialogTranslatedTexts[i];
+            }
+            //NPCSAdding
+
             //NotificationAdding
             Debug.Log("Language.NotificationMessages.Count => " + Language.NotificationMessages.Count + "notificationTranslatedTexts.Count => " + notificationTranslatedTexts.Count);
             for (int i = 0; i < notificationTranslatedTexts.Count; i++)
@@ -757,6 +819,9 @@ public class MainLanguageData
     //Notifications
     public List<LanguageData> NotificationMessages = new List<LanguageData>();
     //Notifications
+    //Dialogs
+    public List<LanguageData> DialogsMessages = new List<LanguageData>();
+    //Dialogs
     //General
     public List<LanguageData> PictureInfoStrings = new List<LanguageData>();
     public List<LanguageData> InternetCheckInfoStrings = new List<LanguageData>();

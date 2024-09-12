@@ -81,6 +81,7 @@ public class DialogueTrigger : MonoBehaviour
 [System.Serializable]
 public struct DialogHelper
 {
+    public int ID;
     public Vector3 TargetPos;
     [SerializeField] [Range(0, 2)] public int versionOfDiaPnl;
     [SerializeField] public bool placeArrowToRight;
