@@ -79,10 +79,11 @@ public class GameManager : MonoBehaviour
         LoadDailyRewardItems();
         LoadGooglePlayAchievements();
         LoadMuseumNumeralDatas();
-        LanguageControlInDatabase();
+        yield return LanguageControlInDatabase();
         LoadInventoryPictures();
         LoadPurchasedItems();
-
+        if (LanguageDatabase.instance.TranslationWillBeProcessed)
+        LanguageDatabase.instance.LoadLanguageData();
         Debug.Log("CurrentSaveData.ActiveRoomsRequiredMoney => " + CurrentSaveData.ActiveRoomsRequiredMoney);
     }
     public void Init()
@@ -155,7 +156,7 @@ public class GameManager : MonoBehaviour
         };
     }
     public bool DatabaseLanguageProgressComplated;
-    public async void LanguageControlInDatabase()
+    public async System.Threading.Tasks.Task LanguageControlInDatabase()
     {
         DatabaseLanguageProgressComplated = false;
         string databaseLanguage = string.Empty;

@@ -131,16 +131,15 @@ public class LanguageDatabase : MonoBehaviour
             for (int i = 0; i < allDialogLength; i++)
             {
                 var dialog = dialogs[i];
-                int dialogId = dialog.id;
+                int dialogId = dialog.ID;
                 int messagesLength = dialog.messages.Count;
                 for (int k = 0; k < messagesLength; k++)
                 {
                     if (dialog.messages[k] == string.Empty)
                         continue;
-                    Language.NotificationMessages.Add(new LanguageData(dialogId, dialog.messages[k]));
-                }                
+                    Language.DialogsMessages.Add(new LanguageData(dialogId, dialog.messages[k]));
+                }
             }
-
         }
         //DialogsMessages
         //General

@@ -125,8 +125,7 @@ public class NpcManager : MonoBehaviour
 
         //TRANSLATE PROCESSES
         if (LanguageDatabase.instance.TranslationWillBeProcessed)
-        {
-            await LanguageDatabase.instance.LoadLanguageData();
+        {            
             GameManager.instance.TranslateAllItems();
             GameManager.instance.TranslateAllSkills();
             GameManager.instance.TranslateCommendsEvulations();

@@ -23,7 +23,9 @@ namespace I2.Loc
 			{
 				LocalizationManager.CurrentLanguage = _Language;
 				GameManager.instance.SetGameLanguage(_Language);
-			}
+                if (LanguageDatabase.instance.TranslationWillBeProcessed)
+                    LanguageDatabase.instance.LoadLanguageData();
+            }
 		}
     }
 }

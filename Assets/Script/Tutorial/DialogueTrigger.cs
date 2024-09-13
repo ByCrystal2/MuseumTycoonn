@@ -11,38 +11,34 @@ public class DialogueTrigger : MonoBehaviour
     public List<DialogHelper> helpers = new List<DialogHelper>();
     public Steps currentStep;
 
-    private bool isTranslateEnding;
+    //private bool isTranslateEnding;
     private void Awake()
     {
         if (GameManager.instance.IsWatchTutorial) return;
-        isTranslateEnding = false;
+        //isTranslateEnding = false;
         // Çevirilecek metinleri topla
-        List<string> textsToTranslate = new List<string>();
+        AddTranslatedMessagesInDialogs();
+    }
+    void AddTranslatedMessagesInDialogs()
+    {
+        if (!LanguageDatabase.instance.TranslationWillBeProcessed) return;
+        List<LanguageData> dialogLanguageDatas = LanguageDatabase.instance.Language.DialogsMessages;
+
         foreach (var helper in helpers)
         {
-            foreach (var dialog in helper.Dialogs)
+            int helperID = helper.ID;
+            List<LanguageData> targetLanguageDatas = dialogLanguageDatas.Where(x => x.TargetID == helperID).ToList();
+
+            for (int i = 0; i < helper.Dialogs.Count; i++)
             {
-                textsToTranslate.Add(dialog.Sentence);
+                if (i < targetLanguageDatas.Count)
+                {
+                    helper.Dialogs[i] = new Dialog(targetLanguageDatas[i].ActiveLanguage);
+                }
             }
         }
 
-        GameManager.instance.BulkTranslateAndAssignAsync(textsToTranslate, (translatedTexts) =>
-        {
-            int index = 0;
-            foreach (var helper in helpers)
-            {
-                for (int i = 0; i < helper.Dialogs.Count; i++)
-                {
-                    if (index < translatedTexts.Count)
-                    {
-                        helper.Dialogs[i] = new Dialog(translatedTexts[index]);
-                        index++;
-                    }
-                }
-            }
-            isTranslateEnding = true;
-            Debug.Log("Tüm diyaloglar baþarýyla çevrildi.");
-        });
+        Debug.Log("Tüm diyaloglar baþarýyla çevrildi.");
     }
 
     public void TriggerDialog(Steps _whichStep)
