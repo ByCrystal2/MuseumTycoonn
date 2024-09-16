@@ -933,14 +933,21 @@ public class GameManager : MonoBehaviour
             WorkerBehaviour currentWorker = allWorkers[i];
             currentWorker.Agent = currentWorker.gameObject.GetComponent<NavMeshAgent>();
             currentWorker.NpcCurrentSpeed = currentWorker.NpcSpeed;
-            string noneDatabaseName = Constant.GetNPCName(currentWorker.IsMale);
             WorkerData databaseWorker = null;
+            string Name = "None";
             if (currentActiveWorkers.Any(x => x.ID == currentWorker.ID))
             {
                 databaseWorker = currentActiveWorkers.FirstOrDefault(x => x.ID == currentWorker.ID);
-                Debug.Log("currentActiveWorkers.Any(x => x.ID == currentWorker.ID) => " + currentWorker.ID);
+                Name = databaseWorker.Name;
+                currentWorker.MyScript.Age = databaseWorker.Age;
+                currentWorker.MyScript.Height = databaseWorker.Height;
+                Debug.Log("currentActiveWorkers.Any(x => x.ID == currentWorker.ID) => " + currentWorker.ID + " age:" + currentWorker.MyScript.Age + " height:"+currentWorker.MyScript.Height, currentWorker.transform);
             }
-            WorkerManager.instance.SetDatabaseDatas(currentWorker, databaseWorker, noneDatabaseName);
+            else
+            {
+                Name = Constant.GetNPCName(currentWorker.IsMale);
+            }
+            WorkerManager.instance.SetDatabaseDatas(currentWorker, databaseWorker, Name);
         }
         List<WorkerData> inventoryWorkers = new List<WorkerData>();
         List<int> inventoryWorkerIDs = ((List<object>)gameDatas["WorkersInInventoryIDs"]).Select(x => Convert.ToInt32(x)).ToList();

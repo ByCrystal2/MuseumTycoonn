@@ -96,7 +96,10 @@ public class FirestoreWorkerDatasHandler : MonoBehaviour
                     {
                         { "ID", _worker.ID },
                         { "Name", _worker.Name},
+                        { "Age", _worker.Age},
+                        { "Height", _worker.Height},
                         { "Level", _worker.Level},
+                        { "WorkerIn", _worker.WorkerIn },
                         { "WorkRoomsIDs", _worker.WorkRoomsIDs },
                         { "Timestamp", FieldValue.ServerTimestamp }
                     };
@@ -160,6 +163,14 @@ public class FirestoreWorkerDatasHandler : MonoBehaviour
                                     foundWorker.ID = workerData.ContainsKey("ID") ? Convert.ToInt32(workerData["ID"]) : 0;
                                     foundWorker.Level = workerData.ContainsKey("Level") ? Convert.ToInt32(workerData["Level"]) : 0;
                                     foundWorker.Name = workerData.ContainsKey("Name") ? workerData["Name"].ToString() : "";
+                                    foundWorker.Age = workerData.ContainsKey("Age") ? Convert.ToInt32(workerData["Age"]) : 0;
+                                    foundWorker.Height = workerData.ContainsKey("Height") ? Convert.ToSingle(workerData["Height"]) : 0;
+                                    if (workerData.ContainsKey("WorkerIn"))
+                                    {
+                                        int workerInValue = Convert.ToInt32(workerData["WorkerIn"]);
+                                        foundWorker.WorkerIn = (WorkerIn)workerInValue;
+                                        Debug.Log("Enum WorkerIn Value => " + foundWorker.WorkerIn.ToString());
+                                    }
                                     foreach (int id in workerRoomIds)
                                     {
                                         foundWorker.WorkRoomsIDs.Add(id);
@@ -220,6 +231,7 @@ public class FirestoreWorkerDatasHandler : MonoBehaviour
                                 Dictionary<string, object> updates = new Dictionary<string, object>
                             {
                                 { "Level", _workerData.Level },
+                                { "WorkerIn", _workerData.WorkerIn },
                                 { "WorkRoomsIDs", _workerData.WorkRoomsIDs },
                                 { "Timestamp", FieldValue.ServerTimestamp }
                             };

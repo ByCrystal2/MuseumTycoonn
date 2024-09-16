@@ -395,20 +395,26 @@ public sealed class WorkerData
 {
     public int ID;
     public string Name;
+    public int Age;
+    public float Height;
     public int Level;
     public float Xp;
     public float baseSalary;
     public List<int> WorkRoomsIDs = new List<int>();
     [HideInInspector]public WorkerType WorkerType;
-    public WorkerData(int _id,string _name, int level, float _Xp, List<int> _workRoomsIDs, WorkerType workerType, float baseSalary = -1)
+    [HideInInspector]public WorkerIn WorkerIn;
+    public WorkerData(int _id,string _name, int _age, float _height, int level, float _Xp, List<int> _workRoomsIDs, WorkerType workerType, WorkerIn _workerIn, float baseSalary = -1)
     {
         this.ID = _id;
         this.Name = _name;
+        this.Age = _age;
+        this.Height = _height;
         this.Level = level;
         this.Xp = _Xp;
         WorkRoomsIDs.Clear();
         foreach (int i in _workRoomsIDs) { WorkRoomsIDs.Add(i); }
         this.WorkerType = workerType;
+        this.WorkerIn = _workerIn;
         this.baseSalary = baseSalary;
         if(this.baseSalary == -1)
             this.baseSalary = WorkerBehaviour.BaseSalary;
@@ -417,11 +423,24 @@ public sealed class WorkerData
     {
         ID = _copyData.ID;
         Name = _copyData.Name;
+        Age = _copyData.Age;
+        Height = _copyData.Height;
         Level = _copyData.Level;
         Xp = _copyData.Xp;
         WorkRoomsIDs.Clear();
         int length = _copyData.WorkRoomsIDs.Count;
         for (int i = 0; i < length; i++)
             WorkRoomsIDs.Add(_copyData.WorkRoomsIDs[i]);
+        this.WorkerType = _copyData.WorkerType;
+        this.WorkerIn = _copyData.WorkerIn;
+        this.baseSalary = _copyData.baseSalary;
+        if (this.baseSalary == -1)
+            this.baseSalary = WorkerBehaviour.BaseSalary;
     }
+}
+public enum WorkerIn
+{
+    Active,
+    Inventory,
+    Shop
 }
