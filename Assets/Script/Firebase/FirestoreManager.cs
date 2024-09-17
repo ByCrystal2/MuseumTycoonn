@@ -16,6 +16,7 @@ public class FirestoreManager : MonoBehaviour
     public FirestoreStatueDatasHandler statueDatasHandler;
     public FirestoreSkillDatasHandler skillDatasHandler;
     public FirestoreWorkerDatasHandler workerDatasHandler;
+    public FirestoreCustomizationDatasHandler customizationDatasHandler;
     public static FirestoreManager instance { get; private set;}
     private void Awake()
     {

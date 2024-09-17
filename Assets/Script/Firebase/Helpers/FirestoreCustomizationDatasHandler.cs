@@ -15,11 +15,11 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
         db = FirebaseFirestore.DefaultInstance;
     }
 
-    public async System.Threading.Tasks.Task AddCustomizationDataWithUserId(string userId, WorkerData _worker)
+    public async Task AddCustomizationDataWithUserId(string userId, CharacterCustomizeData _customizeData)
     {
         // Kullanýcý ID'si ile belgeyi sorgula
         if (GameManager.instance != null) if (!GameManager.instance.IsWatchTutorial) return;
-        Query query = db.Collection("Customization").WhereEqualTo("userID", userId);
+        Query query = db.Collection("Customizations").WhereEqualTo("userID", userId);
 
         await query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
@@ -33,23 +33,45 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                     DocumentSnapshot documentSnapshot = snapshot.Documents.FirstOrDefault();
                     documentReference = documentSnapshot.Reference;
 
-                    CheckAndAddStatueData(documentReference, _worker);
+                    Dictionary<string, object> updatedData = new Dictionary<string, object>
+                    {
+                        { "UnlockedCustomizeElementIDs", _customizeData.unlockedCustomizeElementIDs },
+                        { "LastSelectedCustomizeCategory", _customizeData.LastSelectedCustomizeCategory },
+                        { "LastSelectedCustomizeHeader", _customizeData.LastSelectedCustomizeHeader },
+                        { "LastSelectedColorHeader", _customizeData.LastSelectedColorHeader }
+                    };
+
+                    documentReference.UpdateAsync(updatedData).ContinueWithOnMainThread(updateTask =>
+                    {
+                        if (updateTask.IsCompleted)
+                        {
+                            CheckAndAddCustomizeData(documentReference, _customizeData);
+                        }
+                        else if (updateTask.IsFaulted)
+                        {
+                            Debug.LogError($"Failed to update document: {updateTask.Exception}");
+                        }
+                    });                    
                 }
                 else
                 {
 
                     Dictionary<string, object> newDocument = new Dictionary<string, object>
                     {
-                        { "userID", userId }
+                        { "userID", userId },
+                        { "UnlockedCustomizeElementIDs", _customizeData.unlockedCustomizeElementIDs },
+                        { "LastSelectedCustomizeCategory", _customizeData.LastSelectedCustomizeCategory },
+                        { "LastSelectedCustomizeHeader", _customizeData.LastSelectedCustomizeHeader },
+                        { "LastSelectedColorHeader", _customizeData.LastSelectedColorHeader },
                     };
 
-                    db.Collection("Customization").AddAsync(newDocument).ContinueWithOnMainThread(addTask =>
+                    db.Collection("Customizations").AddAsync(newDocument).ContinueWithOnMainThread(addTask =>
                     {
                         if (addTask.IsCompleted)
                         {
                             documentReference = addTask.Result;
                             Debug.Log($"User document created for user {userId}");
-                            CheckAndAddStatueData(documentReference, _worker);
+                            CheckAndAddCustomizeData(documentReference, _customizeData);
                         }
                         else if (addTask.IsFaulted)
                         {
@@ -65,11 +87,11 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
         });
     }
 
-    private void CheckAndAddStatueData(DocumentReference documentReference, WorkerData _worker)
+    private void CheckAndAddCustomizeData(DocumentReference documentReference, CharacterCustomizeData _customizeData)
     {
         // Alt koleksiyon olan PictureDatas'ý sorgula
-        CollectionReference statueDatasRef = documentReference.Collection("WorkerDatas");
-        Query query = statueDatasRef.WhereEqualTo("ID", _worker.ID);
+        CollectionReference statueDatasRef = documentReference.Collection("CustomizationDatas");
+        Query query = statueDatasRef.WhereEqualTo("SlotNumber", _customizeData.playerCustomizeData.selectedCustomizeSlot);
 
         query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
@@ -79,36 +101,24 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
 
                 if (snapshot.Documents.Count() > 0)
                 {
-                    Debug.Log($"Worker with ID {_worker.ID} already exists for user.");
+                    Debug.Log($"Customize with number of slot {_customizeData.playerCustomizeData.selectedCustomizeSlot} already exists for user.");
 
-                    UpdateWorkerData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, _worker);
+                    UpdateCustomizationData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, _customizeData);
                 }
                 else
                 {
                     // Belge yoksa yeni belge ekle
-                    List<int> workRoomIds = new List<int>();
-                    int length = _worker.WorkRoomsIDs.Count;
-                    for (int i = 0; i < length; i++)
+                    Dictionary<string, object> newCustomizeData = new Dictionary<string, object>
                     {
-                        workRoomIds.Add(_worker.WorkRoomsIDs[i]);
-                    }
-                    Dictionary<string, object> workerData = new Dictionary<string, object>
-                    {
-                        { "ID", _worker.ID },
-                        { "Name", _worker.Name},
-                        { "Age", _worker.Age},
-                        { "Height", _worker.Height},
-                        { "Level", _worker.Level},
-                        { "WorkerIn", _worker.WorkerIn },
-                        { "WorkRoomsIDs", _worker.WorkRoomsIDs },
+                        { "SlotNumber", _customizeData.playerCustomizeData.selectedCustomizeSlot },
                         { "Timestamp", FieldValue.ServerTimestamp }
                     };
 
-                    statueDatasRef.AddAsync(workerData).ContinueWithOnMainThread(addTask =>
+                    statueDatasRef.AddAsync(newCustomizeData).ContinueWithOnMainThread(addTask =>
                     {
                         if (addTask.IsCompleted)
                         {
-                            Debug.Log($"Worker data with ID {_worker.ID} successfully added.");
+                            //Debug.Log($"Worker data with ID {_customizeData.ID} successfully added.");
                         }
                         else if (addTask.IsFaulted)
                         {
@@ -131,7 +141,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
         try
         {
             //Kullaniciya ait belgeleri sorgula
-            Query query = db.Collection("Customization").WhereEqualTo("userID", userId);
+            Query query = db.Collection("Customizations").WhereEqualTo("userID", userId);
             QuerySnapshot querySnapshot = await query.GetSnapshotAsync();
 
             foreach (DocumentSnapshot documentSnapshot in querySnapshot.Documents)
@@ -156,7 +166,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                                 workerRoomIds = workerData.ContainsKey("WorkRoomsIDs") ? ((List<object>)workerData["WorkRoomsIDs"]).Select(x => Convert.ToInt32(x)).ToList() : new List<int>();
                                 Debug.Log("database workerRoomIds Count => " + workerRoomIds.Count);
                                 if (workerRoomIds.Count <= 0) helperWorkerData = null;
-                                //Debug.Log("workerData[\"WorkRoomsIDs\"" + ((List<int>)workerData["WorkRoomsIDs"]).Count);
+                                //Debug.Log("newCustomizeData[\"WorkRoomsIDs\"" + ((List<int>)newCustomizeData["WorkRoomsIDs"]).Count);
                                 if (helperWorkerData != null)
                                 {
                                     foundWorker = helperWorkerData;
@@ -197,11 +207,11 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
 
         return foundWorkers;
     }
-    public void UpdateWorkerData(string userId, WorkerData _workerData)
+    public void UpdateCustomizationData(string userId, CharacterCustomizeData _customizeData)
     {
         if (GameManager.instance != null) if (!GameManager.instance.IsWatchTutorial) return;
         // Kullanýcý ID'si ile belgeyi sorgula
-        Query query = db.Collection("Workers").WhereEqualTo("userID", userId);
+        Query query = db.Collection("Customizations").WhereEqualTo("userID", userId);
 
         query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
@@ -215,48 +225,61 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                     DocumentReference documentReference = documentSnapshot.Reference;
 
                     // Belge varsa, alt koleksiyon olan PictureDatas'ta tabloyu bul ve güncelle
-                    CollectionReference workerDatasRef = documentReference.Collection("WorkerDatas");
-                    Query workerDataQuery = workerDatasRef.WhereEqualTo("ID", _workerData.ID);
+                    CollectionReference customizationDatasRef = documentReference.Collection("CustomizationDatas");
+                    Query customizeDataQuery = customizationDatasRef.WhereEqualTo("SlotNumber", _customizeData.playerCustomizeData.selectedCustomizeSlot);
 
-                    workerDataQuery.GetSnapshotAsync().ContinueWithOnMainThread(workerDataTask =>
+                    customizeDataQuery.GetSnapshotAsync().ContinueWithOnMainThread(customizeDataTask =>
                     {
-                        if (workerDataTask.IsCompleted)
+                        if (customizeDataTask.IsCompleted)
                         {
-                            QuerySnapshot workerDataSnapshot = workerDataTask.Result;
+                            QuerySnapshot customizeDataSnapshot = customizeDataTask.Result;
 
-                            if (workerDataSnapshot.Documents.Count() > 0)
+                            if (customizeDataSnapshot.Documents.Count() > 0)
                             {
-                                DocumentSnapshot workerDataDocument = workerDataSnapshot.Documents.FirstOrDefault();
-                                DocumentReference workerDataRef = workerDataDocument.Reference;
-
-                                Dictionary<string, object> updates = new Dictionary<string, object>
-                            {
-                                { "Level", _workerData.Level },
-                                { "WorkerIn", _workerData.WorkerIn },
-                                { "WorkRoomsIDs", _workerData.WorkRoomsIDs },
-                                { "Timestamp", FieldValue.ServerTimestamp }
-                            };
-
-                                workerDataRef.UpdateAsync(updates).ContinueWithOnMainThread(updateTask =>
+                                foreach (var document in customizeDataSnapshot.Documents)
                                 {
-                                    if (updateTask.IsCompleted)
+                                    List<PlayerExtraCustomizeData> playerExtraCustomizeDatas = _customizeData.playerCustomizeData.AllCustomizeData;
+                                    int length1 = playerExtraCustomizeDatas.Count;
+                                    for (int k = 0; k < length1; k++)
                                     {
-                                        Debug.Log($"Worker data successfully updated for user {userId}");
+                                        DocumentSnapshot customizeDataDocument = document;
+                                        DocumentReference customizeDataRef = customizeDataDocument.Reference;
+
+                                        PlayerExtraCustomizeData currentExtraCustomizeData = playerExtraCustomizeDatas[k];
+
+
+                                        CollectionReference extraCustomizationDatasRef = documentReference.Collection("ExtraCustomizationDatas");
+                                        Query extraCustomizeDataQuery = extraCustomizationDatasRef.WhereEqualTo("ID", currentExtraCustomizeData.ID);
+
+                                        Dictionary<string, object> updates = new Dictionary<string, object>
+                                        {
+                                            { "IsFemale", currentExtraCustomizeData.isFemale},
+                                            { "Timestamp", FieldValue.ServerTimestamp }
+                                        };
+
+                                        customizeDataRef.UpdateAsync(updates).ContinueWithOnMainThread(updateTask =>
+                                        {
+                                            if (updateTask.IsCompleted)
+                                            {
+                                                Debug.Log($"Worker data successfully updated for user {userId}");
+                                            }
+                                            else if (updateTask.IsFaulted)
+                                            {
+                                                Debug.LogError($"Failed to update worker data: {updateTask.Exception}");
+                                            }
+                                        });
                                     }
-                                    else if (updateTask.IsFaulted)
-                                    {
-                                        Debug.LogError($"Failed to update worker data: {updateTask.Exception}");
-                                    }
-                                });
+                                }
+                                
                             }
                             else
                             {
-                                Debug.LogError($"No worker data found for ID: {_workerData.ID}");
+                                //Debug.LogError($"No worker data found for ID: {_customizeData.ID}");
                             }
                         }
                         else
                         {
-                            Debug.LogError($"Error querying picture data: {workerDataTask.Exception}");
+                            Debug.LogError($"Error querying picture data: {customizeDataTask.Exception}");
                         }
                     });
                 }

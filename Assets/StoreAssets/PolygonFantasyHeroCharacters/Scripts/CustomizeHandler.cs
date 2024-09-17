@@ -60,11 +60,7 @@ public class CustomizeHandler : MonoBehaviour
     [SerializeField] private bool ApplyColor;
 
     [Header("Character Customize Data")]
-    public PlayerCustomizeData playerCustomizeData;
-    public List<int> unlockedCustomizeElementIDs;
-    public int LastSelectedCustomizeCategory;
-    public int LastSelectedCustomizeHeader;
-    public int LastSelectedColorHeader;
+    public CharacterCustomizeData characterCustomizeData;
 
     private void Start()
     {
@@ -304,7 +300,7 @@ public class CustomizeHandler : MonoBehaviour
         else
             ElementsHeaderPanel.SetActive(true);
 
-        LastSelectedCustomizeHeader = 0;
+        characterCustomizeData.LastSelectedCustomizeHeader = 0;
         AppearanceButton.transform.GetChild(1).GetComponent<Image>().color = HeaderActiveColor;
         ColorsButton.transform.GetChild(1).GetComponent<Image>().color = HeaderPassiveColor;
         PlayButtonSound();
@@ -332,7 +328,7 @@ public class CustomizeHandler : MonoBehaviour
 
         ApplyColor = true;
 
-        LastSelectedCustomizeHeader = 1;
+        characterCustomizeData.LastSelectedCustomizeHeader = 1;
         AppearanceButton.transform.GetChild(1).GetComponent<Image>().color = HeaderPassiveColor;
         ColorsButton.transform.GetChild(1).GetComponent<Image>().color = HeaderActiveColor;
         PlayButtonSound();
@@ -382,7 +378,7 @@ public class CustomizeHandler : MonoBehaviour
         for (int i = length - 1; i >= 0; i--)
             Destroy(ElementsParent.GetChild(i).gameObject);
 
-        int panel = LastSelectedCustomizeHeader;
+        int panel = characterCustomizeData.LastSelectedCustomizeHeader;
         if (panel == 0) //Appearance Panel
         {
             foreach (var item in CurrentlyUnlockedIDs)
@@ -675,27 +671,27 @@ public class CustomizeHandler : MonoBehaviour
 
     void SetLastOpenedPanel(CustomizeSlot _slot)
     {
-        LastSelectedCustomizeCategory = (int)_slot;
+        characterCustomizeData.LastSelectedCustomizeCategory = (int)_slot;
     }
 
     void SetLastOpenedColorPanel(CustomizeColor _color)
     {
-        LastSelectedColorHeader = (int)_color;
+        characterCustomizeData.LastSelectedColorHeader = (int)_color;
     }
 
     PlayerExtraCustomizeData GetCustomizeData()
     {
-        if (playerCustomizeData == null)
-            playerCustomizeData = new();
+        if (characterCustomizeData.playerCustomizeData == null)
+            characterCustomizeData.playerCustomizeData = new();
 
-        if (playerCustomizeData.AllCustomizeData == null)
-            playerCustomizeData.AllCustomizeData = new();
+        if (characterCustomizeData.playerCustomizeData.AllCustomizeData == null)
+            characterCustomizeData.playerCustomizeData.AllCustomizeData = new();
 
-        while (playerCustomizeData.AllCustomizeData.Count < 3)
-            playerCustomizeData.AllCustomizeData.Add(new() { CustomizeElements = GetDefaultElements(), isFemale = false });
+        while (characterCustomizeData.playerCustomizeData.AllCustomizeData.Count < 3)
+            characterCustomizeData.playerCustomizeData.AllCustomizeData.Add(new() { ID = characterCustomizeData.playerCustomizeData.AllCustomizeData.Count, CustomizeElements = GetDefaultElements(), isFemale = false });
 
-        int selected = playerCustomizeData.selectedCustomizeSlot;
-        foreach (var item in playerCustomizeData.AllCustomizeData)
+        int selected = characterCustomizeData.playerCustomizeData.selectedCustomizeSlot;
+        foreach (var item in characterCustomizeData.playerCustomizeData.AllCustomizeData)
         {
             if (item.Colors == null)
                 item.Colors = new();
@@ -706,19 +702,19 @@ public class CustomizeHandler : MonoBehaviour
         }
         
 
-        return playerCustomizeData.AllCustomizeData[selected];
+        return characterCustomizeData.playerCustomizeData.AllCustomizeData[selected];
     }
 
     void SetCustomizeDataToSave(List<CustomizeElement> _data)
     {
-        int selected = playerCustomizeData.selectedCustomizeSlot;
-        playerCustomizeData.AllCustomizeData[selected].CustomizeElements = _data;
+        int selected = characterCustomizeData.playerCustomizeData.selectedCustomizeSlot;
+        characterCustomizeData.playerCustomizeData.AllCustomizeData[selected].CustomizeElements = _data;
     }
 
     void ChangeActiveChangeID(int _newID)
     {
-        playerCustomizeData.selectedCustomizeSlot = _newID;
-        TempCustomize = playerCustomizeData.AllCustomizeData[_newID];
+        characterCustomizeData.playerCustomizeData.selectedCustomizeSlot = _newID;
+        TempCustomize = characterCustomizeData.playerCustomizeData.AllCustomizeData[_newID];
         if(TempCustomize.isFemale)
             OnClickedFemaleButton();
         else
@@ -733,33 +729,33 @@ public class CustomizeHandler : MonoBehaviour
 
     void SaveSet(int _setID)
     {
-        playerCustomizeData.AllCustomizeData[_setID] = TempCustomize;
+        characterCustomizeData.playerCustomizeData.AllCustomizeData[_setID] = TempCustomize;
         //Debug.Log("Karakteri burada Save Edebilirsiniz.");
         //GameManager.instance.SaveGame();
     }
 
     public int GetSetID()
     {
-        return playerCustomizeData.selectedCustomizeSlot;
+        return characterCustomizeData.playerCustomizeData.selectedCustomizeSlot;
     }
 
     CustomizeSlot GetLastOpenedHeader()
     {
-        if (LastSelectedCustomizeCategory <= 0)
-            LastSelectedCustomizeCategory = 1;
-        return (CustomizeSlot)LastSelectedCustomizeCategory;
+        if (characterCustomizeData.LastSelectedCustomizeCategory <= 0)
+            characterCustomizeData.LastSelectedCustomizeCategory = 1;
+        return (CustomizeSlot)characterCustomizeData.LastSelectedCustomizeCategory;
     }
 
     CustomizeColor GetLastOpenedColorHeader()
     {
-        if (LastSelectedColorHeader < 0)
-            LastSelectedColorHeader = 0;
-        return (CustomizeColor)LastSelectedColorHeader;
+        if (characterCustomizeData.LastSelectedColorHeader < 0)
+            characterCustomizeData.LastSelectedColorHeader = 0;
+        return (CustomizeColor)characterCustomizeData.LastSelectedColorHeader;
     }
 
     int GetLastSelectedHeader()
     {
-        return LastSelectedCustomizeHeader;
+        return characterCustomizeData.LastSelectedCustomizeHeader;
     }
 
     bool IsUnequippable(CustomizeSlot _slot)
@@ -800,92 +796,92 @@ public class CustomizeHandler : MonoBehaviour
 
         Vector2Int head = GetStartAndEndIDs(CustomizeSlot.Head);
         for (int i = head.x + 5; i <= head.y; i++)
-            if(!unlockedCustomizeElementIDs.Contains(i))
+            if(!characterCustomizeData.unlockedCustomizeElementIDs.Contains(i))
                 LockedElements.Add(i);
 
         Vector2Int torso = GetStartAndEndIDs(CustomizeSlot.Torso);
         for (int i = torso.x + 5; i <= torso.y; i++)
-            if (!unlockedCustomizeElementIDs.Contains(i))
+            if (!characterCustomizeData.unlockedCustomizeElementIDs.Contains(i))
                 LockedElements.Add(i);
 
         Vector2Int Arm_Upper = GetStartAndEndIDs(CustomizeSlot.Arm_Upper_Right);
         for (int i = Arm_Upper.x + 4; i <= Arm_Upper.y; i++)
-            if (!unlockedCustomizeElementIDs.Contains(i))
+            if (!characterCustomizeData.unlockedCustomizeElementIDs.Contains(i))
                 LockedElements.Add(i);
 
         Vector2Int Arm_Lower = GetStartAndEndIDs(CustomizeSlot.Arm_Lower_Right);
         for (int i = Arm_Lower.x + 3; i <= Arm_Lower.y; i++)
-            if (!unlockedCustomizeElementIDs.Contains(i))
+            if (!characterCustomizeData.unlockedCustomizeElementIDs.Contains(i))
                 LockedElements.Add(i);
 
         Vector2Int Hand = GetStartAndEndIDs(CustomizeSlot.Hand_Right);
         for (int i = Hand.x + 2; i <= Hand.y; i++)
-            if (!unlockedCustomizeElementIDs.Contains(i))
+            if (!characterCustomizeData.unlockedCustomizeElementIDs.Contains(i))
                 LockedElements.Add(i);
 
         Vector2Int Hip = GetStartAndEndIDs(CustomizeSlot.Hip);
         for (int i = Hip.x + 4; i <= Hip.y; i++)
-            if (!unlockedCustomizeElementIDs.Contains(i))
+            if (!characterCustomizeData.unlockedCustomizeElementIDs.Contains(i))
                 LockedElements.Add(i);
 
         Vector2Int Leg = GetStartAndEndIDs(CustomizeSlot.Leg_Right);
         for (int i = Leg.x + 2; i <= Leg.y; i++)
-            if (!unlockedCustomizeElementIDs.Contains(i))
+            if (!characterCustomizeData.unlockedCustomizeElementIDs.Contains(i))
                 LockedElements.Add(i);
 
         Vector2Int helmet = GetStartAndEndIDs(CustomizeSlot.Helmet);
         for (int i = helmet.x; i <= helmet.y; i++)
-            if (!unlockedCustomizeElementIDs.Contains(i))
+            if (!characterCustomizeData.unlockedCustomizeElementIDs.Contains(i))
                 LockedElements.Add(i);
 
         Vector2Int hair = GetStartAndEndIDs(CustomizeSlot.Hair);
         for (int i = hair.x + 8; i <= hair.y; i++)
-            if (!unlockedCustomizeElementIDs.Contains(i))
+            if (!characterCustomizeData.unlockedCustomizeElementIDs.Contains(i))
                 LockedElements.Add(i);
 
         Vector2Int hat = GetStartAndEndIDs(CustomizeSlot.Hat);
         for (int i = hat.x; i <= hat.y; i++)
-            if (!unlockedCustomizeElementIDs.Contains(i))
+            if (!characterCustomizeData.unlockedCustomizeElementIDs.Contains(i))
                 LockedElements.Add(i);
 
         Vector2Int mask = GetStartAndEndIDs(CustomizeSlot.Mask);
         for (int i = mask.x; i <= mask.y; i++)
-            if (!unlockedCustomizeElementIDs.Contains(i))
+            if (!characterCustomizeData.unlockedCustomizeElementIDs.Contains(i))
                 LockedElements.Add(i);
 
         Vector2Int helmetAtt = GetStartAndEndIDs(CustomizeSlot.Helmet_Attachment);
         for (int i = helmetAtt.x; i <= helmetAtt.y; i++)
-            if (!unlockedCustomizeElementIDs.Contains(i))
+            if (!characterCustomizeData.unlockedCustomizeElementIDs.Contains(i))
                 LockedElements.Add(i);
 
         Vector2Int back = GetStartAndEndIDs(CustomizeSlot.Back_Attachment);
         for (int i = back.x; i <= back.y; i++)
-            if (!unlockedCustomizeElementIDs.Contains(i))
+            if (!characterCustomizeData.unlockedCustomizeElementIDs.Contains(i))
                 LockedElements.Add(i);
 
         Vector2Int shoulderAtt = GetStartAndEndIDs(CustomizeSlot.Shoulder_Attachment_Right);
         for (int i = shoulderAtt.x; i <= shoulderAtt.y; i++)
-            if (!unlockedCustomizeElementIDs.Contains(i))
+            if (!characterCustomizeData.unlockedCustomizeElementIDs.Contains(i))
                 LockedElements.Add(i);
 
         Vector2Int elbow = GetStartAndEndIDs(CustomizeSlot.Elbow_Attachment_Right);
         for (int i = elbow.x; i <= elbow.y; i++)
-            if (!unlockedCustomizeElementIDs.Contains(i))
+            if (!characterCustomizeData.unlockedCustomizeElementIDs.Contains(i))
                 LockedElements.Add(i);
 
         Vector2Int hipAtt = GetStartAndEndIDs(CustomizeSlot.Hip_Attachment);
         for (int i = hipAtt.x; i <= hipAtt.y; i++)
-            if (!unlockedCustomizeElementIDs.Contains(i))
+            if (!characterCustomizeData.unlockedCustomizeElementIDs.Contains(i))
                 LockedElements.Add(i);
 
         Vector2Int Knee = GetStartAndEndIDs(CustomizeSlot.Knee_Attachment_Right);
         for (int i = Knee.x; i <= Knee.y; i++)
-            if (!unlockedCustomizeElementIDs.Contains(i))
+            if (!characterCustomizeData.unlockedCustomizeElementIDs.Contains(i))
                 LockedElements.Add(i);
 
         Vector2Int elf = GetStartAndEndIDs(CustomizeSlot.Elf_Ear);
         for (int i = elf.x; i <= elf.y; i++)
-            if (!unlockedCustomizeElementIDs.Contains(i))
+            if (!characterCustomizeData.unlockedCustomizeElementIDs.Contains(i))
                 LockedElements.Add(i);
     }
 
@@ -959,6 +955,7 @@ public class CustomizeElement
 [System.Serializable]
 public class PlayerExtraCustomizeData
 {
+    public int ID;
     public bool isFemale;
     public List<Color> Colors;
     public List<CustomizeElement> CustomizeElements;
@@ -995,6 +992,25 @@ public class PlayerCustomizeData
 {
     public int selectedCustomizeSlot;
     public List<PlayerExtraCustomizeData> AllCustomizeData;
+    #region Constructors
+    public PlayerCustomizeData(int _selectedCustomizeSlot, List<PlayerExtraCustomizeData> _allCustomizeData)
+    {
+        selectedCustomizeSlot = _selectedCustomizeSlot;
+        AllCustomizeData.Clear();
+        int length = _allCustomizeData.Count;
+        for (int i = 0; i < length; i++)
+            AllCustomizeData.Add(_allCustomizeData[i]);
+    }
+    public PlayerCustomizeData(PlayerCustomizeData _copy)
+    {
+        selectedCustomizeSlot= _copy.selectedCustomizeSlot;
+        AllCustomizeData.Clear();
+        int length = _copy.AllCustomizeData.Count;
+        for (int i = 0; i < length; i++)
+            AllCustomizeData.Add(_copy.AllCustomizeData[i]);
+    }
+    public PlayerCustomizeData() { }
+    #endregion
 }
 
 public enum CustomizeSlot
@@ -1044,4 +1060,25 @@ public enum CustomizeColor
 	_Color_Scar,
 	_Color_BodyArt,
 	_Color_Eyes,
+}
+[System.Serializable]
+public class CharacterCustomizeData
+{
+    public PlayerCustomizeData playerCustomizeData;
+    public List<int> unlockedCustomizeElementIDs;
+    public int LastSelectedCustomizeCategory;
+    public int LastSelectedCustomizeHeader;
+    public int LastSelectedColorHeader;
+
+    public void SetDatas(PlayerCustomizeData _playerCustomizeData, List<int> _unlockedCustomizeElementIDs, int _lastSelectedCustomizeCategory, int _lastSelectedCustomizeHeader, int _lastSelectedColorHeader)
+    {
+        playerCustomizeData = new PlayerCustomizeData(_playerCustomizeData);
+        unlockedCustomizeElementIDs.Clear();
+        int length = _unlockedCustomizeElementIDs.Count;
+        for (int i = 0; i < length; i++)
+            unlockedCustomizeElementIDs.Add(_unlockedCustomizeElementIDs[i]);
+        LastSelectedCustomizeCategory = _lastSelectedCustomizeCategory;
+        LastSelectedCustomizeHeader = _lastSelectedCustomizeHeader;
+        LastSelectedColorHeader = _lastSelectedColorHeader;
+    }
 }
