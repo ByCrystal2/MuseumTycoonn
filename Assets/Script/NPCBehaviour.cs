@@ -1027,5 +1027,14 @@ public class NPCBehaviour : MonoBehaviour
         }
     }
 
+    public void FootR()
+    {
+
+    }
+
+    public void FootL()
+    {
+
+    }
 }
 
