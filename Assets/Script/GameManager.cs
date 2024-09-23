@@ -1018,7 +1018,8 @@ public class GameManager : MonoBehaviour
         characterCustomize = await FirestoreManager.instance.customizationDatasHandler.GetCustomizationDataInDatabase(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
 
         CustomizeHandler.instance.characterCustomizeData = characterCustomize;
-        //CustomizeHandler.instance.CustomizationInit();
+        Debug.Log("CustomizeHandler.instance.characterCustomizeData.LastSelectedCustomizeCategory => " + CustomizeHandler.instance.characterCustomizeData.LastSelectedCustomizeCategory);
+        CustomizeHandler.instance.CustomizationInit();
     }
     public System.Threading.CancellationTokenSource GetFirebaseToken()
     {

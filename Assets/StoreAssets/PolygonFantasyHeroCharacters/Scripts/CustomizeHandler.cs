@@ -238,6 +238,10 @@ public class CustomizeHandler : MonoBehaviour
         SaveSet(GetSetID());
 
         CurrentlyUnlockedIDs = new();
+
+#if UNITY_EDITOR
+        FirestoreManager.instance.customizationDatasHandler.AddCustomizationDataWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, characterCustomizeData);
+#endif
     }
 
     List<CustomizeElement> GetDefaultElements()
@@ -752,9 +756,7 @@ public class CustomizeHandler : MonoBehaviour
         characterCustomizeData.playerCustomizeData.AllCustomizeData[_setID] = TempCustomize;
         //Debug.Log("Karakteri burada Save Edebilirsiniz.");
         //GameManager.instance.SaveGame();
-#if UNITY_EDITOR
-        FirestoreManager.instance.customizationDatasHandler.AddCustomizationDataWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, characterCustomizeData);
-#endif
+
     }
 
     public int GetSetID()
@@ -1019,6 +1021,7 @@ public class PlayerCustomizeData
     public PlayerCustomizeData(int _selectedCustomizeSlot, List<PlayerExtraCustomizeData> _allCustomizeData)
     {
         selectedCustomizeSlot = _selectedCustomizeSlot;
+        AllCustomizeData = new();
         AllCustomizeData.Clear();
         int length = _allCustomizeData.Count;
         for (int i = 0; i < length; i++)
@@ -1095,7 +1098,8 @@ public class CharacterCustomizeData
 
     public void SetDatas(PlayerCustomizeData _playerCustomizeData, List<int> _unlockedCustomizeElementIDs, int _lastSelectedCustomizeCategory, int _lastSelectedCustomizeHeader, int _lastSelectedColorHeader)
     {
-        playerCustomizeData = new PlayerCustomizeData(_playerCustomizeData);
+        playerCustomizeData = _playerCustomizeData;
+        unlockedCustomizeElementIDs = new();
         unlockedCustomizeElementIDs.Clear();
         int length = _unlockedCustomizeElementIDs.Count;
         for (int i = 0; i < length; i++)

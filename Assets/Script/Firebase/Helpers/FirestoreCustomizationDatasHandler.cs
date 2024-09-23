@@ -105,8 +105,8 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
     private void CheckAndAddCustomizeData(DocumentReference documentReference, CharacterCustomizeData _customizeData)
     {
         // Alt koleksiyon olan PictureDatas'ý sorgula
-        CollectionReference statueDatasRef = documentReference.Collection("CustomizationDatas");
-        Query query = statueDatasRef.WhereEqualTo("SlotNumber", _customizeData.playerCustomizeData.selectedCustomizeSlot);
+        CollectionReference customizeDatasRef = documentReference.Collection("CustomizationDatas");
+        Query query = customizeDatasRef.WhereEqualTo("SlotNumber", _customizeData.playerCustomizeData.selectedCustomizeSlot);
 
         query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
@@ -131,11 +131,40 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                         { "Timestamp", FieldValue.ServerTimestamp }
                     };
 
-                    statueDatasRef.AddAsync(newCustomizeData).ContinueWithOnMainThread(addTask =>
+                    customizeDatasRef.AddAsync(newCustomizeData).ContinueWithOnMainThread(addTask =>
                     {
                         if (addTask.IsCompleted)
                         {
-                            //Debug.Log($"Worker data with ID {_customizeData.ID} successfully added.");
+                            DocumentReference document = addTask.Result;
+                            CollectionReference elementDatasRef = document.Collection("CustomizeElements");
+
+                            foreach (CustomizeElement element in selectedCustomizeSlotData.CustomizeElements)
+                            {
+                                Query query = customizeDatasRef.WhereEqualTo("elementID", element.elementID);
+                                query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+                                {
+                                    if (task.IsCompleted)
+                                    {
+                                        QuerySnapshot snapshot = task.Result;
+
+                                        if (snapshot.Documents.Count() <= 0)
+                                        {
+                                            Dictionary<string, object> newElementData = new Dictionary<string, object>
+                                            {
+                                                { "CustomizeSlot", element.customizeSlot },
+                                                { "elementID", element.elementID },
+                                            };
+                                            elementDatasRef.AddAsync(newElementData).ContinueWithOnMainThread(addTask =>
+                                            {
+                                                if (addTask.IsCompleted)
+                                                {
+                                                    DocumentReference document = addTask.Result;
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+                            }
                         }
                         else if (addTask.IsFaulted)
                         {
@@ -168,24 +197,29 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                 {
                     CollectionReference customizationDatasCollection = documentSnapshot.Reference.Collection("CustomizationDatas");
 
-                    if (foundCustomizeData.playerCustomizeData.AllCustomizeData == null)
-                        foundCustomizeData.playerCustomizeData.AllCustomizeData = new();
 
                     var mainCustomizationData = documentSnapshot.ToDictionary();
                     int lastSelectedColorHeader = mainCustomizationData.ContainsKey("LastSelectedColorHeader") ? Convert.ToInt32(mainCustomizationData["LastSelectedColorHeader"]) : 0;
                     int lastSelectedCustomizeCategory = mainCustomizationData.ContainsKey("LastSelectedCustomizeCategory") ? Convert.ToInt32(mainCustomizationData["LastSelectedCustomizeCategory"]) : 0;
                     int lastSelectedCustomizeHeader = mainCustomizationData.ContainsKey("LastSelectedCustomizeHeader") ? Convert.ToInt32(mainCustomizationData["LastSelectedCustomizeHeader"]) : 0;
-                    List<int> unlockedCustomizeElementIDs = mainCustomizationData.ContainsKey("UnlockedCustomizeElementIDs") ? ((List<object>)mainCustomizationData["UnlockedCustomizeElementIDs"]).Select(x => Convert.ToInt32(x)).ToList() : new List<int>();
+                List<int> unlockedCustomizeElementIDs = new List<int>();
+                if (mainCustomizationData != null && mainCustomizationData.ContainsKey("UnlockedCustomizeElementIDs") && mainCustomizationData["UnlockedCustomizeElementIDs"] is List<object> list)
+                {
+                    unlockedCustomizeElementIDs = list.Select(x => Convert.ToInt32(x)).ToList();
+                }
 
                     foundCustomizeData.SetDatas(new PlayerCustomizeData(), unlockedCustomizeElementIDs, lastSelectedCustomizeCategory, lastSelectedCustomizeHeader, lastSelectedColorHeader);
+                    Debug.Log("foundCustomizeData.unlockedCustomizeElementIDs.Count => " + foundCustomizeData.unlockedCustomizeElementIDs.Count);
+                    if (foundCustomizeData.playerCustomizeData.AllCustomizeData == null)
+                        foundCustomizeData.playerCustomizeData.AllCustomizeData = new();
 
                     for (int i = 0; i < 3; i++)
                     {
-                        Query extraDataQuery = customizationDatasCollection.WhereEqualTo("SlotNumber", i);
-                        QuerySnapshot workerQuerySnapshot = await extraDataQuery.GetSnapshotAsync();
+                        Query customDataQuery = customizationDatasCollection.WhereEqualTo("SlotNumber", i);
+                        QuerySnapshot customQuerySnapshot = await customDataQuery.GetSnapshotAsync();
 
                         PlayerExtraCustomizeData playerExtra = null;
-                        foreach (DocumentSnapshot customDocumentSnapshot in workerQuerySnapshot.Documents)
+                        foreach (DocumentSnapshot customDocumentSnapshot in customQuerySnapshot.Documents)
                         {
                             if (customDocumentSnapshot.Exists)
                             {
@@ -193,6 +227,24 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                                 var customData = customDocumentSnapshot.ToDictionary();
                                 playerExtra.ID = customData.ContainsKey("ID") ? Convert.ToInt32(customData["ID"]) : 0;
                                 playerExtra.isFemale = customData.ContainsKey("IsFemale") && Convert.ToBoolean(customData["IsFemale"]);
+
+                                CollectionReference elementsCollectionRef = customDocumentSnapshot.Reference.Collection("CustomizeElements");
+                                List<CustomizeElement> elementsInDatabase = new List<CustomizeElement>();
+                                QuerySnapshot snapshot = await elementsCollectionRef.GetSnapshotAsync();
+
+                                foreach (var document in snapshot.Documents)
+                                {
+                                    if (document.Exists)
+                                    {
+                                        var elementData = document.ToDictionary();
+                                        CustomizeElement databaseElement = new CustomizeElement();
+                                        databaseElement.customizeSlot = elementData.ContainsKey("CustomizeSlot") && elementData["CustomizeSlot"] != null ? (CustomizeSlot)Enum.Parse(typeof(CustomizeSlot), elementData["CustomizeSlot"].ToString()) : CustomizeSlot.None;
+                                        databaseElement.elementID = elementData.ContainsKey("elementID") ? Convert.ToInt32(elementData["elementID"]) : 0;
+                                        elementsInDatabase.Add(databaseElement);
+                                        continue;
+                                    }
+                                }
+                                playerExtra.CustomizeElements = elementsInDatabase;
                                 break;                                
                             }
                         }
@@ -207,8 +259,8 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                 {
                     foundCustomizeData.playerCustomizeData.AllCustomizeData = foundCustoms;
 
-                    ExtraCustomizationsFilling(foundCustomizeData);
                     Debug.Log("Customization aktarimi sonlandi. Veri tabani customize sayisi => " + foundCustoms.Count);
+                    ExtraCustomizationsFilling(foundCustomizeData);
                     break;
                 }
                 else
@@ -217,13 +269,17 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                     ExtraCustomizationsFilling(foundCustomizeData);
                 }
             }
-            
+
         }
         catch (Exception ex)
         {
             Debug.LogError($"Error getting customize data: {ex.Message}");
         }
-
+        if (foundCustoms.Count <= 0)
+        {
+            Debug.Log("Customization aktarimi sonlandi. Karakter ozellestirme veri tabaninda bulunamadi. Default datalar olusturuluyor...");
+            ExtraCustomizationsFilling(foundCustomizeData);
+        }
         return foundCustomizeData;
     }
     public void UpdateCustomizationData(string userId, CharacterCustomizeData _customizeData)
@@ -265,10 +321,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                                         DocumentReference customizeDataRef = customizeDataDocument.Reference;
 
                                         PlayerExtraCustomizeData currentExtraCustomizeData = playerExtraCustomizeDatas[k];
-
-
-                                        CollectionReference extraCustomizationDatasRef = documentReference.Collection("ExtraCustomizationDatas");
-                                        Query extraCustomizeDataQuery = extraCustomizationDatasRef.WhereEqualTo("ID", currentExtraCustomizeData.ID);
+                                        Query extraCustomizeDataQuery = customizationDatasRef.WhereEqualTo("SlotNumber", currentExtraCustomizeData.ID);
 
                                         Dictionary<string, object> updates = new Dictionary<string, object>
                                         {
@@ -280,13 +333,63 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                                         {
                                             if (updateTask.IsCompleted)
                                             {
-                                                Debug.Log($"Worker data successfully updated for user {userId}");
+                                                // Hangi belgeyi güncellediðimizi temsil eden referans
+                                                DocumentReference document = customizeDataRef;
+                                                CollectionReference elementDatasRef = document.Collection("CustomizeElements");
+
+                                                foreach (CustomizeElement element in currentExtraCustomizeData.CustomizeElements)
+                                                {
+                                                    // Belirtilen elementID'ye sahip CustomizeElement belgesini buluyoruz
+                                                    Query query = elementDatasRef.WhereEqualTo("elementID", element.elementID);
+                                                    query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+                                                    {
+                                                        if (task.IsCompleted)
+                                                        {
+                                                            QuerySnapshot snapshot = task.Result;
+
+                                                            if (snapshot.Documents.Count() > 0)
+                                                            {
+                                                                foreach (DocumentSnapshot elementDoc in snapshot.Documents)
+                                                                {
+                                                                    DocumentReference elementRef = elementDoc.Reference;
+
+                                                                    Dictionary<string, object> elementUpdates = new Dictionary<string, object>
+                                                                    {
+                                                                        { "CustomizeSlot", element.customizeSlot },
+                                                                        { "elementID", element.elementID },
+                                                                    };
+
+                                                                    elementRef.UpdateAsync(elementUpdates).ContinueWithOnMainThread(updateElementTask =>
+                                                                    {
+                                                                        if (updateElementTask.IsCompleted)
+                                                                        {
+                                                                            Debug.Log("Element updated successfully: " + elementRef.Id);
+                                                                        }
+                                                                        else if (updateElementTask.IsFaulted)
+                                                                        {
+                                                                            Debug.LogError($"Failed to update element data: {updateElementTask.Exception}");
+                                                                        }
+                                                                    });
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                Debug.LogError($"No element found with elementID: {element.elementID}");
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            Debug.LogError($"Error querying element data: {task.Exception}");
+                                                        }
+                                                    });
+                                                }
                                             }
-                                            else if (updateTask.IsFaulted)
+                                            else
                                             {
-                                                Debug.LogError($"Failed to update worker data: {updateTask.Exception}");
+                                                Debug.LogError($"Failed to update customization data: {updateTask.Exception}");
                                             }
                                         });
+
                                     }
                                 }
                                 
@@ -315,6 +418,15 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
     }
     void ExtraCustomizationsFilling(CharacterCustomizeData _characterCustomizeData)
     {
+        if (_characterCustomizeData.playerCustomizeData == null)
+            _characterCustomizeData.playerCustomizeData = new();
+
+        if (_characterCustomizeData.playerCustomizeData.AllCustomizeData == null)
+            _characterCustomizeData.playerCustomizeData.AllCustomizeData = new();
+
+        if (_characterCustomizeData.unlockedCustomizeElementIDs == null)
+            _characterCustomizeData.unlockedCustomizeElementIDs = new();
+
         while (_characterCustomizeData.playerCustomizeData.AllCustomizeData.Count < 3)
             _characterCustomizeData.playerCustomizeData.AllCustomizeData.Add(new() { ID = _characterCustomizeData.playerCustomizeData.AllCustomizeData.Count, CustomizeElements = GetDefaultElements(), isFemale = false });
 
