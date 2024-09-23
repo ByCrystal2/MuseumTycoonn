@@ -17,6 +17,7 @@ public class CustomizeHandler : MonoBehaviour
     public CinemachineVirtualCamera CustomizeCamHead;
     public CinemachineVirtualCamera CustomizeCamChest;
     public CinemachineVirtualCamera CustomizeCamLeg;
+    public Camera RenderCamera;
 
     [Header("Customize Main Panel")]
     public GameObject CustomizePanel;
@@ -201,6 +202,7 @@ public class CustomizeHandler : MonoBehaviour
     {
         TempCustomize.CustomizeElements = GetCustomizeData().CustomizeElements;
 
+        RenderCamera.gameObject.SetActive(true);
         if (CustomizePanel.activeSelf)
             CustomizePanel.GetComponent<UIFade>().FadeIn();
         else
@@ -217,8 +219,10 @@ public class CustomizeHandler : MonoBehaviour
         else
             OnClickedColorsButton();
 
+
         UpdateLockedElementIDs();
         UpdateLocalize();
+
     }
 
     public void CloseCustomizePanel()
@@ -229,6 +233,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeCamHead.Priority = -99;
         CustomizeCamChest.Priority = -99;
         CustomizeCamLeg.Priority = -99;
+        RenderCamera.gameObject.SetActive(false);
+
         SaveSet(GetSetID());
 
         CurrentlyUnlockedIDs = new();
