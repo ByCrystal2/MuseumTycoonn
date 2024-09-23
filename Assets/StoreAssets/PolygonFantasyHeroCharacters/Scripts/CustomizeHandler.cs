@@ -62,7 +62,33 @@ public class CustomizeHandler : MonoBehaviour
     [Header("Character Customize Data")]
     public CharacterCustomizeData characterCustomizeData;
 
+    public static CustomizeHandler instance { get; private set; }
+    private void Awake()
+    {
+        if (instance)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+    }
     private void Start()
+    {    
+
+        MaleButton.onClick.AddListener(OnClickedMaleButton);
+        FemaleButton.onClick.AddListener(OnClickedFemaleButton);
+        AppearanceButton.onClick.AddListener(OnClickedAppearanceButton);
+        ColorsButton.onClick.AddListener(OnClickedColorsButton);
+        Set1Button.onClick.AddListener(()=>OnSetSelected(0));
+        Set2Button.onClick.AddListener(()=>OnSetSelected(1));
+        Set3Button.onClick.AddListener(()=>OnSetSelected(2));
+        DrawButton.onClick.AddListener(OnClickedDrawItemButton);
+        ClaimButton.onClick.AddListener(OnClickedClaimButton);        
+        //Test
+        //OpenCustomizePanel();
+    }
+
+    public void CustomizationInit()
     {
         CurrentlyUnlockedIDs = new();
         DefaultColors = new();
@@ -85,7 +111,7 @@ public class CustomizeHandler : MonoBehaviour
         {
             Transform header = HeadersParent.GetChild(i);
             CustomizeSlot slot = (CustomizeSlot)int.Parse(header.name.Split('_')[0]);
-            header.GetComponent<Button>().onClick.AddListener(()=> OnAnHeaderSelected(slot));
+            header.GetComponent<Button>().onClick.AddListener(() => OnAnHeaderSelected(slot));
         }
 
         length = ColorHeaderParent.childCount;
@@ -97,23 +123,11 @@ public class CustomizeHandler : MonoBehaviour
             header.GetComponent<Button>().onClick.AddListener(() => OnAnColorHeaderSelected(slot));
         }
 
-        MaleButton.onClick.AddListener(OnClickedMaleButton);
-        FemaleButton.onClick.AddListener(OnClickedFemaleButton);
-        AppearanceButton.onClick.AddListener(OnClickedAppearanceButton);
-        ColorsButton.onClick.AddListener(OnClickedColorsButton);
-        Set1Button.onClick.AddListener(()=>OnSetSelected(0));
-        Set2Button.onClick.AddListener(()=>OnSetSelected(1));
-        Set3Button.onClick.AddListener(()=>OnSetSelected(2));
-        DrawButton.onClick.AddListener(OnClickedDrawItemButton);
-        ClaimButton.onClick.AddListener(OnClickedClaimButton);
-
         UpdateLockedElementIDs();
 
         TempCustomize = GetCustomizeData();
         TargetCustomize.UpdateVisual(TempCustomize);
         SetMaterialColors(TempCustomize.Colors);
-        //Test
-        //OpenCustomizePanel();
     }
 
     public void OnAnHeaderSelected(CustomizeSlot _slot)
@@ -732,6 +746,9 @@ public class CustomizeHandler : MonoBehaviour
         characterCustomizeData.playerCustomizeData.AllCustomizeData[_setID] = TempCustomize;
         //Debug.Log("Karakteri burada Save Edebilirsiniz.");
         //GameManager.instance.SaveGame();
+#if UNITY_EDITOR
+        FirestoreManager.instance.customizationDatasHandler.AddCustomizationDataWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, characterCustomizeData);
+#endif
     }
 
     public int GetSetID()

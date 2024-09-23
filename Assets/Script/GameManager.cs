@@ -1012,6 +1012,14 @@ public class GameManager : MonoBehaviour
             TimeManager.instance.WhatDay = whatDay;
         }
     }
+    public async System.Threading.Tasks.Task LoadCustomizationData()
+    {
+        CharacterCustomizeData characterCustomize = new CharacterCustomizeData();
+        characterCustomize = await FirestoreManager.instance.customizationDatasHandler.GetCustomizationDataInDatabase(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
+
+        CustomizeHandler.instance.characterCustomizeData = characterCustomize;
+        //CustomizeHandler.instance.CustomizationInit();
+    }
     public System.Threading.CancellationTokenSource GetFirebaseToken()
     {
         return cts;

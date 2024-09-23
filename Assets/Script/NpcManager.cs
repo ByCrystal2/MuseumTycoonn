@@ -77,6 +77,8 @@ public class NpcManager : MonoBehaviour
         RoomManager.instance.AddRooms(); // in app baglantisi kurulmadan once odalar yuklendi.        
         //GameManager.instance.LoadInventoryPictures();
         //GameManager.instance.LoadStatues();
+        await GameManager.instance.LoadCustomizationData();        
+        
         Debug.Log("Database load test 3 complated.");
         GameManager.instance.LoadWorkers();
         LoadingScene.ComplateLoadingStep();

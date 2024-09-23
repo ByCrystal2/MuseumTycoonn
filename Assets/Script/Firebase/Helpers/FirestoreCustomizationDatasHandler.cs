@@ -10,9 +10,24 @@ using UnityEngine;
 public class FirestoreCustomizationDatasHandler : MonoBehaviour
 {
     FirebaseFirestore db;
+    List<Color> DefaultColors;
     void Awake()
     {
         db = FirebaseFirestore.DefaultInstance;
+        DefaultColors = new();
+        DefaultColors.Add(new Color(0.2431373f, 0.4196079f, 0.6196079f, 1));
+        DefaultColors.Add(new Color(0.8196079f, 0.6431373f, 0.2980392f, 1));
+        DefaultColors.Add(new Color(0.282353f, 0.2078432f, 0.1647059f, 1));
+        DefaultColors.Add(new Color(0.5960785f, 0.6117647f, 0.627451f, 1));
+        DefaultColors.Add(new Color(0.372549f, 0.3294118f, 0.2784314f, 1));
+        DefaultColors.Add(new Color(0.1764706f, 0.1960784f, 0.2156863f, 1));
+        DefaultColors.Add(new Color(0.345098f, 0.3764706f, 0.3960785f, 1));
+        DefaultColors.Add(new Color(0.2627451f, 0.2117647f, 0.1333333f, 1));
+        DefaultColors.Add(new Color(1f, 0.8000001f, 0.682353f, 1));
+        DefaultColors.Add(new Color(0.8039216f, 0.7019608f, 0.6313726f, 1));
+        DefaultColors.Add(new Color(0.9294118f, 0.6862745f, 0.5921569f, 1));
+        DefaultColors.Add(new Color(0.2283196f, 0.5822246f, 0.7573529f, 1));
+        DefaultColors.Add(new Color(0.2283196f, 0.5822246f, 0.7573529f, 1));
     }
 
     public async Task AddCustomizationDataWithUserId(string userId, CharacterCustomizeData _customizeData)
@@ -108,9 +123,11 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                 else
                 {
                     // Belge yoksa yeni belge ekle
+                    PlayerExtraCustomizeData selectedCustomizeSlotData = _customizeData.playerCustomizeData.AllCustomizeData[_customizeData.playerCustomizeData.selectedCustomizeSlot];
                     Dictionary<string, object> newCustomizeData = new Dictionary<string, object>
                     {
                         { "SlotNumber", _customizeData.playerCustomizeData.selectedCustomizeSlot },
+                        { "IsFemale", selectedCustomizeSlotData.isFemale },
                         { "Timestamp", FieldValue.ServerTimestamp }
                     };
 
@@ -134,9 +151,10 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
         });
     }
 
-    public async Task<List<WorkerData>> GetCustomizationDataInDatabase(string userId, List<int> _workerIds)
+    public async Task<CharacterCustomizeData> GetCustomizationDataInDatabase(string userId)
     {
-        List<WorkerData> foundWorkers = new List<WorkerData>();
+        CharacterCustomizeData foundCustomizeData = new CharacterCustomizeData();
+        List<PlayerExtraCustomizeData> foundCustoms = new List<PlayerExtraCustomizeData>();
 
         try
         {
@@ -148,64 +166,65 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
             {
                 if (documentSnapshot.Exists)
                 {
-                    CollectionReference workerIdsRef = documentSnapshot.Reference.Collection("WorkerDatas");
-                    foreach (int _workerId in _workerIds)
+                    CollectionReference customizationDatasCollection = documentSnapshot.Reference.Collection("CustomizationDatas");
+
+                    if (foundCustomizeData.playerCustomizeData.AllCustomizeData == null)
+                        foundCustomizeData.playerCustomizeData.AllCustomizeData = new();
+
+                    var mainCustomizationData = documentSnapshot.ToDictionary();
+                    int lastSelectedColorHeader = mainCustomizationData.ContainsKey("LastSelectedColorHeader") ? Convert.ToInt32(mainCustomizationData["LastSelectedColorHeader"]) : 0;
+                    int lastSelectedCustomizeCategory = mainCustomizationData.ContainsKey("LastSelectedCustomizeCategory") ? Convert.ToInt32(mainCustomizationData["LastSelectedCustomizeCategory"]) : 0;
+                    int lastSelectedCustomizeHeader = mainCustomizationData.ContainsKey("LastSelectedCustomizeHeader") ? Convert.ToInt32(mainCustomizationData["LastSelectedCustomizeHeader"]) : 0;
+                    List<int> unlockedCustomizeElementIDs = mainCustomizationData.ContainsKey("UnlockedCustomizeElementIDs") ? ((List<object>)mainCustomizationData["UnlockedCustomizeElementIDs"]).Select(x => Convert.ToInt32(x)).ToList() : new List<int>();
+
+                    foundCustomizeData.SetDatas(new PlayerCustomizeData(), unlockedCustomizeElementIDs, lastSelectedCustomizeCategory, lastSelectedCustomizeHeader, lastSelectedColorHeader);
+
+                    for (int i = 0; i < 3; i++)
                     {
-                        Query workerQuery = workerIdsRef.WhereEqualTo("ID", _workerId);
-                        QuerySnapshot workerQuerySnapshot = await workerQuery.GetSnapshotAsync();
-                        WorkerData foundWorker;
-                        foreach (DocumentSnapshot workerDocumentSnapshot in workerQuerySnapshot.Documents)
+                        Query extraDataQuery = customizationDatasCollection.WhereEqualTo("SlotNumber", i);
+                        QuerySnapshot workerQuerySnapshot = await extraDataQuery.GetSnapshotAsync();
+
+                        PlayerExtraCustomizeData playerExtra = null;
+                        foreach (DocumentSnapshot customDocumentSnapshot in workerQuerySnapshot.Documents)
                         {
-                            if (workerDocumentSnapshot.Exists)
+                            if (customDocumentSnapshot.Exists)
                             {
-                                // Eþleþen tabloyu bulun
-                                var workerData = workerDocumentSnapshot.ToDictionary();
-                                WorkerData helperWorkerData = WorkerManager.instance.GetAllWorkers().Where(x => x.ID == _workerId).SingleOrDefault().MyDatas;
-                                Debug.Log("helperWorkerData.ID => " + helperWorkerData.ID);
-                                List<int> workerRoomIds = new List<int>();
-                                workerRoomIds = workerData.ContainsKey("WorkRoomsIDs") ? ((List<object>)workerData["WorkRoomsIDs"]).Select(x => Convert.ToInt32(x)).ToList() : new List<int>();
-                                Debug.Log("database workerRoomIds Count => " + workerRoomIds.Count);
-                                if (workerRoomIds.Count <= 0) helperWorkerData = null;
-                                //Debug.Log("newCustomizeData[\"WorkRoomsIDs\"" + ((List<int>)newCustomizeData["WorkRoomsIDs"]).Count);
-                                if (helperWorkerData != null)
-                                {
-                                    foundWorker = helperWorkerData;
-                                    foundWorker.WorkRoomsIDs.Clear();
-                                    foundWorker.ID = workerData.ContainsKey("ID") ? Convert.ToInt32(workerData["ID"]) : 0;
-                                    foundWorker.Level = workerData.ContainsKey("Level") ? Convert.ToInt32(workerData["Level"]) : 0;
-                                    foundWorker.Name = workerData.ContainsKey("Name") ? workerData["Name"].ToString() : "";
-                                    foundWorker.Age = workerData.ContainsKey("Age") ? Convert.ToInt32(workerData["Age"]) : 0;
-                                    foundWorker.Height = workerData.ContainsKey("Height") ? Convert.ToSingle(workerData["Height"]) : 0;
-                                    if (workerData.ContainsKey("WorkerIn"))
-                                    {
-                                        int workerInValue = Convert.ToInt32(workerData["WorkerIn"]);
-                                        foundWorker.WorkerIn = (WorkerIn)workerInValue;
-                                        Debug.Log("Enum WorkerIn Value => " + foundWorker.WorkerIn.ToString());
-                                    }
-                                    foreach (int id in workerRoomIds)
-                                    {
-                                        foundWorker.WorkRoomsIDs.Add(id);
-                                    }
-                                    foundWorkers.Add(foundWorker);
-                                    break;
-                                }
+                                playerExtra = new();
+                                var customData = customDocumentSnapshot.ToDictionary();
+                                playerExtra.ID = customData.ContainsKey("ID") ? Convert.ToInt32(customData["ID"]) : 0;
+                                playerExtra.isFemale = customData.ContainsKey("IsFemale") && Convert.ToBoolean(customData["IsFemale"]);
+                                break;                                
                             }
                         }
+                        if (playerExtra != null)
+                        {
+                            foundCustoms.Add(playerExtra);
+                        }
                     }
-                    if (foundWorkers != null)
-                    {
-                        Debug.Log("Worker aktarimi sonlandi. Veri tabani worker sayisi => " + foundWorkers.Count);
-                        break;
-                    }
+                    
+                }
+                if (foundCustoms.Count > 0)
+                {
+                    foundCustomizeData.playerCustomizeData.AllCustomizeData = foundCustoms;
+
+                    ExtraCustomizationsFilling(foundCustomizeData);
+                    Debug.Log("Customization aktarimi sonlandi. Veri tabani customize sayisi => " + foundCustoms.Count);
+                    break;
+                }
+                else
+                {
+                    Debug.Log("Customization aktarimi sonlandi. Karakter ozellestirme veri tabaninda bulunamadi. Default datalar olusturuluyor...");
+                    ExtraCustomizationsFilling(foundCustomizeData);
                 }
             }
+            
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Error getting worker data: {ex.Message}");
+            Debug.LogError($"Error getting customize data: {ex.Message}");
         }
 
-        return foundWorkers;
+        return foundCustomizeData;
     }
     public void UpdateCustomizationData(string userId, CharacterCustomizeData _customizeData)
     {
@@ -293,5 +312,55 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                 Debug.LogError($"Error querying documents: {task.Exception}");
             }
         });
+    }
+    void ExtraCustomizationsFilling(CharacterCustomizeData _characterCustomizeData)
+    {
+        while (_characterCustomizeData.playerCustomizeData.AllCustomizeData.Count < 3)
+            _characterCustomizeData.playerCustomizeData.AllCustomizeData.Add(new() { ID = _characterCustomizeData.playerCustomizeData.AllCustomizeData.Count, CustomizeElements = GetDefaultElements(), isFemale = false });
+
+
+        foreach (var item in _characterCustomizeData.playerCustomizeData.AllCustomizeData)
+        {
+            if (item.Colors == null)
+                item.Colors = new();
+
+            if (item.Colors.Count == 0)
+                foreach (var item2 in DefaultColors)
+                    item.Colors.Add(item2);
+        }
+    }
+    List<CustomizeElement> GetDefaultElements()
+    {
+        List<CustomizeElement> _default = new();
+
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Head, elementID = 1001 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.FacialHair, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Torso, elementID = 4004 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Arm_Upper_Right, elementID = 5001 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Arm_Upper_Left, elementID = 6001 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Arm_Lower_Right, elementID = 7001 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Arm_Lower_Left, elementID = 8001 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Hand_Right, elementID = 9001 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Hand_Left, elementID = 10001 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Hip, elementID = 11004 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Leg_Right, elementID = 12003 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Leg_Left, elementID = 13003 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Helmet, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Eyebrows, elementID = 102003 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Hair, elementID = 103004 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Hat, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Mask, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Helmet_Attachment, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Back_Attachment, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Shoulder_Attachment_Right, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Shoulder_Attachment_Left, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Elbow_Attachment_Right, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Elbow_Attachment_Left, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Hip_Attachment, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Knee_Attachment_Right, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Knee_Attachment_Left, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Elf_Ear, elementID = 0 });
+
+        return _default;
     }
 }
