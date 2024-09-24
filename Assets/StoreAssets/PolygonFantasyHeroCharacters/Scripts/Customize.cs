@@ -48,36 +48,42 @@ public class Customize : MonoBehaviour
 
     void FixOverrides(Dictionary<CustomizeSlot, GameObject> _equipped)
     {
-        if (_equipped[CustomizeSlot.Helmet] != null)
+        if (_equipped.ContainsKey(CustomizeSlot.Helmet))
         {
-            if (_equipped[CustomizeSlot.Hair] != null)
-                _equipped[CustomizeSlot.Hair].SetActive(false);
-            if (_equipped[CustomizeSlot.Head] != null)
-                _equipped[CustomizeSlot.Head].SetActive(false);
-            if (_equipped[CustomizeSlot.FacialHair] != null)
-                _equipped[CustomizeSlot.FacialHair].SetActive(false);
-            if (_equipped[CustomizeSlot.Eyebrows] != null)
-                _equipped[CustomizeSlot.Eyebrows].SetActive(false);
-            if(_equipped[CustomizeSlot.Mask] != null)
-                _equipped[CustomizeSlot.Mask].SetActive(false);
-            if (_equipped[CustomizeSlot.Hat] != null)
-                _equipped[CustomizeSlot.Hat].SetActive(false);
-            if (_equipped[CustomizeSlot.Elf_Ear] != null)
-                _equipped[CustomizeSlot.Elf_Ear].SetActive(false);
+            if (_equipped[CustomizeSlot.Helmet] != null)
+            {
+                if (_equipped.ContainsKey(CustomizeSlot.Hair) && _equipped[CustomizeSlot.Hair] != null)
+                    _equipped[CustomizeSlot.Hair].SetActive(false);
+                if (_equipped.ContainsKey(CustomizeSlot.Head) && _equipped[CustomizeSlot.Head] != null)
+                    _equipped[CustomizeSlot.Head].SetActive(false);
+                if (_equipped.ContainsKey(CustomizeSlot.FacialHair) && _equipped[CustomizeSlot.FacialHair] != null)
+                    _equipped[CustomizeSlot.FacialHair].SetActive(false);
+                if (_equipped.ContainsKey(CustomizeSlot.Eyebrows) && _equipped[CustomizeSlot.Eyebrows] != null)
+                    _equipped[CustomizeSlot.Eyebrows].SetActive(false);
+                if (_equipped.ContainsKey(CustomizeSlot.Mask) && _equipped[CustomizeSlot.Mask] != null)
+                    _equipped[CustomizeSlot.Mask].SetActive(false);
+                if (_equipped.ContainsKey(CustomizeSlot.Hat) && _equipped[CustomizeSlot.Hat] != null)
+                    _equipped[CustomizeSlot.Hat].SetActive(false);
+                if (_equipped.ContainsKey(CustomizeSlot.Elf_Ear) && _equipped[CustomizeSlot.Elf_Ear] != null)
+                    _equipped[CustomizeSlot.Elf_Ear].SetActive(false);
+            }
         }
-        if (_equipped[CustomizeSlot.Mask] != null)
+
+        if (_equipped.ContainsKey(CustomizeSlot.Mask) && _equipped[CustomizeSlot.Mask] != null)
         {
-            if (_equipped[CustomizeSlot.FacialHair] != null)
+            if (_equipped.ContainsKey(CustomizeSlot.FacialHair) && _equipped[CustomizeSlot.FacialHair] != null)
                 _equipped[CustomizeSlot.FacialHair].SetActive(false);
-            if (_equipped[CustomizeSlot.Eyebrows] != null)
+            if (_equipped.ContainsKey(CustomizeSlot.Eyebrows) && _equipped[CustomizeSlot.Eyebrows] != null)
                 _equipped[CustomizeSlot.Eyebrows].SetActive(false);
         }
-        if (_equipped[CustomizeSlot.Hat] != null)
+
+        if (_equipped.ContainsKey(CustomizeSlot.Hat) && _equipped[CustomizeSlot.Hat] != null)
         {
-            if (_equipped[CustomizeSlot.Hair] != null)
+            if (_equipped.ContainsKey(CustomizeSlot.Hair) && _equipped[CustomizeSlot.Hair] != null)
                 _equipped[CustomizeSlot.Hair].SetActive(false);
-            if (_equipped[CustomizeSlot.Elf_Ear] != null)
+            if (_equipped.ContainsKey(CustomizeSlot.Elf_Ear) && _equipped[CustomizeSlot.Elf_Ear] != null)
                 _equipped[CustomizeSlot.Elf_Ear].SetActive(false);
         }
     }
+
 }

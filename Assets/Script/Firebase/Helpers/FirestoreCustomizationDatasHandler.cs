@@ -1,11 +1,13 @@
 using Firebase.Extensions;
 using Firebase.Firestore;
+using Mono.Cecil.Cil;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using static UnityEditor.Rendering.FilterWindow;
 
 public class FirestoreCustomizationDatasHandler : MonoBehaviour
 {
@@ -284,7 +286,8 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
     }
     public void UpdateCustomizationData(string userId, CharacterCustomizeData _customizeData)
     {
-        if (GameManager.instance != null) if (!GameManager.instance.IsWatchTutorial) return;
+        if (GameManager.instance != null && !GameManager.instance.IsWatchTutorial) return;
+
         // Kullanýcý ID'si ile belgeyi sorgula
         Query query = db.Collection("Customizations").WhereEqualTo("userID", userId);
 
@@ -293,117 +296,13 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
             if (task.IsCompleted)
             {
                 QuerySnapshot snapshot = task.Result;
-
                 if (snapshot.Documents.Count() > 0)
                 {
                     DocumentSnapshot documentSnapshot = snapshot.Documents.FirstOrDefault();
                     DocumentReference documentReference = documentSnapshot.Reference;
 
-                    // Belge varsa, alt koleksiyon olan PictureDatas'ta tabloyu bul ve güncelle
-                    CollectionReference customizationDatasRef = documentReference.Collection("CustomizationDatas");
-                    Query customizeDataQuery = customizationDatasRef.WhereEqualTo("SlotNumber", _customizeData.playerCustomizeData.selectedCustomizeSlot);
-
-                    customizeDataQuery.GetSnapshotAsync().ContinueWithOnMainThread(customizeDataTask =>
-                    {
-                        if (customizeDataTask.IsCompleted)
-                        {
-                            QuerySnapshot customizeDataSnapshot = customizeDataTask.Result;
-
-                            if (customizeDataSnapshot.Documents.Count() > 0)
-                            {
-                                foreach (var document in customizeDataSnapshot.Documents)
-                                {
-                                    List<PlayerExtraCustomizeData> playerExtraCustomizeDatas = _customizeData.playerCustomizeData.AllCustomizeData;
-                                    int length1 = playerExtraCustomizeDatas.Count;
-                                    for (int k = 0; k < length1; k++)
-                                    {
-                                        DocumentSnapshot customizeDataDocument = document;
-                                        DocumentReference customizeDataRef = customizeDataDocument.Reference;
-
-                                        PlayerExtraCustomizeData currentExtraCustomizeData = playerExtraCustomizeDatas[k];
-                                        Query extraCustomizeDataQuery = customizationDatasRef.WhereEqualTo("SlotNumber", currentExtraCustomizeData.ID);
-
-                                        Dictionary<string, object> updates = new Dictionary<string, object>
-                                        {
-                                            { "IsFemale", currentExtraCustomizeData.isFemale},
-                                            { "Timestamp", FieldValue.ServerTimestamp }
-                                        };
-
-                                        customizeDataRef.UpdateAsync(updates).ContinueWithOnMainThread(updateTask =>
-                                        {
-                                            if (updateTask.IsCompleted)
-                                            {
-                                                // Hangi belgeyi güncellediðimizi temsil eden referans
-                                                DocumentReference document = customizeDataRef;
-                                                CollectionReference elementDatasRef = document.Collection("CustomizeElements");
-
-                                                foreach (CustomizeElement element in currentExtraCustomizeData.CustomizeElements)
-                                                {
-                                                    // Belirtilen elementID'ye sahip CustomizeElement belgesini buluyoruz
-                                                    Query query = elementDatasRef.WhereEqualTo("elementID", element.elementID);
-                                                    query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
-                                                    {
-                                                        if (task.IsCompleted)
-                                                        {
-                                                            QuerySnapshot snapshot = task.Result;
-
-                                                            if (snapshot.Documents.Count() > 0)
-                                                            {
-                                                                foreach (DocumentSnapshot elementDoc in snapshot.Documents)
-                                                                {
-                                                                    DocumentReference elementRef = elementDoc.Reference;
-
-                                                                    Dictionary<string, object> elementUpdates = new Dictionary<string, object>
-                                                                    {
-                                                                        { "CustomizeSlot", element.customizeSlot },
-                                                                        { "elementID", element.elementID },
-                                                                    };
-
-                                                                    elementRef.UpdateAsync(elementUpdates).ContinueWithOnMainThread(updateElementTask =>
-                                                                    {
-                                                                        if (updateElementTask.IsCompleted)
-                                                                        {
-                                                                            Debug.Log("Element updated successfully: " + elementRef.Id);
-                                                                        }
-                                                                        else if (updateElementTask.IsFaulted)
-                                                                        {
-                                                                            Debug.LogError($"Failed to update element data: {updateElementTask.Exception}");
-                                                                        }
-                                                                    });
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                Debug.LogError($"No element found with elementID: {element.elementID}");
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            Debug.LogError($"Error querying element data: {task.Exception}");
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                            else
-                                            {
-                                                Debug.LogError($"Failed to update customization data: {updateTask.Exception}");
-                                            }
-                                        });
-
-                                    }
-                                }
-                                
-                            }
-                            else
-                            {
-                                //Debug.LogError($"No worker data found for ID: {_customizeData.ID}");
-                            }
-                        }
-                        else
-                        {
-                            Debug.LogError($"Error querying picture data: {customizeDataTask.Exception}");
-                        }
-                    });
+                    // Belgeyi bulduysak alt koleksiyon olan CustomizationDatas'ta tabloyu bul ve güncelle
+                    UpdateCustomizationDatas(documentReference, _customizeData);
                 }
                 else
                 {
@@ -416,6 +315,162 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
             }
         });
     }
+
+    private void UpdateCustomizationDatas(DocumentReference documentReference, CharacterCustomizeData _customizeData)
+    {
+        CollectionReference customizationDatasRef = documentReference.Collection("CustomizationDatas");
+        Query customizeDataQuery = customizationDatasRef.WhereEqualTo("SlotNumber", _customizeData.playerCustomizeData.selectedCustomizeSlot);
+
+        customizeDataQuery.GetSnapshotAsync().ContinueWithOnMainThread(customizeDataTask =>
+        {
+            if (customizeDataTask.IsCompleted)
+            {
+                QuerySnapshot customizeDataSnapshot = customizeDataTask.Result;
+
+                if (customizeDataSnapshot.Documents.Count() > 0)
+                {
+                    List<CustomizeElement> newElements = new List<CustomizeElement>();
+                    ProcessCustomizeData(customizeDataSnapshot, customizationDatasRef, _customizeData, newElements);
+
+                    // Yeni elemanlar varsa bunlarý ekle
+                    if (newElements.Count > 0)
+                    {
+                        AddNewElements(customizationDatasRef, newElements);
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"No customization data found for selected slot.");
+                }
+            }
+            else
+            {
+                Debug.LogError($"Error querying customization data: {customizeDataTask.Exception}");
+            }
+        });
+    }
+
+    private void ProcessCustomizeData(QuerySnapshot customizeDataSnapshot, CollectionReference customizationDatasRef, CharacterCustomizeData _customizeData, List<CustomizeElement> newElements)
+    {
+        List<PlayerExtraCustomizeData> playerExtraCustomizeDatas = _customizeData.playerCustomizeData.AllCustomizeData;
+        HashSet<int> processedSlots = new HashSet<int>();  // Ayný slotun tekrar iþlenmesini önlemek için
+
+        foreach (var document in customizeDataSnapshot.Documents)
+        {
+            DocumentReference customizeDataRef = document.Reference;
+
+            foreach (var extraData in playerExtraCustomizeDatas)
+            {
+                if (processedSlots.Contains(extraData.ID)) continue;  // Ayný slot bir kez iþlenir
+                processedSlots.Add(extraData.ID);
+
+                Dictionary<string, object> updates = new Dictionary<string, object>
+            {
+                { "IsFemale", extraData.isFemale },
+                { "Timestamp", FieldValue.ServerTimestamp }
+            };
+
+                customizeDataRef.UpdateAsync(updates).ContinueWithOnMainThread(updateTask =>
+                {
+                    if (updateTask.IsCompleted)
+                    {
+                        UpdateCustomizeElements(customizeDataRef, extraData, newElements);
+                    }
+                    else
+                    {
+                        Debug.LogError($"Failed to update customization data: {updateTask.Exception}");
+                    }
+                });
+            }
+        }
+    }
+
+    private void UpdateCustomizeElements(DocumentReference customizeDataRef, PlayerExtraCustomizeData extraData, List<CustomizeElement> newElements)
+    {
+        CollectionReference elementDatasRef = customizeDataRef.Collection("CustomizeElements");
+
+        // Ýþlenen elementID'leri takip etmek için bir HashSet oluþturuyoruz
+        HashSet<int> processedElementIDs = new HashSet<int>();
+
+        foreach (CustomizeElement element in extraData.CustomizeElements)
+        {
+            // Eðer elementID daha önce iþlendiyse, bu döngüyü atla
+            if (processedElementIDs.Contains(element.elementID)) continue;
+
+            Query query = elementDatasRef.WhereEqualTo("elementID", element.elementID);
+
+            query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            {
+                if (task.IsCompleted)
+                {
+                    QuerySnapshot snapshot = task.Result;
+
+                    if (snapshot.Documents.Count() > 0)
+                    {
+                        // Mevcut elemanlarý güncelle
+                        foreach (DocumentSnapshot elementDoc in snapshot.Documents)
+                        {
+                            DocumentReference elementRef = elementDoc.Reference;
+                            Dictionary<string, object> elementUpdates = new Dictionary<string, object>
+                        {
+                            { "CustomizeSlot", element.customizeSlot },
+                            { "elementID", element.elementID }
+                        };
+
+                            elementRef.UpdateAsync(elementUpdates).ContinueWithOnMainThread(updateElementTask =>
+                            {
+                                if (updateElementTask.IsCompleted)
+                                {
+                                    Debug.Log($"Element updated successfully: {elementRef.Id}");
+
+                                    // ElementID'yi iþlenmiþ olarak ekleyelim, böylece ayný element tekrar iþlenmez
+                                    processedElementIDs.Add(element.elementID);
+                                }
+                                else
+                                {
+                                    Debug.LogError($"Failed to update element data: {updateElementTask.Exception}");
+                                }
+                            });
+                        }
+                    }
+                    else
+                    {
+                        // Eleman bulunamadýysa yeni eleman olarak ekle
+                        Debug.Log($"No element found with elementID: {element.elementID}, adding as new.");
+                        newElements.Add(element);
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"Error querying element data: {task.Exception}");
+                }
+            });
+        }
+    }
+
+
+    private void AddNewElements(CollectionReference customizationDatasRef, List<CustomizeElement> newElements)
+    {
+        foreach (CustomizeElement newElement in newElements)
+        {
+            customizationDatasRef.Document(newElement.elementID.ToString()).SetAsync(new Dictionary<string, object>
+        {
+            { "CustomizeSlot", newElement.customizeSlot },
+            { "elementID", newElement.elementID }
+        }).ContinueWithOnMainThread(addTask =>
+        {
+            if (addTask.IsCompleted)
+            {
+                Debug.Log($"New element added: {newElement.elementID}");
+            }
+            else
+            {
+                Debug.LogError($"Failed to add new element: {addTask.Exception}");
+            }
+        });
+        }
+    }
+
     void ExtraCustomizationsFilling(CharacterCustomizeData _characterCustomizeData)
     {
         if (_characterCustomizeData.playerCustomizeData == null)
