@@ -29,6 +29,9 @@ public class RightUIPanelController : MonoBehaviour
     [SerializeField] GameObject SelectionCamsPanel;
     [SerializeField] Button CamUISActivetonButton;
     [SerializeField] Button[] CamButtons;
+    [SerializeField] Button DrawerButton;
+    [SerializeField] DrawerController DrawerPanel;
+    
     public static RightUIPanelController instance { get; private set; }
     private void Awake()
     {
@@ -50,6 +53,8 @@ public class RightUIPanelController : MonoBehaviour
         EditModeButton.onClick.AddListener(EditMode);
         UIVisibleButton.onClick.AddListener(UIVisibleClose);
         CamUISActivetonButton.onClick.AddListener(SetActivationCamUIS);
+       
+        DrawerButton.onClick.AddListener(DrawerSetActiveConroller);
 
         int index = 0;
         foreach (Button camButton in CamButtons)
@@ -59,6 +64,20 @@ public class RightUIPanelController : MonoBehaviour
             index++;
         }
 
+    }
+    public void DrawerSetActiveConroller()
+    {
+        if (DrawerController.TweenIsPlaying())
+            return;
+
+        bool drawerSetActiveControl = DrawerPanel.gameObject.activeSelf;
+        if (!drawerSetActiveControl)
+        {
+            DrawerPanel.gameObject.SetActive(true);
+        }
+        DrawerPanel.ScaleMove(drawerSetActiveControl);
+
+            
     }
     bool _uIVisible = true;
 
