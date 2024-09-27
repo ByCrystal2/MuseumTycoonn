@@ -21,7 +21,12 @@ public class DrawerController : MonoBehaviour
     [SerializeField] float closeDuration=1;
     static Tween scaleTween;
 
-    
+    private void Awake()
+    {
+        Vector3 panelScale = transform.localScale;
+        panelScale.x = minScaleValue;
+        transform.localScale = panelScale;
+    }
     void ScaleToEnd()
     {
       scaleTween =  transform.DOScaleX(maxScaleValue, openDuration);

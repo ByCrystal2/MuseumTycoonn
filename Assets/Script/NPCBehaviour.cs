@@ -116,7 +116,7 @@ public class NPCBehaviour : MonoBehaviour
                 return;
             }
 
-            Debug.Log(transform.name + " bir dialoga basladi.");
+            //Debug.Log(transform.name + " bir dialoga basladi.");
             if (IdleTimer < Time.time)
                 Dialog();
             else if (IdleTimer < Time.time + 1)
@@ -412,7 +412,7 @@ public class NPCBehaviour : MonoBehaviour
 
     private void OnDialogEnd()
     {
-        Debug.Log(transform.name + " mevcut dialogunu sonlandirdi.");
+        //Debug.Log(transform.name + " mevcut dialogunu sonlandirdi.");
         if (DialogTarget == null)
         {
             if (TargetObject != null)
