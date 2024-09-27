@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-using static UnityEditor.Rendering.FilterWindow;
 
 public class FirestoreCustomizationDatasHandler : MonoBehaviour
 {
@@ -159,11 +158,20 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                                             elementDatasRef.AddAsync(newElementData).ContinueWithOnMainThread(addTask =>
                                             {
                                                 if (addTask.IsCompleted)
-                                                {
+                                                {                                                    
                                                     DocumentReference document = addTask.Result;
                                                 }
                                             });
                                         }
+                                        string ids = "";
+                                        string slots = "";
+                                        foreach (var item in selectedCustomizeSlotData.CustomizeElements)
+                                        {
+                                            ids += item.elementID + "-";
+                                            slots += item.customizeSlot.ToString() + "-";
+                                        }
+                                        Debug.Log("CustomizeElements added database ids => " + ids);
+                                        Debug.Log("CustomizeElements added database slots => " + slots);
                                     }
                                 });
                             }
@@ -329,14 +337,8 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
 
                 if (customizeDataSnapshot.Documents.Count() > 0)
                 {
-                    List<CustomizeElement> newElements = new List<CustomizeElement>();
-                    ProcessCustomizeData(customizeDataSnapshot, customizationDatasRef, _customizeData, newElements);
+                    ProcessCustomizeData(customizeDataSnapshot, _customizeData);
 
-                    // Yeni elemanlar varsa bunlarý ekle
-                    if (newElements.Count > 0)
-                    {
-                        AddNewElements(customizationDatasRef, newElements);
-                    }
                 }
                 else
                 {
@@ -350,54 +352,45 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
         });
     }
 
-    private void ProcessCustomizeData(QuerySnapshot customizeDataSnapshot, CollectionReference customizationDatasRef, CharacterCustomizeData _customizeData, List<CustomizeElement> newElements)
+    private void ProcessCustomizeData(QuerySnapshot customizeDataSnapshot, CharacterCustomizeData _customizeData)
     {
-        List<PlayerExtraCustomizeData> playerExtraCustomizeDatas = _customizeData.playerCustomizeData.AllCustomizeData;
-        HashSet<int> processedSlots = new HashSet<int>();  // Ayný slotun tekrar iþlenmesini önlemek için
+        PlayerExtraCustomizeData playerExtraCustomizeDatas = _customizeData.playerCustomizeData.AllCustomizeData[_customizeData.playerCustomizeData.selectedCustomizeSlot];
 
         foreach (var document in customizeDataSnapshot.Documents)
         {
             DocumentReference customizeDataRef = document.Reference;
 
-            foreach (var extraData in playerExtraCustomizeDatas)
+            Dictionary<string, object> updates = new Dictionary<string, object>
             {
-                if (processedSlots.Contains(extraData.ID)) continue;  // Ayný slot bir kez iþlenir
-                processedSlots.Add(extraData.ID);
-
-                Dictionary<string, object> updates = new Dictionary<string, object>
-            {
-                { "IsFemale", extraData.isFemale },
+                { "IsFemale", playerExtraCustomizeDatas.isFemale },
                 { "Timestamp", FieldValue.ServerTimestamp }
             };
 
-                customizeDataRef.UpdateAsync(updates).ContinueWithOnMainThread(updateTask =>
+            customizeDataRef.UpdateAsync(updates).ContinueWithOnMainThread(updateTask =>
+            {
+                if (updateTask.IsCompleted)
                 {
-                    if (updateTask.IsCompleted)
-                    {
-                        UpdateCustomizeElements(customizeDataRef, extraData, newElements);
-                    }
-                    else
-                    {
-                        Debug.LogError($"Failed to update customization data: {updateTask.Exception}");
-                    }
-                });
-            }
+                    UpdateCustomizeElements(customizeDataRef, playerExtraCustomizeDatas);
+                }
+                else
+                {
+                    Debug.LogError($"Failed to update customization data: {updateTask.Exception}");
+                }
+            });
+            
         }
     }
 
-    private void UpdateCustomizeElements(DocumentReference customizeDataRef, PlayerExtraCustomizeData extraData, List<CustomizeElement> newElements)
+    private void UpdateCustomizeElements(DocumentReference customizeDataRef, PlayerExtraCustomizeData extraData)
     {
         CollectionReference elementDatasRef = customizeDataRef.Collection("CustomizeElements");
-
-        // Ýþlenen elementID'leri takip etmek için bir HashSet oluþturuyoruz
         HashSet<int> processedElementIDs = new HashSet<int>();
 
         foreach (CustomizeElement element in extraData.CustomizeElements)
         {
-            // Eðer elementID daha önce iþlendiyse, bu döngüyü atla
             if (processedElementIDs.Contains(element.elementID)) continue;
 
-            Query query = elementDatasRef.WhereEqualTo("elementID", element.elementID);
+            Query query = elementDatasRef.WhereEqualTo("CustomizeSlot", element.customizeSlot);
 
             query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
             {
@@ -407,15 +400,21 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
 
                     if (snapshot.Documents.Count() > 0)
                     {
-                        // Mevcut elemanlarý güncelle
-                        foreach (DocumentSnapshot elementDoc in snapshot.Documents)
+                        // Mevcut elemanlarý guncelle
+                        DocumentSnapshot elementDocSnap = snapshot.Documents.FirstOrDefault();
+                        DocumentReference elementRef = elementDocSnap.Reference;
+
+                        var databaseElementData = elementDocSnap.ToDictionary();
+                        int databaseElementId = databaseElementData.ContainsKey("elementID") ? Convert.ToInt32(databaseElementData["elementID"]) : 0;
+                        bool elementHasToDatabase = false;
+                        if (databaseElementId == element.elementID) elementHasToDatabase = true; //Element zaten veri tabaninda var mi?
+
+                        if (!elementHasToDatabase)
                         {
-                            DocumentReference elementRef = elementDoc.Reference;
-                            Dictionary<string, object> elementUpdates = new Dictionary<string, object>
-                        {
-                            { "CustomizeSlot", element.customizeSlot },
-                            { "elementID", element.elementID }
-                        };
+                            Dictionary<string, object> elementUpdates = new Dictionary<string, object>()
+                            {
+                                { "elementID", element.elementID }
+                            };
 
                             elementRef.UpdateAsync(elementUpdates).ContinueWithOnMainThread(updateElementTask =>
                             {
@@ -432,12 +431,13 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                                 }
                             });
                         }
+                        else
+                            Debug.Log($"{element.customizeSlot} slotunda ki {element.elementID}'li element zaten veritabaninda bulunmaktadir.");
                     }
                     else
                     {
                         // Eleman bulunamadýysa yeni eleman olarak ekle
                         Debug.Log($"No element found with elementID: {element.elementID}, adding as new.");
-                        newElements.Add(element);
                     }
                 }
                 else
@@ -445,29 +445,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                     Debug.LogError($"Error querying element data: {task.Exception}");
                 }
             });
-        }
-    }
 
-
-    private void AddNewElements(CollectionReference customizationDatasRef, List<CustomizeElement> newElements)
-    {
-        foreach (CustomizeElement newElement in newElements)
-        {
-            customizationDatasRef.Document(newElement.elementID.ToString()).SetAsync(new Dictionary<string, object>
-        {
-            { "CustomizeSlot", newElement.customizeSlot },
-            { "elementID", newElement.elementID }
-        }).ContinueWithOnMainThread(addTask =>
-        {
-            if (addTask.IsCompleted)
-            {
-                Debug.Log($"New element added: {newElement.elementID}");
-            }
-            else
-            {
-                Debug.LogError($"Failed to add new element: {addTask.Exception}");
-            }
-        });
         }
     }
 
