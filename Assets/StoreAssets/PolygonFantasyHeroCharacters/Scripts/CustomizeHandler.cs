@@ -244,9 +244,9 @@ public class CustomizeHandler : MonoBehaviour
 
         CurrentlyUnlockedIDs = new();
 
-#if UNITY_EDITOR
-        FirestoreManager.instance.customizationDatasHandler.AddCustomizationDataWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, characterCustomizeData);
-#endif
+//#if UNITY_EDITOR
+//        FirestoreManager.instance.customizationDatasHandler.AddCustomizationDataWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, characterCustomizeData);
+//#endif
     }
 
     List<CustomizeElement> GetDefaultElements()

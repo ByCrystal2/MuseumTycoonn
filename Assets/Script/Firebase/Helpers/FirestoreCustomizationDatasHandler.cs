@@ -110,16 +110,13 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
             // Alt koleksiyon olan PictureDatas'ý sorgula
             CollectionReference customizeDatasRef = documentReference.Collection("CustomizationDatas");
             int currentSlotId = _overrideSlotId == -1 ? _customizeData.playerCustomizeData.selectedCustomizeSlot : _overrideSlotId;
-            Debug.Log("Step1 currentSlotId : " + currentSlotId);
             Query query = customizeDatasRef.WhereEqualTo("SlotNumber", currentSlotId);
-            Debug.Log("Step1 currentSlotId : " + currentSlotId);
 
             query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
             {
                 if (task.IsCompleted)
                 {
                     QuerySnapshot snapshot = task.Result;
-                    Debug.Log("Step1 currentSlotId : " + currentSlotId);
 
                     if (snapshot.Documents.Count() > 0)
                     {
@@ -238,7 +235,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                     var mainCustomizationData = documentSnapshot.ToDictionary();
                     int lastSelectedColorHeader = mainCustomizationData.ContainsKey("LastSelectedColorHeader") ? Convert.ToInt32(mainCustomizationData["LastSelectedColorHeader"]) : 0;
                     int lastSelectedCustomizeCategory = mainCustomizationData.ContainsKey("LastSelectedCustomizeCategory") ? Convert.ToInt32(mainCustomizationData["LastSelectedCustomizeCategory"]) : 0;
-                    int lastSelectedCustomizeHeader = mainCustomizationData.ContainsKey("LastSelectedCustomizeHeader") ? Convert.ToInt32(mainCustomizationData["LastSelectedCustomizeHeader"]) : 0;
+                    int lastSelectedCustomizeHeader = mainCustomizationData.ContainsKey("LastSelectedCustomizeHeader") ? Convert.ToInt32(mainCustomizationData["LastSelectedCustomizeHeader"]) : 1;
                 List<int> unlockedCustomizeElementIDs = new List<int>();
                 if (mainCustomizationData != null && mainCustomizationData.ContainsKey("UnlockedCustomizeElementIDs") && mainCustomizationData["UnlockedCustomizeElementIDs"] is List<object> list)
                 {
@@ -260,11 +257,32 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                         {
                             if (customDocumentSnapshot.Exists)
                             {
+                                List<object> colorDataList = customDocumentSnapshot.GetValue<List<object>>("Colors");
+
+                                List<Color> colors = new List<Color>();
+                                foreach (var colorDataObj in colorDataList)
+                                {
+                                    // Her bir renk dictionary'sini alýyoruz
+                                    Dictionary<string, object> colorData = colorDataObj as Dictionary<string, object>;
+
+                                    if (colorData != null)
+                                    {
+                                        // Dictionary içinden RGB deðerlerini alýyoruz
+                                        float red = Convert.ToSingle(colorData["red"]);
+                                        float green = Convert.ToSingle(colorData["green"]);
+                                        float blue = Convert.ToSingle(colorData["blue"]);
+
+                                        // Yeni Color objesi oluþturuyoruz
+                                        Color color = new Color(red, green, blue);
+                                        colors.Add(color);
+                                    }
+                                }
+
                                 playerExtra = new();
                                 var customData = customDocumentSnapshot.ToDictionary();
                                 playerExtra.ID = customData.ContainsKey("ID") ? Convert.ToInt32(customData["ID"]) : 0;
                                 playerExtra.isFemale = customData.ContainsKey("IsFemale") && Convert.ToBoolean(customData["IsFemale"]);
-
+                                playerExtra.Colors = new List<Color>(colors);
                                 CollectionReference elementsCollectionRef = customDocumentSnapshot.Reference.Collection("CustomizeElements");
                                 List<CustomizeElement> elementsInDatabase = new List<CustomizeElement>();
                                 QuerySnapshot snapshot = await elementsCollectionRef.GetSnapshotAsync();

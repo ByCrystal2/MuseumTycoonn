@@ -60,6 +60,7 @@ public class RightUIPanelController : MonoBehaviour
         CustomizePanelOnButton.onClick.AddListener(CustomizeHandler.instance.SwitchCustomizePanel);
         CustomizePanelOnButton.onClick.AddListener(() => UIVisibleClose(true));
         CustomizePanelOnButton.onClick.AddListener(PlayerManager.instance.LockPlayer);
+        CustomizePanelOnButton.onClick.AddListener(() => UIController.instance.CloseJoystickObj(true));
 
         DrawerButton.onClick.AddListener(DrawerSetActiveConroller);
 
