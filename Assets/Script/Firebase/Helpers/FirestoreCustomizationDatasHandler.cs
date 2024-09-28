@@ -111,7 +111,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
             CollectionReference customizeDatasRef = documentReference.Collection("CustomizationDatas");
             int currentSlotId = _overrideSlotId == -1 ? _customizeData.playerCustomizeData.selectedCustomizeSlot : _overrideSlotId;
             Debug.Log("Step1 currentSlotId : " + currentSlotId);
-            Query query = customizeDatasRef.WhereEqualTo("SlotNumber", _customizeData.playerCustomizeData.AllCustomizeData[currentSlotId]);
+            Query query = customizeDatasRef.WhereEqualTo("SlotNumber", currentSlotId);
             Debug.Log("Step1 currentSlotId : " + currentSlotId);
 
             query.GetSnapshotAsync().ContinueWithOnMainThread(task =>

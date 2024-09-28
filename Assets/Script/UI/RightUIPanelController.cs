@@ -59,6 +59,7 @@ public class RightUIPanelController : MonoBehaviour
         CamUISActivetonButton.onClick.AddListener(SetActivationCamUIS);
         CustomizePanelOnButton.onClick.AddListener(CustomizeHandler.instance.SwitchCustomizePanel);
         CustomizePanelOnButton.onClick.AddListener(() => UIVisibleClose(true));
+        CustomizePanelOnButton.onClick.AddListener(PlayerManager.instance.LockPlayer);
 
         DrawerButton.onClick.AddListener(DrawerSetActiveConroller);
 
