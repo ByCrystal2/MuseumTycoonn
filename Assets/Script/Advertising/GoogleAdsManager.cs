@@ -95,7 +95,7 @@ public class GoogleAdsManager : MonoBehaviour
     }
     private void Update()
     {
-        if(GameManager.instance != null && !GameManager.instance.IsWatchTutorial) { return; }
+        if(GameManager.instance != null && !GameManager.instance.IsWatchTutorial && NpcManager.instance != null && !NpcManager.instance.databaseProcessComplated) { return; }
         if (!IsInterstitialAdShow)
         {
             InterstitialAdWaitingTime -= Time.deltaTime;
@@ -272,6 +272,7 @@ public class GoogleAdsManager : MonoBehaviour
         }
 
         Debug.Log("currentAdIds => " + currentAdIds.Count);
+        if (currentAdIds.Count <= 0) return;
         string currentRewardedAdUnityId = currentAdIds[UnityEngine.Random.Range(0, currentAdIds.Count)]._id;
         RewardedAd.Load(currentRewardedAdUnityId, adRequest,
             (RewardedAd ad, LoadAdError error) =>

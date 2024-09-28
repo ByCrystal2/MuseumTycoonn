@@ -142,7 +142,9 @@ public class MuseumManager : MonoBehaviour
     public void OnNpcPaid(float _score)
     {
         float targetGold = _score * GetTicketPrice();
+        if (UIController.instance.GoldText.gameObject.activeSelf)
         UIController.instance.GoldText.GetComponent<GoldStackHandler>().AddTempGold(targetGold);
+
         AddGold(targetGold);
         Debug.Log("Earned: " + targetGold + " by npc paid for an image. New gold: " + Gold + " _score => " + _score);
         UIController.instance.InMuseumCurrentNPCCountChanged(GetInMuseumVisitorCount());

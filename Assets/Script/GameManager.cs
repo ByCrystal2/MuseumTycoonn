@@ -1039,6 +1039,7 @@ public class GameManager : MonoBehaviour
     {
         AudioManager.instance.SaveAudioSettings();
         FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
+        FirestoreManager.instance.customizationDatasHandler.AddCustomizationDataWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, CustomizeHandler.instance.characterCustomizeData);
         CancelFirebaseOperations();
     }
     private void OnApplicationPause(bool pause)
@@ -1047,7 +1048,7 @@ public class GameManager : MonoBehaviour
         {
             AudioManager.instance.SaveAudioSettings();
             FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
-
+            FirestoreManager.instance.customizationDatasHandler.AddCustomizationDataWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, CustomizeHandler.instance.characterCustomizeData);
             CancelFirebaseOperations();
             TimeManager.instance.StopProgressCoroutine();
             Time.timeScale = 0;

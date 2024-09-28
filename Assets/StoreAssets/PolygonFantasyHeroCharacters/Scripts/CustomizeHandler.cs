@@ -45,6 +45,7 @@ public class CustomizeHandler : MonoBehaviour
     public Button Set3Button;
     public Button DrawButton;
     public Button ClaimButton;
+    public Button ExitButton;
 
     [Header("Localization")]
     public Text GainItemCategoryText;
@@ -84,7 +85,10 @@ public class CustomizeHandler : MonoBehaviour
         Set2Button.onClick.AddListener(()=>OnSetSelected(1));
         Set3Button.onClick.AddListener(()=>OnSetSelected(2));
         DrawButton.onClick.AddListener(OnClickedDrawItemButton);
-        ClaimButton.onClick.AddListener(OnClickedClaimButton);        
+        ClaimButton.onClick.AddListener(OnClickedClaimButton);
+        ExitButton.onClick.AddListener(SwitchCustomizePanel);
+        ExitButton.onClick.AddListener(() => FirestoreManager.instance.customizationDatasHandler.AddCustomizationDataWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, characterCustomizeData));
+        ExitButton.onClick.AddListener(() => RightUIPanelController.instance.UIVisibleClose(false));
         //Test
         //OpenCustomizePanel();
     }
@@ -385,8 +389,11 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeCamChest.Priority = 900;
     }
 
-    public void OnSetSelected(int _setID)
+    public async System.Threading.Tasks.Task OnSetSelected(int _setID)
     {
+        Debug.Log("Before Customize On Selected id : " + GetSetID());
+        await FirestoreManager.instance.customizationDatasHandler.AddCustomizationDataWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, characterCustomizeData, GetSetID());
+        Debug.Log("after Customize On Selected id : " + GetSetID());
         SaveSet(GetSetID());
         ChangeActiveChangeID(_setID);
         Set1Button.transform.GetChild(1).GetComponent<Image>().color = _setID == 0 ? HeaderActiveColor : HeaderPassiveColor;
@@ -394,6 +401,7 @@ public class CustomizeHandler : MonoBehaviour
         Set3Button.transform.GetChild(1).GetComponent<Image>().color = _setID == 2 ? HeaderActiveColor : HeaderPassiveColor;
         PlayChangeGenderSound();
         UpdateUI();
+
     }
 
     public void UpdateUI()

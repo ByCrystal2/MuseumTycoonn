@@ -31,6 +31,8 @@ public class RightUIPanelController : MonoBehaviour
     [SerializeField] Button[] CamButtons;
     [SerializeField] Button DrawerButton;
     [SerializeField] DrawerController DrawerPanel;
+
+    [SerializeField] Button CustomizePanelOnButton;
     
     public static RightUIPanelController instance { get; private set; }
     private void Awake()
@@ -42,6 +44,7 @@ public class RightUIPanelController : MonoBehaviour
         }
         instance = this;
         defaultDailyRewardPos = btnDailyRewardObj.transform.position;
+        DrawerPanel.gameObject.SetActive(false);
     }
     private void Start()
     {
@@ -50,10 +53,13 @@ public class RightUIPanelController : MonoBehaviour
         CamUISActivetonButton.onClick.RemoveAllListeners();
         EditModeButton.onClick.RemoveAllListeners();
         UIVisibleButton.onClick.RemoveAllListeners();
+        CustomizePanelOnButton.onClick.RemoveAllListeners();
         EditModeButton.onClick.AddListener(EditMode);
         UIVisibleButton.onClick.AddListener(UIVisibleClose);
         CamUISActivetonButton.onClick.AddListener(SetActivationCamUIS);
-       
+        CustomizePanelOnButton.onClick.AddListener(CustomizeHandler.instance.SwitchCustomizePanel);
+        CustomizePanelOnButton.onClick.AddListener(() => UIVisibleClose(true));
+
         DrawerButton.onClick.AddListener(DrawerSetActiveConroller);
 
         int index = 0;
@@ -85,6 +91,7 @@ public class RightUIPanelController : MonoBehaviour
     {
         CloseAllMods();
         GameMode _gameMode = GameManager.instance.GetCurrentGameMode();
+        DrawerPanel.ScaleMove(true);
         switch (_gameMode)
         {
             case GameMode.MuseumEditing:
@@ -93,9 +100,11 @@ public class RightUIPanelController : MonoBehaviour
                 FPSModeObj.SetActive(true);
                 notificationsObj.SetActive(true);
                 VisibleUIObj.SetActive(false);
+                UIController.instance.CloseJoystickObj(false);
+                PlayerManager.instance.UnLockPlayer();
                 GameManager.instance.SetCurrenGameMode(GameMode.FPS);
                 if (GameManager.instance.IsWatchTutorial)
-                PicturesMenuController.instance.ExitPicturePanel();
+                //PicturesMenuController.instance.ExitPicturePanel();
                 PlayerEditModeCanvas.SetActive(false);
                 btnDailyRewardObj.transform.position = fpsModeDailyRewardTransform.position;
                 break;
@@ -134,10 +143,11 @@ public class RightUIPanelController : MonoBehaviour
                 VisibleUIObj.SetActive(true);
                 notificationsObj.SetActive(true);
                 UINotVisibleObj.SetActive(false);
+                UIController.instance.CloseJoystickObj(true);
                 btnDailyRewardObj.transform.position = defaultDailyRewardPos;
                 GameManager.instance.SetCurrenGameMode(GameMode.MuseumEditing);
                 RoomManager.instance.CurrentEditedRoom.SetRoomBlockPanelActive(true);
-                PicturesMenuController.instance.ExitPicturePanel();
+                //PicturesMenuController.instance.ExitPicturePanel();
                 Debug.Log("RoomEditing mode Debug.");
                 break;
             default:
@@ -147,14 +157,14 @@ public class RightUIPanelController : MonoBehaviour
     public void UIVisibleClose()
     {
         if (GameManager.instance.GetCurrentGameMode() == GameMode.MuseumEditing || GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
-        {
+        {            
             if (_uIVisible)
             {
                 UINotVisibleObj.SetActive(true);
+                DrawerActivation(false);
                 EditObj.SetActive(false);
-                notificationsObj.SetActive(false);
                 SetActivationSelectionCamsCanvas(false);
-                PicturesMenuController.instance.ExitPicturePanel();
+                //PicturesMenuController.instance.ExitPicturePanel();
                 //if (GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
                 //    UIController.instance.SetActivationRoomEditingPanel(true);
 
@@ -166,7 +176,7 @@ public class RightUIPanelController : MonoBehaviour
                 UIController.instance.CloseCultureExpObj(true);
                 UIController.instance.CloseLeftUIsPanel(true);
                 UIController.instance.CloseMoneysObj(true);
-                btnDailyRewardObj.SetActive(false);
+                //btnDailyRewardObj.SetActive(false);
                 _uIVisible = false;
             }
             else
@@ -175,7 +185,7 @@ public class RightUIPanelController : MonoBehaviour
                 //if (GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
                 //    UIController.instance.SetActivationRoomEditingPanel(false);
                 EditObj.SetActive(true);
-                notificationsObj.SetActive(true);
+                DrawerActivation(true);
                 if (GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
                     SetActivationSelectionCamsCanvas(true);
 
@@ -183,18 +193,19 @@ public class RightUIPanelController : MonoBehaviour
                 UIController.instance.CloseLeftUIsPanel(false);
                 UIController.instance.CloseMoneysObj(false);
                 UIController.instance.SetActivationRoomEditingPanel(false);
-                btnDailyRewardObj.SetActive(true);
+                ///*btnDailyRewardObj*/.SetActive(true);
                 _uIVisible = true;
             }
         }
     }
     public void UIVisibleClose(bool _forceVisible)
     {
+        Debug.Log("UI Visible: " + _forceVisible);
         if (_forceVisible)
         {
-            UINotVisibleObj.SetActive(true);
+            //UINotVisibleObj.SetActive(true);
             EditObj.SetActive(false);
-            notificationsObj.SetActive(false);
+            DrawerActivation(false);
             SetActivationSelectionCamsCanvas(false);
             //PicturesMenuController.instance.ExitPicturePanel();
 
@@ -206,20 +217,20 @@ public class RightUIPanelController : MonoBehaviour
             UIController.instance.CloseCultureExpObj(true);
             UIController.instance.CloseLeftUIsPanel(true);
             UIController.instance.CloseMoneysObj(true);
-            btnDailyRewardObj.SetActive(false);
+            //btnDailyRewardObj.SetActive(false);
             _uIVisible = false;
         }
         else
         {
-            UINotVisibleObj.SetActive(false);
+            //UINotVisibleObj.SetActive(false);
             EditObj.SetActive(true);
-            notificationsObj.SetActive(true);
+            DrawerActivation(true);
             if (GameManager.instance.GetCurrentGameMode() == GameMode.RoomEditing)
                 SetActivationSelectionCamsCanvas(true);
             UIController.instance.CloseCultureExpObj(false);
             UIController.instance.CloseLeftUIsPanel(false);
             UIController.instance.CloseMoneysObj(false);
-            btnDailyRewardObj.SetActive(true);
+            //btnDailyRewardObj.SetActive(true);
             _uIVisible = true;
         }
     }
@@ -277,5 +288,10 @@ public class RightUIPanelController : MonoBehaviour
             }
         }
         SelectionCamsPanel.SetActive(_active);
+    }
+    void DrawerActivation(bool _active)
+    {
+        DrawerPanel.gameObject.SetActive(_active);
+        DrawerButton.gameObject.SetActive(_active);
     }
 }

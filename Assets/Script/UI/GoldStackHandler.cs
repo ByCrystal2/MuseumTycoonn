@@ -74,6 +74,7 @@ public class GoldStackHandler : MonoBehaviour
 
     public void AddTempGold(float amount)
     {
+        if (!TempGoldText.gameObject.activeSelf && !MainGoldText.gameObject.activeSelf) return;
         moneyQueue.Enqueue(amount);
 
         if (!isCounting)
