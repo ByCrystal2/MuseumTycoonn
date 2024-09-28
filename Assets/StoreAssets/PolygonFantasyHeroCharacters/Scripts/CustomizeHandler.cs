@@ -88,8 +88,9 @@ public class CustomizeHandler : MonoBehaviour
         ClaimButton.onClick.AddListener(OnClickedClaimButton);
         ExitButton.onClick.AddListener(SwitchCustomizePanel);
         ExitButton.onClick.AddListener(() => FirestoreManager.instance.customizationDatasHandler.AddCustomizationDataWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, characterCustomizeData));
-        ExitButton.onClick.AddListener(PlayerManager.instance.UnLockPlayer);
         ExitButton.onClick.AddListener(() => RightUIPanelController.instance.UIVisibleClose(false));
+        ExitButton.onClick.AddListener(PlayerManager.instance.UnLockPlayer);
+        ExitButton.onClick.AddListener(() => UIController.instance.CloseJoystickObj(false));
         //Test
         //OpenCustomizePanel();
     }
