@@ -120,7 +120,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
 
                     if (snapshot.Documents.Count() > 0)
                     {
-                        Debug.Log($"Customize with number of slot {_customizeData.playerCustomizeData.selectedCustomizeSlot} already exists for user.");
+                        Debug.Log($"Customize with number of slot {currentSlotId} already exists for user.");
 
                         UpdateCustomizationData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, _customizeData, currentSlotId);
                     }
@@ -145,7 +145,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                         }
                         Dictionary<string, object> newCustomizeData = new Dictionary<string, object>
                     {
-                        { "SlotNumber", _customizeData.playerCustomizeData.selectedCustomizeSlot },
+                        { "SlotNumber", currentSlotId },
                         { "IsFemale", selectedCustomizeSlotData.isFemale },
                         { "Colors", colorDataList },
                         { "Timestamp", FieldValue.ServerTimestamp }
@@ -374,7 +374,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
         CollectionReference customizationDatasRef = documentReference.Collection("CustomizationDatas");
         
 
-        Query customizeDataQuery = customizationDatasRef.WhereEqualTo("SlotNumber", _customizeData.playerCustomizeData.AllCustomizeData[_overrideSlotId]);
+        Query customizeDataQuery = customizationDatasRef.WhereEqualTo("SlotNumber", _overrideSlotId);
         Debug.Log("in UpdateCustomizationDatas method current selectedCustomizeSlotId: " + _customizeData.playerCustomizeData.selectedCustomizeSlot);
         Debug.Log("in UpdateCustomizationDatas method current overrideSlotId: " + _overrideSlotId);
         customizeDataQuery.GetSnapshotAsync().ContinueWithOnMainThread(customizeDataTask =>
