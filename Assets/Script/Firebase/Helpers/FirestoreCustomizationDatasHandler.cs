@@ -32,7 +32,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
         DefaultColors.Add(new Color(0.2283196f, 0.5822246f, 0.7573529f, 1));
     }
 
-    public async Task AddCustomizationDataWithUserId(string userId, CharacterCustomizeData _customizeData, int _overrideSlotId = -1)
+    public async Task AddCustomizationDataWithUserId(string userId, CharacterCustomizeData _customizeData, bool _multiSlotSave = false, int _overrideSlotId = -1)
     {
         // Kullanýcý ID'si ile belgeyi sorgula
         if (GameManager.instance != null) if (!GameManager.instance.IsWatchTutorial) return;
@@ -55,14 +55,18 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                         { "UnlockedCustomizeElementIDs", _customizeData.unlockedCustomizeElementIDs },
                         { "LastSelectedCustomizeCategory", _customizeData.LastSelectedCustomizeCategory },
                         { "LastSelectedCustomizeHeader", _customizeData.LastSelectedCustomizeHeader },
-                        { "LastSelectedColorHeader", _customizeData.LastSelectedColorHeader }
+                        { "LastSelectedColorHeader", _customizeData.LastSelectedColorHeader },
+                        { "LastSelectedCustomizeSlot", _customizeData.playerCustomizeData.selectedCustomizeSlot }
                     };
 
                     documentReference.UpdateAsync(updatedData).ContinueWithOnMainThread(updateTask =>
                     {
                         if (updateTask.IsCompleted)
                         {
-                            CheckAndAddCustomizeData(documentReference, _customizeData, _overrideSlotId);
+                            if (_multiSlotSave)
+                                CheckAndAddCustomizeData(documentReference, _customizeData, true);
+                            else
+                                CheckAndAddCustomizeData(documentReference, _customizeData, _overrideSlotId);
                         }
                         else if (updateTask.IsFaulted)
                         {
@@ -79,6 +83,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                         { "LastSelectedCustomizeCategory", _customizeData.LastSelectedCustomizeCategory },
                         { "LastSelectedCustomizeHeader", _customizeData.LastSelectedCustomizeHeader },
                         { "LastSelectedColorHeader", _customizeData.LastSelectedColorHeader },
+                        { "LastSelectedCustomizeSlot", _customizeData.playerCustomizeData.selectedCustomizeSlot }
                     };
 
                     db.Collection("Customizations").AddAsync(newDocument).ContinueWithOnMainThread(addTask =>
@@ -87,7 +92,10 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                         {
                             documentReference = addTask.Result;
                             Debug.Log($"User document created for user {userId}");
-                            CheckAndAddCustomizeData(documentReference, _customizeData, _overrideSlotId);
+                            if (_multiSlotSave)
+                                CheckAndAddCustomizeData(documentReference, _customizeData, true);
+                            else
+                                CheckAndAddCustomizeData(documentReference, _customizeData, _overrideSlotId);
                         }
                         else if (addTask.IsFaulted)
                         {
@@ -101,14 +109,13 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                 Debug.LogError($"Error querying documents: {task.Exception}");
             }
         });
-    }
-
-    private void CheckAndAddCustomizeData(DocumentReference documentReference, CharacterCustomizeData _customizeData, int _overrideSlotId)
+    }    
+    public void CheckAndAddCustomizeData(DocumentReference documentReference, CharacterCustomizeData _customizeData, int _overrideSlotId)
     {
         try
         {
             // Alt koleksiyon olan PictureDatas'ý sorgula
-            CollectionReference customizeDatasRef = documentReference.Collection("CustomizationDatas");
+            CollectionReference customizeDatasRef = documentReference.Collection("CustomizationDatas");            
             int currentSlotId = _overrideSlotId == -1 ? _customizeData.playerCustomizeData.selectedCustomizeSlot : _overrideSlotId;
             Query query = customizeDatasRef.WhereEqualTo("SlotNumber", currentSlotId);
 
@@ -213,7 +220,123 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
             Debug.LogError("CheckAndAddCustomizeData method has a an error: " + _ex.Message);
         }        
     }
+    public void CheckAndAddCustomizeData(DocumentReference documentReference, CharacterCustomizeData _customizeData, bool _multiSlotSave)
+    {
+        try
+        {
+            // Alt koleksiyon olan PictureDatas'ý sorgula
+            CollectionReference customizeDatasRef = documentReference.Collection("CustomizationDatas");
+            int length = 1;
+            if (_multiSlotSave) length = _customizeData.playerCustomizeData.AllCustomizeData.Count;
+            for (int i = 0; i < length; i++)
+            {
+                int index = i;
+                Query query = customizeDatasRef.WhereEqualTo("SlotNumber", index);
+                query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+                {
+                    if (task.IsCompleted)
+                    {
+                        QuerySnapshot snapshot = task.Result;
 
+                        if (snapshot.Documents.Count() > 0)
+                        {
+                            Debug.Log($"Customize with number of slot {index} already exists for user.");
+
+                            UpdateCustomizationData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, _customizeData, index);
+                        }
+                        else
+                        {
+                            Debug.Log("in CheckAndAddCustomizeData and multiSlotSave true snapshot.Documents.Count:" + snapshot.Documents.Count());
+                            // Belge yoksa yeni belge ekle
+                            Debug.Log("in CheckAndAddCustomizeData and multiSlotSave true i:" + index);
+                            PlayerExtraCustomizeData selectedCustomizeSlotData = _customizeData.playerCustomizeData.AllCustomizeData[index];
+                            Debug.Log("in CheckAndAddCustomizeData and multiSlotSave true snapshot.Documents.Count:" + selectedCustomizeSlotData.ID);
+
+                            List<Dictionary<string, float>> colorDataList = new List<Dictionary<string, float>>();
+                            List<Color> colors = selectedCustomizeSlotData.Colors;
+                            foreach (Color color in colors)
+                            {
+                                // Her bir rengi RGB deðerleriyle bir dictionary olarak kaydediyoruz
+                                var colorData = new Dictionary<string, float>
+                            {
+                            { "red", color.r },
+                            { "green", color.g },
+                            { "blue", color.b }
+                            };
+
+                                colorDataList.Add(colorData);
+                            }
+                            Dictionary<string, object> newCustomizeData = new Dictionary<string, object>
+                        {
+                        { "SlotNumber", index },
+                        { "IsFemale", selectedCustomizeSlotData.isFemale },
+                        { "Colors", colorDataList },
+                        { "Timestamp", FieldValue.ServerTimestamp }
+                        };
+
+                            customizeDatasRef.AddAsync(newCustomizeData).ContinueWithOnMainThread(addTask =>
+                            {
+                                if (addTask.IsCompleted)
+                                {
+                                    DocumentReference document = addTask.Result;
+                                    CollectionReference elementDatasRef = document.Collection("CustomizeElements");
+
+                                    foreach (CustomizeElement element in selectedCustomizeSlotData.CustomizeElements)
+                                    {
+                                        Query query = customizeDatasRef.WhereEqualTo("elementID", element.elementID);
+                                        query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+                                        {
+                                            if (task.IsCompleted)
+                                            {
+                                                QuerySnapshot snapshot = task.Result;
+
+                                                if (snapshot.Documents.Count() <= 0)
+                                                {
+                                                    Dictionary<string, object> newElementData = new Dictionary<string, object>
+                                                {
+                                                { "CustomizeSlot", element.customizeSlot },
+                                                { "elementID", element.elementID },
+                                                };
+                                                    elementDatasRef.AddAsync(newElementData).ContinueWithOnMainThread(addTask =>
+                                                    {
+                                                        if (addTask.IsCompleted)
+                                                        {
+                                                            DocumentReference document = addTask.Result;
+                                                        }
+                                                    });
+                                                }
+                                                string ids = "";
+                                                string slots = "";
+                                                foreach (var item in selectedCustomizeSlotData.CustomizeElements)
+                                                {
+                                                    ids += item.elementID + "-";
+                                                    slots += item.customizeSlot.ToString() + "-";
+                                                }
+                                                Debug.Log("CustomizeElements added database ids => " + ids);
+                                                Debug.Log("CustomizeElements added database slots => " + slots);
+                                            }
+                                        });
+                                    }
+                                }
+                                else if (addTask.IsFaulted)
+                                {
+                                    Debug.LogError($"Failed to add worker data: {addTask.Exception}");
+                                }
+                            });
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError($"Error querying worker data: {task.Exception}");
+                    }
+                }); 
+            }
+        }
+        catch (Exception _ex)
+        {
+            Debug.LogError("CheckAndAddCustomizeData method has a an error: " + _ex.Message);
+        }
+    }
     public async Task<CharacterCustomizeData> GetCustomizationDataInDatabase(string userId)
     {
         CharacterCustomizeData foundCustomizeData = new CharacterCustomizeData();
@@ -230,12 +353,11 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                 if (documentSnapshot.Exists)
                 {
                     CollectionReference customizationDatasCollection = documentSnapshot.Reference.Collection("CustomizationDatas");
-
-
                     var mainCustomizationData = documentSnapshot.ToDictionary();
                     int lastSelectedColorHeader = mainCustomizationData.ContainsKey("LastSelectedColorHeader") ? Convert.ToInt32(mainCustomizationData["LastSelectedColorHeader"]) : 0;
                     int lastSelectedCustomizeCategory = mainCustomizationData.ContainsKey("LastSelectedCustomizeCategory") ? Convert.ToInt32(mainCustomizationData["LastSelectedCustomizeCategory"]) : 0;
                     int lastSelectedCustomizeHeader = mainCustomizationData.ContainsKey("LastSelectedCustomizeHeader") ? Convert.ToInt32(mainCustomizationData["LastSelectedCustomizeHeader"]) : 1;
+                    int lastSelectedCustomizeSlot = mainCustomizationData.ContainsKey("LastSelectedCustomizeSlot") ? Convert.ToInt32(mainCustomizationData["LastSelectedCustomizeSlot"]) : 0;
                 List<int> unlockedCustomizeElementIDs = new List<int>();
                 if (mainCustomizationData != null && mainCustomizationData.ContainsKey("UnlockedCustomizeElementIDs") && mainCustomizationData["UnlockedCustomizeElementIDs"] is List<object> list)
                 {
@@ -246,10 +368,11 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                     Debug.Log("foundCustomizeData.unlockedCustomizeElementIDs.Count => " + foundCustomizeData.unlockedCustomizeElementIDs.Count);
                     if (foundCustomizeData.playerCustomizeData.AllCustomizeData == null)
                         foundCustomizeData.playerCustomizeData.AllCustomizeData = new();
-
+                    foundCustomizeData.playerCustomizeData.selectedCustomizeSlot = lastSelectedCustomizeSlot;
                     for (int i = 0; i < 3; i++)
                     {
-                        Query customDataQuery = customizationDatasCollection.WhereEqualTo("SlotNumber", i);
+                        int index = i;
+                        Query customDataQuery = customizationDatasCollection.WhereEqualTo("SlotNumber", index);
                         QuerySnapshot customQuerySnapshot = await customDataQuery.GetSnapshotAsync();
 
                         PlayerExtraCustomizeData playerExtra = null;
@@ -402,49 +525,57 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
 
     private void ProcessCustomizeData(QuerySnapshot customizeDataSnapshot, CharacterCustomizeData _customizeData, int _overrideSlotId)
     {
+        Debug.Log("Method Controlling in ProcessCustomizeData _overrideSlotId" + _overrideSlotId);
         PlayerExtraCustomizeData playerExtraCustomizeDatas = _customizeData.playerCustomizeData.AllCustomizeData[_overrideSlotId];
-
-        foreach (var document in customizeDataSnapshot.Documents)
+        try
         {
-            DocumentReference customizeDataRef = document.Reference;
-            List<Dictionary<string, float>> colorDataList = new List<Dictionary<string, float>>();
-            List<Color> colors = playerExtraCustomizeDatas.Colors;
-            foreach (Color color in colors)
+            foreach (var document in customizeDataSnapshot.Documents)
             {
-                // Her bir rengi RGB deðerleriyle bir dictionary olarak kaydediyoruz
-                var colorData = new Dictionary<string, float>
+                DocumentReference customizeDataRef = document.Reference;
+                List<Dictionary<string, float>> colorDataList = new List<Dictionary<string, float>>();
+                List<Color> colors = playerExtraCustomizeDatas.Colors;
+                foreach (Color color in colors)
+                {
+                    // Her bir rengi RGB deðerleriyle bir dictionary olarak kaydediyoruz
+                    var colorData = new Dictionary<string, float>
                 {
                     { "red", color.r },
                     { "green", color.g },
                     { "blue", color.b }
                 };
 
-                colorDataList.Add(colorData);
-            }
-            Dictionary<string, object> updates = new Dictionary<string, object>
+                    colorDataList.Add(colorData);
+                }
+                Dictionary<string, object> updates = new Dictionary<string, object>
             {
                 { "IsFemale", playerExtraCustomizeDatas.isFemale },
-                { "Colors", playerExtraCustomizeDatas.Colors },
+                { "Colors", colorDataList },
                 { "Timestamp", FieldValue.ServerTimestamp }
             };
 
-            customizeDataRef.UpdateAsync(updates).ContinueWithOnMainThread(updateTask =>
-            {
-                if (updateTask.IsCompleted)
+                customizeDataRef.UpdateAsync(updates).ContinueWithOnMainThread(updateTask =>
                 {
-                    UpdateCustomizeElements(customizeDataRef, playerExtraCustomizeDatas);
-                }
-                else
-                {
-                    Debug.LogError($"Failed to update customization data: {updateTask.Exception}");
-                }
-            });
-            
+                    if (updateTask.IsCompleted)
+                    {
+                        UpdateCustomizeElements(customizeDataRef, playerExtraCustomizeDatas);
+                    }
+                    else
+                    {
+                        Debug.LogError($"Failed to update customization data: {updateTask.Exception}");
+                    }
+                });
+
+            }
         }
+        catch (Exception _ex)
+        {
+            Debug.LogError("ProcessCustomizeData method has a an error: " + _ex.Message);
+        }        
     }
 
     private void UpdateCustomizeElements(DocumentReference customizeDataRef, PlayerExtraCustomizeData extraData)
     {
+        Debug.Log("Method Controlling in UpdateCustomizeElements extraData.ID:" + extraData.ID);
         CollectionReference elementDatasRef = customizeDataRef.Collection("CustomizeElements");
         HashSet<int> processedElementIDs = new HashSet<int>();
 

@@ -46,6 +46,7 @@ public class CustomizeHandler : MonoBehaviour
     public Button DrawButton;
     public Button ClaimButton;
     public Button ExitButton;
+    public Button SaveButton; //Mevcut slotu save eder hepsini deðil.
 
     [Header("Localization")]
     public Text GainItemCategoryText;
@@ -86,15 +87,32 @@ public class CustomizeHandler : MonoBehaviour
         Set3Button.onClick.AddListener(()=>OnSetSelected(2));
         DrawButton.onClick.AddListener(OnClickedDrawItemButton);
         ClaimButton.onClick.AddListener(OnClickedClaimButton);
-        ExitButton.onClick.AddListener(SwitchCustomizePanel);
-        ExitButton.onClick.AddListener(() => FirestoreManager.instance.customizationDatasHandler.AddCustomizationDataWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, characterCustomizeData));
-        ExitButton.onClick.AddListener(() => RightUIPanelController.instance.UIVisibleClose(false));
-        ExitButton.onClick.AddListener(PlayerManager.instance.UnLockPlayer);
-        ExitButton.onClick.AddListener(() => UIController.instance.CloseJoystickObj(false));
+        ExitButton.onClick.AddListener(ExitButtonProcesses);
+        if (SaveButton != null)
+            SaveButton.onClick.AddListener(SaveButtonProcesses);
         //Test
         //OpenCustomizePanel();
     }
-
+    void ExitButtonProcesses()
+    {
+        UIInteractHandler.instance.AskQuestion("Karakter Özelleþtirmesi #Çeviri", "Deðiþiklikleri onaylýyor musunuz? #Çeviri",
+            (yes) =>
+            {
+                SwitchCustomizePanel();
+                FirestoreManager.instance.customizationDatasHandler.AddCustomizationDataWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, characterCustomizeData,true);
+                RightUIPanelController.instance.UIVisibleClose(false);
+                PlayerManager.instance.UnLockPlayer();
+                UIController.instance.CloseJoystickObj(false);
+            },null,null,null,null,null);
+    }
+    void SaveButtonProcesses()
+    {
+        UIInteractHandler.instance.AskQuestion("Özelleþtirmeyi Kaydet #Çeviri", "Deðiþiklikleri onaylýyor musunuz? (Mevcut Slotu Kaydeder.) #Çeviri",
+            (yes) =>
+            {
+                FirestoreManager.instance.customizationDatasHandler.AddCustomizationDataWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, characterCustomizeData, false);
+            }, null, null, null, null, null);
+    }
     public void CustomizationInit()
     {
         CurrentlyUnlockedIDs = new();
@@ -134,7 +152,7 @@ public class CustomizeHandler : MonoBehaviour
 
         TempCustomize = GetCustomizeData();
         TargetCustomize.UpdateVisual(TempCustomize);
-        SetMaterialColors(TempCustomize.Colors);
+        SetMaterialColors(TempCustomize.Colors);        
     }
 
     public void OnAnHeaderSelected(CustomizeSlot _slot)
@@ -228,7 +246,7 @@ public class CustomizeHandler : MonoBehaviour
 
         UpdateLockedElementIDs();
         UpdateLocalize();
-
+        OnSetSelected(characterCustomizeData.playerCustomizeData.selectedCustomizeSlot);
     }
 
     public void CloseCustomizePanel()
@@ -391,11 +409,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeCamChest.Priority = 900;
     }
 
-    public async System.Threading.Tasks.Task OnSetSelected(int _setID)
+    public void OnSetSelected(int _setID)
     {
-        Debug.Log("Before Customize On Selected id : " + GetSetID());
-        await FirestoreManager.instance.customizationDatasHandler.AddCustomizationDataWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, characterCustomizeData, GetSetID());
-        Debug.Log("after Customize On Selected id : " + GetSetID());
         SaveSet(GetSetID());
         ChangeActiveChangeID(_setID);
         Set1Button.transform.GetChild(1).GetComponent<Image>().color = _setID == 0 ? HeaderActiveColor : HeaderPassiveColor;
