@@ -15,6 +15,7 @@ public class UIController : MonoBehaviour
     [SerializeField] public RoomUISPanelController roomUISPanelController;
     [SerializeField] public TutorialUISPanel tutorialUISPanel;
     [SerializeField] public WorkerInfoPanelController workerInfoPanelController;
+    [SerializeField] public WorkerPurchasePanelController WorkerPurchasePanelController;
     [SerializeField] List<GameObject> IsGameObjectOverPanels;
     [Header("MuseumInfos")]
     [SerializeField] GameObject pnlMuseumStats;
@@ -1199,7 +1200,7 @@ public class UIController : MonoBehaviour
     public void ForTutorialWorkerHiring()
     {
         WorkerHiringButton worker = WorkerContent.GetChild(0).GetComponentInChildren<WorkerHiringButton>();
-        worker.Hiring();
+        WorkerPurchasePanelController.SetWorkersToBuy(worker.GetComponentInParent<WorkerInfoUIs>());
     }
     public void ForTutorialWorkerAssignmentInventoryHouseKeeper()
     {

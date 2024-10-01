@@ -95,7 +95,9 @@ public class GoogleAdsManager : MonoBehaviour
     }
     private void Update()
     {
-        if(GameManager.instance != null && !GameManager.instance.IsWatchTutorial && NpcManager.instance != null && !NpcManager.instance.databaseProcessComplated) { return; }
+        if(GameManager.instance != null && !GameManager.instance.IsWatchTutorial) return;
+        //Debug.Log("ads loading process:"+ " InterstitialAdWaitingTime:"+ InterstitialAdWaitingTime + " RewardAdWaitingTime:" + RewardAdWaitingTime + " BannerAdWaitingTime:" + BannerAdWaitingTime);
+        if (NpcManager.instance != null && !NpcManager.instance.databaseProcessComplated) return;
         if (!IsInterstitialAdShow)
         {
             InterstitialAdWaitingTime -= Time.deltaTime;
