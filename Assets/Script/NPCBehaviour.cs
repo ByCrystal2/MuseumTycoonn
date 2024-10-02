@@ -45,7 +45,7 @@ public class NPCBehaviour : MonoBehaviour
 
     void Start()
     {
-        StatData.NpcCurrentSpeed = StatData.NpcSpeed + StatData.NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f);
+        StatData.NpcCurrentSpeed = StatData.NpcSpeed + StatData.NpcSpeed * (((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] + CustomizeHandler.instance.GetBonusAmountOf(eStat.VisitorsSpeedIncrease)) / 100f);
         Vector3 firstPosition;
         do
         {
@@ -377,7 +377,7 @@ public class NPCBehaviour : MonoBehaviour
             AudioManager.instance.GetDialogAudios(DialogType.NpcDisLike, CurrentAudioSource, GeneralData.isMale);
             ChangeCoreStressValue((NPCCurrentScore) * -2);
             int _happiness = (int)Mathf.Round((100 - GetNpcStress()) * 0.25f);
-            _happiness = (int)(_happiness + (float)_happiness * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.HappinessIncreaseRatio] / 100f));
+            _happiness = (int)(_happiness + (float)_happiness * (((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.HappinessIncreaseRatio] + CustomizeHandler.instance.GetBonusAmountOf(eStat.HappinessIncreaseRatio)) / 100f));
             ChangeCoreHappinessValue(_happiness);
             MyNPCUI.PlayEmotionEffect(NpcEmotionEffect.Happiness);
             _liked = true;
@@ -579,7 +579,7 @@ public class NPCBehaviour : MonoBehaviour
             int index = Random.Range(0, gidis ? NpcManager.instance.GidisListe.Count - 1 : NpcManager.instance.GelisListe.Count - 1);
 
             int chance = Random.Range(0, 101);
-            chance = (int)(chance + (float)chance * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.WantVisittingRatio] / 100f));
+            chance = (int)(chance + (float)chance * (((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.WantVisittingRatio] + CustomizeHandler.instance.GetBonusAmountOf(eStat.WantVisittingRatio)) / 100f));
             if (chance >= 80)
             {
                 if (!MuseumManager.instance.IsMuseumFull())
@@ -686,7 +686,7 @@ public class NPCBehaviour : MonoBehaviour
         SetHappinessValue(100);
         SetStressValue(0);
         NpcWalkType = WalkEnum.NormalWalk;
-        StatData.NpcCurrentSpeed = ((StatData.NpcSpeed * (escapeAfterBeat ? NpcManager.EscapeSpeedMultiplier : 1f)) + StatData.NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f));
+        StatData.NpcCurrentSpeed = ((StatData.NpcSpeed * (escapeAfterBeat ? NpcManager.EscapeSpeedMultiplier : 1f)) + StatData.NpcSpeed * (((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] + CustomizeHandler.instance.GetBonusAmountOf(eStat.VisitorsSpeedIncrease)) / 100f));
         if (TargetObject != null)
             TargetObject.gameObject.SetActive(true);
 
@@ -807,19 +807,19 @@ public class NPCBehaviour : MonoBehaviour
         {
             NpcWalkType = WalkEnum.SadWalk;
             float sadSpeed = StatData.NpcSpeed * (escapeAfterBeat ? NpcManager.EscapeSpeedMultiplier : 0.45f);
-            StatData.NpcCurrentSpeed = sadSpeed + sadSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f);
+            StatData.NpcCurrentSpeed = sadSpeed + sadSpeed * (((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] + CustomizeHandler.instance.GetBonusAmountOf(eStat.VisitorsSpeedIncrease)) / 100f);
             AudioManager.instance.GetDialogAudios(DialogType.NpcSad, CurrentAudioSource, GeneralData.isMale);
         }
         else if (happiness > 25 && happiness < 75)
         {
             NpcWalkType = WalkEnum.NormalWalk;
-            StatData.NpcCurrentSpeed = (StatData.NpcSpeed * (escapeAfterBeat ? NpcManager.EscapeSpeedMultiplier : 1f)) + StatData.NpcSpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f);
+            StatData.NpcCurrentSpeed = (StatData.NpcSpeed * (escapeAfterBeat ? NpcManager.EscapeSpeedMultiplier : 1f)) + StatData.NpcSpeed * (((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] + CustomizeHandler.instance.GetBonusAmountOf(eStat.VisitorsSpeedIncrease)) / 100f);
         }
         else
         {
             NpcWalkType = WalkEnum.HappyWalk;
             float happySpeed = StatData.NpcSpeed * (escapeAfterBeat ? NpcManager.EscapeSpeedMultiplier : 1.25f);
-            StatData.NpcCurrentSpeed = happySpeed + happySpeed * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] / 100f);
+            StatData.NpcCurrentSpeed = happySpeed + happySpeed * (((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] + CustomizeHandler.instance.GetBonusAmountOf(eStat.VisitorsSpeedIncrease)) / 100f);
             AudioManager.instance.GetDialogAudios(DialogType.NpcHappiness, CurrentAudioSource, GeneralData.isMale);
         }
     }

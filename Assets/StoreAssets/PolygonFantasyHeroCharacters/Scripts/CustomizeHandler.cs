@@ -62,6 +62,9 @@ public class CustomizeHandler : MonoBehaviour
     [SerializeField] private List<Color> DefaultColors;
     [SerializeField] private bool ApplyColor;
 
+    [Header("Bonuses From Items")]
+    public List<CustomizeBonus> ActiveBonuses = new();
+
     [Header("Character Customize Data")]
     public CharacterCustomizeData characterCustomizeData;
 
@@ -74,10 +77,10 @@ public class CustomizeHandler : MonoBehaviour
             return;
         }
         instance = this;
+        InitCustomizeItems();
     }
     private void Start()
     {    
-
         MaleButton.onClick.AddListener(OnClickedMaleButton);
         FemaleButton.onClick.AddListener(OnClickedFemaleButton);
         AppearanceButton.onClick.AddListener(OnClickedAppearanceButton);
@@ -90,8 +93,6 @@ public class CustomizeHandler : MonoBehaviour
         ExitButton.onClick.AddListener(ExitButtonProcesses);
         if (SaveButton != null)
             SaveButton.onClick.AddListener(SaveButtonProcesses);
-        //Test
-        //OpenCustomizePanel();
     }
     void ExitButtonProcesses()
     {
@@ -103,6 +104,7 @@ public class CustomizeHandler : MonoBehaviour
                 RightUIPanelController.instance.UIVisibleClose(false);
                 PlayerManager.instance.UnLockPlayer();
                 UIController.instance.CloseJoystickObj(false);
+                UpdateEquipmentStats();
             },null,null,null,null,null);
     }
     void SaveButtonProcesses()
@@ -111,8 +113,10 @@ public class CustomizeHandler : MonoBehaviour
             (yes) =>
             {
                 FirestoreManager.instance.customizationDatasHandler.AddCustomizationDataWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, characterCustomizeData, false);
+                UpdateEquipmentStats();
             }, null, null, null, null, null);
     }
+
     public void CustomizationInit()
     {
         CurrentlyUnlockedIDs = new();
@@ -152,7 +156,8 @@ public class CustomizeHandler : MonoBehaviour
 
         TempCustomize = GetCustomizeData();
         TargetCustomize.UpdateVisual(TempCustomize);
-        SetMaterialColors(TempCustomize.Colors);        
+        SetMaterialColors(TempCustomize.Colors);
+        UpdateEquipmentStats();
     }
 
     public void OnAnHeaderSelected(CustomizeSlot _slot)
@@ -243,7 +248,6 @@ public class CustomizeHandler : MonoBehaviour
         else
             OnClickedColorsButton();
 
-
         UpdateLockedElementIDs();
         UpdateLocalize();
         OnSetSelected(characterCustomizeData.playerCustomizeData.selectedCustomizeSlot);
@@ -333,6 +337,8 @@ public class CustomizeHandler : MonoBehaviour
 
     public void OnClickedAppearanceButton()
     {
+        ApplyColor = false;
+
         if (ColorHeaderPanel.activeSelf)
             ColorHeaderPanel.GetComponent<UIFade>().FadeOut();
         if (ColorHolderPanel.activeSelf)
@@ -418,7 +424,7 @@ public class CustomizeHandler : MonoBehaviour
         Set3Button.transform.GetChild(1).GetComponent<Image>().color = _setID == 2 ? HeaderActiveColor : HeaderPassiveColor;
         PlayChangeGenderSound();
         UpdateUI();
-
+        SetMaterialColors(TempCustomize.Colors);
     }
 
     public void UpdateUI()
@@ -993,6 +999,3605 @@ public class CustomizeHandler : MonoBehaviour
     {
         SetMaterialColors(DefaultColors);
     }
+
+    public void UpdateEquipmentStats()
+    {
+        ActiveBonuses = new();
+
+        foreach (var item in TempCustomize.CustomizeElements)
+        {
+            CustomizeItem c = GetItemWithID(item.elementID);
+            if (c.ID != 0) //structs null olamaz, eger bulunaz ise 0 idli dondurecek.
+            {
+                foreach (var bonus in c.Bonuses)
+                {
+                    bool contains = false;
+                    foreach (var currentBonus in ActiveBonuses)
+                    {
+                        if (currentBonus.Stat == bonus.Stat)
+                        {
+                            currentBonus.Amount += bonus.Amount;
+                            contains = true;
+                        }
+                    }
+
+                    if (!contains)
+                    {
+                        ActiveBonuses.Add(new()
+                        {
+                            Stat = bonus.Stat,
+                            Amount = bonus.Amount,
+                        });
+                    }
+                }
+            }
+        }
+
+        Debug.Log("Equipment Stats Are Refreshed!");
+    }
+
+    public float GetBonusAmountOf(eStat _stat)
+    {
+        foreach (var item in ActiveBonuses)
+        {
+            if (item.Stat == _stat)
+            {
+                return item.Amount;
+            }
+        }
+
+        return 0;
+    }
+
+    [SerializeField] private List<CustomizeItem> CustomizeItems;
+    void InitCustomizeItems()
+    {
+        CustomizeItems = new();
+
+        //ItemID_Name, ItemID_Desc gibi bir kalip da kullanabilirsin textler icin, oyle bir yontem daha saglikli olabilir.
+        CustomizeItems.Add(new() { ID = 0, ItemName = "TextID_LanguageID", ItemDesc = "TextID_LanguageID", Rarity = CustomizeRarity.Common, UnlockPrice = 0, 
+            Bonuses = new() });
+
+        #region HEAD_ITEMS 1001-1023
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1001,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1002,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1003,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1004,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1005,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1006,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1007,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1008,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1009,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1010,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1011,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1012,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1013,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1014,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1015,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1016,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1017,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1018,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1019,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1020,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1021,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1022,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 1023,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+        #endregion
+
+        #region FACIALHAIR_ITEMS 3001-3018
+
+        CustomizeItems.Add(new()
+        {
+            ID = 3001,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 3002,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 3003,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 3004,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 3005,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 3006,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 3007,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 3008,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 3009,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 3010,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 3011,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 3012,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 3013,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 3014,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 3015,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 3016,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 3017,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 3018,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        #endregion
+
+        #region TORSO_ITEMS 4003-4029
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4003,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+            {
+                new(){ Stat = eStat.VisitorCapacity, Amount = 30 }, //test
+                new(){ Stat = eStat.BaseHappiness, Amount = 10 },
+            }
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4004,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+            {
+                new(){ Stat = eStat.VisitorCapacity, Amount = 10 }, //test
+                new(){ Stat = eStat.MuseumEnterPrice, Amount = 10 },
+            }
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4005,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4006,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4007,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4008,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4009,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4010,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4011,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4012,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4013,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4014,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4015,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4016,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4017,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4018,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4019,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4020,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4021,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4022,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4023,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4024,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4025,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4026,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4027,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4028,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 4029,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        #endregion
+
+        #region ARMUPPER_ITEMS 5001-5021
+
+        CustomizeItems.Add(new()
+        {
+            ID = 5001,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 5002,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 5003,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 5004,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 5005,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 5006,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 5007,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 5008,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 5009,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 5010,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 5011,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 5012,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 5013,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 5014,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 5015,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 5016,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 5017,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 5018,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 5019,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 5020,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 5021,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        #endregion
+
+        #region ARMLOWER_ITEMS 7001-7019
+
+        CustomizeItems.Add(new()
+        {
+            ID = 7001,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 7002,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 7003,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 7004,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 7005,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 7006,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 7007,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 7008,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 7009,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 7010,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 7011,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 7012,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 7013,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 7014,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 7015,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 7016,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 7017,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 7018,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 7019,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        #endregion
+
+        #region HAND_ITEMS 9001-9018
+
+        CustomizeItems.Add(new()
+        {
+            ID = 9001,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 9002,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 9003,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 9004,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 9005,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 9006,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 9007,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 9008,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 9009,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 9010,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 9011,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 9012,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 9013,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 9014,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 9015,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 9016,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 9017,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 9018,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        #endregion
+
+        #region HIP_ITEMS 11003-11029
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11003,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11004,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11005,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11006,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11007,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11008,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11009,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11010,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11011,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11012,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11013,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11014,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11015,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11016,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11017,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11018,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11019,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11020,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11021,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11022,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11023,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11024,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11025,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11026,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11027,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11028,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 11029,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        #endregion
+
+        #region LEG_ITEMS 12001-12020
+
+        CustomizeItems.Add(new()
+        {
+            ID = 12001,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 12002,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 12003,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 12004,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 12005,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 12006,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 12007,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 12008,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 12009,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 12010,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 12011,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 12012,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 12013,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 12014,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 12015,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 12016,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 12017,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 12018,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 12019,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 12020,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        #endregion
+
+        #region HELMET_ITEMS 14001_14013
+
+        CustomizeItems.Add(new()
+        {
+            ID = 14001,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 14002,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 14003,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 14004,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 14005,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 14006,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 14007,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 14008,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 14009,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 14010,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 14011,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 14012,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 14013,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        #endregion
+
+        #region EYEBROW_ITEMS 102001-102010
+
+        CustomizeItems.Add(new()
+        {
+            ID = 102001,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 102002,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 102003,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 102004,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 102005,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 102006,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 102007,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 102008,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 102009,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 102010,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        #endregion
+
+        #region HAIR_ITEMS 103001-103038
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103001,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103002,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103003,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103004,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103005,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103006,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103007,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103008,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103009,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103010,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103011,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103012,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103013,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103014,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103015,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103016,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103017,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103018,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103019,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103020,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103021,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103022,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103023,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103024,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103025,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103026,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103027,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103028,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103029,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103030,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103031,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103032,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103033,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103034,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103035,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103036,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103037,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 103038,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        #endregion
+
+        #region HAT_ITEMS 104001-140024
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104001,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104002,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104003,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104004,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104005,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104006,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104007,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104008,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104009,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104010,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104011,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104012,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104013,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104014,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104015,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104016,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104017,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104018,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104019,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104020,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104021,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104022,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104023,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 104024,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        #endregion
+
+        #region MASK_ITEMS 105001-105004
+
+        CustomizeItems.Add(new()
+        {
+            ID = 105001,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 105002,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 105003,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 105004,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        #endregion
+
+        #region HELMETATTACHMENT_ITEMS 106001-106013
+
+        CustomizeItems.Add(new()
+        {
+            ID = 106001,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 106002,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 106003,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 106004,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 106005,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 106006,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 106007,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 106008,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 106009,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 106010,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 106011,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 106012,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 106013,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        #endregion
+
+        #region BACKATTACHMENT_ITEMS 107001-107015
+
+        CustomizeItems.Add(new()
+        {
+            ID = 107001,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 107002,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 107003,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 107004,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 107005,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 107006,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 107007,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 107008,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 107009,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 107010,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 107011,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 107012,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 107013,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 107014,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 107015,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        #endregion
+
+        #region SHOULDERATTACHMENT_ITEMS 108001-108021
+
+        CustomizeItems.Add(new()
+        {
+            ID = 108001,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 108002,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 108003,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 108004,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 108005,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 108006,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 108007,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 108008,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 108009,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 108010,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 108011,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 108012,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 108013,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 108014,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 108015,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 108016,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 108017,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 108018,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 108019,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 108020,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 108021,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        #endregion
+
+        #region ELBOWATTACHMENT_ITEMS 110001-110006
+
+        CustomizeItems.Add(new()
+        {
+            ID = 110001,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 110002,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 110003,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 110004,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 110005,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 110006,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        #endregion
+
+        #region HIPATTACHMENT_ITEMS 112001-112012
+
+        CustomizeItems.Add(new()
+        {
+            ID = 112001,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 112002,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 112003,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 112004,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 112005,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 112006,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 112007,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 112008,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 112001,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 112009,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 112010,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 112011,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 112012,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        #endregion
+
+        #region KNEEATTACHMENT_ITEMS 113001-113011
+
+        CustomizeItems.Add(new()
+        {
+            ID = 113001,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 113002,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 113003,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 113004,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 113005,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 113006,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 113007,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 113008,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 113009,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 113010,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 113011,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        #endregion
+
+        #region ELFEAR_ITEMS 115001-115003
+
+        CustomizeItems.Add(new()
+        {
+            ID = 115001,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 115002,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        CustomizeItems.Add(new()
+        {
+            ID = 115003,
+            ItemName = "TextID_LanguageID",
+            ItemDesc = "TextID_LanguageID",
+            Rarity = CustomizeRarity.Common,
+            UnlockPrice = 0,
+            Bonuses = new()
+        });
+
+        #endregion
+    }
+
+    public CustomizeItem GetItemWithID(int _id)
+    {
+        foreach (var item in CustomizeItems)
+        {
+            if (item.ID == _id)
+            {
+                return new(item);
+            }
+        }
+
+        return CustomizeItems[0];
+    }
 }
 
 [System.Serializable]
@@ -1062,6 +4667,51 @@ public class PlayerCustomizeData
     }
     public PlayerCustomizeData() { }
     #endregion
+}
+
+[System.Serializable]
+public struct CustomizeItem
+{
+    public int ID;
+    public string ItemName;
+    public string ItemDesc;
+    public CustomizeRarity Rarity;
+    public List<CustomizeBonus> Bonuses;
+    public float UnlockPrice;
+
+    public CustomizeItem(CustomizeItem _item)
+    {
+        ID = _item.ID;
+        ItemName = _item.ItemName;
+        ItemDesc = _item.ItemDesc;
+        Rarity = _item.Rarity;
+        UnlockPrice = _item.UnlockPrice;
+        Bonuses = new();
+        foreach (var item in _item.Bonuses)
+        {
+            Bonuses.Add(new()
+            {
+                Stat = item.Stat,
+                Amount = item.Amount,
+            });
+        }    
+    }
+}
+
+[System.Serializable]
+public class CustomizeBonus
+{
+    public eStat Stat;
+    public float Amount;
+}
+
+public enum CustomizeRarity
+{
+    Common,
+    Uncommon,
+    Rare,
+    Epic,
+    Legendary,
 }
 
 public enum CustomizeSlot

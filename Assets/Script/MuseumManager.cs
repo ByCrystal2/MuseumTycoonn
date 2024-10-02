@@ -289,7 +289,7 @@ public class MuseumManager : MonoBehaviour
             Debug.Log("Son levele ulasilmis. Daha fazla exp alinamaz! Mevcut level:"+CurrentCultureLevel);
             return;
         }
-        int newXP = (int)((float)_xp + (float)_xp * ((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.CultureExp] / 100f));
+        int newXP = (int)((float)_xp + (float)_xp * (((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.CultureExp] + CustomizeHandler.instance.GetBonusAmountOf(eStat.CultureExp)) / 100f));
         Culture += newXP;
         if (Culture > GetRequiredCultureExp())
         {
@@ -379,7 +379,7 @@ public class MuseumManager : MonoBehaviour
     }
     public float GetFinalVisitorHappiness()
     {
-        float value = TotalVisitorHappiness + SkillTreeManager.instance.CurrentBuffs[(int)eStat.BaseHappiness];
+        float value = TotalVisitorHappiness + SkillTreeManager.instance.CurrentBuffs[(int)eStat.BaseHappiness] + CustomizeHandler.instance.GetBonusAmountOf(eStat.BaseHappiness);
         if (value <= 100)
         {
              return value;
@@ -406,9 +406,9 @@ public class MuseumManager : MonoBehaviour
         if (CurrentCultureLevel >= MaxVisitorPerCultureLevel.Count)
         {
             Debug.Log("Son levele ulasilmis!");
-            return SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorCapacity] + MaxVisitorPerCultureLevel[MaxVisitorPerCultureLevel.Count - 1];
+            return SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorCapacity] + MaxVisitorPerCultureLevel[MaxVisitorPerCultureLevel.Count - 1] + CustomizeHandler.instance.GetBonusAmountOf(eStat.VisitorCapacity);
         }
-        float capasity = SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorCapacity] + MaxVisitorPerCultureLevel[CurrentCultureLevel];
+        float capasity = SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorCapacity] + MaxVisitorPerCultureLevel[CurrentCultureLevel] + CustomizeHandler.instance.GetBonusAmountOf(eStat.VisitorCapacity);
         Debug.Log("GetMuseumCurrentCapacity => " + capasity);
         return capasity;
     }
@@ -418,10 +418,10 @@ public class MuseumManager : MonoBehaviour
         if (CurrentCultureLevel >= TicketPricePerCultureLevel.Count)
         {
             Debug.Log("Son levele ulasilmis!");
-            return SkillTreeManager.instance.CurrentBuffs[(int)eStat.MuseumEnterPrice] + TicketPricePerCultureLevel[TicketPricePerCultureLevel.Count - 1];
+            return SkillTreeManager.instance.CurrentBuffs[(int)eStat.MuseumEnterPrice] + TicketPricePerCultureLevel[TicketPricePerCultureLevel.Count - 1] + CustomizeHandler.instance.GetBonusAmountOf(eStat.MuseumEnterPrice);
         }
-        Debug.Log("Ticket price: " + (SkillTreeManager.instance.CurrentBuffs[(int)eStat.MuseumEnterPrice] + TicketPricePerCultureLevel[CurrentCultureLevel]));
-        int result = SkillTreeManager.instance.CurrentBuffs[(int)eStat.MuseumEnterPrice] + TicketPricePerCultureLevel[CurrentCultureLevel];
+        Debug.Log("Ticket price: " + (SkillTreeManager.instance.CurrentBuffs[(int)eStat.MuseumEnterPrice] + TicketPricePerCultureLevel[CurrentCultureLevel] + CustomizeHandler.instance.GetBonusAmountOf(eStat.MuseumEnterPrice)));
+        int result = SkillTreeManager.instance.CurrentBuffs[(int)eStat.MuseumEnterPrice] + TicketPricePerCultureLevel[CurrentCultureLevel] + (int)CustomizeHandler.instance.GetBonusAmountOf(eStat.MuseumEnterPrice);
         if (result <= 0)
             return 1;
         else
