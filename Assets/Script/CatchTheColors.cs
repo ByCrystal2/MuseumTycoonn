@@ -123,17 +123,23 @@ public class CatchTheColors : MonoBehaviour
 
     public Sprite TextureToSprite(Texture2D texture)
     {
-        // Texture'dan bir Sprite oluşturmak için Sprite sınıfının 'Create' metodunu kullanabiliriz.
-        // Önce bir Rect oluşturup tüm texture'ı içine alacak şekilde boyutlandırabiliriz.
-        Rect rect = new Rect(0, 0, 256, 256);
-        // Ardından pivot noktasını belirleyebiliriz (varsayılan olarak orta noktadır).
+        Rect rect;
+        if (texture == null)
+        {
+            rect = new Rect(0, 0, 256, 256);
+        }
+        else
+        {
+            rect = new Rect(0, 0, texture.width, texture.height);
+        }
         Vector2 pivot = new Vector2(0.5f, 0.5f);
-
-        // Sprite'ı oluşturun.
+        // Sprite'ı oluştur
         Sprite sprite = Sprite.Create(texture, rect, pivot);
 
         return sprite;
     }
+
+
 }
 
 public enum MyColors

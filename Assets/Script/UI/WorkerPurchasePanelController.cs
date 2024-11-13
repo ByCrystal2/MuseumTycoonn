@@ -27,7 +27,7 @@ public class WorkerPurchasePanelController : MonoBehaviour
             gameObject.SetActive(false);
         }
     }    
-    void WhenPurchased()
+    public void WhenPurchased() // Additionally, it is used in the tutorial.
     {
         Hiring();
         workersToBuy = null;

@@ -10,6 +10,7 @@ public class DailyRewardsPanelController : MonoBehaviour
     [SerializeField] TextMeshProUGUI txtTime;
     [SerializeField] GameObject pnlIsReceivedPrefab;
     [SerializeField] GameObject pnlIsLockedPrefab;
+    [SerializeField] Button exitButton;
 
     public static DailyRewardsPanelController instance { get; private set; }
     private void Awake()
@@ -24,6 +25,7 @@ public class DailyRewardsPanelController : MonoBehaviour
     private void Start()
     {
         InvokeRepeating(nameof(SetTimeText), 0, 1);
+        exitButton.onClick.AddListener(UIController.instance.ActiveInHierarchyDailyRewardPanelControl);
     }
 
     void SetTimeText()

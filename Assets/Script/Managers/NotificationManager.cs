@@ -14,7 +14,9 @@ public class NotificationManager : MonoBehaviour
     [SerializeField] NotificationHandler notificationPrefab_V1;
     [SerializeField] Button MarkAllButton;
     [SerializeField] Button ReadAllButton;
+    public Button exitButton;
     NotificationType currentNotificationType_V1;
+
     [Header("V2 Notification")]
     [SerializeField] GameObject notificationsCanvas_V2;
     [SerializeField] public Transform notificationContent_V2;
@@ -62,7 +64,7 @@ public class NotificationManager : MonoBehaviour
             tabButtons[capturedIndex].onClick.AddListener(() => FillNotificationPanelContent((NotificationType)System.Enum.ToObject(typeof(NotificationType), capturedIndex)));
         }
         MarkAllButton.onClick.AddListener(MarkAllNotifications);
-        ReadAllButton.onClick.AddListener(ReadAllMarkedNotifications);
+        ReadAllButton.onClick.AddListener(ReadAllMarkedNotifications);        
     }
 
     private void Update()

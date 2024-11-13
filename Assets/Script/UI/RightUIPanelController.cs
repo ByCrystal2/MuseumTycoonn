@@ -251,6 +251,11 @@ public class RightUIPanelController : MonoBehaviour
         FPSModeObj.SetActive(false);
         GhostModeObj.SetActive(false);
     }
+    public void CloseVisibleUIObjs(bool _close)
+    {
+        VisibleUIObj.SetActive(!_close);
+        UINotVisibleObj.SetActive(!_close);
+    }
     bool camUIActive = false;
     public void SetActivationCamUIS()
     {
@@ -291,7 +296,7 @@ public class RightUIPanelController : MonoBehaviour
         }
         SelectionCamsPanel.SetActive(_active);
     }
-    void DrawerActivation(bool _active)
+    public void DrawerActivation(bool _active)
     {
         DrawerPanel.gameObject.SetActive(_active);
         DrawerButton.gameObject.SetActive(_active);

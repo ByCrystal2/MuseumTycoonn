@@ -35,11 +35,15 @@ public class StatuesHandler
         bonuss.Add(bonus1); // EXAMPLE!!!
         allStatueBonusses.Add(bonus1);        
 
-        EditObjData objData = new EditObjData(1, "Statue1", 1000, (Texture2D)statueResults[0], EditObjType.Statue, bonuss, 0, 0);
-        EditObjData objData1 = new EditObjData(2, "Statue2", 2000, (Texture2D)statueResults[1], EditObjType.Statue, bonuss, 5, 1);
-        EditObjData objData2 = new EditObjData(3, "Statue3", 3000, (Texture2D)statueResults[2], EditObjType.Statue, bonuss, 10, 2);
-        EditObjData objData3 = new EditObjData(4, "Statue4", 4000, (Texture2D)statueResults[3], EditObjType.Statue, bonuss, 15, 3);
-        EditObjData objData4 = new EditObjData(5, "Statue5", 5000, (Texture2D)statueResults[4], EditObjType.Statue, bonuss, 20, 4);
+        EditObjData statue = new EditObjData(1, "Statue1", 1000, (Texture2D)statueResults[0], EditObjType.Statue, bonuss, 0, 0);
+        EditObjData statue1 = new EditObjData(2, "Statue2", 2000, (Texture2D)statueResults[1], EditObjType.Statue, bonuss, 5, 1);
+        EditObjData statue2 = new EditObjData(3, "Statue3", 3000, (Texture2D)statueResults[2], EditObjType.Statue, bonuss, 10, 2);
+        EditObjData statue3 = new EditObjData(4, "Statue4", 4000, (Texture2D)statueResults[3], EditObjType.Statue, bonuss, 15, 3);
+        EditObjData statue4 = new EditObjData(5, "Statue5", 5000, (Texture2D)statueResults[4], EditObjType.Statue, bonuss, 20, 4);
+        EditObjData statue5 = new EditObjData(5, "Statue6", 8000, (Texture2D)statueResults[5], EditObjType.Statue, bonuss, 25, 5);
+        EditObjData statue6 = new EditObjData(5, "Statue7", 9000, (Texture2D)statueResults[6], EditObjType.Statue, bonuss, 30, 6);
+        EditObjData statue7 = new EditObjData(5, "Statue8", 10000, (Texture2D)statueResults[7], EditObjType.Statue, bonuss, 35, 7);
+        EditObjData statue8 = new EditObjData(5, "Statue9", 11000, (Texture2D)statueResults[8], EditObjType.Statue, bonuss, 40, 8);
 
         EditObjData objData5 = new EditObjData(6, "Decoration1", 100, (Texture2D)decorationResults[0], EditObjType.Decoration, new List<Bonus>(), 5);
         EditObjData objData6 = new EditObjData(7, "Decoration2", 200, (Texture2D)decorationResults[1], EditObjType.Decoration, new List<Bonus>(), 5);
@@ -49,11 +53,15 @@ public class StatuesHandler
 
         editObjs.Clear();
         //Statues
-        editObjs.Add(objData);
-        editObjs.Add(objData1);
-        editObjs.Add(objData2);
-        editObjs.Add(objData3);
-        editObjs.Add(objData4);
+        editObjs.Add(statue);
+        editObjs.Add(statue1);
+        editObjs.Add(statue2);
+        editObjs.Add(statue3);
+        editObjs.Add(statue4);
+        editObjs.Add(statue5);
+        editObjs.Add(statue6);
+        editObjs.Add(statue7);
+        editObjs.Add(statue8);
         //Decorations
         editObjs.Add(objData5);
         editObjs.Add(objData6);
@@ -63,11 +71,11 @@ public class StatuesHandler
 
 
         currentEditObjs = editObjs;
-        foreach (var statue in activeEditObjs)
+        foreach (var editObj in activeEditObjs)
         {
-            if (editObjs.Contains(statue))
+            if (editObjs.Contains(editObj))
             {
-                currentEditObjs.Remove(statue);
+                currentEditObjs.Remove(editObj);
             }            
         }
     }

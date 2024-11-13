@@ -838,6 +838,11 @@ public class NPCBehaviour : MonoBehaviour
                 PlayerManager.instance.LockPlayer();
             }
             //NpcManager.instance.CurrentNPC = this;
+            RightUIPanelController.instance.UIVisibleClose(true);
+            RightUIPanelController.instance.CloseEditObj(true);
+            RightUIPanelController.instance.DrawerActivation(false);
+            UIController.instance.CloseJoystickObj(true);
+
             UIController.instance.NpcInformationPanel.SetActive(true);
             UIController.instance.SetNPCInfoPanelUIs(GeneralData.NpcName, GetNpcHappiness(), GetNpcStress(), GetNpcToilet(), GetNpcEducation(), GetLikedColors(), GetLikedArtists());
             if (npcState._mainState == NPCState.Investigate)

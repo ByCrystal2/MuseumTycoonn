@@ -173,7 +173,7 @@ public class WorkerManager : MonoBehaviour
         receptionistCount = AllWorkers.Where(x=> x.workerType == WorkerType.Receptionist).Count();
         brochureSellerCount = AllWorkers.Where(x=> x.workerType == WorkerType.BrochureSeller).Count();
 
-        Debug.Log($"Security Sayisi => {securityCount} || Housekeeper Sayisi => {housekeeperCount} || Musician Sayisi => {musicianCount} || Receptionist Sayisi => {receptionistCount} || BrochureSeller Sayisi => {brochureSellerCount}");
+        //Debug.Log($"Security Sayisi => {securityCount} || Housekeeper Sayisi => {housekeeperCount} || Musician Sayisi => {musicianCount} || Receptionist Sayisi => {receptionistCount} || BrochureSeller Sayisi => {brochureSellerCount}");
     }
     public Worker GetWorkerToWorkerType(WorkerData _workerData)
     {

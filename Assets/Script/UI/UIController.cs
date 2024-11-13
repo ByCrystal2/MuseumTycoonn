@@ -223,6 +223,7 @@ public class UIController : MonoBehaviour
         DailyRewardPanelOnButton.onClick.AddListener(() => ActiveInHierarchyDailyRewardPanelControl());
         //NotificationCanvas
         NotificationCanvasOnButton.onClick.AddListener(() => ActiveInHierarchyNotificationPanelControl());
+        NotificationManager.instance.exitButton.onClick.AddListener(ActiveInHierarchyNotificationPanelControl);
 
         MuseumManager.instance.CalculateAndAddTextAllInfos();
 #if UNITY_EDITOR
@@ -952,6 +953,7 @@ public class UIController : MonoBehaviour
         {
             RightUIPanelController.instance.CloseEditObj(true);
             CloseJoystickObj(true);
+            RightUIPanelController.instance.DrawerActivation(false);
             GeneralButtonActivation(true, museumStatButton);
             ShowTab(currentTab);
             pnlMuseumStats.SetActive(true);
@@ -960,6 +962,7 @@ public class UIController : MonoBehaviour
         else
         {
             CloseJoystickObj(false);
+            RightUIPanelController.instance.DrawerActivation(true);
             RightUIPanelController.instance.CloseEditObj(false);
             pnlMuseumStats.SetActive(false);
             GeneralButtonActivation(false);
@@ -1029,9 +1032,12 @@ public class UIController : MonoBehaviour
     }
     public void CloseNPCInformationPanel() //Button!
     {
+        if (!NpcInformationPanel.activeSelf)
+            return;
         if (GameManager.instance.GetCurrentGameMode() == GameMode.FPS)
         {
             PlayerManager.instance.UnLockPlayer();
+            CloseJoystickObj(false);
         }
         NpcInformationPanel.SetActive(false);
         if (NpcManager.instance.CurrentNPC != null)
@@ -1039,6 +1045,9 @@ public class UIController : MonoBehaviour
             NpcManager.instance.CurrentNPC.SetMyCamerasActivation(false, false);
             NpcManager.instance.CurrentNPC = null;
         }
+        RightUIPanelController.instance.UIVisibleClose(false);
+        RightUIPanelController.instance.CloseEditObj(false);
+        RightUIPanelController.instance.DrawerActivation(true);
     }
 
     public void AddWorkersInContent()
@@ -1047,6 +1056,7 @@ public class UIController : MonoBehaviour
         {
             RightUIPanelController.instance.CloseEditObj(true);
             CloseJoystickObj(true);
+            RightUIPanelController.instance.DrawerActivation(false);
             GeneralButtonActivation(true, WorkerPanelOnButton);
             GetDesiredWorkersInContent(WorkerType.Security, btnSecurityTab);
             WorkerPanel.SetActive(true);
@@ -1056,6 +1066,7 @@ public class UIController : MonoBehaviour
         {
             RightUIPanelController.instance.CloseEditObj(false);
             CloseJoystickObj(false);
+            RightUIPanelController.instance.DrawerActivation(true);
             WorkerPanel.SetActive(false);
             GeneralButtonActivation(false);
             workerHirinActive = false;
@@ -1080,6 +1091,7 @@ public class UIController : MonoBehaviour
         {
             GeneralButtonActivation(true, DailyRewardPanelOnButton);
             RightUIPanelController.instance.CloseEditObj(true);
+            RightUIPanelController.instance.DrawerActivation(false);
             CloseJoystickObj(true);
             DailyRewardPanel.SetActive(true);
             dailyRewardActive = true;
@@ -1088,6 +1100,7 @@ public class UIController : MonoBehaviour
         {
             CloseJoystickObj(false);
             RightUIPanelController.instance.CloseEditObj(false);
+            RightUIPanelController.instance.DrawerActivation(true);
             DailyRewardPanel.SetActive(false);
             GeneralButtonActivation(false, DailyRewardPanelOnButton);
             dailyRewardActive = false;
@@ -1099,6 +1112,7 @@ public class UIController : MonoBehaviour
         {
             GeneralButtonActivation(true, NotificationCanvasOnButton);
             RightUIPanelController.instance.CloseEditObj(true);
+            RightUIPanelController.instance.DrawerActivation(false);
             CloseJoystickObj(true);
             NotificationManager.instance.FillNotificationPanelContent(NotificationType.All);
             NotificationManager.instance.notificationsCanvas_V1.SetActive(true);
@@ -1107,6 +1121,7 @@ public class UIController : MonoBehaviour
         {
             CloseJoystickObj(false);
             RightUIPanelController.instance.CloseEditObj(false);
+            RightUIPanelController.instance.DrawerActivation(true);
             NotificationManager.instance.notificationsCanvas_V1.SetActive(false);
             GeneralButtonActivation(false, NotificationCanvasOnButton);
         }
@@ -1350,7 +1365,7 @@ public class UIController : MonoBehaviour
             RightUIPanelController.instance.CloseEditObj(true);
             CloseJoystickObj(true);
             GeneralButtonActivation(true, WorkerAssignmentPanelOnButton);
-
+            RightUIPanelController.instance.DrawerActivation(false);
             ClearAssignmentRoomsButtonContent();
             ClearWorkerContent(WorkerAssignContent);
             WorkerInventoryTabPanel.SetActive(true);
@@ -1363,6 +1378,7 @@ public class UIController : MonoBehaviour
         {
             RightUIPanelController.instance.CloseEditObj(false);
             CloseJoystickObj(false);
+            RightUIPanelController.instance.DrawerActivation(true);
             WorkerAssignmentPanel.SetActive(false);
             GeneralButtonActivation(false);
             workerAssigmentActive = false;

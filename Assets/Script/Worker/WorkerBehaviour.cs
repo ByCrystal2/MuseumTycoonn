@@ -391,7 +391,7 @@ public class WorkerBehaviour : MonoBehaviour
 }
 
 [System.Serializable]
-public sealed class WorkerData
+public class WorkerData
 {
     public int ID;
     public string Name;

@@ -91,6 +91,7 @@ public class RoomEditingPanelController : MonoBehaviour
             MyEditObj.data.IsPurchased = _newData.IsPurchased;
             MyEditObj.data.IsLocked = _newData.IsLocked;
             MyEditObj.data.FocusedLevel = _newData.FocusedLevel;
+            MyEditObj.data.myStatueIndex= _newData.myStatueIndex;
 
             if (MuseumManager.instance.GetCurrentCultureLevel() >= MyEditObj.data.FocusedLevel)
             {
@@ -143,6 +144,7 @@ public class RoomEditingPanelController : MonoBehaviour
             MyEditObj.data._currentRoomCell = _newData._currentRoomCell;
             MyEditObj.data.IsPurchased = _newData.IsPurchased;
             MyEditObj.data.IsLocked = _newData.IsLocked;
+            MyEditObj.data.myStatueIndex = _newData.myStatueIndex;
             if (MuseumManager.instance.GetCurrentCultureLevel() >= MyEditObj.data.FocusedLevel)
             {
                 MyEditObj.data.UnLock();

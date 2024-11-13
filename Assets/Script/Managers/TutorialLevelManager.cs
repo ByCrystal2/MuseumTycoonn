@@ -139,19 +139,19 @@ public class TutorialLevelManager : MonoBehaviour
         {
             "Tebrikler! Bir temizlikçi iþe aldýn.",
             "Þimdi ise sýradaki adýma geçelim.",
-        }, 33),
+        }, 34),
 
         new DialogTranslationHelper(new List<string>()
         {
             "Bu panelde, iþçileri çalýþmalarý için odalara yönlendiriyoruz.",
             "Þimdi ise iþe aldýðýmýz iþçiyi bir odaya atayalým.",
-        }, 35),
+        }, 36),
 
         new DialogTranslationHelper(new List<string>()
         {
             "Tebrikler! Öðrenim kýsmýný tamamladýn. Artýk hazýrsýn!",
             "Seni arada teftiþ etmeye geleceðim. Her daim hazýr ol.",
-        }, 39),
+        }, 40),
     };
     }
 

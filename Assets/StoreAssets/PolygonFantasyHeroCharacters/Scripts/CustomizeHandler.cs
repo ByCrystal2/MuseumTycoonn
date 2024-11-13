@@ -1,6 +1,7 @@
 using Cinemachine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using UnityEngine;
 using UnityEngine.UI;
@@ -57,7 +58,7 @@ public class CustomizeHandler : MonoBehaviour
     [SerializeField] private PlayerExtraCustomizeData TempCustomize;
 
     [SerializeField] private List<int> CurrentlyUnlockedIDs = new();
-
+    public const int baseUnlockedItemPrice = 250;
     [Header("Default Colors")]
     [SerializeField] private List<Color> DefaultColors;
     [SerializeField] private bool ApplyColor;
@@ -569,9 +570,16 @@ public class CustomizeHandler : MonoBehaviour
         //Satin alma kismi burayi tetiklemeli.
         if (LockedElements.Contains(_id) || LockedElements.Contains(_id + 100))
         {
+            CustomizeItem customizeItem = CustomizeItems.Where(x => x.ID == _id).SingleOrDefault();
             string header2 = "Tanimlanmasi Gerek Header! Func: OnSelectedAnEquipment";
             string explanation2 = "Tanimlanmasi Gerek Desc! Func: OnSelectedAnEquipment";
-            UIInteractHandler.instance.AskQuestion(header2, explanation2, null, null, null, null, null, null);
+            UIInteractHandler.instance.AskQuestion(header2, explanation2, (yes) =>
+            {
+                BuyCustomizeElement(customizeItem);
+            }, (no) =>
+            {
+                
+            }, null, null, null, null);
             return;
         }
         PlayChangeGenderSound();
@@ -579,14 +587,40 @@ public class CustomizeHandler : MonoBehaviour
         UpdateUI();
     }
 
+    public void BuyCustomizeElement(CustomizeItem _item)
+    {
+        if (_item.UnlockPrice > MuseumManager.instance.GetCurrentGold())
+        {
+            UIController.instance.InsufficientGoldEffect();
+            Debug.Log(_item.ItemName + " Adli Customize Item'i alacak yeterli para bulunmamaktadir. (Extra gerekli Para => " + (_item.UnlockPrice - MuseumManager.instance.GetCurrentGold()).ToString());
+            return;
+        }
+        else
+            MuseumManager.instance.SpendingGold(_item.UnlockPrice);
+
+
+        characterCustomizeData.unlockedCustomizeElementIDs.Add(_item.ID);
+        //CustomizeItem customizeItem = CustomizeItems.Where(x => x.ID == _item.ID).SingleOrDefault();
+        //customizeItem = new CustomizeItem(_item);
+        UpdateUnlockedItemsPrice();
+        UpdateLockedElementIDs();
+        UpdateUI();
+    }
     public void OnSelectedAnRightEquipment(CustomizeSlot _slot, int _id)
     {
         //Satin alma olayini yapma sadece kilitli de.
         if (LockedElements.Contains(_id) || LockedElements.Contains(_id + 100) || LockedElements.Contains(_id - 100))
         {
+            CustomizeItem customizeItem = CustomizeItems.Where(x => x.ID == _id).SingleOrDefault();
             string header2 = "Tanimlanmasi Gerek Header! Func: OnSelectedAnEquipment";
             string explanation2 = "Tanimlanmasi Gerek Desc! Func: OnSelectedAnEquipment";
-            UIInteractHandler.instance.AskQuestion(header2, explanation2, null, null, null, null, null, null);
+            UIInteractHandler.instance.AskQuestion(header2, explanation2, (yes) =>
+            {
+                BuyCustomizeElement(customizeItem);
+            }, (no) =>
+            {
+
+            }, null, null, null, null);
             return;
         }
         PlayChangeGenderSound();
@@ -600,9 +634,16 @@ public class CustomizeHandler : MonoBehaviour
         int contID = _id - 1000;
         if (LockedElements.Contains(contID) || LockedElements.Contains(contID) || LockedElements.Contains(contID))
         {
+            CustomizeItem customizeItem = CustomizeItems.Where(x => x.ID == contID).SingleOrDefault();
             string header2 = "Tanimlanmasi Gerek Header! Func: OnSelectedAnEquipment";
             string explanation2 = "Tanimlanmasi Gerek Desc! Func: OnSelectedAnEquipment";
-            UIInteractHandler.instance.AskQuestion(header2, explanation2, null, null, null, null, null, null);
+            UIInteractHandler.instance.AskQuestion(header2, explanation2, (yes) =>
+            {
+                BuyCustomizeElement(customizeItem);
+            }, (no) =>
+            {
+
+            }, null, null, null, null);
             return;
         }
         PlayChangeGenderSound();
@@ -4584,8 +4625,22 @@ public class CustomizeHandler : MonoBehaviour
         });
 
         #endregion
-    }
 
+        UpdateUnlockedItemsPrice();
+    }
+    public void UpdateUnlockedItemsPrice()
+    {
+        int length = CustomizeItems.Count;
+        for (int i = 0; i < length; i++)
+        {
+            int unlockedElementIdsCount = characterCustomizeData.unlockedCustomizeElementIDs.Count <= 0 ? 1 : characterCustomizeData.unlockedCustomizeElementIDs.Count;
+            int levelMultiplierValue = (MuseumManager.instance.GetCurrentCultureLevel() / 10) <= 1 ? 1 : Mathf.FloorToInt(MuseumManager.instance.GetCurrentCultureLevel() / 10);
+
+            CustomizeItem currentItem = CustomizeItems[i];
+            currentItem.UnlockPrice = (unlockedElementIdsCount * 10) + baseUnlockedItemPrice + ( levelMultiplierValue * baseUnlockedItemPrice );
+            CustomizeItems[i] = currentItem;
+        }
+    }
     public CustomizeItem GetItemWithID(int _id)
     {
         foreach (var item in CustomizeItems)
