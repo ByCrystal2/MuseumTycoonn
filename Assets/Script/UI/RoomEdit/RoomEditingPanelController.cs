@@ -2,20 +2,23 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class RoomEditingPanelController : MonoBehaviour
 {
-    
-    [SerializeField] public GameObject EditObjPanel;
+    [SerializeField] public ObjectLeaveRoomPanelController objLeaveRoomController;
     [SerializeField] Transform EditObjsContent;
     [SerializeField] GameObject EditObj_StatueVariant;
     [SerializeField] GameObject EditObj_DecorationVariant;    
     //UI
     [SerializeField] public GameObject BuyEditObjPanel;
+    [SerializeField] public GameObject RoomObjsPanel;
+    [SerializeField] public GameObject EditObjPanel;
     [SerializeField] public Transform ClikedStatueBonusContentPanel;
     [SerializeField] public Image ClickedStatueImage;
+    [SerializeField] public Image GoldImage;
     [SerializeField] public Text txtClickedStatuePrice;
     [SerializeField] public Text txtClickedStatueName;
     [SerializeField] public Text txtClickedStatueTargetLevel;
@@ -71,7 +74,7 @@ public class RoomEditingPanelController : MonoBehaviour
         BuyEditObjPanel.SetActive(false);
         ClearEditObjContent();
         List<EditObjData> _statues = new List<EditObjData>();
-        _statues = RoomManager.instance.statuesHandler.currentEditObjs.Where(x=> x.EditType == EditObjType.Statue).ToList();
+        _statues = RoomManager.instance.statuesHandler.inventoryEditObjs.Where(x=> x.EditType == EditObjType.Statue).ToList();
         int length = _statues.Count;
         int index = 0;
         for (int i = 0; i < length; i++)
@@ -120,6 +123,7 @@ public class RoomEditingPanelController : MonoBehaviour
                     _newStatue.transform.SetSiblingIndex(0);
                 }
             index++;
+            RoomManager.instance.statuesHandler.UpdateSendingStatueDatas(MyEditObj.data);
         }
         EditObjPanel.SetActive(true);
     }
@@ -171,12 +175,9 @@ public class RoomEditingPanelController : MonoBehaviour
     }
     public async void AddBonusActivation() // pnlRoomEditing / pnlBuyTheEditObj / btnBuyEditObj ~onClick
     {
-        if (ClickedEditObjBehaviour.data.GetIsPurchased())
+        if (!ClickedEditObjBehaviour.data.GetIsPurchased())
         {
-            Debug.Log("Obje Satilmis. ");
-            return;
-        }
-        if (ClickedEditObjBehaviour.data.Price > MuseumManager.instance.GetCurrentGold())
+            if (ClickedEditObjBehaviour.data.Price > MuseumManager.instance.GetCurrentGold())
         {
             UIController.instance.InsufficientGoldEffect();
             Debug.Log(ClickedEditObjBehaviour.data.Name + " Adli heykeli almaya paraniz yetmedi.");
@@ -185,9 +186,10 @@ public class RoomEditingPanelController : MonoBehaviour
         }
         else
             MuseumManager.instance.SpendingGold(ClickedEditObjBehaviour.data.Price);
+        }
+        
 
         ClickedEditObjBehaviour.data._currentRoomCell = RoomManager.instance.CurrentEditedRoom.availableRoomCell;
-        ClickedEditObjBehaviour.data.SetIsPurchased();
         StatueSlotHandler currentStateContent = FindObjectsOfType<StatueSlotHandler>().Where(x => x.MyRoomCode == (ClickedEditObjBehaviour.data._currentRoomCell.CellLetter.ToString() + ClickedEditObjBehaviour.data._currentRoomCell.CellNumber.ToString())).SingleOrDefault();
         Debug.Log("currentState.name => " + currentStateContent.name);
         Debug.Log("Statues[ClickedEditObjBehaviour.myStatueIndex].name => " + RoomManager.instance.statuesHandler.Statues[ClickedEditObjBehaviour.data.myStatueIndex].name);
@@ -201,17 +203,19 @@ public class RoomEditingPanelController : MonoBehaviour
         Statue.transform.localScale = prefabScale;
         EditObjBehaviour currentStatueData = Statue.AddComponent<EditObjBehaviour>();
         currentStatueData.data = new EditObjData(ClickedEditObjBehaviour.GetComponent<EditObjBehaviour>().data);
+        currentStatueData.data.SetIsPurchased();
         currentStateContent.MyStatue = currentStatueData.data;
-
-        RoomManager.instance.statuesHandler.activeEditObjs.Add(ClickedEditObjBehaviour.data);
-
-        RoomManager.instance.statuesHandler.currentEditObjs.Remove(ClickedEditObjBehaviour.data);
+        currentStateContent.MyStatue._currentRoomCell = currentStatueData.data._currentRoomCell;
+        Debug.Log("currentStateContent.MyStatue.IsPurchased:" + currentStateContent.MyStatue.IsPurchased);
+        Debug.Log("currentStateContent.MyStatue.OnSlot:" + currentStateContent.MyStatue.OnSlot);
+        RoomManager.instance.statuesHandler.ObjAddToRoom(currentStateContent.MyStatue);
+        RoomManager.instance.statuesHandler.UpdateSendingStatueDatas(currentStateContent.MyStatue);
         if (GameManager.instance.IsWatchTutorial)
         {
             string userID = FirebaseAuthManager.instance.GetCurrentUserWithID().UserID;
 
             await FirestoreManager.instance.roomDatasHandler.IERoomDataProcces(userID, RoomManager.instance.CurrentEditedRoom);
-            FirestoreManager.instance.statueDatasHandler.AddStatueWithUserId(userID, ClickedEditObjBehaviour.data);
+            FirestoreManager.instance.statueDatasHandler.AddOrUpdateStatueWithUserId(userID, currentStateContent.MyStatue);
 
             GPGamesManager.instance.achievementController.IncreaseNumberOfStatuesPlaced();
             GPGamesManager.instance.achievementController.StatuesPlacedCountControl();
@@ -239,19 +243,37 @@ public class RoomEditingPanelController : MonoBehaviour
         ClearClikedStatueBonusContent();
         ClickedStatueImage.sprite = _data.ImageSprite;
         float dataPrice = _data.Price;
-        txtClickedStatuePrice.text = dataPrice.ToString();
-        if (dataPrice > MuseumManager.instance.GetCurrentGold())
+        if (_data.IsPurchased)
         {
-            txtClickedStatuePrice.color = Color.red;
-            InsufficientFundsText.SetActive(true);
-            BuyStatueButton.interactable = false;
-        }
-        else
-        {
+            GoldImage.gameObject.SetActive(false);
+            txtClickedStatuePrice.text = "Purchased";
+            Text buttonText = BuyStatueButton.transform.GetComponentInChildren<Text>();
+            buttonText.text = "Place";
+            Debug.Log("buttonText.name:" + buttonText.name, buttonText.transform);
             txtClickedStatuePrice.color = Color.green;
             InsufficientFundsText.SetActive(false);
             BuyStatueButton.interactable = true;
         }
+        else
+        {
+            txtClickedStatuePrice.text = dataPrice.ToString();
+            Text buttonText = BuyStatueButton.transform.GetComponentInChildren<Text>();
+            buttonText.text = "Buy";
+            GoldImage.gameObject.SetActive(true);
+            if (dataPrice > MuseumManager.instance.GetCurrentGold())
+            {
+                txtClickedStatuePrice.color = Color.red;
+                InsufficientFundsText.SetActive(true);
+                BuyStatueButton.interactable = false;
+            }
+            else
+            {
+                txtClickedStatuePrice.color = Color.green;
+                InsufficientFundsText.SetActive(false);
+                BuyStatueButton.interactable = true;
+            }
+        }
+        
         txtClickedStatueName.text = _data.Name;
         txtClickedStatueTargetLevel.text = "+" + _data.FocusedLevel.ToString() + " lvl";
 

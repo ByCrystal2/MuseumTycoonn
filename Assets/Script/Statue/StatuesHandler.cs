@@ -9,7 +9,7 @@ public class StatuesHandler
     public GameObject[] Statues; // 0 1 2 3 4 5 6 7 
 
     public List<EditObjData> editObjs = new List<EditObjData>();
-    public List<EditObjData> currentEditObjs = new List<EditObjData>();
+    public List<EditObjData> inventoryEditObjs = new List<EditObjData>();
     public List<EditObjData> activeEditObjs = new List<EditObjData>(); // Databaseden cekilmeli
 
     public List<Bonus> allStatueBonusses = new List<Bonus>();
@@ -22,6 +22,20 @@ public class StatuesHandler
     public List<Bonus> bonuss = new List<Bonus>();
     public StatuesHandler()
     {
+    }
+    public void OrderBy(bool _desc)
+    {
+            editObjs = _desc
+                ? editObjs.OrderByDescending(x => x.FocusedLevel).ToList()
+                : editObjs.OrderBy(x => x.FocusedLevel).ToList();
+
+            inventoryEditObjs = _desc
+                ? inventoryEditObjs.OrderByDescending(x => x.FocusedLevel).ToList()
+                : inventoryEditObjs.OrderBy(x => x.FocusedLevel).ToList();
+
+            activeEditObjs = _desc
+                ? activeEditObjs.OrderByDescending(x => x.FocusedLevel).ToList()
+                : activeEditObjs.OrderBy(x => x.FocusedLevel).ToList();
     }
     public void AddEditObjs()
     {
@@ -40,16 +54,16 @@ public class StatuesHandler
         EditObjData statue2 = new EditObjData(3, "Statue3", 3000, (Texture2D)statueResults[2], EditObjType.Statue, bonuss, 10, 2);
         EditObjData statue3 = new EditObjData(4, "Statue4", 4000, (Texture2D)statueResults[3], EditObjType.Statue, bonuss, 15, 3);
         EditObjData statue4 = new EditObjData(5, "Statue5", 5000, (Texture2D)statueResults[4], EditObjType.Statue, bonuss, 20, 4);
-        EditObjData statue5 = new EditObjData(5, "Statue6", 8000, (Texture2D)statueResults[5], EditObjType.Statue, bonuss, 25, 5);
-        EditObjData statue6 = new EditObjData(5, "Statue7", 9000, (Texture2D)statueResults[6], EditObjType.Statue, bonuss, 30, 6);
-        EditObjData statue7 = new EditObjData(5, "Statue8", 10000, (Texture2D)statueResults[7], EditObjType.Statue, bonuss, 35, 7);
-        EditObjData statue8 = new EditObjData(5, "Statue9", 11000, (Texture2D)statueResults[8], EditObjType.Statue, bonuss, 40, 8);
+        EditObjData statue5 = new EditObjData(6, "Statue6", 8000, (Texture2D)statueResults[5], EditObjType.Statue, bonuss, 25, 5);
+        EditObjData statue6 = new EditObjData(7, "Statue7", 9000, (Texture2D)statueResults[6], EditObjType.Statue, bonuss, 30, 6);
+        EditObjData statue7 = new EditObjData(8, "Statue8", 10000, (Texture2D)statueResults[7], EditObjType.Statue, bonuss, 35, 7);
+        EditObjData statue8 = new EditObjData(9, "Statue9", 11000, (Texture2D)statueResults[8], EditObjType.Statue, bonuss, 40, 8);
 
-        EditObjData objData5 = new EditObjData(6, "Decoration1", 100, (Texture2D)decorationResults[0], EditObjType.Decoration, new List<Bonus>(), 5);
-        EditObjData objData6 = new EditObjData(7, "Decoration2", 200, (Texture2D)decorationResults[1], EditObjType.Decoration, new List<Bonus>(), 5);
-        EditObjData objData7 = new EditObjData(8, "Decoration3", 300, (Texture2D)decorationResults[2], EditObjType.Decoration, new List<Bonus>(), 5);
-        EditObjData objData8 = new EditObjData(9, "Decoration4", 400, (Texture2D)decorationResults[3], EditObjType.Decoration, new List<Bonus>(), 5);
-        EditObjData objData9 = new EditObjData(10, "Decoration5", 500, (Texture2D)decorationResults[4], EditObjType.Decoration, new List<Bonus>(), 5);
+        EditObjData objData5 = new EditObjData(1001, "Decoration1", 100, (Texture2D)decorationResults[0], EditObjType.Decoration, new List<Bonus>(), 5);
+        EditObjData objData6 = new EditObjData(1002, "Decoration2", 200, (Texture2D)decorationResults[1], EditObjType.Decoration, new List<Bonus>(), 5);
+        EditObjData objData7 = new EditObjData(1003, "Decoration3", 300, (Texture2D)decorationResults[2], EditObjType.Decoration, new List<Bonus>(), 5);
+        EditObjData objData8 = new EditObjData(1004, "Decoration4", 400, (Texture2D)decorationResults[3], EditObjType.Decoration, new List<Bonus>(), 5);
+        EditObjData objData9 = new EditObjData(1005, "Decoration5", 500, (Texture2D)decorationResults[4], EditObjType.Decoration, new List<Bonus>(), 5);
 
         editObjs.Clear();
         //Statues
@@ -67,19 +81,20 @@ public class StatuesHandler
         editObjs.Add(objData6);
         editObjs.Add(objData7);
         editObjs.Add(objData8);
-        editObjs.Add(objData9);
-
-
-        currentEditObjs = editObjs;
+        editObjs.Add(objData9);        
+    }
+    public void ActiveStatuesControl()
+    {
+        inventoryEditObjs = new List<EditObjData>(editObjs);
         foreach (var editObj in activeEditObjs)
         {
-            if (editObjs.Contains(editObj))
+            if (editObjs.Contains(editObj) && editObj.OnSlot)
             {
-                currentEditObjs.Remove(editObj);
-            }            
+                inventoryEditObjs.Remove(editObj);
+            }
         }
+        Debug.Log($"editObjCount => {editObjs.Count} | inventoryEditObjs => {inventoryEditObjs.Count} | activeEditObjs => {activeEditObjs.Count}");
     }
-
     public void AddAndBonusCalculator(EditObjData _addingBonusEditObj, RoomCell _targetRoomCell)
     {
         List<Bonus> Bonusses = new List<Bonus>();
@@ -224,5 +239,39 @@ public class StatuesHandler
         for (int i = 0; i < length; i++)
             list.Add(editObjs[i].ID);
         return list;
+    }
+    public void ObjAddToInventory(EditObjData _data)
+    {
+        EditObjData currentData = editObjs.Where(x => x.ID == _data.ID).SingleOrDefault();
+        currentData.OnInventoryAddingProcess();
+        RoomManager.instance.statuesHandler.UpdateSendingStatueDatas(currentData);
+
+        RoomData myTargetRoom = RoomManager.instance.GetRoomWithRoomCell(_data._currentRoomCell);
+        Debug.Log($"In OnInventoryAddingProcess method: myTargetRoom is null? {myTargetRoom == null}, myTargetRoom.isHasStatue: {myTargetRoom.isHasStatue}, myTargetRoom.StatueID: {myTargetRoom.GetMyStatueInTheMyRoom().ID}");
+        myTargetRoom.isHasStatue = false;
+        myTargetRoom.SetMyStatue(null);
+        FirestoreManager.instance.roomDatasHandler.IERoomDataProcces(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, myTargetRoom);
+        activeEditObjs.Remove(currentData);
+        inventoryEditObjs.Add(currentData);
+        OrderBy(false);
+        Debug.Log($"editObjCount => {editObjs.Count} | inventoryEditObjs => {inventoryEditObjs.Count} | activeEditObjs => {activeEditObjs.Count}");
+    }
+    public void ObjAddToRoom(EditObjData _data)
+    {
+        inventoryEditObjs.Remove(editObjs.Where(x => x.ID == _data.ID).SingleOrDefault());
+        activeEditObjs.Add(editObjs.Where(x => x.ID == _data.ID).SingleOrDefault());
+        OrderBy(false);
+        Debug.Log($"editObjCount => {editObjs.Count} | inventoryEditObjs => {inventoryEditObjs.Count} | activeEditObjs => {activeEditObjs.Count}");
+    }
+    public void UpdateSendingStatueDatas(EditObjData _data)
+    {
+        Debug.Log("on UpdateSendingStatueDatas method _data.ID: " + _data.ID);
+        EditObjData data1 = editObjs.Where(x => x.ID == _data.ID).SingleOrDefault();
+        EditObjData data2 = inventoryEditObjs.Where(x => x.ID == _data.ID).SingleOrDefault();
+        EditObjData data3 = activeEditObjs.Where(x => x.ID == _data.ID).SingleOrDefault();
+        Debug.Log("on UpdateSendingStatueDatas method: " + data1?.Name + " " + data2?.Name + " " + data3?.Name);
+        if(data1 != null) data1 = new EditObjData(_data);
+        if(data2 != null) data2 = new EditObjData(_data);
+        if(data3 != null) data3 = new EditObjData(_data);
     }
 }

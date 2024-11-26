@@ -309,7 +309,7 @@ public partial class RoomManager // Room Bonus Controller
         EditObjBehaviour currentStatueData = Statue.AddComponent<EditObjBehaviour>();
         currentStatueData.data = new EditObjData(_statue);
         currentStateContent.MyStatue = currentStatueData.data;
-        statuesHandler.currentEditObjs.Remove(statuesHandler.editObjs.Where(x => x.ID == _statue.ID).SingleOrDefault());
+        statuesHandler.activeEditObjs.Add(statuesHandler.editObjs.Where(x => x.ID == currentStatueData.data.ID).SingleOrDefault());
     }
     public List<RoomData> GetDesiredNeighborRooms(RoomData _currentRoom)
     {

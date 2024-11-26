@@ -21,7 +21,7 @@ public class EditObjData
     public int myStatueIndex;
 
     public bool isClickable;
-
+    public bool OnSlot;
     public EditObjData()
     {
         
@@ -66,12 +66,15 @@ public class EditObjData
         }
         IsPurchased = _newData.IsPurchased;
         IsLocked = _newData.IsLocked;
+        OnSlot = _newData.OnSlot;
         FocusedLevel = _newData.FocusedLevel;
+        _currentRoomCell = _newData._currentRoomCell;
     }
     public void SetIsPurchased()
     {
         if (EditType == EditObjType.None) return;
         IsPurchased = true;
+        OnSlot = true;
         RoomData myTargetRoom = RoomManager.instance.GetRoomWithRoomCell(_currentRoomCell);
         if (EditType == EditObjType.Statue)
         {
@@ -95,6 +98,11 @@ public class EditObjData
         {
             RoomManager.instance.statuesHandler.AddAndBonusCalculator(this, myTargetRoom.availableRoomCell);
         }
+    }
+    public void OnInventoryAddingProcess()
+    {
+        UnLock();
+        OnSlot = false;        
     }
     public bool GetIsPurchased()
     {

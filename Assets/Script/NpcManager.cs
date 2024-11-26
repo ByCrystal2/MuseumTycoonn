@@ -190,6 +190,7 @@ public class NpcManager : MonoBehaviour
         await GameManager.instance.LoadRooms();
         LoadingScene.ComplateLoadingStep();
         Debug.Log("Database load test 12 complated.");
+        RoomManager.instance.statuesHandler.ActiveStatuesControl();
         //Start Method
         databaseProcessComplated = true;
         TimeManager.instance.OnMinutePassed += OnGettingSalary;

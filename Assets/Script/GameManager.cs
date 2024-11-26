@@ -456,8 +456,7 @@ public class GameManager : MonoBehaviour
                             Debug.Log($"myStatue Infos: ID:{myStatue.ID} + Name:{myStatue.Name} + RoomCell:{myStatue._currentRoomCell.CellLetter.ToString() + myStatue._currentRoomCell.CellNumber} + Bonusses.Count:{myStatue.Bonusses.Count}");
                             myStatue.SetIsPurchased();
                             Debug.Log($"myStatue Infos: FocusedLevel:{myStatue.FocusedLevel}");
-                            RoomManager.instance.AddSavedStatues(myStatue);
-                            RoomManager.instance.statuesHandler.activeEditObjs.Add(myStatue);
+                            RoomManager.instance.AddSavedStatues(myStatue);                            
                             Debug.Log($"after myRoom.GetMyStatueInTheMyRoom().IsPurchased => {myRoom.GetMyStatueInTheMyRoom().IsPurchased}");
                         }
                     }
@@ -1045,6 +1044,7 @@ public class GameManager : MonoBehaviour
     {
         if (pause)
         {
+            if (!NpcManager.instance.databaseProcessComplated) return;
             AudioManager.instance.SaveAudioSettings();
             FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
             CancelFirebaseOperations();

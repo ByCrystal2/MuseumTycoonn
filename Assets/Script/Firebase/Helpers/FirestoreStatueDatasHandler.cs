@@ -15,7 +15,7 @@ public class FirestoreStatueDatasHandler : MonoBehaviour
     {
         db = FirebaseFirestore.DefaultInstance;
     }
-    public void AddStatueWithUserId(string userId, EditObjData _statue)
+    public void AddOrUpdateStatueWithUserId(string userId, EditObjData _statue)
     {
         // Kullanýcý ID'si ile belgeyi sorgula
         if (GameManager.instance != null) if (!GameManager.instance.IsWatchTutorial) return;
@@ -80,6 +80,30 @@ public class FirestoreStatueDatasHandler : MonoBehaviour
                 if (snapshot.Documents.Count() > 0)
                 {
                     Debug.Log($"Skill with ID {_statue.ID} already exists for user.");
+                    // Mevcut belgeyi güncelle
+                    DocumentSnapshot existingStatue = snapshot.Documents.First();
+                    Dictionary<string, object> updatedStatueData = new Dictionary<string, object>
+                {
+                    { "IsPurchased", _statue.IsPurchased },
+                    { "IsLocked", _statue.IsLocked },
+                    { "OnSlot", _statue.OnSlot },
+                    { "BonusIDs", _statue.Bonusses.Select(b => b.ID).ToList() },
+                    { "StatueIndex", _statue.myStatueIndex },
+                    { "TargetRoomCell", _statue._currentRoomCell.CellLetter.ToString() + _statue._currentRoomCell.CellNumber },
+                    { "Timestamp", FieldValue.ServerTimestamp }
+                };
+
+                    existingStatue.Reference.UpdateAsync(updatedStatueData).ContinueWithOnMainThread(updateTask =>
+                    {
+                        if (updateTask.IsCompleted)
+                        {
+                            Debug.Log($"Statue data with ID {_statue.ID} successfully updated.");
+                        }
+                        else if (updateTask.IsFaulted)
+                        {
+                            Debug.LogError($"Failed to update statue data: {updateTask.Exception}");
+                        }
+                    });
                 }
                 else
                 {
@@ -95,6 +119,7 @@ public class FirestoreStatueDatasHandler : MonoBehaviour
                         { "ID", _statue.ID },
                         { "IsPurchased", _statue.IsPurchased },
                         { "IsLocked", _statue.IsLocked },
+                        { "OnSlot", _statue.OnSlot },
                         { "BonusIDs", bonusIds },
                         { "StatueIndex", _statue.myStatueIndex },
                         { "TargetRoomCell", _statue._currentRoomCell.CellLetter.ToString() + _statue._currentRoomCell.CellNumber  },
@@ -163,6 +188,7 @@ public class FirestoreStatueDatasHandler : MonoBehaviour
                                     }
                                     foundStatue.IsPurchased = statueData.ContainsKey("IsPurchased") && Convert.ToBoolean(statueData["IsPurchased"]);
                                     foundStatue.IsLocked = statueData.ContainsKey("IsLocked") && Convert.ToBoolean(statueData["IsLocked"]);
+                                    foundStatue.OnSlot = statueData.ContainsKey("OnSlot") && Convert.ToBoolean(statueData["OnSlot"]);
                                     List<int> statueBonusIds = statueData.ContainsKey("BonusIDs") ? ((List<object>)statueData["BonusIDs"]).Select(x => Convert.ToInt32(x)).ToList() : new List<int>();
                                     foundStatue.myStatueIndex = statueData.ContainsKey("StatueIndex") ? Convert.ToInt32(statueData["StatueIndex"]) : -1;
 
@@ -194,5 +220,47 @@ public class FirestoreStatueDatasHandler : MonoBehaviour
         Debug.Log("Statues test 3 complated.");
         return foundStatues;
     }
+    public async Task DeleteStatueData(string userId, int _statueId)
+    {
+        Debug.Log("Delete statues process started.");
+        try
+        {
+            // Kullanýcýya ait belgeleri sorgula
+            Query query = db.Collection("Statues").WhereEqualTo("userID", userId);
+            QuerySnapshot querySnapshot = await query.GetSnapshotAsync();
+
+            foreach (DocumentSnapshot documentSnapshot in querySnapshot.Documents)
+            {
+                if (documentSnapshot.Exists)
+                {
+                    Debug.Log("Matching user statue found.");
+                    CollectionReference statueIdsRef = documentSnapshot.Reference.Collection("StatueDatas");
+
+                    
+                    Query statueQuery = statueIdsRef.WhereEqualTo("ID", _statueId);
+                    QuerySnapshot statueQuerySnapshot = await statueQuery.GetSnapshotAsync();
+
+                    foreach (DocumentSnapshot statueDocumentSnapshot in statueQuerySnapshot.Documents)
+                    {
+                        if (statueDocumentSnapshot.Exists)
+                        {
+                            Debug.Log($"Deleting statue with ID: {_statueId}");
+                            // Belgeyi sil
+                            await statueDocumentSnapshot.Reference.DeleteAsync();
+                        }
+                    }
+                    
+                    Debug.Log("Statue deletion process completed for current user.");
+                    break;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error deleting statue data: {ex.Message}");
+        }
+        Debug.Log("Delete statues process ended.");
+    }
+
 
 }
