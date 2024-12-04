@@ -950,13 +950,14 @@ public class GameManager : MonoBehaviour
         }
         List<WorkerData> inventoryWorkers = new List<WorkerData>();
         List<int> inventoryWorkerIDs = ((List<object>)gameDatas["WorkersInInventoryIDs"]).Select(x => Convert.ToInt32(x)).ToList();
+        Debug.Log("inventoryWorkerIDs.Count => " + inventoryWorkerIDs);
         foreach (int id in inventoryWorkerIDs)
         {
+            //WorkerData databaseItem = allWorkers.Where(x => x.ID == id).SingleOrDefault().MyDatas;
             WorkerData databaseItem = allWorkers.Where(x => x.ID == id).SingleOrDefault().MyDatas;
+            Debug.Log("database Inventory worker name:" + databaseItem.Name);
             inventoryWorkers.Add(databaseItem);
         }
-
-
         
         foreach (WorkerData worker in inventoryWorkers)
         {

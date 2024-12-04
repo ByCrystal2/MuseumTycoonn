@@ -1043,6 +1043,7 @@ public class CustomizeHandler : MonoBehaviour
 
     public void UpdateEquipmentStats()
     {
+        return; //Gecici sureligine bu method devre disidir. (Yeni versiyon guncellemeleriyle geri getirilebilinir.)
         ActiveBonuses = new();
 
         foreach (var item in TempCustomize.CustomizeElements)
