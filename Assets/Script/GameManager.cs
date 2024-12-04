@@ -1044,7 +1044,7 @@ public class GameManager : MonoBehaviour
     {
         if (pause)
         {
-            if (!NpcManager.instance.databaseProcessComplated) return;
+            if (NpcManager.instance != null && !NpcManager.instance.databaseProcessComplated) return;
             AudioManager.instance.SaveAudioSettings();
             FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
             CancelFirebaseOperations();
