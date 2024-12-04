@@ -14,41 +14,42 @@ public class StatueSlotHandler : MonoBehaviour
 
     IEnumerator IEWaitingForIsPointer()
     {
-        if (UIController.instance.IsPointerOverAnyUI())
-            yield return null;
-        //for (int i = 0; i < 3; i++)
-            yield return new WaitForEndOfFrame();
-
-        if (MyStatue != null && MyStatue.OnSlot)
+        yield return new WaitForEndOfFrame();
+        if (!UIController.instance.IsPointerOverAnyUI())
         {
-            //slottaysa.
-            UIController.instance.SetActivationRoomEditingPanel(true);
-            RoomEditingPanelController.instance.BuyEditObjPanel.SetActive(false);
-            RoomEditingPanelController.instance.EditObjPanel.SetActive(false);
-            RoomEditingPanelController.instance.RoomObjsPanel.SetActive(false);
-
-            RoomEditingPanelController.instance.objLeaveRoomController.SetData(this);
-            RoomEditingPanelController.instance.objLeaveRoomController.gameObject.SetActive(true);
-
-            RightUIPanelController.instance.UIVisibleClose(true);
-            RightUIPanelController.instance.CloseVisibleUIObjs(true);
-            UIController.instance.CloseJoystickObj(true);
-        }
-        else
-        {
-            if (GameManager.instance.GetCurrentGameMode() == GameMode.FPS)
+            if (MyStatue != null && MyStatue.OnSlot)
             {
-                PlayerManager.instance.LockPlayer();
+                //slottaysa.
+                UIController.instance.SetActivationRoomEditingPanel(true);
+                RoomEditingPanelController.instance.BuyEditObjPanel.SetActive(false);
+                RoomEditingPanelController.instance.EditObjPanel.SetActive(false);
+                RoomEditingPanelController.instance.RoomObjsPanel.SetActive(false);
+
+                RoomEditingPanelController.instance.objLeaveRoomController.SetData(this);
+                RoomEditingPanelController.instance.objLeaveRoomController.gameObject.SetActive(true);
+
+                RightUIPanelController.instance.UIVisibleClose(true);
+                RightUIPanelController.instance.CloseVisibleUIObjs(true);
+                UIController.instance.CloseJoystickObj(true);
             }
-            UIController.instance.SetActivationRoomEditingPanel(true);
-            RoomEditingPanelController.instance.BuyEditObjPanel.SetActive(false);
-            RoomEditingPanelController.instance.EditObjPanel.SetActive(false);
-            RoomEditingPanelController.instance.RoomObjsPanel.SetActive(true);
-            RoomManager.instance.CurrentEditedRoom = RoomManager.instance.RoomDatas.Where(x => (x.availableRoomCell.CellLetter.ToString() + x.availableRoomCell.CellNumber.ToString()) == MyRoomCode).SingleOrDefault();
-            RightUIPanelController.instance.UIVisibleClose(true);
-            RightUIPanelController.instance.CloseVisibleUIObjs(true);
-            UIController.instance.CloseJoystickObj(true);
+            else
+            {
+                if (GameManager.instance.GetCurrentGameMode() == GameMode.FPS)
+                {
+                    PlayerManager.instance.LockPlayer();
+                }
+                UIController.instance.SetActivationRoomEditingPanel(true);
+                RoomEditingPanelController.instance.BuyEditObjPanel.SetActive(false);
+                RoomEditingPanelController.instance.EditObjPanel.SetActive(false);
+                RoomEditingPanelController.instance.RoomObjsPanel.SetActive(true);
+                RoomManager.instance.CurrentEditedRoom = RoomManager.instance.RoomDatas.Where(x => (x.availableRoomCell.CellLetter.ToString() + x.availableRoomCell.CellNumber.ToString()) == MyRoomCode).SingleOrDefault();
+                RightUIPanelController.instance.UIVisibleClose(true);
+                RightUIPanelController.instance.CloseVisibleUIObjs(true);
+                UIController.instance.CloseJoystickObj(true);
+            }
         }
+
+        
         
     }
     IEnumerator IEWaitingForIsPointerOverride()
@@ -69,6 +70,7 @@ public class StatueSlotHandler : MonoBehaviour
     }
     private void OnMouseDown()
     {
+        
         StopAllCoroutines();
         StartCoroutine(IEWaitingForIsPointer());
     }
