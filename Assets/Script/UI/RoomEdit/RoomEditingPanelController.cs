@@ -182,6 +182,7 @@ public class RoomEditingPanelController : MonoBehaviour
             UIController.instance.InsufficientGoldEffect();
             Debug.Log(ClickedEditObjBehaviour.data.Name + " Adli heykeli almaya paraniz yetmedi.");
             ClickedEditObjBehaviour = null;
+                PlayerManager.instance.UnLockPlayer();
             return;
         }
         else
@@ -226,6 +227,7 @@ public class RoomEditingPanelController : MonoBehaviour
         UIController.instance.SetActivationRoomEditingPanel(false);
         RightUIPanelController.instance.UIVisibleClose(false);
         UIController.instance.CloseJoystickObj(false);
+        PlayerManager.instance.UnLockPlayer();
         GameManager.instance.Save();
     }
 

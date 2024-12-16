@@ -321,13 +321,13 @@ public class NPCBehaviour : MonoBehaviour
         float finalExp = totalExp - totalExp * messCount * 0.01f;
         if (finalExp <= 1)
             finalExp = 1;
-        if (messCount > 1)
-            Debug.Log(messCount + " adet pislik yuzunden xp kazancin dusuruldu => " + totalExp + " dan " + finalExp + " e");
+        //if (messCount > 1)
+        //    Debug.Log(messCount + " adet pislik yuzunden xp kazancin dusuruldu => " + totalExp + " dan " + finalExp + " e");
         int targetStarValue = 1;
         targetStarValue = Mathf.FloorToInt(NPCCurrentScore / 2);
         if (targetStarValue <= 0)
             targetStarValue = 1;
-        Debug.Log($"{name} adli npc, {targetStarValue} degerinde bir yildiz seviyesi ile resme yorum yapacak.", transform);
+        //Debug.Log($"{name} adli npc, {targetStarValue} degerinde bir yildiz seviyesi ile resme yorum yapacak.", transform);
         List<TableCommentEvaluationData> targetComments = TableCommentEvaluationManager.instance.datas.Where(x => x.StarValue == targetStarValue).ToList();
         UIController.instance.AddCommentInGlobalTab(MyNPCUI.ProfileSprite, GeneralData.NpcName, targetComments[Random.Range(0, targetComments.Count)].Message, TimeManager.instance.CurrentDateTime.ToShortTimeString());
         MuseumManager.instance.AddCultureExp(finalExp);

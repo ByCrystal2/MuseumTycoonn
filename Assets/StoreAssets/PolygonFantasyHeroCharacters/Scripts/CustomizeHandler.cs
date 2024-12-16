@@ -51,8 +51,9 @@ public class CustomizeHandler : MonoBehaviour
 
     [Header("Localization")]
     public Text GainItemCategoryText;
-    public Text SelectedHeaderText;
-
+    public Transform HeaderTextsContent;
+    public List<string> onSelectedAnEquipmentStrings = new List<string>();
+    public List<string> onExitProcessStrings = new List<string>();
     [Header("Runtime Datas")]
     [SerializeField] private List<int> LockedElements = new();
     [SerializeField] private PlayerExtraCustomizeData TempCustomize;
@@ -97,7 +98,8 @@ public class CustomizeHandler : MonoBehaviour
     }
     void ExitButtonProcesses()
     {
-        UIInteractHandler.instance.AskQuestion("Karakter Özelleþtirmesi #Çeviri", "Deðiþiklikleri onaylýyor musunuz? #Çeviri",
+
+        UIInteractHandler.instance.AskQuestion(onExitProcessStrings[0], onExitProcessStrings[1],
             (yes) =>
             {
                 SwitchCustomizePanel();
@@ -110,6 +112,7 @@ public class CustomizeHandler : MonoBehaviour
     }
     void SaveButtonProcesses()
     {
+        return; //bu method devre disi birakilmistir.
         UIInteractHandler.instance.AskQuestion("Özelleþtirmeyi Kaydet #Çeviri", "Deðiþiklikleri onaylýyor musunuz? (Mevcut Slotu Kaydeder.) #Çeviri",
             (yes) =>
             {
@@ -216,10 +219,31 @@ public class CustomizeHandler : MonoBehaviour
             CustomizeCamChest.Priority = -99;
             CustomizeCamLeg.Priority = 900;
         }
-
+        if (!HeaderTextsContent.gameObject.activeSelf)
+            HeaderTextsContent.gameObject.SetActive(true);
+        HeaderTextActivation((int)_slot);
         //SelectedHeaderText.text = LanguageDatabase.instance.GetText("CustomizeSlot_" + (int)_slot);
     }
-
+    void HeaderTextActivation(int _index)
+    {
+        int length = HeaderTextsContent.childCount;
+        int indexResult = -9999;
+        for (int i = 0; i < length; i++)
+        {
+            GameObject headerText = HeaderTextsContent.GetChild(i).gameObject;
+            GameObject header = HeadersParent.GetChild(i).gameObject;
+            if (indexResult == -9999 && header.name.StartsWith(_index.ToString()))
+            {
+                indexResult = header.transform.GetSiblingIndex();
+            }
+            if (headerText.activeSelf)
+                headerText.SetActive(false);
+        }
+        if (!(indexResult == -9999))
+            HeaderTextsContent.GetChild(indexResult).gameObject.SetActive(true);
+        else
+            Debug.LogError($"Hata! {_index} numarasina ait bir header bulunamadi!");
+    }
     public void SwitchCustomizePanel()
     {
         if (CustomizePanel.activeSelf)
@@ -414,6 +438,8 @@ public class CustomizeHandler : MonoBehaviour
             CustomizeCamChest.Follow.parent.localEulerAngles = Vector3.zero;
 
         CustomizeCamChest.Priority = 900;
+        if (HeaderTextsContent.gameObject.activeSelf)
+            HeaderTextsContent.gameObject.SetActive(false);
     }
 
     public void OnSetSelected(int _setID)
@@ -571,8 +597,8 @@ public class CustomizeHandler : MonoBehaviour
         if (LockedElements.Contains(_id) || LockedElements.Contains(_id + 100))
         {
             CustomizeItem customizeItem = CustomizeItems.Where(x => x.ID == _id).SingleOrDefault();
-            string header2 = "Tanimlanmasi Gerek Header! Func: OnSelectedAnEquipment";
-            string explanation2 = "Tanimlanmasi Gerek Desc! Func: OnSelectedAnEquipment";
+            string header2 = $"{onSelectedAnEquipmentStrings[0]} ({customizeItem.ItemName})";
+            string explanation2 = $"{onSelectedAnEquipmentStrings[1]}: {customizeItem.UnlockPrice}";
             UIInteractHandler.instance.AskQuestion(header2, explanation2, (yes) =>
             {
                 BuyCustomizeElement(customizeItem);
@@ -612,8 +638,8 @@ public class CustomizeHandler : MonoBehaviour
         if (LockedElements.Contains(_id) || LockedElements.Contains(_id + 100) || LockedElements.Contains(_id - 100))
         {
             CustomizeItem customizeItem = CustomizeItems.Where(x => x.ID == _id).SingleOrDefault();
-            string header2 = "Tanimlanmasi Gerek Header! Func: OnSelectedAnEquipment";
-            string explanation2 = "Tanimlanmasi Gerek Desc! Func: OnSelectedAnEquipment";
+            string header2 = $"{onSelectedAnEquipmentStrings[0]} ({customizeItem.ItemName})";
+            string explanation2 = $"{onSelectedAnEquipmentStrings[1]}: {customizeItem.UnlockPrice}";
             UIInteractHandler.instance.AskQuestion(header2, explanation2, (yes) =>
             {
                 BuyCustomizeElement(customizeItem);
@@ -635,8 +661,8 @@ public class CustomizeHandler : MonoBehaviour
         if (LockedElements.Contains(contID) || LockedElements.Contains(contID) || LockedElements.Contains(contID))
         {
             CustomizeItem customizeItem = CustomizeItems.Where(x => x.ID == contID).SingleOrDefault();
-            string header2 = "Tanimlanmasi Gerek Header! Func: OnSelectedAnEquipment";
-            string explanation2 = "Tanimlanmasi Gerek Desc! Func: OnSelectedAnEquipment";
+            string header2 = $"{onSelectedAnEquipmentStrings[0]} ({customizeItem.ItemName})";
+            string explanation2 = $"{onSelectedAnEquipmentStrings[1]}: {customizeItem.UnlockPrice}";
             UIInteractHandler.instance.AskQuestion(header2, explanation2, (yes) =>
             {
                 BuyCustomizeElement(customizeItem);
@@ -760,8 +786,8 @@ public class CustomizeHandler : MonoBehaviour
     public void UpdateLocalize()
     {
         DrawButton.transform.GetChild(0).GetComponent<Text>().text = "Draw Buttonu Texti";
-        AppearanceButton.transform.GetChild(0).GetComponent<Text>().text = "Gorunum Buttonu Texti";
-        ColorsButton.transform.GetChild(0).GetComponent<Text>().text = "Renkler button Texti";
+        //AppearanceButton.transform.GetChild(0).GetComponent<Text>().text = "Gorunum Buttonu Texti";
+        //ColorsButton.transform.GetChild(0).GetComponent<Text>().text = "Renkler button Texti";
         ClaimButton.transform.GetChild(0).GetComponent<Text>().text = "Odulu al Button Texti.";
     }
 

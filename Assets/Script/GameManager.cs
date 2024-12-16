@@ -860,6 +860,21 @@ public class GameManager : MonoBehaviour
             allDatas[i].Message = notificationLanguageDatas[i].ActiveLanguage;
         }
     }
+    public void TranslateCustomizationStrings()
+    {
+        List<LanguageData> onSelectedAnEquipmentStrings = LanguageDatabase.instance.Language.customize_SelectedAnEquipmentStrings;
+        List<LanguageData> onExitProcessStrings = LanguageDatabase.instance.Language.customize_OnExitProcessStrings;
+        int length = onSelectedAnEquipmentStrings.Count;
+        for (int i = 0; i < length; i++)
+        {
+            CustomizeHandler.instance.onSelectedAnEquipmentStrings.Add(onSelectedAnEquipmentStrings[i].ActiveLanguage);
+        }
+        int length1 = onExitProcessStrings.Count;
+        for (int i = 0; i < length1; i++)
+        {
+            CustomizeHandler.instance.onExitProcessStrings.Add(onExitProcessStrings[i].ActiveLanguage);
+        }
+    }
     // Ceviri islemlerinin tamamlanip tamamlanmadigini kontrol eder.
     private void CheckAndSetCompletion(ref int completedProcesses, System.Threading.Tasks.TaskCompletionSource<bool> tcs)
     {
@@ -1048,6 +1063,8 @@ public class GameManager : MonoBehaviour
             if (NpcManager.instance != null && !NpcManager.instance.databaseProcessComplated) return;
             AudioManager.instance.SaveAudioSettings();
             FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
+            if (CustomizeHandler.instance != null && CustomizeHandler.instance.characterCustomizeData != null)
+                FirestoreManager.instance.customizationDatasHandler.UpdateBaseValues(CustomizeHandler.instance.characterCustomizeData, FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
             CancelFirebaseOperations();
             TimeManager.instance.StopProgressCoroutine();
             Time.timeScale = 0;

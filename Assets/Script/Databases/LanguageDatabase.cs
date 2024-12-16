@@ -150,6 +150,11 @@ public class LanguageDatabase : MonoBehaviour
         Language.ShopQuestionInfoStrings = new List<LanguageData>() { new LanguageData(0, "Purchase Process"), new LanguageData(1, "Do you confirm the purchase?"), new LanguageData(2, "Available"), new LanguageData(3, "Gem"), new LanguageData(4, "Gold"), new LanguageData(5, "Product Price"), new LanguageData(6, "Paid") };
 
         Language.WorkerInfoStrings = new List<LanguageData>() { new LanguageData(0, "Security"), new LanguageData(1, "Housekeeper"), new LanguageData(2, "Musician"), new LanguageData(3, "Receptionist"), new LanguageData(4, "Brochure Seller") };
+
+        //Customization
+        Language.customize_SelectedAnEquipmentStrings = new List<LanguageData> { new LanguageData(0, "Do you want to buy the item?"), new LanguageData(1, "Price") };
+        Language.customize_OnExitProcessStrings = new List<LanguageData> { new LanguageData(0, "Karakter Özelleþtirmesi"), new LanguageData(1, "Deðiþiklikleri onaylýyor musunuz?") };
+        //Customization
         //General
     }
     bool waitBeforeTranslate;
@@ -205,6 +210,14 @@ public class LanguageDatabase : MonoBehaviour
 
         List<string> workerInfoKeysToTranslate = new List<string>();
         List<string> workerInfoTranslatedTexts = new List<string>();
+
+        //Customization
+        List<string> customize_OnSelectedAnEquipmentKeysToTranslate = new List<string>();
+        List<string> customize_OnSelectedAnEquipmentTranslatedTexts = new List<string>();
+
+        List<string> customize_OnExitProcessKeysToTranslate = new List<string>();
+        List<string> customize_OnExitProcessTranslatedTexts = new List<string>();
+        //Customization
         //General
 
         //SKILLS
@@ -362,6 +375,32 @@ public class LanguageDatabase : MonoBehaviour
         {
             workerInfoTranslatedTexts = result;
         });
+
+        //Customization
+        foreach (var item in Language.customize_SelectedAnEquipmentStrings)
+        {
+            if (item.Key == string.Empty)
+                continue;
+            customize_OnSelectedAnEquipmentKeysToTranslate.Add(item.Key);
+        }
+
+        await GameManager.instance.BulkTranslateAndAssignAsync(customize_OnSelectedAnEquipmentKeysToTranslate, (result) =>
+        {
+            customize_OnSelectedAnEquipmentTranslatedTexts = result;
+        });
+
+        foreach (var item in Language.customize_OnExitProcessStrings)
+        {
+            if (item.Key == string.Empty)
+                continue;
+            customize_OnExitProcessKeysToTranslate.Add(item.Key);
+        }
+
+        await GameManager.instance.BulkTranslateAndAssignAsync(customize_OnExitProcessKeysToTranslate, (result) =>
+        {
+            customize_OnExitProcessTranslatedTexts = result;
+        });
+        //Customization
         //GENERAL
 
         //ItemAdding
@@ -449,6 +488,20 @@ public class LanguageDatabase : MonoBehaviour
         {
             Language.WorkerInfoStrings[i].ActiveLanguage = workerInfoTranslatedTexts[i];
         }
+
+        //Customization
+        Debug.Log("Language.customize_SelectedAnEquipmentStrings.Count => " + Language.customize_SelectedAnEquipmentStrings.Count + "customize_OnSelectedAnEquipmentTranslatedTexts.Count => " + customize_OnSelectedAnEquipmentTranslatedTexts.Count);
+        for (int i = 0; i < customize_OnSelectedAnEquipmentTranslatedTexts.Count; i++)
+        {
+            Language.customize_SelectedAnEquipmentStrings[i].ActiveLanguage = customize_OnSelectedAnEquipmentTranslatedTexts[i];
+        }
+
+        Debug.Log("Language.customize_OnExitProcessStrings.Count => " + Language.customize_OnExitProcessStrings.Count + "customize_OnExitProcessTranslatedTexts.Count => " + customize_OnExitProcessTranslatedTexts.Count);
+        for (int i = 0; i < customize_OnExitProcessTranslatedTexts.Count; i++)
+        {
+            Language.customize_OnExitProcessStrings[i].ActiveLanguage = customize_OnExitProcessTranslatedTexts[i];
+        }
+        //Customization
         //GeneralAdding
         // JSON dosyasýný kaydet
         string jsonString = JsonUtility.ToJson(Language);
@@ -469,307 +522,364 @@ public class LanguageDatabase : MonoBehaviour
     }
     public async Task TranslateAndSaveAllLanguageData()
     {
-        waitBeforeTranslate = true;
-        LanguageFilling();
-
-        foreach (Languages language in Enum.GetValues(typeof(Languages)))
+        try
         {
-            //ITEMS
-            List<string> itemDescKeysToTranslate = new List<string>();
-            List<string> itemDescTranslatedTexts = new List<string>();
-            //ITEMS
-            //SKILLS
-            List<string> skillNameKeysToTranslate = new List<string>();
-            List<string> skillNameTranslatedTexts = new List<string>();
+            waitBeforeTranslate = true;
+            LanguageFilling();
 
-            List<string> skillDescKeysToTranslate = new List<string>();
-            List<string> skillDescTranslatedTexts = new List<string>();
-
-            List<string> skillEffectKeysToTranslate = new List<string>();
-            List<string> skillEffectTranslatedTexts = new List<string>();
-
-            List<string> skillDefaultStringKeysToTranslate = new List<string>();
-            List<string> skillDefaultStringTranslatedTexts = new List<string>();
-
-            List<string> skillInfoKeysToTranslate = new List<string>();
-            List<string> skillInfoTranslatedTexts = new List<string>();
-            //SKILLS
-
-            //NPCS
-            List<string> npcCommendKeysToTranslate = new List<string>();
-            List<string> npcCommendTranslatedTexts = new List<string>();
-            //NPCS
-
-            //Dialogs
-            List<string> dialogKeysToTranslate = new List<string>();
-            List<string> dialogTranslatedTexts = new List<string>();
-            //Dialogs
-
-            //NOTIFICATIONS
-            List<string> notificationKeysToTranslate = new List<string>();
-            List<string> notificationTranslatedTexts = new List<string>();
-            //NOTIFICATIONS
-
-            //General
-            List<string> pictureInfoKeysToTranslate = new List<string>();
-            List<string> pictureInfoTranslatedTexts = new List<string>();
-
-            List<string> internetCheckInfoKeysToTranslate = new List<string>();
-            List<string> internetCheckInfoTranslatedTexts = new List<string>();
-
-            List<string> shopQuestionInfoKeysToTranslate = new List<string>();
-            List<string> shopQuestionInfoTranslatedTexts = new List<string>();
-
-            List<string> workerInfoKeysToTranslate = new List<string>();
-            List<string> workerInfoTranslatedTexts = new List<string>();
-            //General
-
-            //SKILLS
-            foreach (var item in Language.SkillNames)
+            foreach (Languages language in Enum.GetValues(typeof(Languages)))
             {
-                skillNameKeysToTranslate.Add(item.Key);
+                //ITEMS
+                List<string> itemDescKeysToTranslate = new List<string>();
+                List<string> itemDescTranslatedTexts = new List<string>();
+                //ITEMS
+                //SKILLS
+                List<string> skillNameKeysToTranslate = new List<string>();
+                List<string> skillNameTranslatedTexts = new List<string>();
+
+                List<string> skillDescKeysToTranslate = new List<string>();
+                List<string> skillDescTranslatedTexts = new List<string>();
+
+                List<string> skillEffectKeysToTranslate = new List<string>();
+                List<string> skillEffectTranslatedTexts = new List<string>();
+
+                List<string> skillDefaultStringKeysToTranslate = new List<string>();
+                List<string> skillDefaultStringTranslatedTexts = new List<string>();
+
+                List<string> skillInfoKeysToTranslate = new List<string>();
+                List<string> skillInfoTranslatedTexts = new List<string>();
+                //SKILLS
+
+                //NPCS
+                List<string> npcCommendKeysToTranslate = new List<string>();
+                List<string> npcCommendTranslatedTexts = new List<string>();
+                //NPCS
+
+                //Dialogs
+                List<string> dialogKeysToTranslate = new List<string>();
+                List<string> dialogTranslatedTexts = new List<string>();
+                //Dialogs
+
+                //NOTIFICATIONS
+                List<string> notificationKeysToTranslate = new List<string>();
+                List<string> notificationTranslatedTexts = new List<string>();
+                //NOTIFICATIONS
+
+                //General
+                List<string> pictureInfoKeysToTranslate = new List<string>();
+                List<string> pictureInfoTranslatedTexts = new List<string>();
+
+                List<string> internetCheckInfoKeysToTranslate = new List<string>();
+                List<string> internetCheckInfoTranslatedTexts = new List<string>();
+
+                List<string> shopQuestionInfoKeysToTranslate = new List<string>();
+                List<string> shopQuestionInfoTranslatedTexts = new List<string>();
+
+                List<string> workerInfoKeysToTranslate = new List<string>();
+                List<string> workerInfoTranslatedTexts = new List<string>();
+
+                //Customization
+                List<string> customize_OnSelectedAnEquipmentKeysToTranslate = new List<string>();
+                List<string> customize_OnSelectedAnEquipmentTranslatedTexts = new List<string>();
+
+                List<string> customize_OnExitProcessKeysToTranslate = new List<string>();
+                List<string> customize_OnExitProcessTranslatedTexts = new List<string>();
+                //Customization
+                //General
+
+                //SKILLS
+                foreach (var item in Language.SkillNames)
+                {
+                    skillNameKeysToTranslate.Add(item.Key);
+                }
+                await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), skillNameKeysToTranslate, (result) =>
+                {
+                    skillNameTranslatedTexts = result;
+                });
+
+                foreach (var item in Language.SkillDescriptions)
+                {
+                    skillDescKeysToTranslate.Add(item.Key);
+                }
+
+                await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), skillDescKeysToTranslate, (result) =>
+                {
+                    skillDescTranslatedTexts = result;
+                });
+
+                foreach (var item in Language.SkillEffects)
+                {
+                    skillEffectKeysToTranslate.Add(item.Key);
+                }
+
+                await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), skillEffectKeysToTranslate, (result) =>
+                {
+                    skillEffectTranslatedTexts = result;
+                });
+
+                foreach (var item in Language.SkillDefaultStrings)
+                {
+                    skillDefaultStringKeysToTranslate.Add(item.Key);
+                }
+
+                await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), skillDefaultStringKeysToTranslate, (result) =>
+                {
+                    skillDefaultStringTranslatedTexts = result;
+                });
+
+                foreach (var item in Language.SkillInfoStrings)
+                {
+                    skillInfoKeysToTranslate.Add(item.Key);
+                }
+
+                await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), skillInfoKeysToTranslate, (result) =>
+                {
+                    skillInfoTranslatedTexts = result;
+                });
+                //SKILLS
+
+                //ITEM
+                foreach (var item in Language.ItemDescriptions)
+                {
+                    if (item.Key == string.Empty)
+                        continue;
+                    itemDescKeysToTranslate.Add(item.Key);
+                }
+
+                await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), itemDescKeysToTranslate, (result) =>
+                {
+                    itemDescTranslatedTexts = result;
+                });
+                //ITEM
+
+                //NPCS
+                foreach (var item in Language.DialogsMessages)
+                {
+                    if (item.Key == string.Empty)
+                        continue;
+                    dialogKeysToTranslate.Add(item.Key);
+                }
+
+                await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), dialogKeysToTranslate, (result) =>
+                {
+                    dialogTranslatedTexts = result;
+                });
+                //NPCS
+
+                //NOTIFICATIONS
+                foreach (var item in Language.NotificationMessages)
+                {
+                    if (item.Key == string.Empty)
+                        continue;
+                    notificationKeysToTranslate.Add(item.Key);
+                }
+
+                await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), notificationKeysToTranslate, (result) =>
+                {
+                    notificationTranslatedTexts = result;
+                });
+                //NOTIFICATIONS
+
+                //GENERAL
+                foreach (var item in Language.PictureInfoStrings)
+                {
+                    if (item.Key == string.Empty)
+                        continue;
+                    pictureInfoKeysToTranslate.Add(item.Key);
+                }
+
+                await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), pictureInfoKeysToTranslate, (result) =>
+                {
+                    pictureInfoTranslatedTexts = result;
+                });
+                foreach (var item in Language.InternetCheckInfoStrings)
+                {
+                    if (item.Key == string.Empty)
+                        continue;
+                    internetCheckInfoKeysToTranslate.Add(item.Key);
+                }
+
+                await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), internetCheckInfoKeysToTranslate, (result) =>
+                {
+                    internetCheckInfoTranslatedTexts = result;
+                });
+
+                foreach (var item in Language.ShopQuestionInfoStrings)
+                {
+                    if (item.Key == string.Empty)
+                        continue;
+                    shopQuestionInfoKeysToTranslate.Add(item.Key);
+                }
+
+                await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), shopQuestionInfoKeysToTranslate, (result) =>
+                {
+                    shopQuestionInfoTranslatedTexts = result;
+                });
+
+                foreach (var item in Language.WorkerInfoStrings)
+                {
+                    if (item.Key == string.Empty)
+                        continue;
+                    workerInfoKeysToTranslate.Add(item.Key);
+                }
+
+                await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), workerInfoKeysToTranslate, (result) =>
+                {
+                    workerInfoTranslatedTexts = result;
+                });
+
+                //Customization
+                foreach (var item in Language.customize_SelectedAnEquipmentStrings)
+                {
+                    if (item.Key == string.Empty)
+                        continue;
+                    customize_OnSelectedAnEquipmentKeysToTranslate.Add(item.Key);
+                }
+
+                await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), customize_OnSelectedAnEquipmentKeysToTranslate, (result) =>
+                {
+                    customize_OnSelectedAnEquipmentTranslatedTexts = result;
+                });
+
+                foreach (var item in Language.customize_OnExitProcessStrings)
+                {
+                    if (item.Key == string.Empty)
+                        continue;
+                    customize_OnExitProcessKeysToTranslate.Add(item.Key);
+                }
+
+                await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), customize_OnExitProcessKeysToTranslate, (result) =>
+                {
+                    customize_OnExitProcessTranslatedTexts = result;
+                });
+                //Customization
+                //GENERAL
+
+                //ItemAdding
+                Debug.Log("Language.ItemDescriptions.Count => " + Language.ItemDescriptions.Count + "itemDescTranslatedTexts.Count => " + itemDescTranslatedTexts.Count);
+                for (int i = 0; i < itemDescTranslatedTexts.Count; i++)
+                {
+                    Debug.Log("itemDescTranslatedTexts[i] => " + itemDescTranslatedTexts[i] + " and i => " + i);
+                    Language.ItemDescriptions[i].ActiveLanguage = itemDescTranslatedTexts[i];
+                }
+                //ItemAdding
+                //SkillAdding
+                Debug.Log("Language.SkillNames.Count => " + Language.SkillNames.Count + "skillNameTranslatedTexts.Count => " + skillNameTranslatedTexts.Count);
+                for (int i = 0; i < skillNameTranslatedTexts.Count; i++)
+                {
+                    Language.SkillNames[i].ActiveLanguage = skillNameTranslatedTexts[i];
+                }
+                Debug.Log("Language.SkillDescriptions.Count => " + Language.SkillDescriptions.Count + "skillDescTranslatedTexts.Count => " + skillDescTranslatedTexts.Count);
+                for (int i = 0; i < skillDescTranslatedTexts.Count; i++)
+                {
+                    if (i >= Language.SkillDescriptions.Count) break;
+                    Language.SkillDescriptions[i].ActiveLanguage = skillDescTranslatedTexts[i];
+                }
+                Debug.Log("Language.SkillEffects.Count => " + Language.SkillEffects.Count + "skillEffectTranslatedTexts.Count => " + skillEffectTranslatedTexts.Count);
+                for (int i = 0; i < skillEffectTranslatedTexts.Count; i++)
+                {
+                    Language.SkillEffects[i].ActiveLanguage = skillEffectTranslatedTexts[i];
+                }
+                Debug.Log("Language.SkillDefaultStrings.Count => " + Language.SkillDefaultStrings.Count + "skillDefaultStringTranslatedTexts.Count => " + skillDefaultStringTranslatedTexts.Count);
+                for (int i = 0; i < skillDefaultStringTranslatedTexts.Count; i++)
+                {
+                    Language.SkillDefaultStrings[i].ActiveLanguage = skillDefaultStringTranslatedTexts[i];
+                }
+                Debug.Log("Language.SkillInfoStrings.Count => " + Language.SkillInfoStrings.Count + "skillInfoTranslatedTexts.Count => " + skillInfoTranslatedTexts.Count);
+                for (int i = 0; i < skillInfoTranslatedTexts.Count; i++)
+                {
+                    Language.SkillInfoStrings[i].ActiveLanguage = skillInfoTranslatedTexts[i];
+                }
+                //SkillAdding
+
+                //NPCCommendAdding
+                Debug.Log("Language.CommendEvulations.Count => " + Language.CommendEvulations.Count + "npcCommendTranslatedTexts.Count => " + npcCommendTranslatedTexts.Count);
+                for (int i = 0; i < npcCommendTranslatedTexts.Count; i++)
+                {
+                    Language.CommendEvulations[i].ActiveLanguage = npcCommendTranslatedTexts[i];
+                }
+                //NPCCommendAdding
+
+                //NPCSAdding
+                Debug.Log("Language.DialogsMessages.Count => " + Language.DialogsMessages.Count + "dialogTranslatedTexts.Count => " + dialogTranslatedTexts.Count);
+                for (int i = 0; i < dialogTranslatedTexts.Count; i++)
+                {
+                    Language.DialogsMessages[i].ActiveLanguage = dialogTranslatedTexts[i];
+                }
+                //NPCSAdding
+
+                //NotificationAdding
+                Debug.Log("Language.NotificationMessages.Count => " + Language.NotificationMessages.Count + "notificationTranslatedTexts.Count => " + notificationTranslatedTexts.Count);
+                for (int i = 0; i < notificationTranslatedTexts.Count; i++)
+                {
+                    Language.NotificationMessages[i].ActiveLanguage = notificationTranslatedTexts[i];
+                }
+                //NotificationAdding
+
+                //GeneralAdding
+                Debug.Log("Language.PictureInfoStrings.Count => " + Language.PictureInfoStrings.Count + "pictureInfoTranslatedTexts.Count => " + pictureInfoTranslatedTexts.Count);
+                for (int i = 0; i < pictureInfoTranslatedTexts.Count; i++)
+                {
+                    Language.PictureInfoStrings[i].ActiveLanguage = pictureInfoTranslatedTexts[i];
+                }
+
+                Debug.Log("Language.InternetCheckInfoStrings.Count => " + Language.InternetCheckInfoStrings.Count + "internetCheckInfoTranslatedTexts.Count => " + internetCheckInfoTranslatedTexts.Count);
+                for (int i = 0; i < internetCheckInfoTranslatedTexts.Count; i++)
+                {
+                    Language.InternetCheckInfoStrings[i].ActiveLanguage = internetCheckInfoTranslatedTexts[i];
+                }
+
+                Debug.Log("Language.ShopQuestionInfoStrings.Count => " + Language.ShopQuestionInfoStrings.Count + "shopQuestionInfoTranslatedTexts.Count => " + shopQuestionInfoTranslatedTexts.Count);
+                for (int i = 0; i < shopQuestionInfoTranslatedTexts.Count; i++)
+                {
+                    Language.ShopQuestionInfoStrings[i].ActiveLanguage = shopQuestionInfoTranslatedTexts[i];
+                }
+
+                Debug.Log("Language.WorkerInfoStrings.Count => " + Language.WorkerInfoStrings.Count + "workerInfoTranslatedTexts.Count => " + workerInfoTranslatedTexts.Count);
+                for (int i = 0; i < workerInfoTranslatedTexts.Count; i++)
+                {
+                    Language.WorkerInfoStrings[i].ActiveLanguage = workerInfoTranslatedTexts[i];
+                }
+                //Customization
+                Debug.Log("Language.customize_SelectedAnEquipmentStrings.Count => " + Language.customize_SelectedAnEquipmentStrings.Count + "customize_OnSelectedAnEquipmentTranslatedTexts.Count => " + customize_OnSelectedAnEquipmentTranslatedTexts.Count);
+                for (int i = 0; i < customize_OnSelectedAnEquipmentTranslatedTexts.Count; i++)
+                {
+                    Language.customize_SelectedAnEquipmentStrings[i].ActiveLanguage = customize_OnSelectedAnEquipmentTranslatedTexts[i];
+                }
+
+                Debug.Log("Language.customize_OnExitProcessStrings.Count => " + Language.customize_OnExitProcessStrings.Count + "customize_OnExitProcessTranslatedTexts.Count => " + customize_OnExitProcessTranslatedTexts.Count);
+                for (int i = 0; i < customize_OnExitProcessTranslatedTexts.Count; i++)
+                {
+                    Language.customize_OnExitProcessStrings[i].ActiveLanguage = customize_OnExitProcessTranslatedTexts[i];
+                }
+                //Customization
+                //GeneralAdding
+                // JSON dosyasýný kaydet
+                Debug.LogWarning("Language Localization Test 1");
+                string jsonString = JsonUtility.ToJson(Language);
+                string directoryPath = "Assets/Resources/Languages"; // Resources klasörü içindeki Languages klasörü
+                string filePath = Path.Combine(directoryPath, $"Language_{GameManager.instance.GetLanguageShortString(GetEnumDescription(language))}.json");
+                Debug.LogWarning("Language Localization Test 2");
+                // Dosya yolu var mý kontrol et, yoksa oluþtur
+                if (!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+                Debug.LogWarning("Language Localization Test 3");
+                // Dosyayý oluþtur ve içine yaz
+                File.WriteAllText(filePath, jsonString);
+                Debug.LogWarning("Language Localization Test 4");
             }
-            await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), skillNameKeysToTranslate, (result) =>
-            {
-                skillNameTranslatedTexts = result;
-            });
 
-            foreach (var item in Language.SkillDescriptions)
-            {
-                skillDescKeysToTranslate.Add(item.Key);
-            }
 
-            await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), skillDescKeysToTranslate, (result) =>
-            {
-                skillDescTranslatedTexts = result;
-            });
-
-            foreach (var item in Language.SkillEffects)
-            {
-                skillEffectKeysToTranslate.Add(item.Key);
-            }
-
-            await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), skillEffectKeysToTranslate, (result) =>
-            {
-                skillEffectTranslatedTexts = result;
-            });
-
-            foreach (var item in Language.SkillDefaultStrings)
-            {
-                skillDefaultStringKeysToTranslate.Add(item.Key);
-            }
-
-            await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), skillDefaultStringKeysToTranslate, (result) =>
-            {
-                skillDefaultStringTranslatedTexts = result;
-            });
-
-            foreach (var item in Language.SkillInfoStrings)
-            {
-                skillInfoKeysToTranslate.Add(item.Key);
-            }
-
-            await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), skillInfoKeysToTranslate, (result) =>
-            {
-                skillInfoTranslatedTexts = result;
-            });
-            //SKILLS
-
-            //ITEM
-            foreach (var item in Language.ItemDescriptions)
-            {
-                if (item.Key == string.Empty)
-                    continue;
-                itemDescKeysToTranslate.Add(item.Key);
-            }
-
-            await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), itemDescKeysToTranslate, (result) =>
-            {
-                itemDescTranslatedTexts = result;
-            });
-            //ITEM
-
-            //NPCS
-            foreach (var item in Language.DialogsMessages)
-            {
-                if (item.Key == string.Empty)
-                    continue;
-                dialogKeysToTranslate.Add(item.Key);
-            }
-
-            await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), dialogKeysToTranslate, (result) =>
-            {
-                dialogTranslatedTexts = result;
-            });
-            //NPCS
-
-            //NOTIFICATIONS
-            foreach (var item in Language.NotificationMessages)
-            {
-                if (item.Key == string.Empty)
-                    continue;
-                notificationKeysToTranslate.Add(item.Key);
-            }
-
-            await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), notificationKeysToTranslate, (result) =>
-            {
-                notificationTranslatedTexts = result;
-            });
-            //NOTIFICATIONS
-
-            //GENERAL
-            foreach (var item in Language.PictureInfoStrings)
-            {
-                if (item.Key == string.Empty)
-                    continue;
-                pictureInfoKeysToTranslate.Add(item.Key);
-            }
-
-            await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), pictureInfoKeysToTranslate, (result) =>
-            {
-                pictureInfoTranslatedTexts = result;
-            });
-            foreach (var item in Language.InternetCheckInfoStrings)
-            {
-                if (item.Key == string.Empty)
-                    continue;
-                internetCheckInfoKeysToTranslate.Add(item.Key);
-            }
-
-            await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), internetCheckInfoKeysToTranslate, (result) =>
-            {
-                internetCheckInfoTranslatedTexts = result;
-            });
-
-            foreach (var item in Language.ShopQuestionInfoStrings)
-            {
-                if (item.Key == string.Empty)
-                    continue;
-                shopQuestionInfoKeysToTranslate.Add(item.Key);
-            }
-
-            await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), shopQuestionInfoKeysToTranslate, (result) =>
-            {
-                shopQuestionInfoTranslatedTexts = result;
-            });
-
-            foreach (var item in Language.WorkerInfoStrings)
-            {
-                if (item.Key == string.Empty)
-                    continue;
-                workerInfoKeysToTranslate.Add(item.Key);
-            }
-
-            await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), workerInfoKeysToTranslate, (result) =>
-            {
-                workerInfoTranslatedTexts = result;
-            });
-            //GENERAL
-
-            //ItemAdding
-            Debug.Log("Language.ItemDescriptions.Count => " + Language.ItemDescriptions.Count + "itemDescTranslatedTexts.Count => " + itemDescTranslatedTexts.Count);
-            for (int i = 0; i < itemDescTranslatedTexts.Count; i++)
-            {
-                Debug.Log("itemDescTranslatedTexts[i] => " + itemDescTranslatedTexts[i] + " and i => " + i);
-                Language.ItemDescriptions[i].ActiveLanguage = itemDescTranslatedTexts[i];
-            }
-            //ItemAdding
-            //SkillAdding
-            Debug.Log("Language.SkillNames.Count => " + Language.SkillNames.Count + "skillNameTranslatedTexts.Count => " + skillNameTranslatedTexts.Count);
-            for (int i = 0; i < skillNameTranslatedTexts.Count; i++)
-            {
-                Language.SkillNames[i].ActiveLanguage = skillNameTranslatedTexts[i];
-            }
-            Debug.Log("Language.SkillDescriptions.Count => " + Language.SkillDescriptions.Count + "skillDescTranslatedTexts.Count => " + skillDescTranslatedTexts.Count);
-            for (int i = 0; i < skillDescTranslatedTexts.Count; i++)
-            {
-                if (i >= Language.SkillDescriptions.Count) break;
-                Language.SkillDescriptions[i].ActiveLanguage = skillDescTranslatedTexts[i];
-            }
-            Debug.Log("Language.SkillEffects.Count => " + Language.SkillEffects.Count + "skillEffectTranslatedTexts.Count => " + skillEffectTranslatedTexts.Count);
-            for (int i = 0; i < skillEffectTranslatedTexts.Count; i++)
-            {
-                Language.SkillEffects[i].ActiveLanguage = skillEffectTranslatedTexts[i];
-            }
-            Debug.Log("Language.SkillDefaultStrings.Count => " + Language.SkillDefaultStrings.Count + "skillDefaultStringTranslatedTexts.Count => " + skillDefaultStringTranslatedTexts.Count);
-            for (int i = 0; i < skillDefaultStringTranslatedTexts.Count; i++)
-            {
-                Language.SkillDefaultStrings[i].ActiveLanguage = skillDefaultStringTranslatedTexts[i];
-            }
-            Debug.Log("Language.SkillInfoStrings.Count => " + Language.SkillInfoStrings.Count + "skillInfoTranslatedTexts.Count => " + skillInfoTranslatedTexts.Count);
-            for (int i = 0; i < skillInfoTranslatedTexts.Count; i++)
-            {
-                Language.SkillInfoStrings[i].ActiveLanguage = skillInfoTranslatedTexts[i];
-            }
-            //SkillAdding
-
-            //NPCCommendAdding
-            Debug.Log("Language.CommendEvulations.Count => " + Language.CommendEvulations.Count + "npcCommendTranslatedTexts.Count => " + npcCommendTranslatedTexts.Count);
-            for (int i = 0; i < npcCommendTranslatedTexts.Count; i++)
-            {
-                Language.CommendEvulations[i].ActiveLanguage = npcCommendTranslatedTexts[i];
-            }
-            //NPCCommendAdding
-
-            //NPCSAdding
-            Debug.Log("Language.DialogsMessages.Count => " + Language.DialogsMessages.Count + "dialogTranslatedTexts.Count => " + dialogTranslatedTexts.Count);
-            for (int i = 0; i < dialogTranslatedTexts.Count; i++)
-            {
-                Language.DialogsMessages[i].ActiveLanguage = dialogTranslatedTexts[i];
-            }
-            //NPCSAdding
-
-            //NotificationAdding
-            Debug.Log("Language.NotificationMessages.Count => " + Language.NotificationMessages.Count + "notificationTranslatedTexts.Count => " + notificationTranslatedTexts.Count);
-            for (int i = 0; i < notificationTranslatedTexts.Count; i++)
-            {
-                Language.NotificationMessages[i].ActiveLanguage = notificationTranslatedTexts[i];
-            }
-            //NotificationAdding
-
-            //GeneralAdding
-            Debug.Log("Language.PictureInfoStrings.Count => " + Language.PictureInfoStrings.Count + "pictureInfoTranslatedTexts.Count => " + pictureInfoTranslatedTexts.Count);
-            for (int i = 0; i < pictureInfoTranslatedTexts.Count; i++)
-            {
-                Language.PictureInfoStrings[i].ActiveLanguage = pictureInfoTranslatedTexts[i];
-            }
-
-            Debug.Log("Language.InternetCheckInfoStrings.Count => " + Language.InternetCheckInfoStrings.Count + "internetCheckInfoTranslatedTexts.Count => " + internetCheckInfoTranslatedTexts.Count);
-            for (int i = 0; i < internetCheckInfoTranslatedTexts.Count; i++)
-            {
-                Language.InternetCheckInfoStrings[i].ActiveLanguage = internetCheckInfoTranslatedTexts[i];
-            }
-
-            Debug.Log("Language.ShopQuestionInfoStrings.Count => " + Language.ShopQuestionInfoStrings.Count + "shopQuestionInfoTranslatedTexts.Count => " + shopQuestionInfoTranslatedTexts.Count);
-            for (int i = 0; i < shopQuestionInfoTranslatedTexts.Count; i++)
-            {
-                Language.ShopQuestionInfoStrings[i].ActiveLanguage = shopQuestionInfoTranslatedTexts[i];
-            }
-
-            Debug.Log("Language.WorkerInfoStrings.Count => " + Language.WorkerInfoStrings.Count + "workerInfoTranslatedTexts.Count => " + workerInfoTranslatedTexts.Count);
-            for (int i = 0; i < workerInfoTranslatedTexts.Count; i++)
-            {
-                Language.WorkerInfoStrings[i].ActiveLanguage = workerInfoTranslatedTexts[i];
-            }
-            //GeneralAdding
-            // JSON dosyasýný kaydet
-            string jsonString = JsonUtility.ToJson(Language);
-            string directoryPath = "Assets/Resources/Languages"; // Resources klasörü içindeki Languages klasörü
-            string filePath = Path.Combine(directoryPath, $"Language_{GameManager.instance.GetLanguageShortString(GetEnumDescription(language))}.json");
-
-            // Dosya yolu var mý kontrol et, yoksa oluþtur
-            if (!Directory.Exists(directoryPath))
-            {
-                Directory.CreateDirectory(directoryPath);
-            }
-
-            // Dosyayý oluþtur ve içine yaz
-            File.WriteAllText(filePath, jsonString);
+            Debug.Log("Çeviri ve kayýt iþlemi tamamlandý.");
+            waitBeforeTranslate = false;
         }
-
-
-        Debug.Log("Çeviri ve kayýt iþlemi tamamlandý.");
-        waitBeforeTranslate = false;
+        catch (Exception _ex)
+        {
+            Console.WriteLine("Language Database ceviri islamleri sirasinda bir sorunla karsilasildi:\n"+_ex.Message);
+        }
+        
     }
     private string GetEnumDescription(Languages value)
     {
@@ -826,6 +936,10 @@ public class MainLanguageData
     public List<LanguageData> InternetCheckInfoStrings = new List<LanguageData>();
     public List<LanguageData> ShopQuestionInfoStrings = new List<LanguageData>();
     public List<LanguageData> WorkerInfoStrings = new List<LanguageData>();
+    //Customization
+    public List<LanguageData> customize_SelectedAnEquipmentStrings;
+    public List<LanguageData> customize_OnExitProcessStrings;
+    //Customization
     //General
 }
 

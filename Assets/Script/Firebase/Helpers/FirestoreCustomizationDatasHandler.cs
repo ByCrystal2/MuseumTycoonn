@@ -109,6 +109,70 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
             }
         });
     }    
+    public async Task UpdateBaseValues(CharacterCustomizeData _customizeData, string userId)
+    {
+        if (GameManager.instance != null) if (!GameManager.instance.IsWatchTutorial) return;
+        Query query = db.Collection("Customizations").WhereEqualTo("userID", userId);
+
+        await query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCompleted)
+            {
+                QuerySnapshot snapshot = task.Result;
+                DocumentReference documentReference;
+
+                if (snapshot.Documents.Count() > 0)
+                {
+                    DocumentSnapshot documentSnapshot = snapshot.Documents.FirstOrDefault();
+                    documentReference = documentSnapshot.Reference;
+                    Dictionary<string, object> updatedData = new Dictionary<string, object>
+                    {
+                        { "UnlockedCustomizeElementIDs", _customizeData.unlockedCustomizeElementIDs },
+                        { "LastSelectedCustomizeCategory", _customizeData.LastSelectedCustomizeCategory },
+                        { "LastSelectedCustomizeHeader", _customizeData.LastSelectedCustomizeHeader },
+                        { "LastSelectedColorHeader", _customizeData.LastSelectedColorHeader },
+                        { "LastSelectedCustomizeSlot", _customizeData.playerCustomizeData.selectedCustomizeSlot }
+                    };
+                     documentReference.UpdateAsync(updatedData).ContinueWithOnMainThread(updateTask =>
+                    {
+                        if (updateTask.IsCompleted)
+                        {
+                            Debug.Log("Update customization base values with userId: " + userId);
+                            
+                        }
+                        else if (updateTask.IsFaulted)
+                        {
+                            Debug.LogError($"Failed to update document: {updateTask.Exception}");
+                        }
+                    });
+                }
+                else
+                {
+                    Dictionary<string, object> newDocument = new Dictionary<string, object>
+                    {
+                        { "userID", userId },
+                        { "UnlockedCustomizeElementIDs", _customizeData.unlockedCustomizeElementIDs },
+                        { "LastSelectedCustomizeCategory", _customizeData.LastSelectedCustomizeCategory },
+                        { "LastSelectedCustomizeHeader", _customizeData.LastSelectedCustomizeHeader },
+                        { "LastSelectedColorHeader", _customizeData.LastSelectedColorHeader },
+                        { "LastSelectedCustomizeSlot", _customizeData.playerCustomizeData.selectedCustomizeSlot }
+                    };
+
+                    db.Collection("Customizations").AddAsync(newDocument).ContinueWithOnMainThread(addTask =>
+                    {
+                        if (addTask.IsCompleted)
+                        {
+                            Debug.Log("Add customization base values with userId: "+userId);
+                        }
+                        else if (addTask.IsFaulted)
+                        {
+                            Debug.LogError($"Failed to add new document: {addTask.Exception}");
+                        }
+                    });
+                }
+            }
+        });
+    }
     public void CheckAndAddCustomizeData(DocumentReference documentReference, CharacterCustomizeData _customizeData, int _overrideSlotId)
     {
         try
