@@ -232,7 +232,7 @@ public class CustomizeHandler : MonoBehaviour
         {
             GameObject headerText = HeaderTextsContent.GetChild(i).gameObject;
             GameObject header = HeadersParent.GetChild(i).gameObject;
-            if (indexResult == -9999 && header.name.StartsWith(_index.ToString()))
+            if (indexResult == -9999 && int.Parse(header.name.Split('_')[0]) == _index)
             {
                 indexResult = header.transform.GetSiblingIndex();
             }
@@ -1131,8 +1131,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1001,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Curator's Cap",
+            ItemDesc = "Feel like a curator ready to unveil the dusty pages of history!",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1141,9 +1141,9 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1002,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
-            Rarity = CustomizeRarity.Common,
+            ItemName = "Pharaoh's Crown",
+            ItemDesc = "A golden crown symbolizing the grandeur of ancient Egypt.",
+            Rarity = CustomizeRarity.Rare,
             UnlockPrice = 0,
             Bonuses = new()
         });
@@ -1151,8 +1151,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1003,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Explorer's Hat",
+            ItemDesc = "The perfect choice for discovering lost treasures!",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1161,9 +1161,9 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1004,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
-            Rarity = CustomizeRarity.Common,
+            ItemName = "Time Traveler's Goggles",
+            ItemDesc = "Stay ahead with a glimpse into different eras of history!",
+            Rarity = CustomizeRarity.Epic,
             UnlockPrice = 0,
             Bonuses = new()
         });
@@ -1171,8 +1171,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1005,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Artist's Beret",
+            ItemDesc = "Channel your inner Renaissance artist!",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1181,9 +1181,9 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1006,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
-            Rarity = CustomizeRarity.Common,
+            ItemName = "Knight's Helm",
+            ItemDesc = "A helmet that carries the honor of medieval battles.",
+            Rarity = CustomizeRarity.Rare,
             UnlockPrice = 0,
             Bonuses = new()
         });
@@ -1191,9 +1191,9 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1007,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
-            Rarity = CustomizeRarity.Common,
+            ItemName = "Samurai Headband",
+            ItemDesc = "Show your courage with this symbol of honor and discipline.",
+            Rarity = CustomizeRarity.Rare,
             UnlockPrice = 0,
             Bonuses = new()
         });
@@ -1201,9 +1201,9 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1008,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
-            Rarity = CustomizeRarity.Common,
+            ItemName = "Viking Horned Helmet",
+            ItemDesc = "A fierce helmet embodying the spirit of northern warriors.",
+            Rarity = CustomizeRarity.Rare,
             UnlockPrice = 0,
             Bonuses = new()
         });
@@ -1211,9 +1211,9 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1009,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
-            Rarity = CustomizeRarity.Common,
+            ItemName = "Futuristic Headgear",
+            ItemDesc = "Step into tomorrow with this cutting-edge accessory.",
+            Rarity = CustomizeRarity.Legendary,
             UnlockPrice = 0,
             Bonuses = new()
         });
@@ -1221,9 +1221,9 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1010,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
-            Rarity = CustomizeRarity.Common,
+            ItemName = "Ancient Laurel Wreath",
+            ItemDesc = "A symbol of victory and wisdom from ancient times.",
+            Rarity = CustomizeRarity.Rare,
             UnlockPrice = 0,
             Bonuses = new()
         });
@@ -1231,8 +1231,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1011,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Scholar's Hat",
+            ItemDesc = "Perfect for those who love uncovering the mysteries of the past.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1241,9 +1241,9 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1012,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
-            Rarity = CustomizeRarity.Common,
+            ItemName = "Pirate's Bandana",
+            ItemDesc = "A relic from the high seas! Arrr!",
+            Rarity = CustomizeRarity.Rare,
             UnlockPrice = 0,
             Bonuses = new()
         });
@@ -1251,9 +1251,9 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1013,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
-            Rarity = CustomizeRarity.Common,
+            ItemName = "Detective's Cap",
+            ItemDesc = "Uncover secrets with the sharpest mind in the room.",
+            Rarity = CustomizeRarity.Epic,
             UnlockPrice = 0,
             Bonuses = new()
         });
@@ -1261,9 +1261,9 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1014,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
-            Rarity = CustomizeRarity.Common,
+            ItemName = "Steampunk Hat",
+            ItemDesc = "Combine the elegance of the past with futuristic gears.",
+            Rarity = CustomizeRarity.Legendary,
             UnlockPrice = 0,
             Bonuses = new()
         });
@@ -1271,9 +1271,9 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1015,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
-            Rarity = CustomizeRarity.Common,
+            ItemName = "Cultural Mask",
+            ItemDesc = "Celebrate the diverse traditions of the world.",
+            Rarity = CustomizeRarity.Rare,
             UnlockPrice = 0,
             Bonuses = new()
         });
@@ -1281,9 +1281,9 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1016,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
-            Rarity = CustomizeRarity.Common,
+            ItemName = "Space Explorer's Helmet",
+            ItemDesc = "Explore beyond the stars with this iconic headgear.",
+            Rarity = CustomizeRarity.Legendary,
             UnlockPrice = 0,
             Bonuses = new()
         });
@@ -1291,9 +1291,9 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1017,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
-            Rarity = CustomizeRarity.Common,
+            ItemName = "Roman Centurion Helmet",
+            ItemDesc = "A sign of leadership in the ancient Roman army.",
+            Rarity = CustomizeRarity.Rare,
             UnlockPrice = 0,
             Bonuses = new()
         });
@@ -1301,9 +1301,9 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1018,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
-            Rarity = CustomizeRarity.Common,
+            ItemName = "Crown of Legends",
+            ItemDesc = "Worn by those whose stories echo through time.",
+            Rarity = CustomizeRarity.Legendary,
             UnlockPrice = 0,
             Bonuses = new()
         });
@@ -1311,8 +1311,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1019,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Museum Guide Headset",
+            ItemDesc = "The essential tool for guiding visitors to knowledge.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1321,9 +1321,9 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1020,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
-            Rarity = CustomizeRarity.Common,
+            ItemName = "Jester's Hat",
+            ItemDesc = "Bring fun and laughter to your museum tours!",
+            Rarity = CustomizeRarity.Rare,
             UnlockPrice = 0,
             Bonuses = new()
         });
@@ -1331,8 +1331,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1021,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Chef's Hat",
+            ItemDesc = "Perfect for running the museum's cafe with style.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1341,9 +1341,9 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1022,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
-            Rarity = CustomizeRarity.Common,
+            ItemName = "Ancient Guardian Mask",
+            ItemDesc = "Wear the protection of an ancient sentinel.",
+            Rarity = CustomizeRarity.Epic,
             UnlockPrice = 0,
             Bonuses = new()
         });
@@ -1351,8 +1351,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 1023,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Archaeologist's Hat",
+            ItemDesc = "A classic hat for those who dig deep into history!",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1364,8 +1364,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 3001,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Classic Beard",
+            ItemDesc = "A timeless look for the modern gentleman.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1374,8 +1374,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 3002,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Handlebar Mustache",
+            ItemDesc = "A bold statement for those with flair.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1384,8 +1384,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 3003,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Full Goatee",
+            ItemDesc = "Sharp and sophisticated, perfect for the thinker.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1394,8 +1394,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 3004,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Soul Patch",
+            ItemDesc = "A small touch of style below the lip.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1404,8 +1404,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 3005,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Chevron Mustache",
+            ItemDesc = "Wide and bold, ideal for the confident.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1414,8 +1414,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 3006,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Short Boxed Beard",
+            ItemDesc = "A neat and defined look for any occasion.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1424,8 +1424,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 3007,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Balbo Beard",
+            ItemDesc = "Stylish and versatile, a favorite among icons.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1434,8 +1434,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 3008,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Stubble Beard",
+            ItemDesc = "Effortlessly rugged and casual.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1444,8 +1444,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 3009,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Ducktail Beard",
+            ItemDesc = "Tapered to perfection for a unique look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1454,8 +1454,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 3010,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Circle Beard",
+            ItemDesc = "A rounded and polished choice for the refined.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1464,8 +1464,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 3011,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Horseshoe Mustache",
+            ItemDesc = "A daring and tough style for the bold.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1474,8 +1474,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 3012,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Van Dyke Beard",
+            ItemDesc = "Elegant and artistic, named after the great painter.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1484,8 +1484,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 3013,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "French Fork Beard",
+            ItemDesc = "A split-end style for the adventurous spirit.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1494,8 +1494,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 3014,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Extended Goatee",
+            ItemDesc = "For those who want to enhance the classic goatee.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1504,8 +1504,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 3015,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Imperial Mustache",
+            ItemDesc = "An extravagant look fit for royalty.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1514,8 +1514,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 3016,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Lumberjack Beard",
+            ItemDesc = "Thick, full, and ready for the wilderness.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1524,8 +1524,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 3017,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Chin Curtain",
+            ItemDesc = "A defining look for a distinctive face.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1534,13 +1534,12 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 3018,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Mutton Chops",
+            ItemDesc = "Retro and bold, a choice for the daring.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
         });
-
         #endregion
 
         #region TORSO_ITEMS 4003-4029
@@ -1548,280 +1547,354 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 4003,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Classic Torso",
+            ItemDesc = "A basic torso design suitable for any exhibition.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
             {
-                new(){ Stat = eStat.VisitorCapacity, Amount = 30 }, //test
-                new(){ Stat = eStat.BaseHappiness, Amount = 10 },
+                // No changes here
             }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4004,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Visitor-Friendly Torso",
+            ItemDesc = "This torso increases visitor attraction and comfort.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
             {
-                new(){ Stat = eStat.VisitorCapacity, Amount = 10 }, //test
-                new(){ Stat = eStat.MuseumEnterPrice, Amount = 10 },
+                // No changes here
             }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4005,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Elegant Torso",
+            ItemDesc = "A refined torso with a touch of sophistication.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4006,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Robust Torso",
+            ItemDesc = "A sturdy and dependable torso design.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4007,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Modern Torso",
+            ItemDesc = "A contemporary torso style that suits modern exhibits.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4008,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Minimalist Torso",
+            ItemDesc = "A sleek and simple torso design with minimal features.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4009,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Vintage Torso",
+            ItemDesc = "A classic torso design with a vintage touch.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4010,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Sophisticated Torso",
+            ItemDesc = "A torso design that exudes sophistication and style.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4011,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Luxury Torso",
+            ItemDesc = "A luxurious torso design that adds elegance to any space.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4012,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Grand Torso",
+            ItemDesc = "A grandiose torso that enhances the aesthetic of any museum.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4013,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Innovative Torso",
+            ItemDesc = "A unique torso design that stands out in any collection.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4014,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Creative Torso",
+            ItemDesc = "A torso with bold and creative features.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4015,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Stylish Torso",
+            ItemDesc = "A fashionable torso design that appeals to modern tastes.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4016,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Elegant Armor Torso",
+            ItemDesc = "A torso with a sturdy and elegant armored appearance.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4017,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Royal Torso",
+            ItemDesc = "A royal and majestic torso design.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4018,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Casual Torso",
+            ItemDesc = "A relaxed and comfortable torso for informal settings.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4019,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Sleek Torso",
+            ItemDesc = "A sleek torso design with a modern finish.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4020,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Bold Torso",
+            ItemDesc = "A bold and striking torso that demands attention.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4021,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Functional Torso",
+            ItemDesc = "A practical and functional torso with a utilitarian design.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4022,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Luxe Torso",
+            ItemDesc = "A luxurious torso designed for the most opulent exhibits.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4023,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Architectural Torso",
+            ItemDesc = "A torso inspired by cutting-edge architectural design.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4024,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Futuristic Torso",
+            ItemDesc = "A torso designed with futuristic elements for a bold look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4025,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Industrial Torso",
+            ItemDesc = "A torso with industrial design elements, combining form and function.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4026,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Classic Armor Torso",
+            ItemDesc = "A torso designed with a classic armored appearance.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4027,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Steampunk Torso",
+            ItemDesc = "A torso with a steampunk style, featuring gears and vintage elements.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4028,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Sculpted Torso",
+            ItemDesc = "A torso design inspired by classical sculptures.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
 
         CustomizeItems.Add(new()
         {
             ID = 4029,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Cultural Torso",
+            ItemDesc = "A torso that reflects diverse cultural influences.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
+            {
+                // No changes here
+            }
         });
+
 
         #endregion
 
@@ -1830,8 +1903,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 5001,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Upper - Basic Armor",
+            ItemDesc = "A basic armor piece for the upper arm. Provides minimal protection.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1840,8 +1913,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 5002,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Upper - Reinforced Armor",
+            ItemDesc = "A reinforced upper arm armor offering extra defense and durability.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1850,8 +1923,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 5003,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Upper - Tactical Padding",
+            ItemDesc = "Lightweight tactical padding to reduce impact on the upper arm.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1860,8 +1933,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 5004,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Upper - Steel Guard",
+            ItemDesc = "A steel guard that strengthens upper arm defenses against heavy blows.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1870,8 +1943,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 5005,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Upper - Carbon Fiber Plate",
+            ItemDesc = "A lightweight, high-durability carbon fiber plate for the upper arm.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1880,8 +1953,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 5006,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Upper - Energy Shield",
+            ItemDesc = "An advanced energy shield embedded in the upper arm for temporary protection.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1890,8 +1963,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 5007,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Upper - Flame Resistant Armor",
+            ItemDesc = "Flame-resistant armor to protect the upper arm in fiery environments.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1900,8 +1973,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 5008,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Upper - Bulletproof Shield",
+            ItemDesc = "A bulletproof shield attached to the upper arm to deflect projectiles.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1910,8 +1983,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 5009,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Upper - Reinforced Exoskeleton",
+            ItemDesc = "An exoskeleton that boosts the strength of the upper arm for heavy lifting.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1920,8 +1993,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 5010,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Upper - Heavy Duty Armor",
+            ItemDesc = "Heavy-duty armor designed for the upper arm, providing extreme protection.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1930,8 +2003,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 5011,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Upper - Tactical Vest Attachment",
+            ItemDesc = "A tactical vest attachment for additional upper arm protection.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1940,8 +2013,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 5012,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Upper - Shock Absorber",
+            ItemDesc = "Shock-absorbing padding to reduce the force of impacts to the upper arm.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1950,8 +2023,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 5013,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Upper - Tactical Sleeve",
+            ItemDesc = "A tactical sleeve for extra mobility while offering some protection.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1960,8 +2033,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 5014,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Upper - Thermal Insulation",
+            ItemDesc = "Thermal insulation for the upper arm, perfect for extreme temperatures.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1970,8 +2043,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 5015,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Upper - Kinetic Absorber",
+            ItemDesc = "A device that absorbs kinetic energy and redistributes it to enhance movement.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1980,8 +2053,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 5016,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Upper - Stealth Mode Camo",
+            ItemDesc = "Camouflage for the upper arm that blends with the surroundings for stealth.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -1990,8 +2063,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 5017,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Upper - High Velocity Armor",
+            ItemDesc = "Armor designed for high-speed environments, reducing drag while protecting the arm.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2000,8 +2073,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 5018,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Upper - Magnetic Shield",
+            ItemDesc = "A magnetic shield attached to the upper arm that repels certain metals.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2010,8 +2083,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 5019,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Upper - Smart Armor",
+            ItemDesc = "Armor with integrated sensors that adapts to different threats.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2020,8 +2093,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 5020,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Upper - Adaptive Combat Gear",
+            ItemDesc = "Gear that adjusts to combat conditions to maximize performance in any situation.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2030,13 +2103,12 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 5021,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Upper - Impact Resistant Plate",
+            ItemDesc = "A special plate that resists high-impact forces, ideal for dangerous situations.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
         });
-
         #endregion
 
         #region ARMLOWER_ITEMS 7001-7019
@@ -2044,8 +2116,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 7001,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Lower - Ironclad Guard",
+            ItemDesc = "A robust iron guard offering extra protection for the lower arm.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2054,8 +2126,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 7002,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Lower - Razor Edge Bracer",
+            ItemDesc = "A sleek bracer with sharp edges for precise combat movements.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2064,8 +2136,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 7003,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Lower - Steelwind Protector",
+            ItemDesc = "A wind-resistant lower arm guard made from high-quality steel.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2074,8 +2146,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 7004,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Lower - Titan Grip Plate",
+            ItemDesc = "A heavy-duty plate for the lower arm, designed to withstand immense force.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2084,8 +2156,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 7005,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Lower - Phantom Shadow Guard",
+            ItemDesc = "A lightweight lower arm guard designed for stealth and agility.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2094,8 +2166,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 7006,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Lower - Dragon's Claw Protector",
+            ItemDesc = "A fierce lower arm guard resembling a dragon's claw, perfect for close combat.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2104,8 +2176,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 7007,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Lower - Vanguard Defender",
+            ItemDesc = "A solid lower arm defender designed to protect during front-line combat.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2114,8 +2186,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 7008,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Lower - Stormstrike Bracer",
+            ItemDesc = "A bracer designed to channel storm energy into powerful strikes.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2124,8 +2196,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 7009,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Lower - Guardian Shield",
+            ItemDesc = "A sturdy shield designed to provide exceptional defense for the lower arm.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2134,8 +2206,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 7010,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Lower - Frostbite Guard",
+            ItemDesc = "A chilling lower arm guard imbued with the power of ice.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2144,8 +2216,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 7011,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Lower - Blazing Fury Bracer",
+            ItemDesc = "A fiery bracer designed to enhance offensive capabilities.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2154,8 +2226,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 7012,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Lower - Reaver's Claw Plate",
+            ItemDesc = "A brutal lower arm plate with jagged edges for cutting through enemies.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2164,8 +2236,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 7013,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Lower - Specter Gauntlet",
+            ItemDesc = "A ghostly gauntlet that grants enhanced stealth and agility.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2174,8 +2246,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 7014,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Lower - Thunderstrike Bracer",
+            ItemDesc = "A bracer capable of channeling lightning to enhance strike power.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2184,8 +2256,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 7015,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Lower - Viper's Fang Guard",
+            ItemDesc = "A venomous lower arm guard that strikes fear into enemies.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2194,8 +2266,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 7016,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Lower - Crimson Talon Plate",
+            ItemDesc = "A sharp-edged plate that tears through enemy defenses with ease.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2204,8 +2276,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 7017,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Lower - Iron Fang Protector",
+            ItemDesc = "A durable protector forged from iron, perfect for combat situations.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2214,8 +2286,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 7018,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Lower - Blightborn Gauntlet",
+            ItemDesc = "A gauntlet filled with dark power, corrupting those it strikes.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2224,13 +2296,12 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 7019,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arm Lower - Celestial Bracer",
+            ItemDesc = "A mystical bracer that glows with celestial energy, boosting agility.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
         });
-
         #endregion
 
         #region HAND_ITEMS 9001-9018
@@ -2238,8 +2309,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 9001,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Gloves of the Phoenix",
+            ItemDesc = "Gloves forged from the ashes of a phoenix, granting fiery power.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2248,8 +2319,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 9002,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Venomous Claw Gauntlets",
+            ItemDesc = "Gauntlets with venomous claws that poison enemies with each strike.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2258,8 +2329,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 9003,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Dragon's Breath Gloves",
+            ItemDesc = "Gloves imbued with the power of dragons, capable of summoning fire.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2268,8 +2339,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 9004,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Frostbite Gauntlets",
+            ItemDesc = "Cold-as-ice gloves that freeze enemies on impact.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2278,8 +2349,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 9005,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Thunderstrike Gloves",
+            ItemDesc = "Gauntlets that channel the power of lightning for electrifying attacks.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2288,8 +2359,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 9006,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Celestial Gloves",
+            ItemDesc = "Gloves blessed by the stars, enhancing agility and perception.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2298,8 +2369,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 9007,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Viper Fang Gauntlets",
+            ItemDesc = "Gauntlets designed to mimic the deadly precision of a viper’s strike.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2308,8 +2379,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 9008,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Gale Force Gloves",
+            ItemDesc = "Gloves capable of creating powerful gusts of wind with every punch.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2318,8 +2389,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 9009,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Titan Gauntlets",
+            ItemDesc = "Massive gloves forged from the strongest materials, providing immense strength.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2328,8 +2399,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 9010,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Spectral Touch Gloves",
+            ItemDesc = "Ghostly gloves that grant the wearer the ability to phase through walls.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2338,8 +2409,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 9011,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Inferno Fist Gauntlets",
+            ItemDesc = "Gauntlets imbued with a fiery inferno that enhances punching power.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2348,8 +2419,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 9012,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Shattered Earth Gloves",
+            ItemDesc = "Gauntlets that harness the energy of the earth, creating tremors with every hit.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2358,8 +2429,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 9013,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Silent Strike Gloves",
+            ItemDesc = "Gloves crafted for stealth, making no sound when attacking.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2368,8 +2439,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 9014,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Moonlit Gloves",
+            ItemDesc = "Gloves that absorb moonlight to restore health during night battles.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2378,8 +2449,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 9015,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hunter's Gauntlets",
+            ItemDesc = "Gauntlets crafted for hunters, providing enhanced tracking and precision.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2388,8 +2459,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 9016,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Eagle's Grip Gauntlets",
+            ItemDesc = "Gloves with the precision and strength of an eagle's talons.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2398,8 +2469,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 9017,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Crimson Fury Gauntlets",
+            ItemDesc = "Gloves designed for battle, igniting the wearer's fury for greater damage.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2408,12 +2479,13 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 9018,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Cloak of the Phantom Gloves",
+            ItemDesc = "Phantom-like gloves that grant invisibility when in shadows.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
         });
+
 
         #endregion
 
@@ -2422,8 +2494,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11003,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Enhancer",
+            ItemDesc = "A sleek item designed to enhance the shape of your hips.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2432,8 +2504,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11004,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Belt",
+            ItemDesc = "A stylish belt that accentuates the hips and waist.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2442,8 +2514,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11005,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Jewelry",
+            ItemDesc = "A decorative piece of jewelry that adds a touch of elegance to your hips.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2452,8 +2524,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11006,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Pouch",
+            ItemDesc = "A trendy pouch that hangs around the hips for a fashionable look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2462,8 +2534,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11007,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Pants",
+            ItemDesc = "A pair of pants designed to enhance your hips and give a flattering silhouette.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2472,8 +2544,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11008,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Harness",
+            ItemDesc = "A bold harness that draws attention to the hips.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2482,8 +2554,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11009,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Wrap",
+            ItemDesc = "A fabric wrap that adds a sophisticated touch to your hips.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2492,8 +2564,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11010,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Corset",
+            ItemDesc = "A corset designed to shape and accentuate the hips.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2502,8 +2574,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11011,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_ThighHighs",
+            ItemDesc = "A pair of thigh-high socks that emphasize the curves of the hips.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2512,8 +2584,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11012,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Ring",
+            ItemDesc = "A chic ring designed to be worn around the hips.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2522,8 +2594,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11013,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Legging",
+            ItemDesc = "A pair of leggings that accentuate the hips and thighs.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2532,8 +2604,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11014,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Clip",
+            ItemDesc = "A clip that adds an edgy look to the hip area.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2542,8 +2614,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11015,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Skirt",
+            ItemDesc = "A stylish skirt that adds volume to the hip area.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2552,8 +2624,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11016,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Bag",
+            ItemDesc = "A small bag designed to be worn at the hip for practicality and style.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2562,8 +2634,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11017,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Lace",
+            ItemDesc = "A lace accessory that delicately wraps around the hips.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2572,8 +2644,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11018,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Pads",
+            ItemDesc = "Padded inserts designed to enhance the curves of the hips.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2582,8 +2654,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11019,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Sash",
+            ItemDesc = "A wide sash worn around the hips for added style.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2592,8 +2664,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11020,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Gloves",
+            ItemDesc = "Gloves that draw attention to the hip area, perfect for a unique style.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2602,8 +2674,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11021,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Bracelet",
+            ItemDesc = "A bracelet designed to rest at the hips, adding a touch of flair.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2612,8 +2684,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11022,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Tassels",
+            ItemDesc = "A pair of decorative tassels worn around the hips for extra flair.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2622,8 +2694,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11023,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Cuffs",
+            ItemDesc = "Cuffs worn around the hips for a bold, fashionable statement.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2632,8 +2704,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11024,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_FabricBelt",
+            ItemDesc = "A fabric belt designed to highlight the hips.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2642,8 +2714,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11025,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Shorts",
+            ItemDesc = "Shorts that hug the hips, offering both comfort and style.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2652,8 +2724,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11026,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_FittedJacket",
+            ItemDesc = "A fitted jacket designed to accentuate the hips and waistline.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2662,8 +2734,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11027,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Chain",
+            ItemDesc = "A chain that rests on the hips for a bold, trendy look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2672,8 +2744,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11028,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_FurTrim",
+            ItemDesc = "A fur trim that adds texture and volume to the hips.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2682,13 +2754,12 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 11029,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hip_Paint",
+            ItemDesc = "A temporary body paint design that highlights the hips.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
         });
-
         #endregion
 
         #region LEG_ITEMS 12001-12020
@@ -2696,8 +2767,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 12001,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Leg_Armor",
+            ItemDesc = "A durable piece of armor that protects the legs during combat.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2706,8 +2777,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 12002,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Leg_Guards",
+            ItemDesc = "Protective guards for your legs, providing both style and safety.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2716,8 +2787,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 12003,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Leg_Boots",
+            ItemDesc = "Sturdy boots that offer great protection and comfort for long journeys.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2726,8 +2797,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 12004,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Leg_Pads",
+            ItemDesc = "Padding for your legs that enhances agility and comfort.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2736,8 +2807,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 12005,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Leg_Leggings",
+            ItemDesc = "Sleek leggings that provide freedom of movement and a stylish appearance.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2746,8 +2817,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 12006,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Leg_Gaiters",
+            ItemDesc = "Stylish gaiters that protect your legs while adding a fashionable touch.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2756,8 +2827,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 12007,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Leg_Tights",
+            ItemDesc = "Tight-fitting legwear that enhances mobility and provides a sleek look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2766,8 +2837,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 12008,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Leg_Braces",
+            ItemDesc = "Supportive braces that stabilize the legs, reducing fatigue during activities.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2776,8 +2847,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 12009,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Leg_Socks",
+            ItemDesc = "Comfortable socks that provide warmth and support for the legs.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2786,8 +2857,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 12010,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Leg_Spats",
+            ItemDesc = "Trendy leg coverings that add style while protecting your legs.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2796,8 +2867,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 12011,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Leg_Bandages",
+            ItemDesc = "Medical bandages designed to support and protect injured legs.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2806,8 +2877,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 12012,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Leg_Cuffs",
+            ItemDesc = "Decorative cuffs worn around the legs to enhance fashion and comfort.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2816,8 +2887,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 12013,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Leg_Footwear",
+            ItemDesc = "Footwear designed for comfort and style, perfect for long walks.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2826,8 +2897,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 12014,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Leg_Shorts",
+            ItemDesc = "Comfortable shorts that offer freedom and flexibility for active movements.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2836,8 +2907,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 12015,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Leg_Thong",
+            ItemDesc = "A minimalistic leg garment that offers great mobility while keeping things stylish.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2846,8 +2917,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 12016,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Leg_Pantyhose",
+            ItemDesc = "Soft pantyhose that enhance the leg's appearance and comfort.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2856,8 +2927,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 12017,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Leg_Spats",
+            ItemDesc = "An alternative to leggings, these spats provide a snug fit while allowing movement.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2866,8 +2937,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 12018,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Leg_Wraps",
+            ItemDesc = "A versatile wrap that can be styled around the legs for both comfort and aesthetics.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2876,8 +2947,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 12019,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Leg_Fur",
+            ItemDesc = "A luxurious fur accessory that adds a cozy and stylish look to your legs.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2886,13 +2957,12 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 12020,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Leg_Straps",
+            ItemDesc = "Straps worn around the legs to add both style and support.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
         });
-
         #endregion
 
         #region HELMET_ITEMS 14001_14013
@@ -2900,8 +2970,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 14001,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Basic Helmet",
+            ItemDesc = "A simple, reliable helmet offering basic protection.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2910,8 +2980,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 14002,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Steel Helmet",
+            ItemDesc = "A helmet made from steel, providing better protection against impacts.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2920,8 +2990,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 14003,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Spiked Helmet",
+            ItemDesc = "A helmet with spikes, adding both style and a touch of danger.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2930,8 +3000,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 14004,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Knight's Helmet",
+            ItemDesc = "A helmet used by knights, offering solid protection and a regal appearance.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2940,8 +3010,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 14005,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Viking Helmet",
+            ItemDesc = "A horned helmet, inspired by the Vikings, symbolizing strength and courage.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2950,8 +3020,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 14006,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Leather Helmet",
+            ItemDesc = "A lightweight leather helmet, offering basic protection with comfort.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2960,8 +3030,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 14007,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Explorer's Helmet",
+            ItemDesc = "A helmet designed for explorers, equipped with a headlamp for night adventures.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2970,8 +3040,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 14008,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Combat Helmet",
+            ItemDesc = "A military-style helmet designed for maximum protection during combat.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2980,8 +3050,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 14009,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Battle Helmet",
+            ItemDesc = "A helmet designed for battles, offering great protection with a tough exterior.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -2990,8 +3060,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 14010,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Cybernetic Helmet",
+            ItemDesc = "A high-tech helmet with integrated cybernetic enhancements for tactical advantage.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3000,8 +3070,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 14011,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Cloak Helmet",
+            ItemDesc = "A lightweight helmet designed for stealth and agility in various environments.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3010,8 +3080,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 14012,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Samurai Helmet",
+            ItemDesc = "A helmet with ancient samurai design, combining protection with honor.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3020,13 +3090,12 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 14013,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Pirate Helmet",
+            ItemDesc = "A helmet resembling the ones worn by pirates, complete with an eye patch.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
         });
-
         #endregion
 
         #region EYEBROW_ITEMS 102001-102010
@@ -3034,8 +3103,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 102001,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Natural Eyebrows",
+            ItemDesc = "A pair of natural eyebrows with a slight arch, perfect for a neutral look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3044,8 +3113,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 102002,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Thick Eyebrows",
+            ItemDesc = "Bold and thick eyebrows that make a strong statement.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3054,8 +3123,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 102003,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Arched Eyebrows",
+            ItemDesc = "Perfectly arched eyebrows that add a touch of elegance and definition.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3064,8 +3133,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 102004,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Straight Eyebrows",
+            ItemDesc = "Straight, natural eyebrows that create a minimalist, sleek look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3074,8 +3143,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 102005,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Curved Eyebrows",
+            ItemDesc = "Softly curved eyebrows for a gentle, welcoming appearance.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3084,8 +3153,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 102006,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Thin Eyebrows",
+            ItemDesc = "Delicate, thin eyebrows that add subtle charm to your face.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3094,8 +3163,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 102007,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "High Arched Eyebrows",
+            ItemDesc = "Bold, high arched eyebrows for a striking and dramatic look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3104,8 +3173,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 102008,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Rounded Eyebrows",
+            ItemDesc = "Soft, rounded eyebrows that enhance a friendly and youthful expression.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3114,8 +3183,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 102009,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Faded Eyebrows",
+            ItemDesc = "Lightly faded eyebrows that offer a subtle and natural appearance.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3124,13 +3193,12 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 102010,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Bold Eyebrows",
+            ItemDesc = "Thick, bold eyebrows that make a bold and confident statement.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
         });
-
         #endregion
 
         #region HAIR_ITEMS 103001-103038
@@ -3138,8 +3206,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103001,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Short Curly Hair",
+            ItemDesc = "A stylish short curly hair that adds a youthful appearance.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3148,8 +3216,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103002,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Long Straight Hair",
+            ItemDesc = "A sleek and long straight hair for a more elegant look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3158,8 +3226,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103003,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Messy Hair",
+            ItemDesc = "A messy, tousled hairstyle for a carefree vibe.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3168,8 +3236,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103004,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Bun Hairstyle",
+            ItemDesc = "A neat bun hairstyle perfect for a polished appearance.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3178,8 +3246,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103005,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Ponytail",
+            ItemDesc = "A simple and practical ponytail hairstyle for an active look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3188,8 +3256,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103006,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Undercut",
+            ItemDesc = "An edgy undercut hairstyle for those who like to stand out.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3198,8 +3266,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103007,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Wavy Bob",
+            ItemDesc = "A short, wavy bob for a chic, fashionable look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3208,8 +3276,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103008,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Afro",
+            ItemDesc = "A bold, full-bodied afro hairstyle that brings character.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3218,8 +3286,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103009,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Buzz Cut",
+            ItemDesc = "A simple and clean buzz cut for a no-fuss style.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3228,8 +3296,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103010,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Braids",
+            ItemDesc = "Stylish braids to add some texture and personality.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3238,8 +3306,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103011,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Top Knot",
+            ItemDesc = "A trendy top knot for a laid-back yet fashionable look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3248,8 +3316,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103012,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Side Swept Hair",
+            ItemDesc = "A sophisticated side-swept look for an elegant style.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3258,8 +3326,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103013,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Spiked Hair",
+            ItemDesc = "A bold, spiked hairstyle that brings energy to any look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3268,8 +3336,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103014,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Mohawk",
+            ItemDesc = "A daring mohawk hairstyle for those who want to stand out.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3278,8 +3346,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103015,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Flat Top",
+            ItemDesc = "A stylish flat top haircut, perfect for a retro look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3288,8 +3356,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103016,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Pompadour",
+            ItemDesc = "A sleek pompadour hairstyle for a polished, vintage look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3298,8 +3366,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103017,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Quiff",
+            ItemDesc = "A voluminous quiff hairstyle that adds style and flair.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3308,8 +3376,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103018,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Flat Hair",
+            ItemDesc = "A straight and flat hairstyle for a minimalistic appearance.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3318,8 +3386,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103019,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Curls",
+            ItemDesc = "Full-bodied curls that add volume and personality.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3328,8 +3396,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103020,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Afro Puff",
+            ItemDesc = "A puffy, voluminous afro style that exudes confidence.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3338,8 +3406,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103021,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "French Braid",
+            ItemDesc = "An elegant French braid hairstyle perfect for any occasion.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3348,8 +3416,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103022,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Double Ponytail",
+            ItemDesc = "A playful double ponytail hairstyle for a cute and fun look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3358,8 +3426,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103023,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Pixie Cut",
+            ItemDesc = "A short and chic pixie cut that adds a modern touch.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3368,8 +3436,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103024,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Wavy Hair",
+            ItemDesc = "Loose waves that bring a relaxed and natural vibe.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3378,8 +3446,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103025,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Messy Bun",
+            ItemDesc = "A casual, messy bun perfect for a laid-back day.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3388,8 +3456,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103026,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Long Curly Hair",
+            ItemDesc = "Long, flowing curls for a dramatic, bold look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3398,8 +3466,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103027,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Shaggy Hair",
+            ItemDesc = "A shaggy hairstyle for a rock and roll vibe.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3408,8 +3476,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103028,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Feathered Hair",
+            ItemDesc = "Feathered layers that create a soft, voluminous look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3418,8 +3486,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103029,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Choppy Bob",
+            ItemDesc = "A modern choppy bob with edgy layers.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3428,8 +3496,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103030,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Slicked Back Hair",
+            ItemDesc = "Slicked-back hair for a smooth, polished appearance.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3438,8 +3506,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103031,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Beach Waves",
+            ItemDesc = "Loose, beachy waves for a carefree, summer look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3448,8 +3516,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103032,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "High Ponytail",
+            ItemDesc = "A high ponytail hairstyle for a dynamic and energetic appearance.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3458,8 +3526,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103033,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Braided Top Knot",
+            ItemDesc = "A combination of a braid and top knot for a unique style.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3468,8 +3536,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103034,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Half Up Half Down",
+            ItemDesc = "A relaxed half-up, half-down hairstyle for an effortless look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3478,8 +3546,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103035,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Double Buns",
+            ItemDesc = "Two fun buns for a playful and cute appearance.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3488,18 +3556,17 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103036,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Loose Waves",
+            ItemDesc = "Loose waves for a relaxed, effortless beauty.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
         });
-
         CustomizeItems.Add(new()
         {
             ID = 103037,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Twisted Updo",
+            ItemDesc = "A stylish twisted updo perfect for formal occasions.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3508,13 +3575,12 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 103038,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Loose Curls",
+            ItemDesc = "Loose curls that create a soft and voluminous look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
         });
-
         #endregion
 
         #region HAT_ITEMS 104001-140024
@@ -3522,8 +3588,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104001,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Classic Top Hat",
+            ItemDesc = "A timeless classic top hat for any occasion.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3532,8 +3598,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104002,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Baseball Cap",
+            ItemDesc = "A casual baseball cap for a relaxed look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3542,8 +3608,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104003,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Cowboy Hat",
+            ItemDesc = "A rugged cowboy hat, perfect for the wild west.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3552,8 +3618,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104004,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Fedora",
+            ItemDesc = "A stylish fedora hat for a sharp, sophisticated look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3562,8 +3628,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104005,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Beanie",
+            ItemDesc = "A warm beanie for cold weather, keeping you cozy and stylish.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3572,8 +3638,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104006,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Bucket Hat",
+            ItemDesc = "A laid-back bucket hat for sunny days and outdoor adventures.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3582,8 +3648,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104007,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Panama Hat",
+            ItemDesc = "A light and breathable Panama hat for tropical climates.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3592,8 +3658,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104008,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Top Knot Headband",
+            ItemDesc = "A headband with a top knot for a cute and practical accessory.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3602,8 +3668,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104009,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Visor Cap",
+            ItemDesc = "A sporty visor cap to keep the sun out of your eyes.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3612,8 +3678,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104010,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Beret",
+            ItemDesc = "A fashionable beret that adds a touch of French chic.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3622,8 +3688,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104011,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Biker Helmet",
+            ItemDesc = "A durable helmet designed for bikers and adventurers.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3632,8 +3698,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104012,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Visor Hat",
+            ItemDesc = "A classic visor hat with an adjustable strap for comfort.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3642,8 +3708,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104013,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Sun Hat",
+            ItemDesc = "A wide-brimmed sun hat to protect you from the sun's rays.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3652,8 +3718,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104014,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Cloche Hat",
+            ItemDesc = "A vintage cloche hat that adds a touch of elegance to your look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3662,8 +3728,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104015,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Snow Hat",
+            ItemDesc = "A warm hat designed for snow and cold weather.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3672,8 +3738,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104016,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Safari Hat",
+            ItemDesc = "A practical safari hat with a wide brim for outdoor exploration.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3682,8 +3748,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104017,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Newsboy Cap",
+            ItemDesc = "A classic newsboy cap for a stylish yet casual look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3692,8 +3758,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104018,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Trilby Hat",
+            ItemDesc = "A sharp and stylish trilby hat, perfect for a night out.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3702,8 +3768,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104019,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Bowler Hat",
+            ItemDesc = "A formal bowler hat that adds a sophisticated touch.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3712,8 +3778,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104020,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hiking Cap",
+            ItemDesc = "A durable hiking cap that provides protection for your outdoor adventures.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3722,8 +3788,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104021,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Hooded Cap",
+            ItemDesc = "A cap with a hood for extra warmth and protection.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3732,8 +3798,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104022,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Retro Baseball Cap",
+            ItemDesc = "A vintage-style baseball cap with a throwback design.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3742,8 +3808,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104023,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Detective Hat",
+            ItemDesc = "A mysterious detective hat for those who like to solve puzzles.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3752,22 +3818,20 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 104024,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Crown Hat",
+            ItemDesc = "A regal crown to wear like royalty.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
         });
-
         #endregion
 
         #region MASK_ITEMS 105001-105004
-
         CustomizeItems.Add(new()
         {
             ID = 105001,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Basic Mask",
+            ItemDesc = "A simple mask for basic protection.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3776,8 +3840,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 105002,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Sporty Mask",
+            ItemDesc = "A sleek mask designed for active use.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3786,8 +3850,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 105003,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Mystic Mask",
+            ItemDesc = "A mysterious mask that enhances your aura.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3796,13 +3860,12 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 105004,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Elegant Mask",
+            ItemDesc = "A sophisticated mask with a touch of class.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
         });
-
         #endregion
 
         #region HELMETATTACHMENT_ITEMS 106001-106013
@@ -3810,8 +3873,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 106001,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Feathered Plume",
+            ItemDesc = "A decorative feathered plume to add flair to your helmet.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3820,8 +3883,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 106002,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Horsehair Crest",
+            ItemDesc = "A striking crest made from horsehair, perfect for showing off.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3830,8 +3893,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 106003,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Golden Tasseled Ornament",
+            ItemDesc = "A luxurious golden tassel to enhance your helmet's appearance.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3840,8 +3903,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 106004,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Mystic Feather",
+            ItemDesc = "A mystical feather that adds a magical touch to your helmet.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3850,8 +3913,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 106005,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Spiked Crest",
+            ItemDesc = "A spiked crest that gives your helmet a fierce, intimidating look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3860,8 +3923,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 106006,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Lunar Horn",
+            ItemDesc = "A small horn-like accessory with a glow, symbolizing lunar power.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3870,8 +3933,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 106007,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Crimson Feather",
+            ItemDesc = "A fiery red feather that adds a bold touch to your helmet.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3880,8 +3943,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 106008,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Silver Tassel",
+            ItemDesc = "A sleek silver tassel that shimmers under the light.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3890,8 +3953,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 106009,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Mystic Mane",
+            ItemDesc = "A flowing mane that gives your helmet a majestic look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3900,8 +3963,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 106010,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Golden Horn",
+            ItemDesc = "A shining golden horn, perfect for making a bold statement.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3910,8 +3973,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 106011,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Wind Dancer Plume",
+            ItemDesc = "A fine feathered plume that seems to dance in the wind.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3920,8 +3983,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 106012,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Celestial Feather",
+            ItemDesc = "A feather said to come from the heavens, bringing luck and grace.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3930,13 +3993,12 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 106013,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Ember Crest",
+            ItemDesc = "A fiery crest that adds a flame-like appearance to your helmet.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
         });
-
         #endregion
 
         #region BACKATTACHMENT_ITEMS 107001-107015
@@ -3944,8 +4006,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 107001,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Phoenix Wings",
+            ItemDesc = "Majestic wings that radiate fiery light, adding an ethereal glow to your character.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3954,8 +4016,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 107002,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Dragon Tail",
+            ItemDesc = "A powerful and imposing dragon tail, perfect for showing off your fierceness.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3964,8 +4026,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 107003,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Angel's Halo",
+            ItemDesc = "A glowing halo that hovers above your character, emanating a divine aura.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3974,8 +4036,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 107004,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Wolf Fur",
+            ItemDesc = "A wild and untamed wolf fur draped over your back, symbolizing strength and courage.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3984,8 +4046,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 107005,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Feathered Mantle",
+            ItemDesc = "A cloak made of soft feathers, giving a graceful and mysterious appearance.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -3994,8 +4056,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 107006,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Luminous Wings",
+            ItemDesc = "Radiant wings that emit a soft glow, casting light in dark places.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4004,8 +4066,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 107007,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Storm Cloud Cloak",
+            ItemDesc = "A cloak that mimics the storm clouds, creating a powerful presence around you.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4014,8 +4076,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 107008,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Shadowy Veil",
+            ItemDesc = "A dark veil that obscures your figure, making you seem mysterious and elusive.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4024,8 +4086,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 107009,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Celestial Cape",
+            ItemDesc = "A cape that seems to be made of the night sky, dotted with sparkling stars.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4034,8 +4096,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 107010,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Golden Banner",
+            ItemDesc = "A shining golden banner draped across your back, a symbol of grandeur.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4044,8 +4106,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 107011,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Eagle Feathers",
+            ItemDesc = "A collection of eagle feathers, adding a sense of freedom and pride.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4054,8 +4116,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 107012,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Fire Tail",
+            ItemDesc = "A tail engulfed in flames, giving off heat and light as it flicks around.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4064,8 +4126,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 107013,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Silken Shawl",
+            ItemDesc = "A soft and flowing shawl that adds elegance and refinement to your outfit.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4074,8 +4136,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 107014,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Vine Cloak",
+            ItemDesc = "A cloak woven from living vines, blending nature and style.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4084,13 +4146,12 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 107015,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Silver Wings",
+            ItemDesc = "Gleaming silver wings that add an angelic aura to your appearance.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
         });
-
         #endregion
 
         #region SHOULDERATTACHMENT_ITEMS 108001-108021
@@ -4098,8 +4159,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 108001,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ShoulderPad_1",
+            ItemDesc = "A standard shoulder pad for basic protection.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4108,8 +4169,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 108002,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ShoulderPad_2",
+            ItemDesc = "A reinforced shoulder pad offering better durability.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4118,8 +4179,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 108003,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ShoulderPad_3",
+            ItemDesc = "An advanced shoulder pad with added defense capabilities.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4128,8 +4189,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 108004,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ShoulderPad_4",
+            ItemDesc = "A premium shoulder pad with enhanced durability and design.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4138,8 +4199,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 108005,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ShoulderPad_5",
+            ItemDesc = "A reinforced shoulder pad with superior defense and style.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4148,8 +4209,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 108006,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ShoulderPad_6",
+            ItemDesc = "A lightweight shoulder pad that offers moderate protection.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4158,8 +4219,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 108007,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ShoulderPad_7",
+            ItemDesc = "A tactical shoulder pad designed for maximum agility and protection.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4168,8 +4229,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 108008,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ShoulderPad_8",
+            ItemDesc = "An experimental shoulder pad with futuristic design and strength.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4178,8 +4239,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 108009,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ShoulderPad_9",
+            ItemDesc = "A battle-tested shoulder pad that increases defense against heavy attacks.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4188,8 +4249,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 108010,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ShoulderPad_10",
+            ItemDesc = "A shoulder pad made from lightweight materials for increased mobility.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4198,8 +4259,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 108011,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ShoulderPad_11",
+            ItemDesc = "A custom shoulder pad designed for comfort and durability.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4208,8 +4269,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 108012,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ShoulderPad_12",
+            ItemDesc = "A premium shoulder pad with adaptive protection that molds to the user.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4218,8 +4279,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 108013,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ShoulderPad_13",
+            ItemDesc = "An ultra-modern shoulder pad with superior defense and mobility.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4228,8 +4289,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 108014,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ShoulderPad_14",
+            ItemDesc = "A high-tech shoulder pad with integrated energy shields for enhanced protection.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4238,8 +4299,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 108015,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ShoulderPad_15",
+            ItemDesc = "A stylish shoulder pad that offers both fashion and protection.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4248,8 +4309,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 108016,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ShoulderPad_16",
+            ItemDesc = "A tactical shoulder pad designed for high-intensity combat situations.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4258,8 +4319,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 108017,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ShoulderPad_17",
+            ItemDesc = "An ergonomic shoulder pad that provides enhanced comfort and protection.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4268,8 +4329,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 108018,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ShoulderPad_18",
+            ItemDesc = "A state-of-the-art shoulder pad with integrated armor plating for added defense.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4278,8 +4339,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 108019,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ShoulderPad_19",
+            ItemDesc = "A sleek shoulder pad with enhanced mobility and protection for fast-paced combat.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4288,8 +4349,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 108020,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ShoulderPad_20",
+            ItemDesc = "A durable shoulder pad with superior defense against all types of attacks.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4298,13 +4359,12 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 108021,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ShoulderPad_21",
+            ItemDesc = "A custom-designed shoulder pad that combines style and high-performance protection.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
         });
-
         #endregion
 
         #region ELBOWATTACHMENT_ITEMS 110001-110006
@@ -4312,8 +4372,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 110001,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Basic Elbow Guard",
+            ItemDesc = "A simple elbow guard providing basic protection during movement.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4322,8 +4382,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 110002,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Standard Elbow Guard",
+            ItemDesc = "A standard elbow guard offering moderate protection for casual activities.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4332,8 +4392,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 110003,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Reinforced Elbow Guard",
+            ItemDesc = "An elbow guard with reinforced padding for added protection in active scenarios.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4342,8 +4402,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 110004,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Premium Elbow Guard",
+            ItemDesc = "A premium elbow guard offering exceptional comfort and protection for intense use.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4352,8 +4412,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 110005,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Tactical Elbow Guard",
+            ItemDesc = "A tactical elbow guard designed for heavy-duty protection in high-risk environments.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4362,8 +4422,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 110006,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Lightweight Elbow Guard",
+            ItemDesc = "A lightweight elbow guard designed for quick movements while still offering moderate protection.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4376,8 +4436,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 112001,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "BasicHipProtector",
+            ItemDesc = "A simple hip protector that offers basic comfort and protection for everyday use.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4386,8 +4446,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 112002,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "StandardHipProtector",
+            ItemDesc = "A standard hip protector designed for moderate protection during casual activities.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4396,8 +4456,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 112003,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ReinforcedHipProtector",
+            ItemDesc = "A reinforced hip protector offering additional protection for more active situations.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4406,8 +4466,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 112004,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "PremiumHipProtector",
+            ItemDesc = "A premium hip protector designed for high comfort and protection during intense use.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4416,8 +4476,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 112005,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "TacticalHipProtector",
+            ItemDesc = "A tactical hip protector built for maximum protection in high-risk environments.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4426,8 +4486,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 112006,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "LightweightHipProtector",
+            ItemDesc = "A lightweight hip protector that offers a good balance between comfort and mobility.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4436,8 +4496,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 112007,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "AdaptiveHipProtector",
+            ItemDesc = "An adaptive hip protector that adjusts to the user's movements for a custom fit.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4446,18 +4506,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 112008,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
-            Rarity = CustomizeRarity.Common,
-            UnlockPrice = 0,
-            Bonuses = new()
-        });
-
-        CustomizeItems.Add(new()
-        {
-            ID = 112001,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "SportHipProtector",
+            ItemDesc = "A sport-specific hip protector designed for athletes to prevent injuries during high-impact activities.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4466,8 +4516,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 112009,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "UltraFlexHipProtector",
+            ItemDesc = "An ultra-flexible hip protector designed for optimal movement without sacrificing protection.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4476,8 +4526,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 112010,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "HeavyDutyHipProtector",
+            ItemDesc = "A heavy-duty hip protector designed to withstand tough conditions and provide top-level protection.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4486,8 +4536,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 112011,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "EnduranceHipProtector",
+            ItemDesc = "An endurance-focused hip protector that provides lasting comfort and protection for extended wear.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4496,13 +4546,12 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 112012,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "ProHipProtector",
+            ItemDesc = "A professional-grade hip protector designed for high-performance use in extreme conditions.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
         });
-
         #endregion
 
         #region KNEEATTACHMENT_ITEMS 113001-113011
@@ -4510,8 +4559,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 113001,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Basic Knee Guard",
+            ItemDesc = "A simple knee guard providing basic protection during movement.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4520,8 +4569,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 113002,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Standard Knee Guard",
+            ItemDesc = "A standard knee guard offering moderate protection for casual activities.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4530,8 +4579,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 113003,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Reinforced Knee Guard",
+            ItemDesc = "A knee guard with reinforced padding for added protection in active scenarios.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4540,8 +4589,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 113004,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Premium Knee Guard",
+            ItemDesc = "A premium knee guard offering exceptional comfort and protection for intense use.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4550,8 +4599,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 113005,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Tactical Knee Guard",
+            ItemDesc = "A tactical knee guard designed for heavy-duty protection in high-risk environments.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4560,8 +4609,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 113006,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Lightweight Knee Guard",
+            ItemDesc = "A lightweight knee guard designed for quick movements while still offering moderate protection.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4570,8 +4619,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 113007,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Shock Absorbent Knee Guard",
+            ItemDesc = "A knee guard with advanced shock absorption to reduce impact during intense actions.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4580,8 +4629,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 113008,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Heavy Duty Knee Guard",
+            ItemDesc = "A heavy-duty knee guard providing maximum protection for the most extreme environments.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4590,8 +4639,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 113009,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Ergonomic Knee Guard",
+            ItemDesc = "An ergonomic knee guard designed for optimal comfort and movement without sacrificing protection.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4600,8 +4649,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 113010,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Slim Fit Knee Guard",
+            ItemDesc = "A slim fit knee guard offering discreet protection while maintaining full range of motion.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4610,12 +4659,13 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 113011,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Elite Knee Guard",
+            ItemDesc = "An elite knee guard offering superior protection and comfort for high-performance activities.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
         });
+
 
         #endregion
 
@@ -4624,8 +4674,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 115001,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Basic Elf Ears",
+            ItemDesc = "Simple, natural-looking elf ears for a classic fantasy appearance.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4634,8 +4684,8 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 115002,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Elegant Elf Ears",
+            ItemDesc = "Sleek and refined elf ears designed for a more sophisticated and graceful look.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
@@ -4644,13 +4694,12 @@ public class CustomizeHandler : MonoBehaviour
         CustomizeItems.Add(new()
         {
             ID = 115003,
-            ItemName = "TextID_LanguageID",
-            ItemDesc = "TextID_LanguageID",
+            ItemName = "Mystic Elf Ears",
+            ItemDesc = "Mysterious and otherworldly elf ears with intricate designs, perfect for magical beings.",
             Rarity = CustomizeRarity.Common,
             UnlockPrice = 0,
             Bonuses = new()
         });
-
         #endregion
 
         UpdateUnlockedItemsPrice();
