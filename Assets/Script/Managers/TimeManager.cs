@@ -4,8 +4,7 @@ using System;
 using System.Collections;
 
 public class TimeManager : MonoBehaviour
-{
-    private string apiUrl = "https://worldtimeapi.org/api/timezone/Europe/Istanbul";
+{    
     public DateTime CurrentDateTime; // Su an ki mevcut zamani tutar.
     public TimeData timeData;
     public byte WhatDay = 0;
@@ -33,13 +32,14 @@ public class TimeManager : MonoBehaviour
         //InvokeRepeating("UpdateCurrentTime", 0f, 60f); // Her 60 saniyede bir güncelle
         
     }
-    public void UpdateCurrentTime()
+    public IEnumerator UpdateCurrentTime()
     {
-        StartCoroutine(GetTime());
+        yield return StartCoroutine(GetTime());
     }
     public bool lastDailyCheck;
     IEnumerator GetTime()
     {
+        string apiUrl = "https://timeapi.io/api/Time/current/zone?timeZone=Europe/Istanbul";
         using (UnityWebRequest request = UnityWebRequest.Get(apiUrl))
         {
             yield return request.SendWebRequest();
@@ -57,7 +57,7 @@ public class TimeManager : MonoBehaviour
                 // Saati alma
 
                 // CurrentDateTime => 07:59:59
-                CurrentDateTime = DateTime.Parse(timeData.datetime);
+                CurrentDateTime = DateTime.Parse(timeData.dateTime);
                 // CurrentDateTime => 08:00:00                
             }
         }
@@ -108,5 +108,5 @@ public class TimeManager : MonoBehaviour
 [Serializable]
 public class TimeData
 {
-    public string datetime;    
+    public string dateTime;    
 }

@@ -146,6 +146,7 @@ public class DialogueManager : MonoBehaviour
         newDatabaseItem.isLocked = false;
         newDatabaseItem.id = 208;
 
+       MuseumManager.instance.lastDailyRewardTime = DailyRewardsPanelController.instance.firstItemPurchasedtime;
 
         string userID = FirebaseAuthManager.instance.GetCurrentUserWithID().UserID;
 
@@ -163,6 +164,8 @@ public class DialogueManager : MonoBehaviour
         List<RoomData> activeRoomDatas = RoomManager.instance.RoomDatas.Where(x => x.isActive).ToList();
         await FirestoreManager.instance.roomDatasHandler.AddRoomsWithUserId(userID, activeRoomDatas);
          FirestoreManager.instance.workerDatasHandler.AddWorkerWithUserId(userID, MuseumManager.instance.CurrentActiveWorkers.FirstOrDefault().MyDatas);
+        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
+
     }
     private void CinemachineTransition(bool _goTutorial)
     {

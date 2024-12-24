@@ -87,8 +87,13 @@ public class RightUIPanelController : MonoBehaviour
 
             
     }
-    bool _uIVisible = true;
+    public void DrawerSetActiveController_FT() //For Tutorial!
+    {
+        DrawerPanel.gameObject.SetActive(true);
+        DrawerPanel.ScaleToEnd_FT();
+    }
 
+    bool _uIVisible = true;
     public void EditMode() // Edit Mode Button AddListener.
     {
         CloseAllMods();

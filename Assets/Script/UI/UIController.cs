@@ -1216,6 +1216,7 @@ public class UIController : MonoBehaviour
     {
         WorkerHiringButton worker = WorkerContent.GetChild(0).GetComponentInChildren<WorkerHiringButton>();
         WorkerPurchasePanelController.SetWorkersToBuy(worker.GetComponentInParent<WorkerInfoUIs>());
+        WorkerPurchasePanelController.gameObject.SetActive(true);
     }
     public void ForTutorialWorkerAssignmentInventoryHouseKeeper()
     {

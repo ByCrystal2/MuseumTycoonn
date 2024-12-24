@@ -62,11 +62,13 @@ public class GameManager : MonoBehaviour
         {
             yield return null;
         }
+        yield return TimeManager.instance.UpdateCurrentTime();
+        TimeManager.instance.StartProgressCoroutine();
+        
         System.Threading.Tasks.Task task = LoadLastDailyRewardTime();
         yield return new WaitUntil(() => task.IsCompleted);
         //TimeManager.instance.InvokeRepeating(nameof(TimeManager.instance.UpdateCurrentTime), 1, 1f);
-        TimeManager.instance.UpdateCurrentTime();
-        TimeManager.instance.StartProgressCoroutine();
+        Debug.Log("LoadLastDailyRewardTime task is complated.");
         DateTime dateControl = new DateTime(0001,01,01,01,01,01);
         yield return new WaitUntil(() => TimeManager.instance.CurrentDateTime.Second > dateControl.Second);
         Init();
@@ -1019,13 +1021,21 @@ public class GameManager : MonoBehaviour
 
         string lastDateTimeString = gameDatas.ContainsKey("LastDailyRewardTime")? gameDatas["LastDailyRewardTime"].ToString(): "";
         byte whatDay = gameDatas.ContainsKey("WhatDay") ? Convert.ToByte(gameDatas["WhatDay"]): (byte)0;
-        Debug.Log("Loading LastDailyRewardTime => " + lastDateTimeString);
-        Debug.Log("Loading WhatDay => " + whatDay);
-        if (lastDateTimeString != "")
+        DateTime lastDateTime = DateTime.Parse(lastDateTimeString);
+        Debug.Log("before Loading LastDailyRewardTime => " + lastDateTimeString);
+        Debug.Log("before Loading WhatDay => " + whatDay);
+        if (lastDateTime.Year > 1)
         {
             MuseumManager.instance.lastDailyRewardTime = DateTime.Parse(lastDateTimeString);
             TimeManager.instance.WhatDay = whatDay;
         }
+        else
+        {
+            MuseumManager.instance.lastDailyRewardTime = TimeManager.instance.CurrentDateTime;
+            TimeManager.instance.WhatDay = whatDay;
+        }
+        Debug.Log("after Loading LastDailyRewardTime => " + lastDateTimeString);
+        Debug.Log("after Loading WhatDay => " + whatDay);
     }
     public async System.Threading.Tasks.Task LoadCustomizationData()
     {
@@ -1072,7 +1082,7 @@ public class GameManager : MonoBehaviour
         else
         {
             Time.timeScale = 1;
-            TimeManager.instance.UpdateCurrentTime();
+            StartCoroutine(TimeManager.instance.UpdateCurrentTime());
             TimeManager.instance.StartProgressCoroutine();
         }
     }

@@ -11,7 +11,7 @@ public class DailyRewardsPanelController : MonoBehaviour
     [SerializeField] GameObject pnlIsReceivedPrefab;
     [SerializeField] GameObject pnlIsLockedPrefab;
     [SerializeField] Button exitButton;
-
+    public System.DateTime firstItemPurchasedtime; // for tutorial (Daily reward part)!
     public static DailyRewardsPanelController instance { get; private set; }
     private void Awake()
     {
@@ -97,6 +97,7 @@ public class DailyRewardsPanelController : MonoBehaviour
                 ItemManager.instance.CurrentDailyRewardItems[index] = updatedItem;
             }
             MuseumManager.instance.AddGold(_currentRewardItem.Amount);
+            firstItemPurchasedtime = TimeManager.instance.CurrentDateTime;
         }
         else if (_currentRewardItem.CurrentItemType == ItemType.Table)
         {

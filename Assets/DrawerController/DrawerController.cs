@@ -29,7 +29,11 @@ public class DrawerController : MonoBehaviour
     }
     void ScaleToEnd()
     {
-      scaleTween =  transform.DOScaleX(maxScaleValue, openDuration);
+       scaleTween =  transform.DOScaleX(maxScaleValue, openDuration);
+    }
+    public void ScaleToEnd_FT() // For Tutorial!
+    {
+        scaleTween = transform.DOScaleX(maxScaleValue, 0);
     }
     void ScaleToStart()
     {

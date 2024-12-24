@@ -52,17 +52,23 @@ public class DialogueTrigger : MonoBehaviour
         helper.EventToBeCovered.Invoke();
         helpers.Remove(helper);
     }
+    int helperIndex;
     private void OnValidate()
     {
         for (int i = 0; i < helpers.Count; i++)
         {
             // Liste öðesini geçici bir deðiþkene atýyoruz
             var helper = helpers[i];
-
+            //int index = i;
             // Enum deðerini doðru þekilde atamak için açýk bir dönüþüm yapýyoruz
             if (i < System.Enum.GetValues(typeof(Steps)).Length)
             {
-                helper.WhichStep = (Steps)i;  // i deðerini Steps enum'ýna dönüþtürerek atama yapýyoruz
+                if (helpers[i].ID == helpers[0].ID)
+                {
+                    helperIndex = helpers[i].ID;
+                }
+                helper.WhichStep = helperIndex > 0 ? (Steps)helperIndex - 1 : (Steps)helperIndex;  // i deðerini Steps enum'ýna dönüþtürerek atama yapýyoruz
+                helper.ID = helperIndex;
             }
             else
             {
@@ -71,6 +77,7 @@ public class DialogueTrigger : MonoBehaviour
 
             // Deðiþtirilen öðeyi geri listeye atýyoruz
             helpers[i] = helper;
+            helperIndex++;
         }
     }
 }

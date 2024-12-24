@@ -153,7 +153,7 @@ public class LoadingScene : MonoBehaviour
                 {
                     DialogueTrigger firstDialog = GameObject.FindWithTag("TutorialNPC").GetComponent<DialogueTrigger>();
                     if (firstDialog != null)
-                        firstDialog.TriggerDialog(Steps.Step1);
+                        firstDialog.TriggerDialog(Steps.Step2);
                 }
                 else
                 {
