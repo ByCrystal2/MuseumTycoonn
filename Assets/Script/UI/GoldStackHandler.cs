@@ -42,9 +42,10 @@ public class GoldStackHandler : MonoBehaviour
 
     private IEnumerator AnimateMoneyRoutine(float amount)
     {
-        float duration = 0.3f;
+        float duration = 0.3f; // Smooth animation duration
         float elapsed = 0f;
 
+        // Temporary gold addition animation
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
@@ -53,22 +54,26 @@ public class GoldStackHandler : MonoBehaviour
             yield return null;
         }
 
-        TempGoldText.text = amount.ToString();
+        TempGoldText.text = "+" + amount.ToString();
 
+        // Smoothly add temporary gold to main gold
         elapsed = 0f;
+        float startingGold = MuseumManager.instance.GetCurrentGold();
+        float targetGold = startingGold + amount;
+
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            int currentTempMoney = Mathf.RoundToInt(Mathf.Lerp(amount, 0, elapsed / duration));
-            TempGoldText.text = "+" + currentTempMoney.ToString();
-            realMoney += Mathf.RoundToInt((Time.deltaTime / duration) * amount);
-            MainGoldText.text = "" + realMoney;
+            float currentGold = Mathf.Lerp(startingGold, targetGold, elapsed / duration);
+            MainGoldText.text = Mathf.FloorToInt(currentGold).ToString();
             yield return null;
         }
 
+        // Ensure final values match exactly
+        MainGoldText.text = Mathf.FloorToInt(targetGold).ToString();
         TempGoldText.text = "";
-        MainGoldText.text = Mathf.FloorToInt(MuseumManager.instance.GetCurrentGold()).ToString("");
 
+        // Close the panel after completion
         CloseCoroutine = StartCoroutine(ClosePanel());
     }
 

@@ -12,9 +12,9 @@ public class FPSCounter : MonoBehaviour
 
     void Start()
     {
-#if PLATFORM_ANDROID
-        Application.targetFrameRate = targetFrameRate;
-#endif
+//#if PLATFORM_ANDROID
+//        Application.targetFrameRate = targetFrameRate;
+//#endif
     }
 
     void Update()

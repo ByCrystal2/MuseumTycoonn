@@ -78,10 +78,10 @@ public class RoomData : MonoBehaviour
     public async void LoadThisRoom()
     {
         string userID = FirebaseAuthManager.instance.GetCurrentUserWithID().UserID;
-        
+        RequiredMoney = GameManager.instance.ActiveRoomsRequiredMoney;
 
         if (CurrentShoppingType == ShoppingType.RealMoney)
-            IAP_ID = Constant.IAPIDCompany + Constant.IAPIDGame + CurrentRoomType.ToString().ToLower() + "x" + 1 + "_" + CurrentShoppingType.ToString().ToLower() + "_" + ((int)RequiredMoney).ToString(); //com_kosippysudio_museumtycoon_gold5000x_realmoney_10
+            IAP_ID = Constant.IAPIDCompany + Constant.IAPIDGame + CurrentRoomType.ToString().ToLower() + "x" + 1 + "_" + CurrentShoppingType.ToString().ToLower() + "_" + ID.ToString(); //com_kosippysudio_museumtycoon_specialx1_realmoney_5
 
         RoomBlok = gameObject.GetComponentInChildren<RoomBlokClickHandler>().gameObject;
 
@@ -120,7 +120,7 @@ public class RoomData : MonoBehaviour
             NotPurchasedBlok.SetActive(true);
             RoofLock.SetActive(true);
             if (CurrentShoppingType != ShoppingType.RealMoney && isActive && GameManager.instance.ActiveRoomsRequiredMoney> 0)
-            {
+            {                
                 SetMyRequiredTexts(GameManager.instance.ActiveRoomsRequiredMoney);
                 StartCoroutine(WaitForRoomUISHandler());
 
@@ -129,7 +129,7 @@ public class RoomData : MonoBehaviour
             else
             {
                 SetMyRequiredTexts("Not Purchased");
-                Debug.Log("Oda Aktif deðil Ve activeRoomsRequiredMoney 0'dan kucuk => " + GameManager.instance.ActiveRoomsRequiredMoney + "|| My Required Money => " + RequiredMoney);
+                //Debug.Log("Oda Aktif deðil Ve activeRoomsRequiredMoney 0'dan kucuk => " + GameManager.instance.ActiveRoomsRequiredMoney + "|| My Required Money => " + RequiredMoney);
             }            
         }
         else
@@ -221,7 +221,7 @@ public class RoomData : MonoBehaviour
                     }
                 }
             }
-        }
+        }        
         Debug.Log("This Room is loaded => " + availableRoomCell.CellLetter.ToString() + availableRoomCell.CellNumber.ToString());
     }
 

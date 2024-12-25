@@ -666,6 +666,20 @@ public class LanguageDatabase : MonoBehaviour
                 });
                 //NPCS
 
+                //NPCSCommend
+                foreach (var item in Language.CommendEvulations)
+                {
+                    if (item.Key == string.Empty)
+                        continue;
+                    npcCommendKeysToTranslate.Add(item.Key);
+                }
+
+                await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), npcCommendKeysToTranslate, (result) =>
+                {
+                    npcCommendTranslatedTexts = result;
+                });
+                //NPCSCommend
+
                 //NOTIFICATIONS
                 foreach (var item in Language.NotificationMessages)
                 {

@@ -12,7 +12,12 @@ public class SpawnHandler : MonoBehaviour
         int length = transform.childCount;
         for (int i = 0; i < length; i++)
             if (transform.GetChild(i).TryGetComponent(out NPCVersionGroup nPCVersionGroup))
+            { // Her NPCVersionGroup icerisinde 18 adet npc bulunmaktadir.
+                int length1 = nPCVersionGroup.transform.childCount;
+                for (int k = 0; k < length1; k++)
+                    nPCVersionGroup.RandomizeChildWithSibling(k);
                 spawnTransformList.Add(nPCVersionGroup.transform);
+            }
     }
     private void SpawnNpcs(int _value)
     {

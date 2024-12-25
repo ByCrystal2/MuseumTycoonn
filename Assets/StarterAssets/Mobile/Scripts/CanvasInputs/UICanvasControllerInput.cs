@@ -23,11 +23,16 @@ namespace StarterAssets
             starterAssetsInputs.JumpInput(virtualJumpState);
         }
 
-        public void VirtualSprintInput(bool virtualSprintState)
+        //public void VirtualSprintInput(bool virtualSprintState) // default metot.
+        //{
+        //    starterAssetsInputs.SprintInput(virtualSprintState);
+        //}
+        bool virtualSprintState = false;
+        public void VirtualSprintInput() // default metot.
         {
+            virtualSprintState = !virtualSprintState;
             starterAssetsInputs.SprintInput(virtualSprintState);
         }
-        
     }
 
 }

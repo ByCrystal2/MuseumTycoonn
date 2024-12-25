@@ -18,6 +18,8 @@ public class WorkerPurchasePanelController : MonoBehaviour
     public void SetWorkersToBuy(WorkerInfoUIs _workersToBuy)
     {
         workersToBuy = _workersToBuy;
+        if (workersToBuy.GetMyPrice() > MuseumManager.instance.GetCurrentGold())
+            yesButton.GetComponent<ButtonSoundHandler>().enabled = false;
     }
     private void OnEnable()
     {
@@ -26,7 +28,11 @@ public class WorkerPurchasePanelController : MonoBehaviour
             Debug.Log("Panele isci atanmali.");
             gameObject.SetActive(false);
         }
-    }    
+    }
+    private void OnDisable()
+    {
+        yesButton.GetComponent<ButtonSoundHandler>().enabled = true;
+    }
     public void WhenPurchased() // Additionally, it is used in the tutorial.
     {
         Hiring();

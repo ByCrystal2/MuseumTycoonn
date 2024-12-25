@@ -940,7 +940,8 @@ public class UIController : MonoBehaviour
             Destroy(child.gameObject);
         }
         GameObject newComment = Instantiate(commentPrefab, commentParent);
-        newComment.transform.GetChild(1).GetComponent<Image>().sprite = _profilPic;
+        if (_profilPic != null)
+            newComment.transform.GetChild(1).GetComponent<Image>().sprite = _profilPic;        
         newComment.transform.GetChild(2).GetComponent<Text>().text = _npcName;
         newComment.transform.GetChild(3).GetComponent<Text>().text = _currentDate;
         newComment.transform.GetChild(4).GetComponent<Text>().text = _npcMessage;
