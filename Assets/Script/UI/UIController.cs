@@ -146,6 +146,7 @@ public class UIController : MonoBehaviour
     [Header("General")]
     public Image CultureFillBar;
     public Text CultureLevelText, GoldText, GemText;
+    public GoldStackHandler goldStackHandler;
     [SerializeField] GameObject MoneysObj;
     [SerializeField] GameObject comingSoonTextPrefab;
     [SerializeField] List<WorkerType> targetComingSoonWorkers = new List<WorkerType>();
@@ -185,7 +186,8 @@ public class UIController : MonoBehaviour
         CultureLevelText.text = "" + MuseumManager.instance.GetCurrentCultureLevel();
         WorkerPanelDefaultPos = WorkerContent.position;
         defaultGemTextPos = GemText.transform.localPosition;
-        defaultGoldTextPos = GoldText.transform.localPosition;        
+        defaultGoldTextPos = GoldText.transform.localPosition;
+        goldStackHandler = GoldText.GetComponent<GoldStackHandler>();
     }
     private void Start()
     {

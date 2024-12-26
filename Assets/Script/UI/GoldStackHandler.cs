@@ -25,7 +25,7 @@ public class GoldStackHandler : MonoBehaviour
     private float realMoney = 0;   // The player's real money
     private Queue<float> moneyQueue = new Queue<float>(); // Queue to handle stacking of money
 
-    private bool isCounting = false;
+    public bool isCounting = false;
 
     private IEnumerator AnimateMoney()
     {
@@ -42,6 +42,8 @@ public class GoldStackHandler : MonoBehaviour
 
     private IEnumerator AnimateMoneyRoutine(float amount)
     {
+        float startingGold = MuseumManager.instance.GetCurrentGold();
+
         float duration = 0.3f; // Smooth animation duration
         float elapsed = 0f;
 
@@ -58,7 +60,6 @@ public class GoldStackHandler : MonoBehaviour
 
         // Smoothly add temporary gold to main gold
         elapsed = 0f;
-        float startingGold = MuseumManager.instance.GetCurrentGold();
         float targetGold = startingGold + amount;
 
         while (elapsed < duration)
@@ -74,22 +75,22 @@ public class GoldStackHandler : MonoBehaviour
         TempGoldText.text = "";
 
         // Close the panel after completion
-        CloseCoroutine = StartCoroutine(ClosePanel());
+        //CloseCoroutine = StartCoroutine(ClosePanel());
     }
 
     public void AddTempGold(float amount)
     {
-        if (!TempGoldText.gameObject.activeSelf && !MainGoldText.gameObject.activeSelf) return;
+        //if (!TempGoldText.gameObject.activeSelf && !MainGoldText.gameObject.activeSelf) return;
         moneyQueue.Enqueue(amount);
 
         if (!isCounting)
         {
-            if (OpenCoroutine != null)
-                StopCoroutine(OpenCoroutine);
-            if (CloseCoroutine != null)
-                StopCoroutine(CloseCoroutine);
-            Panel.gameObject.SetActive(true);
-            OpenCoroutine = StartCoroutine(OpenPanel());
+            //if (OpenCoroutine != null)
+            //    StopCoroutine(OpenCoroutine);
+            //if (CloseCoroutine != null)
+            //    StopCoroutine(CloseCoroutine);
+            //Panel.gameObject.SetActive(true);
+            //OpenCoroutine = StartCoroutine(OpenPanel());
             StartCoroutine(AnimateMoney());
         }
     }

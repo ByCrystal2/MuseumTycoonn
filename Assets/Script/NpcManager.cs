@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using TaskExtensions;
 using System.Threading.Tasks;
+using static Unity.Physics.Authoring.CustomPhysicsProxyAuthoring;
 public class NpcManager : MonoBehaviour
 {
     public static NpcManager instance { get; private set; }
@@ -140,7 +141,8 @@ public class NpcManager : MonoBehaviour
             Debug.Log("GameManager IsFirstGame True. And First Game Process Starting...");
 
             MuseumManager.instance.lastDailyRewardTime = TimeManager.instance.CurrentDateTime;
-            MuseumManager.instance.OnNpcPaid(2500);
+            UIController.instance.goldStackHandler.AddTempGold(2500);
+            MuseumManager.instance.AddGold(2500);
 
             ItemData firstTableForPlayerSub = ItemManager.instance.AllItems.Where(x => x.ID == firstTableForPlayer.ID).SingleOrDefault();
             PictureData newInventoryItem = new PictureData();

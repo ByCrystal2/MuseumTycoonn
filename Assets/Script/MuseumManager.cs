@@ -51,15 +51,15 @@ public class MuseumManager : MonoBehaviour
         //        MostCommonColors = CatchTheColors.instance.FindMostUsedColors(MyPictures[0].texture),
         //        texture = MyPictures[0].texture // NULL REFERANCE ALIYORUZ.
         //    },
-            
+
         //    id = 1,
         //    isActive = true,
         //    isLocked = false,
         //    isFirst = true,
         //    RequiredGold = 300,
         //    painterData = new PainterData(1,"Leonardo Da Vinci", "1755'te resmedilen ünlü tablo.",1,CatchTheColors.instance.TextureToSprite(MyPictures[0].texture))    
-            
-        
+
+
         //});
     }
 
@@ -138,39 +138,33 @@ public class MuseumManager : MonoBehaviour
             CurrentNpcs.Add(_newNpc);
         //Kac adet npc var buraya guncellenicek.
     }
-
     public void OnNpcPaid(float _score)
     {
         float targetGold = _score * GetTicketPrice();
         if (UIController.instance.GoldText.gameObject.activeSelf)
-        UIController.instance.GoldText.GetComponent<GoldStackHandler>().AddTempGold(targetGold);
-
+        UIController.instance.goldStackHandler.AddTempGold(targetGold);
         AddGold(targetGold);
         Debug.Log("Earned: " + targetGold + " by npc paid for an image. New gold: " + Gold + " _score => " + _score);
         UIController.instance.InMuseumCurrentNPCCountChanged(GetInMuseumVisitorCount());
-        UIController.instance.DailyVisitorCountChanged(AddAndGetDailyNPCCount());
+        UIController.instance.DailyVisitorCountChanged(AddAndGetDailyNPCCount());        
+    }
+    
+    public void AddGold(float _gold)
+    {
+        Gold += _gold;
+        if (!UIController.instance.goldStackHandler.isCounting)
+        UIController.instance.GoldText.text = "" + Gold;
+        Debug.Log(" New gold: " + Gold);
+        DailyEarning += Gold;
+
         UIController.instance.UIChangesControl();
         if (PicturesMenuController.instance.CurrentPicture != null)
         {
             Debug.Log("Picture Control: " + PicturesMenuController.instance.CurrentPicture.name);
             PicturesMenuController.instance.GoldControledButtonShape();
         }
-        
-        AudioManager.instance.PlayGoldPaidSound();
-    }
-    
-    public void AddGold(float _gold)
-    {
-        Gold += _gold;
-        UIController.instance.GoldText.text = "" + Gold;
-        Debug.Log(" New gold: " + Gold);
-        DailyEarning += Gold;
         UIController.instance.InMuseumDailyEarningChanged(DailyEarning);
-//#if UNITY_EDITOR
-//        FirestoreManager.instance.UpdateGameData("ahmet123");
-//#else
-//        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUser().UserId);
-//#endif
+        AudioManager.instance.PlayGoldPaidSound();
     }
     public void AddGem(float _gem)
     {

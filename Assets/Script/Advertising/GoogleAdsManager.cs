@@ -72,7 +72,7 @@ public class GoogleAdsManager : MonoBehaviour
     private bool IsBannerAdShow = true;
 
     private float InterstitialAdWaitingTime = 3; // second
-    private float RewardAdWaitingTime = 180; // default: 180 second
+    private float RewardAdWaitingTime = 300; // default: 180 second
     private float BannerAdWaitingTime = 10; // second
 
     RewardAdData currentRewardAdData;
@@ -104,7 +104,7 @@ public class GoogleAdsManager : MonoBehaviour
             if (InterstitialAdWaitingTime <= 0)
             {
                 IsInterstitialAdShow = true;
-                InterstitialAdWaitingTime = 60;
+                InterstitialAdWaitingTime = 180;
                 LoadInterstitialAd();
             }
         }
@@ -115,7 +115,7 @@ public class GoogleAdsManager : MonoBehaviour
             if (RewardAdWaitingTime <= 0)
             {
                 IsRewardAdShow = true;
-                RewardAdWaitingTime = 180;
+                RewardAdWaitingTime = 300;
                 LoadRewardedAd();
                 StartCoroutine(DelayForRewardAdsShowing());
             }
