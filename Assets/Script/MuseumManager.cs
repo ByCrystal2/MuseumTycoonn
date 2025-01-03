@@ -91,14 +91,17 @@ public class MuseumManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (SmootherCultureExp < Culture)
+        if(NpcManager.instance != null && NpcManager.instance.databaseProcessComplated)
         {
-            SmoothTheExp(true);
-        }
-        else if (SmootherCultureExp > Culture)
-        {
-            SmoothTheExp(false);
-        }
+            if (SmootherCultureExp < Culture)
+            {
+                SmoothTheExp(true);
+            }
+            else if (SmootherCultureExp > Culture)
+            {
+                SmoothTheExp(false);
+            }
+        }        
     }
 
     void SmoothTheExp(bool _isIncrease)
@@ -289,8 +292,12 @@ public class MuseumManager : MonoBehaviour
         {
             Culture -= GetRequiredCultureExp();
             CurrentCultureLevel++;
+            SkillPoint += GetCurrentCultureLevel();
+            //if (GetCurrentCultureLevel() % 5 == 0)
+            //{
+                NotificationHandler levelUpNotificationHandler = NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(10000), new SenderHelper(WhoSends.System, 9999),2,null,null,null, $"Tebrikler baþarýyla {GetCurrentCultureLevel()} Level oldunuz!");
+            //}
             GameManager.instance.BaseWorkerHiringPrice += 200;
-            SkillPoint++;
             CultureLevelUP();
             SpawnHandler.instance.StartSpawnProcess();
         }

@@ -104,6 +104,7 @@ public class RightUIPanelController : MonoBehaviour
             case GameMode.MuseumEditing:
                 // FPS Moduna gecis.
                 //UIController.instance.CloseEditModeCanvas(true);
+                CustomizePanelOnButton.gameObject.SetActive(true);
                 FPSModeObj.SetActive(true);
                 notificationsObj.SetActive(true);
                 VisibleUIObj.SetActive(false);
@@ -118,6 +119,7 @@ public class RightUIPanelController : MonoBehaviour
             case GameMode.FPS:
                 // Ghost Moduna Gecis.
                 //UIController.instance.CloseEditModeCanvas(false);
+                CustomizePanelOnButton.gameObject.SetActive(false);
                 EditModeObj.SetActive(true);
                 notificationsObj.SetActive(true);
                 VisibleUIObj.SetActive(true);

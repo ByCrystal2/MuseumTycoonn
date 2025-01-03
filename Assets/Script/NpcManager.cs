@@ -141,8 +141,8 @@ public class NpcManager : MonoBehaviour
             Debug.Log("GameManager IsFirstGame True. And First Game Process Starting...");
 
             MuseumManager.instance.lastDailyRewardTime = TimeManager.instance.CurrentDateTime;
-            UIController.instance.goldStackHandler.AddTempGold(2500);
-            MuseumManager.instance.AddGold(2500);
+
+            StartCoroutine(FirstGameController());
 
             ItemData firstTableForPlayerSub = ItemManager.instance.AllItems.Where(x => x.ID == firstTableForPlayer.ID).SingleOrDefault();
             PictureData newInventoryItem = new PictureData();
@@ -196,7 +196,7 @@ public class NpcManager : MonoBehaviour
         RoomManager.instance.statuesHandler.ActiveStatuesControl();
         //Start Method
         databaseProcessComplated = true;
-        TimeManager.instance.OnMinutePassed += OnGettingSalary;
+        TimeManager.instance.OnOneMinutePassed += OnGettingSalary;
         Debug.Log("Database Loading Process Complated.");
     }
     public void MuseumDoorsProcess(bool _isOpen)
@@ -219,13 +219,22 @@ public class NpcManager : MonoBehaviour
     }
     private void OnDisable()
     {
-        TimeManager.instance.OnMinutePassed -= OnGettingSalary;
+        TimeManager.instance.OnOneMinutePassed -= OnGettingSalary;
     }
     public void SetNpcPairsInDialog(NPCBehaviour npc1, NPCBehaviour npc2)
     {
 
     }
 
+    IEnumerator FirstGameController()
+    {
+        yield return new WaitForSeconds(2);
+        if (GameManager.instance.IsFirstGame)
+        {
+            UIController.instance.goldStackHandler.AddTempGold(2500);
+            MuseumManager.instance.AddGold(2500);
+        }
+    }
     public void OnGettingSalary() // NPCs salary
     {
         if (!GameManager.instance.IsWatchTutorial) return;

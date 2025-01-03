@@ -859,6 +859,7 @@ public class GameManager : MonoBehaviour
         int length = allDatas.Count;
         for (int i = 0; i < length; i++)
         {
+            if (i < notificationLanguageDatas.Count)
             allDatas[i].Message = notificationLanguageDatas[i].ActiveLanguage;
         }
     }

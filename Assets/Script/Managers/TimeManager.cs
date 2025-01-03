@@ -12,7 +12,9 @@ public class TimeManager : MonoBehaviour
     private Coroutine timeProgressCoroutine;
     //Delegates
     public delegate void MinutePassedDelegate();
-    public event MinutePassedDelegate OnMinutePassed;
+    public event MinutePassedDelegate OnOneMinutePassed;
+    public event MinutePassedDelegate OnFiveMinutePassed;
+    public event MinutePassedDelegate OnTenMinutePassed;
     //Delegates
     public static TimeManager instance { get; set; }
     private void Awake()
@@ -78,31 +80,92 @@ public class TimeManager : MonoBehaviour
             timeProgressCoroutine = null;
         }
     }
+    //private IEnumerator TimeProgress()
+    //{
+    //    int lastOneMinute = CurrentDateTime.Minute;
+    //    int lastFiveMinute = CurrentDateTime.Minute + 5;
+    //    int lastTenMinute = CurrentDateTime.Minute + 10;
+    //    while (true)
+    //    {
+    //        yield return new WaitForSeconds(1f); // 1 saniye bekle
+
+    //        // Her dakika baþýnda delegate'i çaðýr
+    //        if (CurrentDateTime.Minute != lastOneMinute)
+    //        {
+    //            OnOneMinutePassed?.Invoke();
+    //            lastOneMinute = CurrentDateTime.Minute;
+    //        }
+    //        if (CurrentDateTime.Minute != lastFiveMinute)
+    //        {
+    //            OnFiveMinutePassed?.Invoke();
+    //            lastFiveMinute = CurrentDateTime.Minute;
+    //        }
+    //        if (CurrentDateTime.Minute != lastTenMinute)
+    //        {
+    //            OnTenMinutePassed?.Invoke();
+    //            lastTenMinute = CurrentDateTime.Minute;
+    //        }
+
+    //        if (GameManager.instance._rewardManager != null)
+    //        {
+    //            if (!lastDailyCheck)
+    //                GameManager.instance._rewardManager.WaitForLastDailyRewardTime();
+    //            GameManager.instance._rewardManager.CheckRewards();
+    //            //Debug.Log("Þu an saat: " + CurrentDateTime.ToString("HH:mm:ss"));
+    //        }
+
+    //        CurrentDateTime = CurrentDateTime.AddSeconds(1); // Mevcut zamani 1 saniye arttir            
+    //    }
+    //}
     private IEnumerator TimeProgress()
     {
-        int lastMinute = CurrentDateTime.Minute;
+        int lastOneMinute = CurrentDateTime.Minute;
+        int nextFiveMinute = (CurrentDateTime.Minute + 5) % 60;
+        int nextTenMinute = (CurrentDateTime.Minute + 10) % 60;
+
         while (true)
         {
             yield return new WaitForSeconds(1f); // 1 saniye bekle
 
+            CurrentDateTime = CurrentDateTime.AddSeconds(1); // Zamaný 1 saniye ilerlet
+
             // Her dakika baþýnda delegate'i çaðýr
-            if (CurrentDateTime.Minute != lastMinute)
+            if (CurrentDateTime.Minute != lastOneMinute)
             {
-                OnMinutePassed?.Invoke();
-                lastMinute = CurrentDateTime.Minute;
+                Debug.Log("1 dakika islemleri calisiyor...");
+                OnOneMinutePassed?.Invoke();
+                lastOneMinute = CurrentDateTime.Minute;
             }
 
+            // 5 dakikalýk kontrol
+            if (CurrentDateTime.Minute >= nextFiveMinute)
+            {
+                Debug.Log("5 dakika islemleri calisiyor...");
+                OnFiveMinutePassed?.Invoke();
+                nextFiveMinute = (nextFiveMinute + 5) % 60;
+            }
+
+            // 10 dakikalýk kontrol
+            if (CurrentDateTime.Minute >= nextTenMinute)
+            {
+                Debug.Log("10 dakika islemleri calisiyor...");
+                OnTenMinutePassed?.Invoke();
+                nextTenMinute = (nextTenMinute + 10) % 60;
+            }
+
+            // Ödül sistemi kontrolü
             if (GameManager.instance._rewardManager != null)
             {
                 if (!lastDailyCheck)
                     GameManager.instance._rewardManager.WaitForLastDailyRewardTime();
-                GameManager.instance._rewardManager.CheckRewards();
-                //Debug.Log("Þu an saat: " + CurrentDateTime.ToString("HH:mm:ss"));
-            }
 
-            CurrentDateTime = CurrentDateTime.AddSeconds(1); // Mevcut zamani 1 saniye arttir            
+                GameManager.instance._rewardManager.CheckRewards();
+            }
         }
     }
+
+
+
 }
 
 [Serializable]

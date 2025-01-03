@@ -165,9 +165,24 @@ public class NPCBehaviour : MonoBehaviour
     {
         if (CurrentVisitedRoom != null)
         {
-            ChangeCoreToiletValue(Time.deltaTime * 4f);
+            if (npcState._location == NpcLocationState.Inside)
+            {
+                ChangeCoreToiletValue(Time.deltaTime * 4f);
+            }
+            else
+            {
+                StatData.toilet = 0;
+            }
+            
             if (BusyUntil > Time.time)
                 return;
+        }
+        else
+        {
+            if (npcState._location == NpcLocationState.Outside)
+            {
+                StatData.toilet = 0;
+            }
         }
 
         if(IdleTimer < Time.time)

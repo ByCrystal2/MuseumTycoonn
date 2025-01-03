@@ -16,6 +16,7 @@ public class UIController : MonoBehaviour
     [SerializeField] public TutorialUISPanel tutorialUISPanel;
     [SerializeField] public WorkerInfoPanelController workerInfoPanelController;
     [SerializeField] public WorkerPurchasePanelController WorkerPurchasePanelController;
+    [SerializeField] public MissionUIHandler missionUIHandler;
     [SerializeField] List<GameObject> IsGameObjectOverPanels;
     [Header("MuseumInfos")]
     [SerializeField] GameObject pnlMuseumStats;
@@ -187,7 +188,7 @@ public class UIController : MonoBehaviour
         WorkerPanelDefaultPos = WorkerContent.position;
         defaultGemTextPos = GemText.transform.localPosition;
         defaultGoldTextPos = GoldText.transform.localPosition;
-        goldStackHandler = GoldText.GetComponent<GoldStackHandler>();
+        //goldStackHandler = GoldText.GetComponent<GoldStackHandler>();
     }
     private void Start()
     {
@@ -1117,7 +1118,7 @@ public class UIController : MonoBehaviour
             RightUIPanelController.instance.CloseEditObj(true);
             RightUIPanelController.instance.DrawerActivation(false);
             CloseJoystickObj(true);
-            NotificationManager.instance.FillNotificationPanelContent(NotificationType.All);
+            NotificationManager.instance.FillNotificationPanelContent(NotificationHeader.All);
             NotificationManager.instance.notificationsCanvas_V1.SetActive(true);
         }
         else
