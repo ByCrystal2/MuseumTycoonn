@@ -5,7 +5,7 @@ using UnityEngine;
 public class MissionUIHandler : MonoBehaviour
 {
     [Header("Mission Type Scripts")]
-    [SerializeField] MissionCollectionUIHandler collectionUIHandler;
+    public MissionCollectionUIHandler collectionUIHandler;
 
     public void MissionUIActivation(MissionType type)
     {

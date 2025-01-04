@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class MissionManager : MonoBehaviour
 {
+    [SerializeField] MissionCollectionHandler collectionHandler;
     List<GameMission> gameMissions = new List<GameMission>();
 
     public static MissionManager instance { get; private set; }
@@ -54,14 +55,25 @@ public class MissionManager : MonoBehaviour
             NotificationHandler handler = NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(100001), new SenderHelper(WhoSends.System, 9999), 1, null, new NotificationMissionHandler(100001, () =>
             {
                 Debug.Log("Gorev basladi!");
+                StartGameMission(randomMission);
             }), randomMission, randomMission.Description);
         }
         
     }
+    void StartGameMission(GameMission _gameMission)
+    {
+        if (_gameMission.missionType == MissionType.Collection)
+        {
+            UIController.instance.missionUIHandler.MissionUIActivation(_gameMission.missionType);
+            CollectionHalper collectionHelper = _gameMission.GetMissionCollection();
+            UIController.instance.missionUIHandler.collectionUIHandler.SetDatas(collectionHelper.StartValue, collectionHelper.EndValue, collectionHelper.missionCollectionType);
+            collectionHandler.SpawnCollection(_gameMission);
+        }
+    }
     void InitGameMissions()
     {
         gameMissions.Clear();
-        GameMission gm1 = new GameMission(1,100000,100001,"Mücevher Görevi", "10 adet mücevher topla!",300,120);
+        GameMission gm1 = new GameMission(1,100000,100001,"Mücevher Görevi", "10 adet mücevher topla!",300,120,MissionType.Collection, new CollectionHalper(0,10,MissionCollectionType.Gem));
         gm1.SetRewardEvent(() =>
         {
             MuseumManager.instance.AddGem(10);
@@ -96,8 +108,10 @@ public class GameMission
     public float MissionComplationTime;
     public float ValidityPeriodMission;
     public bool isActive;
+    public MissionType missionType;
+    CollectionHalper collection;
     event System.Action onMissionReward;
-    public GameMission(int iD, int infoNotificationID, int targetNotificationID, string header, string description, float missionComplationTime, float validityPeriodMission)
+    public GameMission(int iD, int infoNotificationID, int targetNotificationID, string header, string description, float missionComplationTime, float validityPeriodMission, MissionType missionType, CollectionHalper collection = null)
     {
         ID = iD;
         InfoNotificationID = infoNotificationID;
@@ -107,6 +121,8 @@ public class GameMission
         MissionComplationTime = missionComplationTime;
         ValidityPeriodMission = validityPeriodMission;
         isActive = false;
+        this.missionType = missionType;
+        this.collection = collection;
     }
 
     public void SetRewardEvent(System.Action @event)
@@ -123,6 +139,22 @@ public class GameMission
         isActive = false;
         onMissionReward?.Invoke();
     }
+    public CollectionHalper GetMissionCollection()
+    {
+        return collection;
+    }
+}
+public class CollectionHalper
+{
+    public MissionCollectionType missionCollectionType;
+    public int StartValue;
+    public int EndValue;
+    public CollectionHalper(int startValue, int endValue, MissionCollectionType _type)
+    {
+        StartValue = startValue;
+        EndValue = endValue;
+        missionCollectionType = _type;
+    }
 }
 public enum MissionType
 {
@@ -133,4 +165,5 @@ public enum MissionCollectionType // Koleksyion gorevlerinin icerik enumu. (Miss
     Gem,
     Gold, 
     Grass,
+    None
 }
