@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 33000010953352954}
   - component: {fileID: 23000011085638434}
   - component: {fileID: 114000010769974528}
+  - component: {fileID: 4869691367585750460}
+  - component: {fileID: 1858341075827007427}
   m_Layer: 0
   m_Name: DiamondPrefab
   m_TagString: Untagged
@@ -28,9 +30,9 @@ Transform:
   m_GameObject: {fileID: 1000013656696560}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 6.3499994, y: 5.12, z: -0.17014043}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
@@ -91,7 +93,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000013656696560}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9ff967b7ed48f2441bcf509edf6b889a, type: 3}
   m_Name: 
@@ -100,11 +102,44 @@ MonoBehaviour:
   isRotating: 1
   isFloating: 1
   isScaling: 1
-  rotationAngle: {x: 0, y: 0, z: 10}
+  rotationAngle: {x: -90, y: 0, z: 10}
   rotationSpeed: 10
   floatSpeed: 0.04
   floatRate: 0.5
-  startScale: {x: 1, y: 1, z: 1}
-  endScale: {x: 1.5, y: 1.5, z: 1.5}
+  startScale: {x: 0.5, y: 0.5, z: 0.5}
+  endScale: {x: 0.8, y: 0.8, z: 0.8}
   scaleSpeed: 1
   scaleRate: 0.5
+--- !u!135 &4869691367585750460
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000013656696560}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 4
+  m_Center: {x: -0.0000032782555, y: -0.0000026822097, z: -0.7140475}
+--- !u!114 &1858341075827007427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000013656696560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1535599eb3f2ace48b9f716fad593a2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

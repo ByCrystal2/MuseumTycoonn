@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class MissionManager : MonoBehaviour
 {
-    [SerializeField] MissionCollectionHandler collectionHandler;
+    [SerializeField] public MissionCollectionHandler collectionHandler;
     List<GameMission> gameMissions = new List<GameMission>();
-
+    public List<GameMission> ActiveMissions = new List<GameMission>();
     public static MissionManager instance { get; private set; }
     private void Awake()
     {
@@ -55,32 +55,58 @@ public class MissionManager : MonoBehaviour
             NotificationHandler handler = NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(100001), new SenderHelper(WhoSends.System, 9999), 1, null, new NotificationMissionHandler(100001, () =>
             {
                 Debug.Log("Gorev basladi!");
-                StartGameMission(randomMission);
+                GameMission flag = new GameMission(randomMission);
+                AddMission(flag);
+                StartGameMission(flag);
             }), randomMission, randomMission.Description);
         }
         
+    }
+    public void ComplateActiveMissionWithID(int _id)
+    {
+        GameMission targetMission = ActiveMissions.Where(x=> x.ID == _id).SingleOrDefault();
+        if (targetMission == null) { Debug.LogError("Gonderilen gorev, aktif gorevlerde bulunmamaktadir!"); return; }
+        targetMission.TriggerReward();
+        Debug.Log(targetMission.ID + " ID'li gorev tamamlandi!");
+        RemoveMissionWithId(targetMission.ID);
+    }
+    void AddMission(GameMission _newMission)
+    {
+        ActiveMissions.Add(_newMission);
+    }
+    public void RemoveMissionWithId(int _missionID)
+    {
+        GameMission currentMission = ActiveMissions.Where(x=> x.ID == _missionID).SingleOrDefault();
+        if (currentMission == null) { Debug.LogError("Gonderilen gorev, aktif gorevlerde bulunmamaktadir!"); return; }
+        ActiveMissions.Remove(currentMission);
     }
     void StartGameMission(GameMission _gameMission)
     {
         if (_gameMission.missionType == MissionType.Collection)
         {
-            UIController.instance.missionUIHandler.MissionUIActivation(_gameMission.missionType);
-            CollectionHalper collectionHelper = _gameMission.GetMissionCollection();
-            UIController.instance.missionUIHandler.collectionUIHandler.SetDatas(collectionHelper.StartValue, collectionHelper.EndValue, collectionHelper.missionCollectionType);
-            collectionHandler.SpawnCollection(_gameMission);
+            UIController.instance.missionUIHandler.MissionUIActivation(_gameMission.missionType,true);
+            CollectionHelper collectionHelper = _gameMission.GetMissionCollection();
+            UIController.instance.missionUIHandler.collectionUIHandler.SetDatas(collectionHelper);
+            collectionHandler.SetMission(_gameMission);
+            collectionHandler.CollectionProcess();
         }
-        else if (_gameMission.missionType == MissionType.NPCInteraction)
+        else if (_gameMission.missionType == MissionType.NPC)
         {
-            // Npc etkilesimi islemleri burda yapýlabilir.
+            // Npc etkilesimi islemleri koleksiyon enumu bunyesinde yapilmalidir
+            // Npc ile farkli gorevler icin bura kullanilabilinir.
         }
     }
     void InitGameMissions()
     {
         gameMissions.Clear();
-        GameMission gm1 = new GameMission(1,100000,100001,"Mücevher Görevi", "10 adet mücevher topla!",300,120,MissionType.Collection, new CollectionHalper(0,10,MissionCollectionType.Gem));
+        GameMission gm1 = new GameMission(1,100000,100001,"Mücevher Görevi", "10 adet mücevher topla!",300,120,MissionType.Collection, new CollectionHelper(0,10,MissionCollectionType.Gem));
         gm1.SetRewardEvent(() =>
         {
-            MuseumManager.instance.AddGem(10);
+            NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(6), new SenderHelper(WhoSends.System, 9999), 2);
+            NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(9999), new SenderHelper(WhoSends.System, 9999),1, new NotificationRewardHandler(9999, () =>
+            {
+                MuseumManager.instance.AddGem(50);
+            }),null,null,"+50 Gem!");
         });
         gameMissions.Add(gm1);
     }
@@ -98,7 +124,7 @@ public class MissionManager : MonoBehaviour
     }
     public bool AnyActiveMission()
     {
-        return gameMissions.Any(x => x.isActive);
+        return ActiveMissions.Any(x => x.isActive);
     }
 }
 [System.Serializable]
@@ -113,9 +139,9 @@ public class GameMission
     public float ValidityPeriodMission;
     public bool isActive;
     public MissionType missionType;
-    CollectionHalper collection;
+    CollectionHelper collection;
     event System.Action onMissionReward;
-    public GameMission(int iD, int infoNotificationID, int targetNotificationID, string header, string description, float missionComplationTime, float validityPeriodMission, MissionType missionType, CollectionHalper collection = null)
+    public GameMission(int iD, int infoNotificationID, int targetNotificationID, string header, string description, float missionComplationTime, float validityPeriodMission, MissionType missionType, CollectionHelper collection = null)
     {
         ID = iD;
         InfoNotificationID = infoNotificationID;
@@ -127,6 +153,20 @@ public class GameMission
         isActive = false;
         this.missionType = missionType;
         this.collection = collection;
+    }
+    public GameMission(GameMission _copy)
+    {
+        ID = _copy.ID;
+        InfoNotificationID = _copy.InfoNotificationID;
+        TargetNotificationID = _copy.TargetNotificationID;
+        Header = _copy.Header;
+        Description = _copy.Description;
+        MissionComplationTime= _copy.MissionComplationTime;
+        ValidityPeriodMission= _copy.ValidityPeriodMission;
+        isActive = _copy.isActive;
+        missionType = _copy.missionType;
+        collection = new CollectionHelper(_copy.collection);
+        onMissionReward = new System.Action(_copy.onMissionReward);
     }
 
     public void SetRewardEvent(System.Action @event)
@@ -143,32 +183,46 @@ public class GameMission
         isActive = false;
         onMissionReward?.Invoke();
     }
-    public CollectionHalper GetMissionCollection()
+    public CollectionHelper GetMissionCollection()
     {
         return collection;
     }
 }
-public class CollectionHalper
+public class CollectionHelper
 {
     public MissionCollectionType missionCollectionType;
     public int StartValue;
     public int EndValue;
-    public CollectionHalper(int startValue, int endValue, MissionCollectionType _type)
+    public CollectionHelper(int startValue, int endValue, MissionCollectionType _type)
     {
         StartValue = startValue;
         EndValue = endValue;
         missionCollectionType = _type;
     }
+    public CollectionHelper(CollectionHelper _copy) 
+    {
+        missionCollectionType = _copy.missionCollectionType;
+        StartValue = _copy.StartValue;
+        EndValue = _copy.EndValue;
+    }
+    public bool IsFull()
+    {
+        if (StartValue >= EndValue)
+            return true;
+        else
+            return false;
+    }
 }
 public enum MissionType
 {
     Collection,
-    NPCInteraction
+    NPC
 }
 public enum MissionCollectionType // Koleksyion gorevlerinin icerik enumu. (MissionCollectionUIHandler.iconSprites kod yolunda ki iconlarin sirasi baz alinmistir)
 {
     Gem,
     Gold, 
     Grass,
+    NpcInteraction,
     None
 }

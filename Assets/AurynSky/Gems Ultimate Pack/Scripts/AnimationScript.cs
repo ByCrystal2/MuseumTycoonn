@@ -45,7 +45,7 @@ public class AnimationScript : MonoBehaviour {
             if(isFloating)
             {
                 floatTimer += Time.deltaTime;
-                Vector3 moveDir = new Vector3(0.0f, 0.0f, floatSpeed);
+                Vector3 moveDir = new Vector3(0f, 0.0f, floatSpeed);
                 transform.Translate(moveDir);
 
                 if (goingUp && floatTimer >= floatRate)

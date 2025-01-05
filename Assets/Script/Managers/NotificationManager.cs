@@ -111,7 +111,7 @@ public class NotificationManager : MonoBehaviour
     }
     public void NotificationInit()
     {
-        Notification n1 = null, n2 = null, n3 = null, n4 = null, n5 = null;
+        Notification n1 = null, n2 = null, n3 = null, n4 = null, n5 = null, n6 = null;
         n1 = new Notification(1,
             "You have changed the language frequently. Please wait a while before changing it again.",10.0f, NotificationHeader.System,
             NotificationState.Error, NotificationType.Emergency,
@@ -140,8 +140,12 @@ public class NotificationManager : MonoBehaviour
             }, 3);
         n4 = new Notification(4, "Selected notifications read.", 1f, NotificationHeader.System, NotificationState.Information, NotificationType.Trivial, 1);
         n5 = new Notification(5, "You already have a mission right now.", 2f, NotificationHeader.System, NotificationState.Warning, NotificationType.Trivial, 1);
+        n6 = new Notification(6, "You have completed the mission! You can get the reward in the notifications.", 2f, NotificationHeader.System, NotificationState.Warning, NotificationType.Trivial, 1);
+        //  RewardNotifications
+        Notification n9999 = new Notification(9999, "", 2f, NotificationHeader.System, NotificationState.Information, NotificationType.Reward, 1);
         // Achievement Notifications
         Notification n10000 = new Notification(10000, "", 2f, NotificationHeader.System, NotificationState.Information, NotificationType.Reward,1);
+            //
         //
 
         // Game Mission Notifications
@@ -156,10 +160,17 @@ public class NotificationManager : MonoBehaviour
         notifications.Add(n2);
         notifications.Add(n3);
         notifications.Add(n4);
+        notifications.Add(n5);
+        notifications.Add(n6);
+
+        //Reward Notifications Adding...
+        notifications.Add(n9999);
 
         //Acihevement Notifications Adding...
         notifications.Add(n10000);
         //Acihevement Notifications Adding...
+
+        //Reward Notifications Adding...
 
         //Game Mission Notifications Adding...
         notifications.Add(n100000);
