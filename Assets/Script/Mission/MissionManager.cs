@@ -69,6 +69,10 @@ public class MissionManager : MonoBehaviour
             UIController.instance.missionUIHandler.collectionUIHandler.SetDatas(collectionHelper.StartValue, collectionHelper.EndValue, collectionHelper.missionCollectionType);
             collectionHandler.SpawnCollection(_gameMission);
         }
+        else if (_gameMission.missionType == MissionType.NPCInteraction)
+        {
+            // Npc etkilesimi islemleri burda yapýlabilir.
+        }
     }
     void InitGameMissions()
     {
@@ -159,6 +163,7 @@ public class CollectionHalper
 public enum MissionType
 {
     Collection,
+    NPCInteraction
 }
 public enum MissionCollectionType // Koleksyion gorevlerinin icerik enumu. (MissionCollectionUIHandler.iconSprites kod yolunda ki iconlarin sirasi baz alinmistir)
 {
