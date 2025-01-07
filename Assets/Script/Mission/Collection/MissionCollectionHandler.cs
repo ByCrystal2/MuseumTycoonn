@@ -1,21 +1,31 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MissionCollectionHandler : MonoBehaviour
 {
     public MissionCollectionController controller;
-    CollectionSpawnController spawnController;
+    public CollectionSpawnController spawnController;
     GameMission currentGameMission;
     private void Awake()
     {
         spawnController = new CollectionSpawnController();
+        StartCoroutine(spawnController.WaitForRoomManagerToBeAppointed());
     }
-    public void SetMission(GameMission gameMission)
+    
+    public void MissionOfCollectionTimeEnding()
     {
-        currentGameMission = gameMission;
+        UIController.instance.missionUIHandler.MissionUIActivation(MissionType.Collection, false);
+        MissionManager.instance.MissionTimeEnding(currentGameMission.ID);
+        if (currentGameMission.GetMissionCollection().IsSpawnedMission())
+            DestroySpawnedObjs();
+        currentGameMission = null;
     }
-    public GameMission GetCurrentMission()
+    void DestroySpawnedObjs()
     {
-        return currentGameMission;
+        List<SpawnBugHandler> spawnedObjs = FindObjectsOfType<SpawnBugHandler>().ToList();
+        for (int i = 0; i < spawnedObjs.Count; i++)
+            Destroy(spawnedObjs[i].gameObject);
     }
     public void CollectionProcess()
     {
@@ -41,6 +51,7 @@ public class MissionCollectionHandler : MonoBehaviour
         {
             UIController.instance.missionUIHandler.MissionUIActivation(MissionType.Collection, false);
             MissionManager.instance.ComplateActiveMissionWithID(currentGameMission.ID);
+            currentGameMission = null;
             return;
         }
     }
@@ -54,28 +65,62 @@ public class MissionCollectionHandler : MonoBehaviour
     {
         return currentGameMission == null;
     }
+    public void SetMission(GameMission gameMission)
+    {
+        currentGameMission = gameMission;
+    }
+    public GameMission GetCurrentMission()
+    {
+        return currentGameMission;
+    }
     public class CollectionSpawnController
     {
-        [SerializeField] private float sphereRadius = 10f; // Kürenin yarýçapý
-        [SerializeField] private float fixedYPosition = 1f; // Sabit y pozisyonu
-
+        [SerializeField] public float sphereRadius = 100f; // Kürenin yarýçapý
+        [SerializeField] public float fixedYPosition = 1f; // Sabit y pozisyonu
+        public Vector3 sphereCenter = Vector3.zero;
         public void SpawnObjects(GameObject _objectToSpawn, int spawnCount)
-        {
-            RoomData roomData = RoomManager.instance.GetRoomWithRoomCell(new RoomCell(CellLetter.C, 5));
-            Vector3 sphereCenter = roomData.gameObject.transform.position;
+        {            
             for (int i = 0; i < spawnCount; i++)
             {
                 // Küre içinde rastgele bir pozisyon hesapla
-                Vector3 randomPosition = sphereCenter + Random.insideUnitSphere * sphereRadius;
 
-                // y deðerini sabit bir deðere ayarla
-                randomPosition.y = fixedYPosition;
-
-                // Objeyi spawn et
-                Quaternion customRotation = Quaternion.Euler(-90f, 0f, 0f);
+                Vector3 randomPosition = GetRandomPosition();
+                Quaternion customRotation = GetCustomRotation();
                 Instantiate(_objectToSpawn, randomPosition, customRotation);
+                //Objeye kontrol yapilmadan yanlýs spawn olabilecegi noktalar: 
+                /*
+                 * Satin alinmamis odalar
+                 * Duvarlar
+                 * Heykellerin konuldugu slotlar
+                 * Muzenin dis tarafi
+                 */
             }
         }
+        public System.Collections.IEnumerator WaitForRoomManagerToBeAppointed()
+        {
+            yield return new WaitUntil(() => RoomManager.instance != null);
+            RoomData roomData = RoomManager.instance.GetRoomWithRoomCell(new RoomCell(CellLetter.C, 5));
+            sphereCenter = roomData.gameObject.transform.position;
+        }
+        public Vector3 GetRandomPosition()
+        {
+            Vector3 randomPosition = sphereCenter + Random.insideUnitSphere * sphereRadius;
+
+            // y deðerini sabit bir deðere ayarla
+            randomPosition.y = fixedYPosition;
+            return randomPosition;
+        }
+        public Quaternion GetCustomRotation()
+        {
+            Quaternion customRotation = Quaternion.Euler(-90f, 0f, 0f);
+            return customRotation;
+        }
+    }
+    private void OnDrawGizmos()
+    {
+        if (spawnController == null) return;
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(spawnController.sphereCenter,  spawnController.sphereRadius);
     }
 
 }

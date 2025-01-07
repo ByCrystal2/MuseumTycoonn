@@ -21,10 +21,17 @@ public class CollectionDiamondBehaviour : MonoBehaviour
     }
     void StartWinProcess()
     {
-        Vector3 distance = transform.position - PlayerManager.instance.GetPlayer().BodyTransform.position;
-        transform.DOMove(distance, 2f).OnComplete(() =>
+        Transform targetTransform = PlayerManager.instance.GetPlayer().BodyTransform;
+        Vector3 distance = targetTransform.position;
+        distance = new Vector3(distance.x, transform.position.y + 1f, distance.z);
+        transform.DOMove(distance, 0.1f).OnUpdate(() =>
+        {
+            Vector3 distance2 = targetTransform.position;
+            distance = new Vector3(distance2.x, transform.position.y + 1f, distance2.z);
+        }).OnComplete(() =>
         {
             MissionManager.instance.collectionHandler.AdvanceMission();
+            AudioManager.instance.PlayTakeCollectionObjSound();
             gameObject.SetActive(false);
             Destroy(gameObject, 1f);
         });

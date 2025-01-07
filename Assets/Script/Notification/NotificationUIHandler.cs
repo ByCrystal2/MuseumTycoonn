@@ -19,13 +19,14 @@ public class NotificationUIHandler : MonoBehaviour
     private void Awake()
     {
         notificationHandler = GetComponent<NotificationHandler>();
-        StartCoroutine(OnNotificationAssigned());
+        OnNotificationAssigned();
         takeRewardButton.onClick.AddListener(WinReward);
         takeMissionButton.onClick.AddListener(TakeMission);
         markButton.onClick.AddListener(OnClickNotification);
         _validatyPeriodTime = 0;
     }
-    IEnumerator OnNotificationAssigned()
+    public void OnNotificationAssigned() => StartCoroutine(IEOnNotificationAssigned());
+    IEnumerator IEOnNotificationAssigned()
     {
         yield return new WaitUntil(()=>notificationHandler.GetNotification() != null);
         CloseAllUIs();
@@ -37,10 +38,13 @@ public class NotificationUIHandler : MonoBehaviour
         {
             yield return new WaitUntil(() => notificationHandler.GetMission() != null);
             takeMissionButton.gameObject.SetActive(true);
-            ShortTimeObj.SetActive(true);
             GameMission gameMission = notificationHandler.GetMission();
-            _validatyPeriodTime = gameMission.ValidityPeriodMission;
-            StartMissionCountDown();
+            if (gameMission.ValidityPeriodMission > 0)
+            {
+                ShortTimeObj.SetActive(true);
+                _validatyPeriodTime = gameMission.ValidityPeriodMission;
+                StartMissionCountDown();
+            }           
         }
         else
         {

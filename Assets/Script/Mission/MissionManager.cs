@@ -70,6 +70,14 @@ public class MissionManager : MonoBehaviour
         Debug.Log(targetMission.ID + " ID'li gorev tamamlandi!");
         RemoveMissionWithId(targetMission.ID);
     }
+    public void MissionTimeEnding(int _id)
+    {
+        GameMission targetMission = ActiveMissions.Where(x => x.ID == _id).SingleOrDefault();
+        if (targetMission == null) { Debug.LogError("Suresi biten gorev, aktif gorevlerde bulunmamaktadir!"); return; }
+        Debug.Log(targetMission.ID + " ID'li gorev tamamlanamadan suresi bitti!");
+        RemoveMissionWithId(targetMission.ID);
+        NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(7), new SenderHelper(WhoSends.System, 9999), 2);
+    }
     void AddMission(GameMission _newMission)
     {
         ActiveMissions.Add(_newMission);
@@ -87,6 +95,7 @@ public class MissionManager : MonoBehaviour
             UIController.instance.missionUIHandler.MissionUIActivation(_gameMission.missionType,true);
             CollectionHelper collectionHelper = _gameMission.GetMissionCollection();
             UIController.instance.missionUIHandler.collectionUIHandler.SetDatas(collectionHelper);
+            UIController.instance.missionUIHandler.collectionUIHandler.StartMissionLifeTime(_gameMission.MissionComplationTime);
             collectionHandler.SetMission(_gameMission);
             collectionHandler.CollectionProcess();
         }
@@ -99,7 +108,7 @@ public class MissionManager : MonoBehaviour
     void InitGameMissions()
     {
         gameMissions.Clear();
-        GameMission gm1 = new GameMission(1,100000,100001,"Mücevher Görevi", "10 adet mücevher topla!",300,120,MissionType.Collection, new CollectionHelper(0,10,MissionCollectionType.Gem));
+        GameMission gm1 = new GameMission(1,100000,100001,"Mücevher Görevi", "10 adet mücevher topla!",210,120,MissionType.Collection, new CollectionHelper(0,10,MissionCollectionType.Gem));
         gm1.SetRewardEvent(() =>
         {
             NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(6), new SenderHelper(WhoSends.System, 9999), 2);
@@ -109,6 +118,12 @@ public class MissionManager : MonoBehaviour
             }),null,null,"+50 Gem!");
         });
         gameMissions.Add(gm1);
+#if UNITY_EDITOR
+        for (int i = 0; i < gameMissions.Count; i++)
+        {
+            gameMissions[i].MissionComplationTime = 60;
+        }
+#endif
     }
     public GameMission GetMissionWithInfoId(int id)
     {
@@ -211,6 +226,11 @@ public class CollectionHelper
             return true;
         else
             return false;
+    }
+    public bool IsSpawnedMission()
+    {
+        bool result = missionCollectionType == MissionCollectionType.Gem || missionCollectionType == MissionCollectionType.Gold || missionCollectionType == MissionCollectionType.Grass;
+        return result;
     }
 }
 public enum MissionType

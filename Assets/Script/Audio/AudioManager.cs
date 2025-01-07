@@ -27,6 +27,8 @@ public class AudioManager : MonoBehaviour
 
     AudioSettingsData currentVolumeDatas;
     private string audioSettingsPath;
+    private bool isGamePaused = false;
+    private Coroutine gameMusicCoroutine;
     public static AudioManager instance { get; private set; }
 
     private void Awake()
@@ -45,6 +47,38 @@ public class AudioManager : MonoBehaviour
         // Kaydedilecek dosya yolunu belirle
         audioSettingsPath = Path.Combine(Application.persistentDataPath, "audioSettings.json");
         LoadAudioSettings(); // Oyun baþlarken ses ayarlarýný yükle
+    }
+    private void OnApplicationPause(bool pause)
+    {
+        isGamePaused = pause;
+
+        if (pause)
+        {
+            // Oyun arka plana alýndýðýnda müzikleri durdur
+            StopAllGameMusic();
+        }
+        else
+        {
+            // Oyun tekrar ön plana geldiðinde müziði yeniden baþlat
+            if (gameMusicCoroutine == null)
+            {
+                PlayMusicOfGame();
+            }
+        }
+    }
+    private void StopAllGameMusic()
+    {
+        foreach (var source in GameSources)
+        {
+            source.Stop();
+        }
+
+        if (gameMusicCoroutine != null)
+        {
+            StopCoroutine(gameMusicCoroutine);
+            gameMusicCoroutine = null;
+        }
+        Debug.Log("Stopped all game music.");
     }
     public void SaveAudioSettings()
     {
@@ -102,6 +136,11 @@ public class AudioManager : MonoBehaviour
         List<AudioClip> Sources = GetSoundEffects(SoundEffectType.Punch).Select(x => x.MyClip).ToList();
         _npcSource.PlayOneShot(Sources[Random.Range(0, Sources.Count)]);
     }
+    public void PlayTakeCollectionObjSound()
+    {
+        List<AudioClip> Sources = GetSoundEffects(SoundEffectType.TakeCollectionObj).Select(x => x.MyClip).ToList();
+        SoundEffectsSources[Random.Range(0, SoundEffectsSources.Count)].PlayOneShot(Sources[Random.Range(0, Sources.Count)]);
+    }
     public void PlayMusicOfTrailer()
     {
         if (MenuSources.Find(x => x.isPlaying == true) != null)
@@ -137,16 +176,56 @@ public class AudioManager : MonoBehaviour
         }
         MenuSources[randomIndex].Play();
     }
-    public void PlayMusicOfGame()
+    public void PlayMusicOfGame() => gameMusicCoroutine = StartCoroutine(IEPlayMusicOfGame());
+    IEnumerator IEPlayMusicOfGame()
     {
+        // Trailer kaynaðýný durdur
         TrailerSource.Stop();
-        int randomIndex = Random.Range(0, GameSources.Count);
-        if (MenuSources.Find(x => x.isPlaying == true) != null)
+
+        // Oyun müzik kaynaklarýnýn kontrolü
+        if (GameSources == null || GameSources.Count == 0)
         {
-            MenuSources.Find(x => x.isPlaying == true).Stop();
+            yield break;
         }
-        GameSources[randomIndex].Play();
+
+        // Menülerde çalan bir müzik varsa durdur
+        AudioSource activeMenuSource = MenuSources.Find(x => x.isPlaying);
+        if (activeMenuSource != null)
+        {
+            activeMenuSource.Stop();
+        }
+
+        int previousIndex = -1;
+
+        while (true)
+        {
+            if (!isGamePaused)
+            {
+                // Rastgele bir müzik seç ancak ayný olmamasýna dikkat et
+                int randomIndex;
+                do
+                {
+                    randomIndex = Random.Range(0, GameSources.Count);
+                } while (randomIndex == previousIndex);
+
+                previousIndex = randomIndex;
+
+                AudioSource currentRandomSource = null;
+                if (GameManager.instance.IsWatchTutorial)
+                    currentRandomSource = GameSources[randomIndex];
+                else
+                    currentRandomSource = GameSources[0];
+                currentRandomSource.Play();
+
+                // Þarkýnýn süresi boyunca bekle
+                yield return new WaitForSeconds(currentRandomSource.clip.length);
+            }
+
+            // Eðer oyun duraklatýlmýþsa, bir süre bekle ve döngüyü sürdür
+            yield return null;
+        }
     }
+
     public void SetGeneralVolume(float volume)
     {
         // Ses aralýðýný kontrol et (0 ile 1 arasýnda olmalý)
@@ -226,6 +305,7 @@ public class AudioManager : MonoBehaviour
         SoundData sd5 = new SoundData(4, SoundEffectsSources[4], SoundEffectType.Victory);
         SoundData sd6 = new SoundData(5, SoundEffectsSources[5], SoundEffectType.Writing);
         SoundData sd7 = new SoundData(6, SoundEffectsSources[6], SoundEffectType.InsufficientGoldAndGem);
+        SoundData sd8 = new SoundData(7, SoundEffectsSources[7], SoundEffectType.TakeCollectionObj);
 
         //Adding
         SoundEffects.Add(sd1);
@@ -235,6 +315,7 @@ public class AudioManager : MonoBehaviour
         SoundEffects.Add(sd5);
         SoundEffects.Add(sd6);
         SoundEffects.Add(sd7);
+        SoundEffects.Add(sd8);
     }
     public void AddingDialogs()
     {
@@ -395,7 +476,8 @@ public enum SoundEffectType
     Punch,
     Victory,
     GoldBoxOpen,
-    Writing
+    Writing,
+    TakeCollectionObj
     
     // Diðer ses efekti türleri buraya eklenebilir
 }
