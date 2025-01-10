@@ -91,8 +91,10 @@ public class SkillNode
         if (_isPurchased)
         {
             SkillCurrentLevel++;
-            if (SkillCurrentLevel < SkillMaxLevel)
-            this.SkillEffect = $"+{this.Amounts[SkillCurrentLevel]} {defaultEffectString}";
+            if (SkillCurrentLevel < SkillMaxLevel && Amounts.Count >= SkillCurrentLevel)
+                this.SkillEffect = $"+{this.Amounts[SkillCurrentLevel]} {defaultEffectString}";
+            else
+                Debug.LogError($"Mevcut {SkillCurrentLevel} levelli skill'in, {Amounts.Count} adet buff asamasý vardir!");
         }
     }
     

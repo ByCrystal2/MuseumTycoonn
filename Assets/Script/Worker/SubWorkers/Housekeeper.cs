@@ -129,6 +129,12 @@ public class Housekeeper : Worker, ISleepable, IMoveable
             Behaviour.Anim.SetBool("Clean", false);
             Behaviour.CreateNewTargetDelay(UnityEngine.Random.Range(1.00f, 2.50f));
             Behaviour.Weapon.SetActive(false);
+
+            if (NpcManager.instance.GetMessCount() > 5)
+            {
+                NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(8), new SenderHelper(WhoSends.Worker, ID), 2);
+                NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(8), new SenderHelper(WhoSends.Worker, ID), 1);
+            }
         }
     }
 

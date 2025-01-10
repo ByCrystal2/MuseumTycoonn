@@ -139,7 +139,7 @@ public class UIController : MonoBehaviour
     [SerializeField] GameObject DailyRewardGoldPrefab;
     [SerializeField] GameObject DailyRewardTablePrefab;
     [Header("Notification Canvas")]
-    [SerializeField] Button NotificationCanvasOnButton;
+    [SerializeField] public Button NotificationCanvasOnButton;
 
     [Header("Room Editing Panel")]
     [SerializeField] GameObject RoomEditingPanel;

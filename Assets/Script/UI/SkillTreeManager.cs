@@ -56,8 +56,8 @@ public class SkillTreeManager : MonoBehaviour
         SkillNode sn14 = new SkillNode(13, "Müze Uzantýsý", "Müzenizin alanýný geniþleterek daha fazla eser sergileyin.", "Ziyaretçi Kapasitesi", 20, 100000, 2,
             new List<eStat> { eStat.VisitorCapacity}, new List<int> { 20,30});
 
-        SkillNode sn15 = new SkillNode(14, "Gece Açýlýþlar", "Gece açýlýþlarý düzenleyerek daha fazla ziyaretçiye ulaþýn.", "Ziyaretçi Kapasitesi", 5, 5000, 10, new List<eStat> { eStat.VisitorCapacity }, new List<int> { 5, 10, 15, 20, 25, 30 });
-        SkillNode sn16 = new SkillNode(15, "Sanat Konferanslarý", "Sanat konferanslarý düzenleyerek kültürel etkinlikler sunun.", "Mutluluk", 5, 5000, 10, new List<eStat> { eStat.BaseHappiness }, new List<int> { 5, 10, 15, 20, 25, 30 });
+        SkillNode sn15 = new SkillNode(14, "Gece Açýlýþlar", "Gece açýlýþlarý düzenleyerek daha fazla ziyaretçiye ulaþýn.", "Ziyaretçi Kapasitesi", 5, 5000, 10, new List<eStat> { eStat.VisitorCapacity }, new List<int> { 5, 10, 15, 20, 25, 30, 35, 40, 45, 50 });
+        SkillNode sn16 = new SkillNode(15, "Sanat Konferanslarý", "Sanat konferanslarý düzenleyerek kültürel etkinlikler sunun.", "Mutluluk", 5, 5000, 10, new List<eStat> { eStat.BaseHappiness }, new List<int> { 5, 10, 15, 20, 25, 30, 35, 40, 45, 50 });
 
         SkillNode sn17 = new SkillNode(16, "Eser Baðýþlarý", "Baðýþlarla müzenizin koleksiyonunu geniþletin.", "Pozitif Yorum", 12, 40000, 3,
             new List<eStat> { eStat.HappinessIncreaseRatio }, new List<int> { 12, 15, 17}) ;

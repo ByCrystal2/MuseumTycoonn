@@ -29,8 +29,8 @@ public class RightUIPanelController : MonoBehaviour
     [SerializeField] GameObject SelectionCamsPanel;
     [SerializeField] Button CamUISActivetonButton;
     [SerializeField] Button[] CamButtons;
-    [SerializeField] Button DrawerButton;
-    [SerializeField] DrawerController DrawerPanel;
+    [SerializeField] public Button DrawerButton;
+    [SerializeField] public DrawerController DrawerPanel;
 
     [SerializeField] Button CustomizePanelOnButton;
     

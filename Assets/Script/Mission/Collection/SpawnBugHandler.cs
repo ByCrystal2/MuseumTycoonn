@@ -22,7 +22,7 @@ public class SpawnBugHandler : MonoBehaviour
             {
                 Debug.Log("Spawn objesi yanlis bir konumda, yeniden yerlestiriliyor.");
                 Vector3 randomPosition = MissionManager.instance.collectionHandler.spawnController.GetRandomPosition();
-                Quaternion customRotation = MissionManager.instance.collectionHandler.spawnController.GetCustomRotation();
+                Quaternion customRotation = MissionManager.instance.collectionHandler.spawnController.GetCustomRotation(gameObject);
                 gameObject.transform.SetPositionAndRotation(randomPosition, customRotation);
                 yield return new WaitForSeconds(0.5f); // Kontroller arasýna süre koyarak yoðunluðu azaltýn
             }

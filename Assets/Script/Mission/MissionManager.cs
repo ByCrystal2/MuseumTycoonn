@@ -108,22 +108,33 @@ public class MissionManager : MonoBehaviour
     void InitGameMissions()
     {
         gameMissions.Clear();
-        GameMission gm1 = new GameMission(1,100000,100001,"Mücevher Görevi", "10 adet mücevher topla!",210,120,MissionType.Collection, new CollectionHelper(0,10,MissionCollectionType.Gem));
+        GameMission gm1 = new GameMission(1, 100000, 100001, "Mücevher Görevi", "10 adet mücevher topla!", 210, 120, MissionType.Collection, new CollectionHelper(0, 10, MissionCollectionType.Gem));
         gm1.SetRewardEvent(() =>
         {
             NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(6), new SenderHelper(WhoSends.System, 9999), 2);
-            NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(9999), new SenderHelper(WhoSends.System, 9999),1, new NotificationRewardHandler(9999, () =>
+            NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(9999), new SenderHelper(WhoSends.System, 9999), 1, new NotificationRewardHandler(9999, () =>
             {
                 MuseumManager.instance.AddGem(50);
-            }),null,null,"+50 Gem!");
+            }), null, null, "+50 Gem kazandýnýz!");
         });
+        GameMission gm2 = new GameMission(2, 100000, 100002, "Gold Görevi", "8 adet altýn topla!", 210, 60, MissionType.Collection, new CollectionHelper(0, 8, MissionCollectionType.Gold));
+        gm2.SetRewardEvent(() =>
+        {
+            NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(6), new SenderHelper(WhoSends.System, 9999), 2);
+            NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(10001), new SenderHelper(WhoSends.System, 9999), 1, new NotificationRewardHandler(10001, () =>
+            {
+                MuseumManager.instance.AddGold(1000);
+            }), null, null, "+1000 Gold kazandýnýz!");
+        });
+
         gameMissions.Add(gm1);
+        gameMissions.Add(gm2);
 #if UNITY_EDITOR
         for (int i = 0; i < gameMissions.Count; i++)
         {
             gameMissions[i].MissionComplationTime = 60;
         }
-#endif
+#endif        
     }
     public GameMission GetMissionWithInfoId(int id)
     {

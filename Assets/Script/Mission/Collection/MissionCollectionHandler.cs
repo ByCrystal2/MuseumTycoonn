@@ -12,7 +12,7 @@ public class MissionCollectionHandler : MonoBehaviour
         spawnController = new CollectionSpawnController();
         StartCoroutine(spawnController.WaitForRoomManagerToBeAppointed());
     }
-    
+
     public void MissionOfCollectionTimeEnding()
     {
         UIController.instance.missionUIHandler.MissionUIActivation(MissionType.Collection, false);
@@ -79,23 +79,25 @@ public class MissionCollectionHandler : MonoBehaviour
         [SerializeField] public float fixedYPosition = 1f; // Sabit y pozisyonu
         public Vector3 sphereCenter = Vector3.zero;
         public void SpawnObjects(GameObject _objectToSpawn, int spawnCount)
-        {            
+        {
             for (int i = 0; i < spawnCount; i++)
             {
                 // Küre içinde rastgele bir pozisyon hesapla
 
                 Vector3 randomPosition = GetRandomPosition();
-                Quaternion customRotation = GetCustomRotation();
+                Quaternion customRotation = default;
+                customRotation = GetCustomRotation(_objectToSpawn);
                 Instantiate(_objectToSpawn, randomPosition, customRotation);
-                //Objeye kontrol yapilmadan yanlýs spawn olabilecegi noktalar: 
-                /*
-                 * Satin alinmamis odalar
-                 * Duvarlar
-                 * Heykellerin konuldugu slotlar
-                 * Muzenin dis tarafi
-                 */
             }
+            //Objeye kontrol yapilmadan yanlýs spawn olabilecegi noktalar: 
+            /*
+             * Satin alinmamis odalar
+             * Duvarlar
+             * Heykellerin konuldugu slotlar
+             * Muzenin dis tarafi
+             */
         }
+
         public System.Collections.IEnumerator WaitForRoomManagerToBeAppointed()
         {
             yield return new WaitUntil(() => RoomManager.instance != null);
@@ -110,9 +112,17 @@ public class MissionCollectionHandler : MonoBehaviour
             randomPosition.y = fixedYPosition;
             return randomPosition;
         }
-        public Quaternion GetCustomRotation()
+        public Quaternion GetCustomRotation(GameObject _obj)
         {
-            Quaternion customRotation = Quaternion.Euler(-90f, 0f, 0f);
+            Quaternion customRotation = default;
+            if (_obj.TryGetComponent(out CollectionDiamondBehaviour diamondBehaviour))
+            {
+                customRotation = Quaternion.Euler(-90f, 0f, 0f);
+            }
+            else if (_obj.TryGetComponent(out CollectionGoldBehaviour goldBehaviour))
+            {
+                customRotation = Quaternion.Euler(0f, 0f, 0f);
+            }
             return customRotation;
         }
     }
@@ -120,7 +130,6 @@ public class MissionCollectionHandler : MonoBehaviour
     {
         if (spawnController == null) return;
         Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(spawnController.sphereCenter,  spawnController.sphereRadius);
+        Gizmos.DrawWireSphere(spawnController.sphereCenter, spawnController.sphereRadius);
     }
-
 }

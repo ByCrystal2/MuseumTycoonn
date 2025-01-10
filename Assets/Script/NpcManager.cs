@@ -295,7 +295,10 @@ public class NpcManager : MonoBehaviour
     {
         Destroy(_newMess);
     }
-
+    public int GetMessCount()
+    {
+        return NPCMessParent.GetChild(0).childCount;
+    }
     public NpcMess GetNearestMess(Transform _pos,List<int> _myRooms)
     {
         List<RoomData> AllMessedRooms = new List<RoomData>();

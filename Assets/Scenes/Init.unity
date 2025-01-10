@@ -3154,6 +3154,52 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &890188577
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 890188579}
+  - component: {fileID: 890188578}
+  m_Layer: 0
+  m_Name: RedExclamationMarkManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &890188578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 890188577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfa5ac6f8bc6d894697db857ee81a2ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  redMarkPrefab: {fileID: 6881430250013471605, guid: 2eea490c5475c4447829fc2dccb0be34,
+    type: 3}
+--- !u!4 &890188579
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 890188577}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &895522358
 GameObject:
   m_ObjectHideFlags: 0
@@ -6313,6 +6359,7 @@ SceneRoots:
   - {fileID: 930688040}
   - {fileID: 600672005}
   - {fileID: 418285126}
+  - {fileID: 890188579}
   - {fileID: 1792637826}
   - {fileID: 6696851962640103759}
   - {fileID: 895522361}

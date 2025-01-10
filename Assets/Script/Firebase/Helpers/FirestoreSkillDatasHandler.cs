@@ -79,6 +79,8 @@ public class FirestoreSkillDatasHandler : MonoBehaviour
                 if (snapshot.Documents.Count() > 0)
                 {
                     Debug.Log($"Skill with ID {_skill.ID} already exists for user.");
+                    //Skill update processes
+                    UpdateSkillData(snapshot,_skill);
                 }
                 else
                 {
@@ -220,5 +222,44 @@ public class FirestoreSkillDatasHandler : MonoBehaviour
         }
 
         return foundSkills;
+    }
+    void UpdateSkillData(QuerySnapshot snapshot,SkillNode _node)
+    {
+        DocumentSnapshot existingSkill = snapshot.Documents.First();
+        List<eStat> buffs = new List<eStat>();
+        int length1 = _node.buffs.Count;
+        for (int i = 0; i < length1; i++)
+        {
+            buffs.Add(_node.buffs[i]);
+        }
+        List<int> buffAmounts = new List<int>();
+        int length = _node.Amounts.Count;
+        for (int i = 0; i < length; i++)
+        {
+            buffAmounts.Add(_node.Amounts[i]);
+        }
+        Dictionary<string, object> updatedSkillData = new Dictionary<string, object>
+                    {
+                        { "RequiredPoint", _node.SkillRequiredPoint },
+                        { "RequiredMoney", _node.SkillRequiredMoney },
+                        { "CurrentLevel", _node.SkillCurrentLevel },
+                        { "IsLocked", _node.IsLocked },
+                        { "IsPurchased", _node.IsPurchased },
+                        { "Buffs", buffs },
+                        { "BuffAmounts", buffAmounts },
+                        { "Timestamp", FieldValue.ServerTimestamp }
+                    };
+
+        existingSkill.Reference.UpdateAsync(updatedSkillData).ContinueWithOnMainThread(updateTask =>
+        {
+            if (updateTask.IsCompleted)
+            {
+                Debug.Log($"Statue data with ID {_node.ID} successfully updated.");
+            }
+            else if (updateTask.IsFaulted)
+            {
+                Debug.LogError($"Failed to update statue data: {updateTask.Exception}");
+            }
+        });
     }
 }

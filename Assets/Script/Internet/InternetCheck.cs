@@ -36,6 +36,7 @@ public class InternetCheck : MonoBehaviour
     void NoInternet()
     {// Pause the game
         Debug.Log("Internet connection is not available. The game is PAUSED.");
+        if (InfoStrings.Count <= 0) { UIInteractHandler.instance.AskQuestion("Internet connection", "Internet connection is not available. The game is PAUSED."); Time.timeScale = 0.1f; return; }
         UIInteractHandler.instance.AskQuestion(InfoStrings[0], $"{InfoStrings[1]}\n{InfoStrings[2]}");
         Time.timeScale = 0.1f;
     }
@@ -43,6 +44,7 @@ public class InternetCheck : MonoBehaviour
     void InternetRestored()
     {// Resume the game
         Debug.Log("Internet connection available. The game is RESUME.");
+        if (InfoStrings.Count <= 0) { UIInteractHandler.instance.AskQuestion("Internet connection", "Your internet connection has been restored.", null, null, (x) => { Time.timeScale = 1; }); return; }
         UIInteractHandler.instance.AskQuestion(InfoStrings[0], InfoStrings[3], null, null, (x) => { Time.timeScale = 1; /*CleanupDontDestroyOnLoad(); SceneManager.LoadScene("Auth");*/ });
     }
 

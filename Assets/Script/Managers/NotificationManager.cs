@@ -111,7 +111,7 @@ public class NotificationManager : MonoBehaviour
     }
     public void NotificationInit()
     {
-        Notification n1 = null, n2 = null, n3 = null, n4 = null, n5 = null, n6 = null, n7 = null;
+        Notification n1 = null, n2 = null, n3 = null, n4 = null, n5 = null, n6 = null, n7 = null, n8;
         n1 = new Notification(1,
             "You have changed the language frequently. Please wait a while before changing it again.",10.0f, NotificationHeader.System,
             NotificationState.Error, NotificationType.Emergency,
@@ -142,8 +142,10 @@ public class NotificationManager : MonoBehaviour
         n5 = new Notification(5, "You already have a mission right now.", 2f, NotificationHeader.System, NotificationState.Warning, NotificationType.Trivial, 1);
         n6 = new Notification(6, "You have completed the mission! You can get the reward in the notifications.", 2f, NotificationHeader.System, NotificationState.Information, NotificationType.Trivial, 1);
         n7 = new Notification(7, "The current mandate is over! Mission failed.", 1.5f, NotificationHeader.System, NotificationState.Error, NotificationType.Trivial, 1);
+        n8 = new Notification(8, "I have so many objects to clean. I can't keep up!", 1.5f, NotificationHeader.Worker, NotificationState.Warning, NotificationType.Trivial, 1);
         //  RewardNotifications
         Notification n9999 = new Notification(9999, "", 2f, NotificationHeader.System, NotificationState.Information, NotificationType.Reward, 1);
+        Notification n10001 = new Notification(10001, "", 2f, NotificationHeader.System, NotificationState.Information, NotificationType.Reward, 1);
         // Achievement Notifications
         Notification n10000 = new Notification(10000, "", 2f, NotificationHeader.System, NotificationState.Information, NotificationType.Reward,1);
             //
@@ -156,6 +158,7 @@ public class NotificationManager : MonoBehaviour
             return true;
         },1);
         Notification n100001 = new Notification(100001, "", 3f, NotificationHeader.System, NotificationState.Information, NotificationType.Mission,1);
+        Notification n100002 = new Notification(100002, "", 3f, NotificationHeader.System, NotificationState.Information, NotificationType.Mission,1);
         //
         notifications.Add(n1);
         notifications.Add(n2);
@@ -164,9 +167,11 @@ public class NotificationManager : MonoBehaviour
         notifications.Add(n5);
         notifications.Add(n6);
         notifications.Add(n7);
+        notifications.Add(n8);
 
         //Reward Notifications Adding...
         notifications.Add(n9999);
+        notifications.Add(n10001);
 
         //Acihevement Notifications Adding...
         notifications.Add(n10000);
@@ -177,6 +182,7 @@ public class NotificationManager : MonoBehaviour
         //Game Mission Notifications Adding...
         notifications.Add(n100000);
         notifications.Add(n100001);
+        notifications.Add(n100002);
         //Game Mission Notifications Adding...
         //StartCoroutine(V2NotificationLoop());
     }
@@ -224,15 +230,21 @@ public class NotificationManager : MonoBehaviour
             }
 
             targetHandler = FillNotificationPanelContent(currentNotificationType_V1);
+            if (RightUIPanelController.instance != null && !RightUIPanelController.instance.DrawerPanel.gameObject.activeSelf)
+                RedExclamationMarkManager.instance.CreateMark(RightUIPanelController.instance.DrawerButton.transform);
+
+            if (UIController.instance != null && !notificationsCanvas_V1.gameObject.activeSelf)
+                RedExclamationMarkManager.instance.CreateMark(UIController.instance.NotificationCanvasOnButton.transform);
         }
         else if (_whichVersion == 2)
         {
             if (_notification.AlertCount >= _notification.TriggerAlertNumber)
             {
-                targetHandler = CreateNotificationInContent(notificationPrefab_V2, _notification, notificationContent_V2, null);                
+                targetHandler = CreateNotificationInContent(notificationPrefab_V2, _notification, notificationContent_V2, null);
+                notificationsCanvas_V2.gameObject.SetActive(true);
             }
         }
-        notificationsCanvas_V2.gameObject.SetActive(true);
+        
         return targetHandler;
     }
 
