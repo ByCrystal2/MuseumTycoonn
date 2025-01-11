@@ -214,8 +214,20 @@ public class GameMission
         return collection;
     }
 }
+
+[System.Serializable]
+public struct MissionRequirements
+{
+    public MissionColorType missionColorType;
+    public MyColors targetColor; //Target Color for the quest
+    public MissionTargetState targetState;
+    public MissionTargetType targetType; //Incele ya da Dov.
+}
+
+[System.Serializable]
 public class CollectionHelper
 {
+    public MissionRequirements missionRequirements;
     public MissionCollectionType missionCollectionType;
     public int StartValue;
     public int EndValue;
@@ -224,12 +236,18 @@ public class CollectionHelper
         StartValue = startValue;
         EndValue = endValue;
         missionCollectionType = _type;
+        missionRequirements = CreateRequirement();
     }
     public CollectionHelper(CollectionHelper _copy) 
     {
         missionCollectionType = _copy.missionCollectionType;
         StartValue = _copy.StartValue;
         EndValue = _copy.EndValue;
+
+        missionRequirements.missionColorType = _copy.missionRequirements.missionColorType;
+        missionRequirements.targetColor = _copy.missionRequirements.targetColor;
+        missionRequirements.targetState = _copy.missionRequirements.targetState;
+        missionRequirements.targetType = _copy.missionRequirements.targetType;
     }
     public bool IsFull()
     {
@@ -241,14 +259,81 @@ public class CollectionHelper
     public bool IsSpawnedMission()
     {
         bool result = missionCollectionType == MissionCollectionType.Gem || missionCollectionType == MissionCollectionType.Gold || missionCollectionType == MissionCollectionType.Grass;
+
         return result;
     }
+
+    public MissionRequirements CreateRequirement()
+    {
+        MissionRequirements _missionRequirements = new();
+
+        int r = Random.Range(0, 101);
+        bool hasColor = false;
+        if(r <= 49)
+        {
+            //Color quest
+            _missionRequirements.missionColorType = Random.Range(0, 101) <= 49 ? MissionColorType.Liked : MissionColorType.Disliked;
+            _missionRequirements.targetColor = (MyColors)Random.Range(0, (int)MyColors.Length);
+            hasColor = true;
+        }
+        else
+        {
+            //No color
+            _missionRequirements.missionColorType = MissionColorType.None; //Renk onemsiz.
+            _missionRequirements.targetColor = MyColors.Black; //Not important.
+        }
+
+        r = Random.Range(0, 101);
+
+        if (!hasColor)
+            r = 0;
+
+        if (r <= 49)
+        {
+            //State Quest
+            _missionRequirements.targetState = (MissionTargetState)Random.Range(0, (int)MissionTargetState.Length);
+        }
+        else
+        {
+            //No State
+            _missionRequirements.targetState = MissionTargetState.None;
+        }
+
+        _missionRequirements.targetType = Random.Range(0, 101) <= 49 ? MissionTargetType.Investigate : MissionTargetType.Beat;
+        return _missionRequirements;
+    }
 }
+
 public enum MissionType
 {
     Collection,
     NPC
 }
+
+public enum MissionColorType
+{
+    None,
+    Liked,
+    Disliked,
+}
+
+public enum MissionTargetType
+{
+    Investigate,
+    Beat,
+}
+
+public enum MissionTargetState
+{
+    None,
+    Happy,
+    Sad,
+    Stressed,
+    Relaxed,
+    NeedToilet,
+    Length,
+}
+
 public enum MissionCollectionType // Koleksyion gorevlerinin icerik enumu. (MissionCollectionUIHandler.iconSprites kod yolunda ki iconlarin sirasi baz alinmistir)
 {
     Gem,

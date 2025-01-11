@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
+using UnityEngine.Scripting;
 using UnityEngine.Timeline;
 using UnityEngine.UI;
 
@@ -527,6 +528,8 @@ public class NPCBehaviour : MonoBehaviour
         anim.SetInteger(NpcManager.AnimDialogParam, -2);
         IdleTimer = Time.time + NpcManager.delaysPerState[(int)NPCState.CombatBeaten];
         PlayBeatenEffect(true);
+
+        CheckQuest(MissionTargetType.Beat);
     }
 
     private void VictoryDance()
@@ -868,6 +871,8 @@ public class NPCBehaviour : MonoBehaviour
             {
                 SetMyCamerasActivation(true, false);
             }
+
+            CheckQuest(MissionTargetType.Investigate);
         }
     }
 
@@ -1067,6 +1072,47 @@ public class NPCBehaviour : MonoBehaviour
     public void FootL()
     {
 
+    }
+
+    public void CheckQuest(MissionTargetType _targetType) //Investigate or Beat
+    {
+        int happinessLimit = 80;
+        int sadLimit = 20;
+        int stressLimit = 80;
+        int relaxLimit = 20;
+        int toiletLimit = 70;
+
+        int step = 0;
+        var mission = MissionManager.instance.collectionHandler.GetCurrentMission();
+        var collection = mission.GetMissionCollection();
+        if (collection != null)
+        {
+            var requirement = collection.missionRequirements;
+            if (_targetType == requirement.targetType)
+            {
+                if ((requirement.missionColorType == MissionColorType.Liked && StatData.LikedColors.Contains(requirement.targetColor)) || 
+                    (requirement.missionColorType == MissionColorType.Disliked && StatData.DislikedColor == requirement.targetColor) ||
+                    (requirement.missionColorType == MissionColorType.None))
+                {
+                    step = 1;
+                }
+
+                if (((requirement.targetState == MissionTargetState.Happy && StatData.Happiness > happinessLimit) ||
+                     (requirement.targetState == MissionTargetState.Sad && StatData.Happiness < sadLimit) ||
+                     (requirement.targetState == MissionTargetState.Stressed && StatData.Stress > stressLimit) ||
+                     (requirement.targetState == MissionTargetState.Relaxed && StatData.Stress < relaxLimit) ||
+                     (requirement.targetState == MissionTargetState.NeedToilet && StatData.toilet > toiletLimit) ||
+                     (requirement.targetState == MissionTargetState.None)) && step == 1)
+                {
+                    step = 2;
+                }
+
+                if (step == 2) //Color and state completed.
+                {
+                    MissionManager.instance.collectionHandler.AdvanceMission();
+                }
+            }
+        }
     }
 }
 

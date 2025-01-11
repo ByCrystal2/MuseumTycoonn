@@ -29,8 +29,10 @@ public class MessDetector : MonoBehaviour
     {
         int length = CurrentMesses.Count;
         for (int i = length - 1; i >= 0; i--)
-            if (CurrentMesses[i] == null || CurrentMesses[i]._cleaningNow)
+            if (CurrentMesses[i] == null)
                 CurrentMesses.RemoveAt(i);
+
+        CleanMessButton.gameObject.SetActive(CurrentMesses.Count > 0);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -104,9 +106,7 @@ public class MessDetector : MonoBehaviour
     {
         if (CurrentMesses.Contains(_mess))
             CurrentMesses.Remove(_mess);
-        
-        if (CurrentMesses.Count == 0)
-            CleanMessButton.gameObject.SetActive(false);
-        
+
+        CleanMessButton.gameObject.SetActive(CurrentMesses.Count > 0);
     }
 }
