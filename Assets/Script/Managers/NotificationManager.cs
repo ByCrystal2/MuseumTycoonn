@@ -111,7 +111,7 @@ public class NotificationManager : MonoBehaviour
     }
     public void NotificationInit()
     {
-        Notification n1 = null, n2 = null, n3 = null, n4 = null, n5 = null, n6 = null, n7 = null, n8;
+        Notification n1 = null, n2 = null, n3 = null, n4 = null, n5 = null, n6 = null, n7 = null, n8 = null, n9 = null;
         n1 = new Notification(1,
             "You have changed the language frequently. Please wait a while before changing it again.",10.0f, NotificationHeader.System,
             NotificationState.Error, NotificationType.Emergency,
@@ -143,6 +143,7 @@ public class NotificationManager : MonoBehaviour
         n6 = new Notification(6, "You have completed the mission! You can get the reward in the notifications.", 2f, NotificationHeader.System, NotificationState.Information, NotificationType.Trivial, 1);
         n7 = new Notification(7, "The current mandate is over! Mission failed.", 1.5f, NotificationHeader.System, NotificationState.Error, NotificationType.Trivial, 1);
         n8 = new Notification(8, "I have so many objects to clean. I can't keep up!", 1.5f, NotificationHeader.Worker, NotificationState.Warning, NotificationType.Trivial, 1);
+        n9 = new Notification(9, "A cleaner already targetted this mess, she will clean it soon!", 2.5f, NotificationHeader.System, NotificationState.Warning, NotificationType.Trivial, 1);
         //  RewardNotifications
         Notification n9999 = new Notification(9999, "", 2f, NotificationHeader.System, NotificationState.Information, NotificationType.Reward, 1);
         Notification n10001 = new Notification(10001, "", 2f, NotificationHeader.System, NotificationState.Information, NotificationType.Reward, 1);

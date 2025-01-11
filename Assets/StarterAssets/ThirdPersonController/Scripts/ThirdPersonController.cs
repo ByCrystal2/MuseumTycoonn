@@ -111,7 +111,7 @@ namespace StarterAssets
 
         private bool _hasAnimator;
 
-        private bool _beat;
+        private bool _beat, _clean, _playing;
         private bool IsCurrentDeviceMouse
         {
             get
@@ -137,9 +137,11 @@ namespace StarterAssets
         private void Start()
         {
             _beat = false;
+            _clean = false;
+            _playing = false;
 
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-            
+
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
@@ -161,7 +163,7 @@ namespace StarterAssets
             if (_animator == null)
                 _hasAnimator = TryGetComponent(out _animator);
 
-            if (_beat)
+            if (_beat || _clean || _playing)
                 return;
 
             JumpAndGravity();
@@ -397,6 +399,18 @@ namespace StarterAssets
             }
         }
 
+        public bool IsReady(int _for) //1 Beating, 2 Cleaning, 3 Playing
+        {
+            if (_for == 1)
+                return !_clean && !_playing;
+            else if (_for == 2)
+                return !_beat && !_playing;
+            else if (_for == 3)
+                return !_beat && !_clean;
+
+            return true;
+        }
+
         public void Beat(int _combo)
         {
             _beat = true;
@@ -415,6 +429,42 @@ namespace StarterAssets
             _beat = false;
 
             _animator.SetInteger("Beat", 0);
+        }
+
+        public void OnStartClean()
+        {
+            _clean = true;
+
+            _animator.SetBool("Clean", true);
+        }
+
+        public void OnEndClean()
+        {
+            _clean = false;
+
+            _animator.SetBool("Clean", false);
+        }
+
+        public void OnStartPlay(int _playID) //101 Play Guitar
+        {
+            _playing = true;
+
+            if (_playID == 101)
+            {
+                _animator.SetBool("PlayGuitar", true);
+            }
+            else
+            {
+                _animator.SetInteger("Play", _playID);
+            }
+        }
+
+        public void OnEndPlay()
+        {
+            _playing = false;
+
+            _animator.SetBool("PlayGuitar", false);
+            _animator.SetInteger("Play", 0);
         }
     }
 }

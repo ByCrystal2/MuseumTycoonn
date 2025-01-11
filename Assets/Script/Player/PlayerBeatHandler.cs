@@ -42,6 +42,9 @@ public class PlayerBeatHandler : MonoBehaviour
 
     public void Beat()
     {
+        if (!Controller.IsReady(1))
+            return;
+
         if (_currentCombo == 4)
             return;
 

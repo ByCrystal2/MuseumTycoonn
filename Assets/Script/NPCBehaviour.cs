@@ -880,8 +880,13 @@ public class NPCBehaviour : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.transform.gameObject.CompareTag("PlayerBeat"))
+        {
             if(npcState._mainState != NPCState.CombatBeaten)
+            {
                 SetNPCState(NPCState.CombatBeaten, true);
+                AudioManager.instance.PlayDesiredSoundEffect(SoundEffectType.Punch);
+            }
+        }
     }
 
     private void OnToiletValueChanged()

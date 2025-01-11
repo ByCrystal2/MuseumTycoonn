@@ -150,6 +150,7 @@ public class Housekeeper : Worker, ISleepable, IMoveable
             CurrentActiveTask = newTask;
             AssignTask(CurrentActiveTask);
             CurrentTarget = MyCurrentMessTask.transform.position;
+            MyCurrentMessTask.SetCleaning();
             NpcManager.instance.SetMessCleaning(MyCurrentMessTask.transform);
         }
         else
