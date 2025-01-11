@@ -877,6 +877,13 @@ public class NPCBehaviour : MonoBehaviour
         StartCoroutine(WaitingForIsPointerOver());
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.transform.gameObject.CompareTag("PlayerBeat"))
+            if(npcState._mainState != NPCState.CombatBeaten)
+                SetNPCState(NPCState.CombatBeaten, true);
+    }
+
     private void OnToiletValueChanged()
     {
         if (StatData.toilet >= 100)

@@ -54,6 +54,7 @@ public class NpcManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(this);
+
         GameManager.instance._rewardManager = FindObjectOfType<RewardManager>();
         AudioManager.instance.buttonSoundHandlers = FindObjectsOfType<ButtonSoundHandler>().ToList();
         FirebaseAuthManager.instance.ForFireBaseLoading();

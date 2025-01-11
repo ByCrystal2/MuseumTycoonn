@@ -5583,11 +5583,14 @@ MonoBehaviour:
   MyDatas:
     ID: 0
     Name: 
+    Age: 0
+    Height: 0
     Level: 0
     Xp: 0
     baseSalary: 0
     WorkRoomsIDs: 
     WorkerType: 0
+    WorkerIn: 0
   EffectParent: {fileID: 1578562727642261773}
   LevelUpEffectParent: {fileID: 6833285758846424660}
   Weapon: {fileID: 3183066691376028519}
@@ -6660,7 +6663,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.4
   m_Pitch: 1
   Loop: 0
   Mute: 0

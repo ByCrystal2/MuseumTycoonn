@@ -111,6 +111,7 @@ namespace StarterAssets
 
         private bool _hasAnimator;
 
+        private bool _beat;
         private bool IsCurrentDeviceMouse
         {
             get
@@ -135,6 +136,8 @@ namespace StarterAssets
 
         private void Start()
         {
+            _beat = false;
+
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
             
             _hasAnimator = TryGetComponent(out _animator);
@@ -155,7 +158,11 @@ namespace StarterAssets
 
         private void Update()
         {
-            _hasAnimator = TryGetComponent(out _animator);
+            if (_animator == null)
+                _hasAnimator = TryGetComponent(out _animator);
+
+            if (_beat)
+                return;
 
             JumpAndGravity();
             GroundedCheck();
@@ -388,6 +395,26 @@ namespace StarterAssets
             {
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
             }
+        }
+
+        public void Beat(int _combo)
+        {
+            _beat = true;
+
+            _animator.SetInteger("Beat", _combo);
+            _animator.SetBool("BeatS", true);
+        }
+
+        public void EndHit()
+        {
+            _animator.SetBool("BeatS", false);
+        }
+
+        public void EndBeat()
+        {
+            _beat = false;
+
+            _animator.SetInteger("Beat", 0);
         }
     }
 }
