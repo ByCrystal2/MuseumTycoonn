@@ -8,6 +8,7 @@ public class MissionManager : MonoBehaviour
     [SerializeField] public MissionCollectionHandler collectionHandler;
     List<GameMission> gameMissions = new List<GameMission>();
     public List<GameMission> ActiveMissions = new List<GameMission>();
+    public List<LanguageData> missionLanguageDatas = new List<LanguageData>();
     public static MissionManager instance { get; private set; }
     private void Awake()
     {
@@ -108,15 +109,16 @@ public class MissionManager : MonoBehaviour
     void InitGameMissions()
     {
         gameMissions.Clear();
-        GameMission gm1 = new GameMission(1, 100000, 100001, "Mücevher Görevi", "10 adet mücevher topla!", 210, 120, MissionType.Collection, new CollectionHelper(0, 10, MissionCollectionType.Gem));
+        GameMission gm1 = new GameMission(1, 100000, 100001, "Jewelry Mission", "Collect 10 gems!", 210, 120, MissionType.Collection, new CollectionHelper(0, 10, MissionCollectionType.Gem));
         gm1.SetRewardEvent(() =>
         {
             NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(6), new SenderHelper(WhoSends.System, 9999), 2);
             NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(9999), new SenderHelper(WhoSends.System, 9999), 1, new NotificationRewardHandler(9999, () =>
             {
                 MuseumManager.instance.AddGem(50);
-            }), null, null, "+50 Gem kazandýnýz!");
+            }), null, null, LanguageDatabase.instance.Language.NotificationRewardMessages.Where(x=> x.TargetID == gm1.ID).SingleOrDefault().ActiveLanguage);
         });
+
         GameMission gm2 = new GameMission(2, 100000, 100002, "Gold Görevi", "8 adet altýn topla!", 210, 60, MissionType.Collection, new CollectionHelper(0, 8, MissionCollectionType.Gold));
         gm2.SetRewardEvent(() =>
         {
@@ -124,11 +126,21 @@ public class MissionManager : MonoBehaviour
             NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(10001), new SenderHelper(WhoSends.System, 9999), 1, new NotificationRewardHandler(10001, () =>
             {
                 MuseumManager.instance.AddGold(1000);
-            }), null, null, "+1000 Gold kazandýnýz!");
+            }), null, null, LanguageDatabase.instance.Language.NotificationRewardMessages.Where(x => x.TargetID == gm2.ID).SingleOrDefault().ActiveLanguage);
         });
 
+        GameMission gm3 = new GameMission(3, 100000, 100003, "Interact With Visitors", "{%now}/{%tot} {%loc1} {%cl} {%loc2} {%st}", 210, 60, MissionType.Collection, new CollectionHelper(0, 5, MissionCollectionType.NpcInteraction));
+        gm3.SetRewardEvent(() =>
+        {
+            NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(6), new SenderHelper(WhoSends.System, 9999), 2);
+            NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(10002), new SenderHelper(WhoSends.System, 9999), 1, new NotificationRewardHandler(10002, () =>
+            {
+                MuseumManager.instance.AddGold(1000);
+            }), null, null, LanguageDatabase.instance.Language.NotificationRewardMessages.Where(x => x.TargetID == gm3.ID).SingleOrDefault().ActiveLanguage);
+        });
         gameMissions.Add(gm1);
         gameMissions.Add(gm2);
+        gameMissions.Add(gm3);
 #if UNITY_EDITOR
         for (int i = 0; i < gameMissions.Count; i++)
         {
@@ -169,16 +181,54 @@ public class GameMission
     event System.Action onMissionReward;
     public GameMission(int iD, int infoNotificationID, int targetNotificationID, string header, string description, float missionComplationTime, float validityPeriodMission, MissionType missionType, CollectionHelper collection = null)
     {
+        LanguageData targetHeaderLanguageData = LanguageDatabase.instance.Language.MissionHeaderMessages.Where(x=> x.TargetID  == iD).SingleOrDefault();
+        LanguageData targetDescLanguageData = LanguageDatabase.instance.Language.MissionDescriptionMessages.Where(x=> x.TargetID  == iD).SingleOrDefault();
+        
         ID = iD;
         InfoNotificationID = infoNotificationID;
         TargetNotificationID = targetNotificationID;
-        Header = header;
-        Description = description;
+        if (targetHeaderLanguageData != null)
+            Header = targetHeaderLanguageData.ActiveLanguage;
+        else
+            Header = header;
+
+        if (targetDescLanguageData != null)
+            Description = description.Replace("{%loc1}", targetDescLanguageData.ActiveLanguage);
+        else
+            Description = description;
+        
         MissionComplationTime = missionComplationTime;
         ValidityPeriodMission = validityPeriodMission;
         isActive = false;
         this.missionType = missionType;
         this.collection = collection;
+        LanguageData targetNpcInteractionColorLanguageData = LanguageDatabase.instance.Language.MissionNpcInteractionColorMessages.Where(x => x.TargetID == (int)collection.missionRequirements.missionColorType).SingleOrDefault();
+        LanguageData targetNpcInteractionStateLanguageData = LanguageDatabase.instance.Language.MissionNpcInteractionStateMessages.Where(x => x.TargetID == (int)collection.missionRequirements.targetState).SingleOrDefault();
+        LanguageData targetNpcInteractionHelperLanguageData = LanguageDatabase.instance.Language.MissionNpcInteractionHelperMessages.Where(x => x.TargetID == 1).SingleOrDefault();
+        LanguageData targetNpcInteractionTypeLanguageData = LanguageDatabase.instance.Language.MissionNpcInteractionTypeMessages.Where(x => x.TargetID == (int)collection.missionRequirements.targetType).SingleOrDefault();
+        if (collection.missionCollectionType == MissionCollectionType.NpcInteraction)
+            if(LanguageDatabase.instance.TranslationWillBeProcessed)
+            {
+                string newDesc = new string(Description);
+                newDesc = description.Replace("{%now}/{%tot}", collection.StartValue + "/" + collection.EndValue);
+
+                if (targetNpcInteractionTypeLanguageData != null)
+                    newDesc = description.Replace("{%t}", targetNpcInteractionTypeLanguageData.ActiveLanguage);
+
+                if(targetNpcInteractionColorLanguageData != null)
+                newDesc = description.Replace("{%cl}", targetNpcInteractionColorLanguageData.ActiveLanguage);
+
+                if (targetNpcInteractionStateLanguageData != null)
+                newDesc = description.Replace("{%st}", targetNpcInteractionStateLanguageData.ActiveLanguage);
+
+
+                if (targetNpcInteractionColorLanguageData != null && targetNpcInteractionStateLanguageData != null)
+                    newDesc = description.Replace("{%loc2}", targetNpcInteractionHelperLanguageData.ActiveLanguage);
+                else
+                    newDesc = description.Replace("{%loc2}", "");
+
+                Description = newDesc;
+            }
     }
     public GameMission(GameMission _copy)
     {
@@ -236,6 +286,7 @@ public class CollectionHelper
         StartValue = startValue;
         EndValue = endValue;
         missionCollectionType = _type;
+        if (_type == MissionCollectionType.NpcInteraction)
         missionRequirements = CreateRequirement();
     }
     public CollectionHelper(CollectionHelper _copy) 

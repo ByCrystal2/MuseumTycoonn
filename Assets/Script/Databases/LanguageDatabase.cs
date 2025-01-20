@@ -941,7 +941,20 @@ public class MainLanguageData
     //NPCCommend
     //Notifications
     public List<LanguageData> NotificationMessages = new List<LanguageData>();
+        //Notification-Reward
+        public List<LanguageData> NotificationRewardMessages = new List<LanguageData>();
+        //Notification-Reward
     //Notifications
+    //Missions
+    public List<LanguageData> MissionHeaderMessages = new List<LanguageData>();
+    public List<LanguageData> MissionDescriptionMessages = new List<LanguageData>();
+        //Mission-Collections
+        public List<LanguageData> MissionNpcInteractionColorMessages = new List<LanguageData>();
+        public List<LanguageData> MissionNpcInteractionStateMessages = new List<LanguageData>();
+        public List<LanguageData> MissionNpcInteractionTypeMessages = new List<LanguageData>();
+        public List<LanguageData> MissionNpcInteractionHelperMessages = new List<LanguageData>();
+        //Mission-Collections
+    //Missions
     //Dialogs
     public List<LanguageData> DialogsMessages = new List<LanguageData>();
     //Dialogs

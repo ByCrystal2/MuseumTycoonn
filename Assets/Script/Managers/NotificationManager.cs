@@ -147,6 +147,7 @@ public class NotificationManager : MonoBehaviour
         //  RewardNotifications
         Notification n9999 = new Notification(9999, "", 2f, NotificationHeader.System, NotificationState.Information, NotificationType.Reward, 1);
         Notification n10001 = new Notification(10001, "", 2f, NotificationHeader.System, NotificationState.Information, NotificationType.Reward, 1);
+        Notification n10002 = new Notification(10002, "", 2f, NotificationHeader.System, NotificationState.Information, NotificationType.Reward, 1);
         // Achievement Notifications
         Notification n10000 = new Notification(10000, "", 2f, NotificationHeader.System, NotificationState.Information, NotificationType.Reward,1);
             //
@@ -160,6 +161,7 @@ public class NotificationManager : MonoBehaviour
         },1);
         Notification n100001 = new Notification(100001, "", 3f, NotificationHeader.System, NotificationState.Information, NotificationType.Mission,1);
         Notification n100002 = new Notification(100002, "", 3f, NotificationHeader.System, NotificationState.Information, NotificationType.Mission,1);
+        Notification n100003 = new Notification(100003, "", 3f, NotificationHeader.System, NotificationState.Information, NotificationType.Mission,1);
         //
         notifications.Add(n1);
         notifications.Add(n2);
