@@ -44,6 +44,7 @@ public class NPCBehaviour : MonoBehaviour
     [SerializeField] private bool escapeAfterBeat;
     [SerializeField] private bool ReadyForDialog;
 
+    [SerializeField] private QuestState _QuestState;
     void Start()
     {
         StatData.NpcCurrentSpeed = StatData.NpcSpeed + StatData.NpcSpeed * (((float)SkillTreeManager.instance.CurrentBuffs[(int)eStat.VisitorsSpeedIncrease] + CustomizeHandler.instance.GetBonusAmountOf(eStat.VisitorsSpeedIncrease)) / 100f);
@@ -458,8 +459,8 @@ public class NPCBehaviour : MonoBehaviour
                         amIbeat = Stress > partnerStress;
                     }
 
-                    SetNPCState(amIbeat ? NPCState.CombatBeat : NPCState.CombatBeaten, true);
-                    DialogTarget.SetNPCState(amIbeat ? NPCState.CombatBeaten : NPCState.CombatBeat, true);
+                    SetNPCState(amIbeat ? NPCState.CombatBeat : NPCState.CombatBeaten, true, false);
+                    DialogTarget.SetNPCState(amIbeat ? NPCState.CombatBeaten : NPCState.CombatBeat, true, false);
                     return;
                 }
                 
@@ -529,7 +530,11 @@ public class NPCBehaviour : MonoBehaviour
         IdleTimer = Time.time + NpcManager.delaysPerState[(int)NPCState.CombatBeaten];
         PlayBeatenEffect(true);
 
-        CheckQuest(MissionTargetType.Beat);
+        if (_BeatenByPlayer && _QuestState == QuestState.Free)
+        {
+            CheckQuest(MissionTargetType.Beat);
+            _BeatenByPlayer = false;
+        }
     }
 
     private void VictoryDance()
@@ -567,13 +572,16 @@ public class NPCBehaviour : MonoBehaviour
         anim.SetInteger(NpcManager.AnimMakeMessParam, 0);
     }
 
-    public void SetNPCState(NPCState _newState, bool _force)
+    private bool _BeatenByPlayer = false;
+    public void SetNPCState(NPCState _newState, bool _force, bool _beatenByPlayer = false)
     {
         if (_force)
         {
-            
             npcState._mainState = _newState;
             IdleTimer = Time.time - 1;
+
+            if (_newState == NPCState.CombatBeaten)
+                _BeatenByPlayer = _beatenByPlayer;
         }
         else
         {
@@ -583,6 +591,9 @@ public class NPCBehaviour : MonoBehaviour
             //Uygun
             npcState._mainState = _newState;
             IdleTimer = Time.time - 1;
+
+            if (_newState == NPCState.CombatBeaten)
+                _BeatenByPlayer = _beatenByPlayer;
         }
     }
 
@@ -872,7 +883,8 @@ public class NPCBehaviour : MonoBehaviour
                 SetMyCamerasActivation(true, false);
             }
 
-            CheckQuest(MissionTargetType.Investigate);
+            if(_QuestState == QuestState.Free)
+                CheckQuest(MissionTargetType.Investigate);
         }
     }
 
@@ -888,7 +900,7 @@ public class NPCBehaviour : MonoBehaviour
         {
             if(npcState._mainState != NPCState.CombatBeaten)
             {
-                SetNPCState(NPCState.CombatBeaten, true);
+                SetNPCState(NPCState.CombatBeaten, true, true);
                 AudioManager.instance.PlayDesiredSoundEffect(SoundEffectType.Punch);
             }
         }
@@ -1110,10 +1122,22 @@ public class NPCBehaviour : MonoBehaviour
 
                 if (step == 2) //Color and state completed.
                 {
+                    _QuestState = QuestState.Counted;
                     MissionManager.instance.collectionHandler.AdvanceMission();
                 }
             }
         }
+    }
+
+    public void ResetQuestState()
+    {
+        _QuestState = QuestState.Free;
+    }
+
+    public enum QuestState
+    {
+        Free,
+        Counted,
     }
 }
 

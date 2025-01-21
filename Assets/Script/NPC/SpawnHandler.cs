@@ -35,4 +35,11 @@ public class SpawnHandler : MonoBehaviour
         SpawnNpcs(targetNpcCount);
     }
 
+    public void OnEndMission()
+    {
+        foreach (var item in spawnTransformList)
+            foreach (Transform npc in item)
+                if (npc.TryGetComponent(out NPCBehaviour n))
+                    n.ResetQuestState();
+    }
 }
