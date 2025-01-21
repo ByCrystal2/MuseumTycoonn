@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MissionManager : MonoBehaviour
@@ -51,13 +52,13 @@ public class MissionManager : MonoBehaviour
                 Debug.LogWarning("Boyle bir gorev zaten gonderilmis. Mevcut gorev bitene kadar ayni turde gorev gelemez!");
                 return;
             }
-
+            randomMission.GetMissionCollection().CreateRequirement();
+            randomMission.UpdateDesc();
             NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(100000), new SenderHelper(WhoSends.System, 9999), 2, null, null, null/*,randomMission.Description*/);
             NotificationHandler handler = NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(randomMission.TargetNotificationID), new SenderHelper(WhoSends.System, 9999), 1, null, new NotificationMissionHandler(randomMission.TargetNotificationID, () =>
             {
                 Debug.Log("Gorev basladi!");
                 GameMission flag = new GameMission(randomMission);
-                flag.GetMissionCollection().CreateRequirement();
                 AddMission(flag);
                 StartGameMission(flag);
             }), randomMission, randomMission.Description);
@@ -69,6 +70,10 @@ public class MissionManager : MonoBehaviour
         GameMission targetMission = ActiveMissions.Where(x=> x.ID == _id).SingleOrDefault();
         if (targetMission == null) { Debug.LogError("Gonderilen gorev, aktif gorevlerde bulunmamaktadir!"); return; }
         targetMission.TriggerReward();
+        if (targetMission.GetMissionCollection() != null && targetMission.GetMissionCollection().missionCollectionType == MissionCollectionType.NpcInteraction)
+        {
+            SpawnHandler.instance.OnEndMission();
+        }
         Debug.Log(targetMission.ID + " ID'li gorev tamamlandi!");
         RemoveMissionWithId(targetMission.ID);
     }
@@ -130,7 +135,7 @@ public class MissionManager : MonoBehaviour
             }), null, null, LanguageDatabase.instance.Language.NotificationRewardMessages.Where(x => x.TargetID == gm2.ID).SingleOrDefault().ActiveLanguage);
         });
 
-        GameMission gm3 = new GameMission(3, 100000, 100003, "Interact With Visitors", "{%now}/{%tot} {%loc1} {%cl} {%loc2} {%st}", 300, 60, MissionType.Collection, new CollectionHelper(0, 5, MissionCollectionType.NpcInteraction));
+        GameMission gm3 = new GameMission(3, 100000, 100003, "Interact With Visitors", "{%now}/{%tot} {%t}. {%loc1}: {%cl} {%loc2} {%st}", 300, 60, MissionType.Collection, new CollectionHelper(0, 5, MissionCollectionType.NpcInteraction));
         gm3.SetRewardEvent(() =>
         {
             NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(6), new SenderHelper(WhoSends.System, 9999), 2);
@@ -148,6 +153,10 @@ public class MissionManager : MonoBehaviour
             //gameMissions[i].MissionComplationTime = 60; //istenildigi zaman acilabilir. sisteme bir zarar vermez.
         }
 #endif        
+    }
+    public List<GameMission> GetAllMissionDatas()
+    {
+        return gameMissions;
     }
     public GameMission GetMissionWithInfoId(int id)
     {
@@ -183,8 +192,12 @@ public class GameMission
     public GameMission(int iD, int infoNotificationID, int targetNotificationID, string header, string description, float missionComplationTime, float validityPeriodMission, MissionType missionType, CollectionHelper collection = null)
     {
         LanguageData targetHeaderLanguageData = LanguageDatabase.instance.Language.MissionHeaderMessages.Where(x=> x.TargetID  == iD).SingleOrDefault();
-        LanguageData targetDescLanguageData = LanguageDatabase.instance.Language.MissionDescriptionMessages.Where(x=> x.TargetID  == iD).SingleOrDefault();
-        
+        LanguageData targetDescLanguageData = null;
+        if (collection.missionCollectionType != MissionCollectionType.NpcInteraction)
+            targetDescLanguageData = LanguageDatabase.instance.Language.MissionDescriptionMessages.Where(x=> x.TargetID  == iD).SingleOrDefault();
+        else
+            targetDescLanguageData = LanguageDatabase.instance.Language.MissionDescriptionMessages.Where(x => x.TargetID == 999).SingleOrDefault();
+
         ID = iD;
         InfoNotificationID = infoNotificationID;
         TargetNotificationID = targetNotificationID;
@@ -194,39 +207,55 @@ public class GameMission
             Header = header;
 
         if (targetDescLanguageData != null)
-            Description = description.Replace("{%loc1}", targetDescLanguageData.ActiveLanguage);
-        else
-            Description = description;
-        
+        {
+            if (collection.missionCollectionType == MissionCollectionType.NpcInteraction)            
+                Description = description.Replace("{%loc1}", targetDescLanguageData.ActiveLanguage);
+            else
+                Description = targetDescLanguageData.ActiveLanguage;
+        }
+        else { Description = description; }
         MissionComplationTime = missionComplationTime;
         ValidityPeriodMission = validityPeriodMission;
         isActive = false;
         this.missionType = missionType;
         this.collection = collection;
-        LanguageData targetNpcInteractionColorLanguageData = LanguageDatabase.instance.Language.MissionNpcInteractionColorMessages.Where(x => x.TargetID == (int)collection.missionRequirements.missionColorType).SingleOrDefault();
+        UpdateDesc();
+    }
+    public void UpdateDesc()
+    {
+        if (collection.missionCollectionType != MissionCollectionType.NpcInteraction) return;
+
+        LanguageData targetNpcInteractionColorLanguageData = LanguageDatabase.instance.Language.MissionNpcInteractionColorMessages.Where(x => x.TargetID == (int)collection.missionRequirements.targetColor).SingleOrDefault();
         LanguageData targetNpcInteractionStateLanguageData = LanguageDatabase.instance.Language.MissionNpcInteractionStateMessages.Where(x => x.TargetID == (int)collection.missionRequirements.targetState).SingleOrDefault();
-        LanguageData targetNpcInteractionHelperLanguageData = LanguageDatabase.instance.Language.MissionNpcInteractionHelperMessages.Where(x => x.TargetID == 1).SingleOrDefault();
+        LanguageData targetNpcInteractionHelperLanguageData = LanguageDatabase.instance.Language.MissionNpcInteractionHelperMessages.Where(x => x.TargetID == 0).SingleOrDefault();
         LanguageData targetNpcInteractionTypeLanguageData = LanguageDatabase.instance.Language.MissionNpcInteractionTypeMessages.Where(x => x.TargetID == (int)collection.missionRequirements.targetType).SingleOrDefault();
         if (collection.missionCollectionType == MissionCollectionType.NpcInteraction)
-            if(LanguageDatabase.instance.TranslationWillBeProcessed)
+            if (LanguageDatabase.instance.TranslationWillBeProcessed)
             {
                 string newDesc = new string(Description);
-                newDesc = description.Replace("{%now}/{%tot}", collection.StartValue + "/" + collection.EndValue);
+                newDesc = Description.Replace("{%now}/{%tot}", collection.StartValue + "/" + collection.EndValue);
 
                 if (targetNpcInteractionTypeLanguageData != null)
-                    newDesc = description.Replace("{%t}", targetNpcInteractionTypeLanguageData.ActiveLanguage);
+                    newDesc = Description.Replace("{%t}", targetNpcInteractionTypeLanguageData.ActiveLanguage);
 
-                if(targetNpcInteractionColorLanguageData != null)
-                newDesc = description.Replace("{%cl}", targetNpcInteractionColorLanguageData.ActiveLanguage);
+                if (collection.missionRequirements.missionColorType != MissionColorType.None)
+                    newDesc = Description.Replace("{%cl}", targetNpcInteractionColorLanguageData.ActiveLanguage);
+                else
+                    newDesc = Description.Replace("{%cl}", "");
 
-                if (targetNpcInteractionStateLanguageData != null)
-                newDesc = description.Replace("{%st}", targetNpcInteractionStateLanguageData.ActiveLanguage);
-
+                if (collection.missionRequirements.targetState != MissionTargetState.None)
+                    newDesc = Description.Replace("{%st}", targetNpcInteractionStateLanguageData.ActiveLanguage);
+                else
+                    newDesc = Description.Replace("{%st}", "");
 
                 if (targetNpcInteractionColorLanguageData != null && targetNpcInteractionStateLanguageData != null)
-                    newDesc = description.Replace("{%loc2}", targetNpcInteractionHelperLanguageData.ActiveLanguage);
+                    newDesc = Description.Replace("{%loc2}", targetNpcInteractionHelperLanguageData.ActiveLanguage);
                 else
-                    newDesc = description.Replace("{%loc2}", "");
+                    newDesc = Description.Replace("{%loc2}", "");
+                Debug.Log("Game mission (int)collection.missionRequirements.targetColor: " + (int)collection.missionRequirements.targetColor);
+                Debug.Log("Game mission (int)collection.missionRequirements.targetState: " + (int)collection.missionRequirements.targetState);
+                Debug.Log("Game mission (int)collection.missionRequirements.targetType: " + (int)collection.missionRequirements.targetType);
+                Debug.Log("Game mission newDesc: " + newDesc);
 
                 Description = newDesc;
             }
@@ -324,7 +353,8 @@ public class CollectionHelper
         if(r <= 49)
         {
             //Color quest
-            _missionRequirements.missionColorType = Random.Range(0, 101) <= 49 ? MissionColorType.Liked : MissionColorType.Disliked;
+            //_missionRequirements.missionColorType = Random.Range(0, 101) <= 49 ? MissionColorType.Liked : MissionColorType.Disliked;
+            _missionRequirements.missionColorType = MissionColorType.Liked;
             _missionRequirements.targetColor = (MyColors)Random.Range(0, (int)MyColors.Length);
             hasColor = true;
         }

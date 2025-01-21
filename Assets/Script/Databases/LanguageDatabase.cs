@@ -122,6 +122,23 @@ public class LanguageDatabase : MonoBehaviour
                 continue;
             Language.NotificationMessages.Add(new LanguageData(allNotifications[i].ID, allNotifications[i].Message));
         }
+        //Missions
+        List<GameMission> allMissions = MissionManager.instance.GetAllMissionDatas();
+        int allMissionLength = allMissions.Count;
+        for (int i = 0; i < allMissionLength; i++)
+        {
+            if (allMissions[i].Header != string.Empty)                
+                Language.MissionHeaderMessages.Add(new LanguageData(allMissions[i].ID, allMissions[i].Header));
+            if (allMissions[i].Description != string.Empty)
+                Language.MissionDescriptionMessages.Add(new LanguageData(allMissions[i].ID, allMissions[i].Description));
+        }
+        Language.MissionDescriptionMessages.Add(new LanguageData(999, "Required"));
+        Language.MissionNpcInteractionTypeMessages = new List<LanguageData> { new LanguageData(0, "Visitor to interaction"), new LanguageData(1, "Visitor to beat") };
+        Language.MissionNpcInteractionColorTypeMessages = new List<LanguageData> { new LanguageData(1, "loved"), new LanguageData(2, "unloved") };
+        Language.MissionNpcInteractionColorMessages = new List<LanguageData> { new LanguageData(0, "Black"), new LanguageData(1, "White"), new LanguageData(2, "Red"), new LanguageData(3, "Green"), new LanguageData(4, "Blue"), new LanguageData(5, "Cyan"), new LanguageData(6, "Yellow"), new LanguageData(7, "Purple") };
+        Language.MissionNpcInteractionStateMessages = new List<LanguageData> { new LanguageData(0, ""), new LanguageData(1, "Happy"), new LanguageData(2, "Sad"), new LanguageData(3, "Stressed"), new LanguageData(4, "Relaxed"), new LanguageData(5, "Need to toilet") };
+        Language.MissionNpcInteractionHelperMessages = new List<LanguageData> { new LanguageData(0, "and") };
+        //Missions
         //Notifications
         //DialogsMessages
         if (TutorialLevelManager.instance != null)
@@ -191,6 +208,30 @@ public class LanguageDatabase : MonoBehaviour
         //NOTIFICATIONS
         List<string> notificationKeysToTranslate = new List<string>();
         List<string> notificationTranslatedTexts = new List<string>();
+
+            //Missions
+            List<string> M_HeaderKeysToTranslate = new List<string>();
+            List<string> M_HeaderTranslatedTexts = new List<string>();
+
+            List<string> M_DescKeysToTranslate = new List<string>();
+            List<string> M_DescTranslatedTexts = new List<string>();
+                //NPCInteraction
+                List<string> M_NpcInteractionTypeKeysToTranslate = new List<string>();
+                List<string> M_NpcInteractionTypeTranslatedTexts = new List<string>();
+
+                List<string> M_NpcInteractionColorTypeKeysToTranslate = new List<string>();
+                List<string> M_NpcInteractionColorTypeTranslatedTexts = new List<string>();
+
+                List<string> M_NpcInteractionTargetColorKeysToTranslate = new List<string>();
+                List<string> M_NpcInteractionTargetColorTranslatedTexts = new List<string>();
+
+                List<string> M_NpcInteractionStateKeysToTranslate = new List<string>();
+                List<string> M_NpcInteractionStateTranslatedTexts = new List<string>();
+
+                List<string> M_NpcInteractionHelperKeysToTranslate = new List<string>();
+                List<string> M_NpcInteractionHelperTranslatedTexts = new List<string>();
+                //NPCInteraction
+            //Missions
         //NOTIFICATIONS
 
         //Dialogs
@@ -325,6 +366,95 @@ public class LanguageDatabase : MonoBehaviour
         {
             notificationTranslatedTexts = result;
         });
+
+            //Missions
+            foreach (var item in Language.MissionHeaderMessages)
+            {
+                if (item.Key == string.Empty)
+                    continue;
+                M_HeaderKeysToTranslate.Add(item.Key);
+            }
+
+            await GameManager.instance.BulkTranslateAndAssignAsync(M_HeaderKeysToTranslate, (result) =>
+            {
+                M_HeaderTranslatedTexts = result;
+            });
+
+            foreach (var item in Language.MissionDescriptionMessages)
+            {
+                if (item.Key == string.Empty)
+                    continue;
+                M_DescKeysToTranslate.Add(item.Key);
+            }
+
+            await GameManager.instance.BulkTranslateAndAssignAsync(M_DescKeysToTranslate, (result) =>
+            {
+                M_DescTranslatedTexts = result;
+            });
+
+                //NPCInteraction
+                foreach (var item in Language.MissionNpcInteractionTypeMessages)
+                {
+                    if (item.Key == string.Empty)
+                        continue;
+                    M_NpcInteractionTypeKeysToTranslate.Add(item.Key);
+                }
+
+                await GameManager.instance.BulkTranslateAndAssignAsync(M_NpcInteractionTypeKeysToTranslate, (result) =>
+                {
+                    M_NpcInteractionTypeTranslatedTexts = result;
+                });
+
+                foreach (var item in Language.MissionNpcInteractionColorTypeMessages)
+                {
+                    if (item.Key == string.Empty)
+                        continue;
+                    M_NpcInteractionColorTypeKeysToTranslate.Add(item.Key);
+                }
+
+                await GameManager.instance.BulkTranslateAndAssignAsync(M_NpcInteractionColorTypeKeysToTranslate, (result) =>
+                {
+                    M_NpcInteractionColorTypeTranslatedTexts = result;
+                });
+
+                foreach (var item in Language.MissionNpcInteractionColorMessages)
+                {
+                    if (item.Key == string.Empty)
+                        continue;
+                    M_NpcInteractionTargetColorKeysToTranslate.Add(item.Key);
+                }
+
+                await GameManager.instance.BulkTranslateAndAssignAsync(M_NpcInteractionTargetColorKeysToTranslate, (result) =>
+                {
+                    M_NpcInteractionTargetColorTranslatedTexts = result;
+                });
+
+                foreach (var item in Language.MissionNpcInteractionStateMessages)
+                {
+                    if (item.Key == string.Empty)
+                        continue;
+                    M_NpcInteractionStateKeysToTranslate.Add(item.Key);
+                }
+
+                await GameManager.instance.BulkTranslateAndAssignAsync(M_NpcInteractionStateKeysToTranslate, (result) =>
+                {
+                    M_NpcInteractionStateTranslatedTexts = result;
+                });
+
+                foreach(var item in Language.MissionNpcInteractionHelperMessages)
+                        {
+                    if (item.Key == string.Empty)
+                        continue;
+                    M_NpcInteractionHelperKeysToTranslate.Add(item.Key);
+                }
+
+                await GameManager.instance.BulkTranslateAndAssignAsync(M_NpcInteractionHelperKeysToTranslate, (result) =>
+                {
+                    M_NpcInteractionHelperTranslatedTexts = result;
+                });
+        //NPCInteraction
+        //Missions
+
         //NOTIFICATIONS
 
         //GENERAL
@@ -462,6 +592,52 @@ public class LanguageDatabase : MonoBehaviour
         {
             Language.NotificationMessages[i].ActiveLanguage = notificationTranslatedTexts[i];
         }
+            //MissionsAdding
+            Debug.Log("Language.MissionHeaderMessages.Count => " + Language.MissionHeaderMessages.Count + " M_HeaderTranslatedTexts.Count => " + M_HeaderTranslatedTexts.Count);
+            for (int i = 0; i < M_HeaderTranslatedTexts.Count; i++)
+            {
+                Language.MissionHeaderMessages[i].ActiveLanguage = M_HeaderTranslatedTexts[i];
+            }
+
+            Debug.Log("Language.MissionDescriptionMessages.Count => " + Language.MissionDescriptionMessages.Count + " M_DescTranslatedTexts.Count => " + M_DescTranslatedTexts.Count);
+            for (int i = 0; i < M_DescTranslatedTexts.Count; i++)
+            {
+                Language.MissionDescriptionMessages[i].ActiveLanguage = M_DescTranslatedTexts[i];
+            }
+
+                //NPCInteractionAdding
+                Debug.Log("Language.MissionNpcInteractionTypeMessages.Count => " + Language.MissionNpcInteractionTypeMessages.Count + " M_NpcInteractionTypeTranslatedTexts.Count => " + M_NpcInteractionTypeTranslatedTexts.Count);
+                for (int i = 0; i < M_NpcInteractionTypeTranslatedTexts.Count; i++)
+                {
+                    Language.MissionNpcInteractionTypeMessages[i].ActiveLanguage = M_NpcInteractionTypeTranslatedTexts[i];
+                }
+
+                Debug.Log("Language.MissionNpcInteractionColorTypeMessages.Count => " + Language.MissionNpcInteractionColorTypeMessages.Count + " M_NpcInteractionColorTypeTranslatedTexts.Count => " + M_NpcInteractionColorTypeTranslatedTexts.Count);
+                for (int i = 0; i < M_NpcInteractionColorTypeTranslatedTexts.Count; i++)
+                {
+                    Language.MissionNpcInteractionColorTypeMessages[i].ActiveLanguage = M_NpcInteractionColorTypeTranslatedTexts[i];
+                }
+
+                Debug.Log("Language.MissionNpcInteractionColorMessages.Count => " + Language.MissionNpcInteractionColorMessages.Count + " M_NpcInteractionTargetColorTranslatedTexts.Count => " + M_NpcInteractionTargetColorTranslatedTexts.Count);
+                for (int i = 0; i < M_NpcInteractionTargetColorTranslatedTexts.Count; i++)
+                {
+                    Language.MissionNpcInteractionColorMessages[i].ActiveLanguage = M_NpcInteractionTargetColorTranslatedTexts[i];
+                }
+
+                Debug.Log("Language.MissionNpcInteractionStateMessages.Count => " + Language.MissionNpcInteractionStateMessages.Count + " M_NpcInteractionStateTranslatedTexts.Count => " + M_NpcInteractionStateTranslatedTexts.Count);
+                for (int i = 0; i < M_NpcInteractionStateTranslatedTexts.Count; i++)
+                {
+                    Language.MissionNpcInteractionStateMessages[i].ActiveLanguage = M_NpcInteractionStateTranslatedTexts[i];
+                }
+
+                Debug.Log("Language.MissionNpcInteractionHelperMessages.Count => " + Language.MissionNpcInteractionHelperMessages.Count + " M_NpcInteractionHelperTranslatedTexts.Count => " + M_NpcInteractionHelperTranslatedTexts.Count);
+                for (int i = 0; i < M_NpcInteractionHelperTranslatedTexts.Count; i++)
+                {
+                    Language.MissionNpcInteractionHelperMessages[i].ActiveLanguage = M_NpcInteractionHelperTranslatedTexts[i];
+                }
+
+                //NPCInteractionAdding
+            //MissionsAdding
         //NotificationAdding
 
         //GeneralAdding
@@ -563,6 +739,30 @@ public class LanguageDatabase : MonoBehaviour
                 //NOTIFICATIONS
                 List<string> notificationKeysToTranslate = new List<string>();
                 List<string> notificationTranslatedTexts = new List<string>();
+
+                    //Missions
+                    List<string> M_HeaderKeysToTranslate = new List<string>();
+                    List<string> M_HeaderTranslatedTexts = new List<string>();
+
+                    List<string> M_DescKeysToTranslate = new List<string>();
+                    List<string> M_DescTranslatedTexts = new List<string>();
+                        //NPCInteraction
+                        List<string> M_NpcInteractionTypeKeysToTranslate = new List<string>();
+                        List<string> M_NpcInteractionTypeTranslatedTexts = new List<string>();
+
+                        List<string> M_NpcInteractionColorTypeKeysToTranslate = new List<string>();
+                        List<string> M_NpcInteractionColorTypeTranslatedTexts = new List<string>();
+
+                        List<string> M_NpcInteractionTargetColorKeysToTranslate = new List<string>();
+                        List<string> M_NpcInteractionTargetColorTranslatedTexts = new List<string>();
+
+                        List<string> M_NpcInteractionStateKeysToTranslate = new List<string>();
+                        List<string> M_NpcInteractionStateTranslatedTexts = new List<string>();
+
+                        List<string> M_NpcInteractionHelperKeysToTranslate = new List<string>();
+                        List<string> M_NpcInteractionHelperTranslatedTexts = new List<string>();
+                        //NPCInteraction
+                    //Missions
                 //NOTIFICATIONS
 
                 //General
@@ -692,6 +892,94 @@ public class LanguageDatabase : MonoBehaviour
                 {
                     notificationTranslatedTexts = result;
                 });
+
+                    //Missions
+                    foreach (var item in Language.MissionHeaderMessages)
+                    {
+                        if (item.Key == string.Empty)
+                            continue;
+                        M_HeaderKeysToTranslate.Add(item.Key);
+                    }
+
+                    await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), M_HeaderKeysToTranslate, (result) =>
+                    {
+                        M_HeaderTranslatedTexts = result;
+                    });
+
+                    foreach (var item in Language.MissionDescriptionMessages)
+                    {
+                        if (item.Key == string.Empty)
+                            continue;
+                        M_DescKeysToTranslate.Add(item.Key);
+                    }
+
+                    await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), M_DescKeysToTranslate, (result) =>
+                    {
+                        M_DescTranslatedTexts = result;
+                    });
+
+                        //NPCInteraction
+                        foreach (var item in Language.MissionNpcInteractionTypeMessages)
+                        {
+                            if (item.Key == string.Empty)
+                                continue;
+                            M_NpcInteractionTypeKeysToTranslate.Add(item.Key);
+                        }
+
+                        await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), M_NpcInteractionTypeKeysToTranslate, (result) =>
+                        {
+                            M_NpcInteractionTypeTranslatedTexts = result;
+                        });
+
+                        foreach (var item in Language.MissionNpcInteractionColorTypeMessages)
+                        {
+                            if (item.Key == string.Empty)
+                                continue;
+                            M_NpcInteractionColorTypeKeysToTranslate.Add(item.Key);
+                        }
+
+                        await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), M_NpcInteractionColorTypeKeysToTranslate, (result) =>
+                        {
+                            M_NpcInteractionColorTypeTranslatedTexts = result;
+                        });
+
+                        foreach (var item in Language.MissionNpcInteractionColorMessages)
+                        {
+                            if (item.Key == string.Empty)
+                                continue;
+                            M_NpcInteractionTargetColorKeysToTranslate.Add(item.Key);
+                        }
+
+                        await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), M_NpcInteractionTargetColorKeysToTranslate, (result) =>
+                        {
+                            M_NpcInteractionTargetColorTranslatedTexts = result;
+                        });
+
+                        foreach (var item in Language.MissionNpcInteractionStateMessages)
+                        {
+                            if (item.Key == string.Empty)
+                                continue;
+                            M_NpcInteractionStateKeysToTranslate.Add(item.Key);
+                        }
+
+                        await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), M_NpcInteractionStateKeysToTranslate, (result) =>
+                        {
+                            M_NpcInteractionStateTranslatedTexts = result;
+                        });
+
+                        foreach (var item in Language.MissionNpcInteractionHelperMessages)
+                        {
+                            if (item.Key == string.Empty)
+                                continue;
+                            M_NpcInteractionHelperKeysToTranslate.Add(item.Key);
+                        }
+
+                        await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), M_NpcInteractionHelperKeysToTranslate, (result) =>
+                        {
+                            M_NpcInteractionHelperTranslatedTexts = result;
+                        });
+                        //NPCInteraction
+                    //Missions
                 //NOTIFICATIONS
 
                 //GENERAL
@@ -828,6 +1116,53 @@ public class LanguageDatabase : MonoBehaviour
                 {
                     Language.NotificationMessages[i].ActiveLanguage = notificationTranslatedTexts[i];
                 }
+
+                    //MissionsAdding
+                    Debug.Log("Language.MissionHeaderMessages.Count => " + Language.MissionHeaderMessages.Count + " M_HeaderTranslatedTexts.Count => " + M_HeaderTranslatedTexts.Count);
+                    for (int i = 0; i < M_HeaderTranslatedTexts.Count; i++)
+                    {
+                        Language.MissionHeaderMessages[i].ActiveLanguage = M_HeaderTranslatedTexts[i];
+                    }
+
+                    Debug.Log("Language.MissionDescriptionMessages.Count => " + Language.MissionDescriptionMessages.Count + " M_DescTranslatedTexts.Count => " + M_DescTranslatedTexts.Count);
+                    for (int i = 0; i < M_DescTranslatedTexts.Count; i++)
+                    {
+                        Language.MissionDescriptionMessages[i].ActiveLanguage = M_DescTranslatedTexts[i];
+                    }
+
+                        //NPCInteractionAdding
+                        Debug.Log("Language.MissionNpcInteractionTypeMessages.Count => " + Language.MissionNpcInteractionTypeMessages.Count + " M_NpcInteractionTypeTranslatedTexts.Count => " + M_NpcInteractionTypeTranslatedTexts.Count);
+                        for (int i = 0; i < M_NpcInteractionTypeTranslatedTexts.Count; i++)
+                        {
+                            Language.MissionNpcInteractionTypeMessages[i].ActiveLanguage = M_NpcInteractionTypeTranslatedTexts[i];
+                        }
+
+                        Debug.Log("Language.MissionNpcInteractionColorTypeMessages.Count => " + Language.MissionNpcInteractionColorTypeMessages.Count + " M_NpcInteractionColorTypeTranslatedTexts.Count => " + M_NpcInteractionColorTypeTranslatedTexts.Count);
+                        for (int i = 0; i < M_NpcInteractionColorTypeTranslatedTexts.Count; i++)
+                        {
+                            Language.MissionNpcInteractionColorTypeMessages[i].ActiveLanguage = M_NpcInteractionColorTypeTranslatedTexts[i];
+                        }
+
+                        Debug.Log("Language.MissionNpcInteractionColorMessages.Count => " + Language.MissionNpcInteractionColorMessages.Count + " M_NpcInteractionTargetColorTranslatedTexts.Count => " + M_NpcInteractionTargetColorTranslatedTexts.Count);
+                        for (int i = 0; i < M_NpcInteractionTargetColorTranslatedTexts.Count; i++)
+                        {
+                            Language.MissionNpcInteractionColorMessages[i].ActiveLanguage = M_NpcInteractionTargetColorTranslatedTexts[i];
+                        }
+
+                        Debug.Log("Language.MissionNpcInteractionStateMessages.Count => " + Language.MissionNpcInteractionStateMessages.Count + " M_NpcInteractionStateTranslatedTexts.Count => " + M_NpcInteractionStateTranslatedTexts.Count);
+                        for (int i = 0; i < M_NpcInteractionStateTranslatedTexts.Count; i++)
+                        {
+                            Language.MissionNpcInteractionStateMessages[i].ActiveLanguage = M_NpcInteractionStateTranslatedTexts[i];
+                        }
+
+                        Debug.Log("Language.MissionNpcInteractionHelperMessages.Count => " + Language.MissionNpcInteractionHelperMessages.Count + " M_NpcInteractionHelperTranslatedTexts.Count => " + M_NpcInteractionHelperTranslatedTexts.Count);
+                        for (int i = 0; i < M_NpcInteractionHelperTranslatedTexts.Count; i++)
+                        {
+                            Language.MissionNpcInteractionHelperMessages[i].ActiveLanguage = M_NpcInteractionHelperTranslatedTexts[i];
+                        }
+
+                        //NPCInteractionAdding
+                    //MissionsAdding
                 //NotificationAdding
 
                 //GeneralAdding
@@ -949,10 +1284,11 @@ public class MainLanguageData
     public List<LanguageData> MissionHeaderMessages = new List<LanguageData>();
     public List<LanguageData> MissionDescriptionMessages = new List<LanguageData>();
         //Mission-Collections
+        public List<LanguageData> MissionNpcInteractionHelperMessages = new List<LanguageData>();
+        public List<LanguageData> MissionNpcInteractionColorTypeMessages = new List<LanguageData>();
         public List<LanguageData> MissionNpcInteractionColorMessages = new List<LanguageData>();
         public List<LanguageData> MissionNpcInteractionStateMessages = new List<LanguageData>();
         public List<LanguageData> MissionNpcInteractionTypeMessages = new List<LanguageData>();
-        public List<LanguageData> MissionNpcInteractionHelperMessages = new List<LanguageData>();
         //Mission-Collections
     //Missions
     //Dialogs
