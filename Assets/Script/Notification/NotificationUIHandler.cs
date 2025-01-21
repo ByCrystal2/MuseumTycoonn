@@ -104,7 +104,7 @@ public class NotificationUIHandler : MonoBehaviour
                 Debug.Log("Su anda zaten aktif bir gorev bulunmaktadir!");
                 return;
             }
-
+            Debug.Log("Current notification id: " +  notificationHandler.GetNotification().ID);
             GameMission currentGameMission = MissionManager.instance.GetMissionWithTargetId(notificationHandler.GetNotification().ID);
             currentGameMission.isActive = true;
             NotificationMissionHandler missionHandler = NotificationManager.instance.GetNotificationMissionHandler(currentGameMission.TargetNotificationID);

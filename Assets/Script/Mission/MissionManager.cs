@@ -53,10 +53,11 @@ public class MissionManager : MonoBehaviour
             }
 
             NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(100000), new SenderHelper(WhoSends.System, 9999), 2, null, null, null/*,randomMission.Description*/);
-            NotificationHandler handler = NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(100001), new SenderHelper(WhoSends.System, 9999), 1, null, new NotificationMissionHandler(100001, () =>
+            NotificationHandler handler = NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(randomMission.TargetNotificationID), new SenderHelper(WhoSends.System, 9999), 1, null, new NotificationMissionHandler(randomMission.TargetNotificationID, () =>
             {
                 Debug.Log("Gorev basladi!");
                 GameMission flag = new GameMission(randomMission);
+                flag.GetMissionCollection().CreateRequirement();
                 AddMission(flag);
                 StartGameMission(flag);
             }), randomMission, randomMission.Description);
@@ -129,7 +130,7 @@ public class MissionManager : MonoBehaviour
             }), null, null, LanguageDatabase.instance.Language.NotificationRewardMessages.Where(x => x.TargetID == gm2.ID).SingleOrDefault().ActiveLanguage);
         });
 
-        GameMission gm3 = new GameMission(3, 100000, 100003, "Interact With Visitors", "{%now}/{%tot} {%loc1} {%cl} {%loc2} {%st}", 210, 60, MissionType.Collection, new CollectionHelper(0, 5, MissionCollectionType.NpcInteraction));
+        GameMission gm3 = new GameMission(3, 100000, 100003, "Interact With Visitors", "{%now}/{%tot} {%loc1} {%cl} {%loc2} {%st}", 300, 60, MissionType.Collection, new CollectionHelper(0, 5, MissionCollectionType.NpcInteraction));
         gm3.SetRewardEvent(() =>
         {
             NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(6), new SenderHelper(WhoSends.System, 9999), 2);
@@ -138,13 +139,13 @@ public class MissionManager : MonoBehaviour
                 MuseumManager.instance.AddGold(1000);
             }), null, null, LanguageDatabase.instance.Language.NotificationRewardMessages.Where(x => x.TargetID == gm3.ID).SingleOrDefault().ActiveLanguage);
         });
-        gameMissions.Add(gm1);
-        gameMissions.Add(gm2);
+        //gameMissions.Add(gm1);
+        //gameMissions.Add(gm2); // bu yorum satirlari testlerden sonra acilacak!
         gameMissions.Add(gm3);
 #if UNITY_EDITOR
         for (int i = 0; i < gameMissions.Count; i++)
         {
-            gameMissions[i].MissionComplationTime = 60;
+            //gameMissions[i].MissionComplationTime = 60; //istenildigi zaman acilabilir. sisteme bir zarar vermez.
         }
 #endif        
     }

@@ -175,6 +175,7 @@ public class NotificationManager : MonoBehaviour
         //Reward Notifications Adding...
         notifications.Add(n9999);
         notifications.Add(n10001);
+        notifications.Add(n10002);
 
         //Acihevement Notifications Adding...
         notifications.Add(n10000);
@@ -186,6 +187,7 @@ public class NotificationManager : MonoBehaviour
         notifications.Add(n100000);
         notifications.Add(n100001);
         notifications.Add(n100002);
+        notifications.Add(n100003);
         //Game Mission Notifications Adding...
         //StartCoroutine(V2NotificationLoop());
     }
