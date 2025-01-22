@@ -121,7 +121,7 @@ public class MissionManager : MonoBehaviour
             NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(6), new SenderHelper(WhoSends.System, 9999), 2);
             NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(9999), new SenderHelper(WhoSends.System, 9999), 1, new NotificationRewardHandler(9999, () =>
             {
-                MuseumManager.instance.AddGem(50);
+                MuseumManager.instance.AddGem(20);
             }), null, null, LanguageDatabase.instance.Language.NotificationRewardMessages.Where(x=> x.TargetID == gm1.ID).SingleOrDefault().ActiveLanguage);
         });
 
@@ -131,7 +131,7 @@ public class MissionManager : MonoBehaviour
             NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(6), new SenderHelper(WhoSends.System, 9999), 2);
             NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(10001), new SenderHelper(WhoSends.System, 9999), 1, new NotificationRewardHandler(10001, () =>
             {
-                MuseumManager.instance.AddGold(1000);
+                MuseumManager.instance.AddGold(2500);
             }), null, null, LanguageDatabase.instance.Language.NotificationRewardMessages.Where(x => x.TargetID == gm2.ID).SingleOrDefault().ActiveLanguage);
         });
 
@@ -141,8 +141,8 @@ public class MissionManager : MonoBehaviour
             NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(6), new SenderHelper(WhoSends.System, 9999), 2);
             NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(10002), new SenderHelper(WhoSends.System, 9999), 1, new NotificationRewardHandler(10002, () =>
             {
-                MuseumManager.instance.AddGold(1000);
-            }), null, null,"" /*LanguageDatabase.instance.Language.NotificationRewardMessages.Where(x => x.TargetID == gm3.ID).SingleOrDefault().ActiveLanguage*/);
+                MuseumManager.instance.AddGold(5000);
+            }), null, null, LanguageDatabase.instance.Language.NotificationRewardMessages.Where(x => x.TargetID == gm3.ID).SingleOrDefault().ActiveLanguage);
         });
         //gameMissions.Add(gm1);
         //gameMissions.Add(gm2); // bu yorum satirlari testlerden sonra acilacak!

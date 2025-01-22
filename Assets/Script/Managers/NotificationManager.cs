@@ -145,11 +145,11 @@ public class NotificationManager : MonoBehaviour
         n8 = new Notification(8, "I have so many objects to clean. I can't keep up!", 1.5f, NotificationHeader.Worker, NotificationState.Warning, NotificationType.Trivial, 1);
         n9 = new Notification(9, "A cleaner already targetted this mess, she will clean it soon!", 2.5f, NotificationHeader.System, NotificationState.Warning, NotificationType.Trivial, 1);
         //  RewardNotifications
-        Notification n9999 = new Notification(9999, "", 2f, NotificationHeader.System, NotificationState.Information, NotificationType.Reward, 1);
-        Notification n10001 = new Notification(10001, "", 2f, NotificationHeader.System, NotificationState.Information, NotificationType.Reward, 1);
-        Notification n10002 = new Notification(10002, "", 2f, NotificationHeader.System, NotificationState.Information, NotificationType.Reward, 1);
+        Notification n9999 = new Notification(9999, "Congratulations! You have won 20 Gems.", 2f, NotificationHeader.System, NotificationState.Information, NotificationType.Reward, 1);
+        Notification n10001 = new Notification(10001, "Congratulations! You have won 2500 Gold.", 2f, NotificationHeader.System, NotificationState.Information, NotificationType.Reward, 1);
+        Notification n10002 = new Notification(10002, "Congratulations! You have won 5000 Gold.", 2f, NotificationHeader.System, NotificationState.Information, NotificationType.Reward, 1);
         // Achievement Notifications
-        Notification n10000 = new Notification(10000, "", 2f, NotificationHeader.System, NotificationState.Information, NotificationType.Reward,1);
+        Notification n10000 = new Notification(10000, "Congratulations! You have successfully reached level {%lvl}.", 2f, NotificationHeader.System, NotificationState.Information, NotificationType.Reward,1);
             //
         //
 

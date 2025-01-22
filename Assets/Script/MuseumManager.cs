@@ -295,7 +295,9 @@ public class MuseumManager : MonoBehaviour
             SkillPoint += GetCurrentCultureLevel();
             //if (GetCurrentCultureLevel() % 5 == 0)
             //{
-                NotificationHandler levelUpNotificationHandler = NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(10000), new SenderHelper(WhoSends.System, 9999),2,null,null,null, $"Tebrikler baþarýyla {GetCurrentCultureLevel()} Level oldunuz!");
+            Notification levelUpNotification = NotificationManager.instance.GetNotificationWithID(10000);
+            string levelUpString = levelUpNotification.Message.Replace("{%lvl}", GetCurrentCultureLevel().ToString());
+                NotificationHandler levelUpNotificationHandler = NotificationManager.instance.SendNotification(levelUpNotification, new SenderHelper(WhoSends.System, 9999),2,null,null,null, levelUpString);
             //}
             GameManager.instance.BaseWorkerHiringPrice += 200;
             CultureLevelUP();
