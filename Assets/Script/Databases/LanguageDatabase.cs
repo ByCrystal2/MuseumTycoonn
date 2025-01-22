@@ -121,6 +121,8 @@ public class LanguageDatabase : MonoBehaviour
             if (allNotifications[i].Message == string.Empty)
                 continue;
             Language.NotificationMessages.Add(new LanguageData(allNotifications[i].ID, allNotifications[i].Message));
+            if (allNotifications[i].NotificationType == NotificationType.Reward)
+                Language.NotificationRewardMessages.Add(new LanguageData(allNotifications[i].ID, allNotifications[i].Message));
         }
         //Missions
         List<GameMission> allMissions = MissionManager.instance.GetAllMissionDatas();
@@ -133,10 +135,10 @@ public class LanguageDatabase : MonoBehaviour
                 Language.MissionDescriptionMessages.Add(new LanguageData(allMissions[i].ID, allMissions[i].Description));
         }
         Language.MissionDescriptionMessages.Add(new LanguageData(999, "Required"));
-        Language.MissionNpcInteractionTypeMessages = new List<LanguageData> { new LanguageData(0, "Visitor to interaction"), new LanguageData(1, "Visitor to beat") };
+        Language.MissionNpcInteractionTypeMessages = new List<LanguageData> { new LanguageData(0, "Visitor to be reviewed"), new LanguageData(1, "Visitor to be beaten") };
         Language.MissionNpcInteractionColorTypeMessages = new List<LanguageData> { new LanguageData(1, "loved"), new LanguageData(2, "unloved") };
         Language.MissionNpcInteractionColorMessages = new List<LanguageData> { new LanguageData(0, "Black"), new LanguageData(1, "White"), new LanguageData(2, "Red"), new LanguageData(3, "Green"), new LanguageData(4, "Blue"), new LanguageData(5, "Cyan"), new LanguageData(6, "Yellow"), new LanguageData(7, "Purple") };
-        Language.MissionNpcInteractionStateMessages = new List<LanguageData> { new LanguageData(0, ""), new LanguageData(1, "Happy"), new LanguageData(2, "Sad"), new LanguageData(3, "Stressed"), new LanguageData(4, "Relaxed"), new LanguageData(5, "Need to toilet") };
+        Language.MissionNpcInteractionStateMessages = new List<LanguageData> { new LanguageData(0, "None"), new LanguageData(1, "Happy"), new LanguageData(2, "Sad"), new LanguageData(3, "Stressed"), new LanguageData(4, "Relaxed"), new LanguageData(5, "Need to toilet") };
         Language.MissionNpcInteractionHelperMessages = new List<LanguageData> { new LanguageData(0, "and") };
         //Missions
         //Notifications
@@ -209,8 +211,10 @@ public class LanguageDatabase : MonoBehaviour
         List<string> notificationKeysToTranslate = new List<string>();
         List<string> notificationTranslatedTexts = new List<string>();
 
-            //Missions
-            List<string> M_HeaderKeysToTranslate = new List<string>();
+        List<string> notificationRewardKeysToTranslate = new List<string>();
+        List<string> notificationRewardTranslatedTexts = new List<string>();
+        //Missions
+        List<string> M_HeaderKeysToTranslate = new List<string>();
             List<string> M_HeaderTranslatedTexts = new List<string>();
 
             List<string> M_DescKeysToTranslate = new List<string>();
@@ -367,8 +371,20 @@ public class LanguageDatabase : MonoBehaviour
             notificationTranslatedTexts = result;
         });
 
-            //Missions
-            foreach (var item in Language.MissionHeaderMessages)
+        foreach (var item in Language.NotificationRewardMessages)
+        {
+            if (item.Key == string.Empty)
+                continue;
+            notificationRewardKeysToTranslate.Add(item.Key);
+        }
+
+        await GameManager.instance.BulkTranslateAndAssignAsync(notificationRewardKeysToTranslate, (result) =>
+        {
+            notificationRewardTranslatedTexts = result;
+        });
+
+        //Missions
+        foreach (var item in Language.MissionHeaderMessages)
             {
                 if (item.Key == string.Empty)
                     continue;
@@ -592,8 +608,14 @@ public class LanguageDatabase : MonoBehaviour
         {
             Language.NotificationMessages[i].ActiveLanguage = notificationTranslatedTexts[i];
         }
-            //MissionsAdding
-            Debug.Log("Language.MissionHeaderMessages.Count => " + Language.MissionHeaderMessages.Count + " M_HeaderTranslatedTexts.Count => " + M_HeaderTranslatedTexts.Count);
+
+        Debug.Log("Language.NotificationRewardMessages.Count => " + Language.NotificationRewardMessages.Count + " notificationTranslatedTexts.Count => " + notificationRewardTranslatedTexts.Count);
+        for (int i = 0; i < notificationRewardTranslatedTexts.Count; i++)
+        {
+            Language.NotificationRewardMessages[i].ActiveLanguage = notificationRewardTranslatedTexts[i];
+        }
+        //MissionsAdding
+        Debug.Log("Language.MissionHeaderMessages.Count => " + Language.MissionHeaderMessages.Count + " M_HeaderTranslatedTexts.Count => " + M_HeaderTranslatedTexts.Count);
             for (int i = 0; i < M_HeaderTranslatedTexts.Count; i++)
             {
                 Language.MissionHeaderMessages[i].ActiveLanguage = M_HeaderTranslatedTexts[i];
@@ -740,8 +762,10 @@ public class LanguageDatabase : MonoBehaviour
                 List<string> notificationKeysToTranslate = new List<string>();
                 List<string> notificationTranslatedTexts = new List<string>();
 
-                    //Missions
-                    List<string> M_HeaderKeysToTranslate = new List<string>();
+                List<string> notificationRewardKeysToTranslate = new List<string>();
+                List<string> notificationRewardTranslatedTexts = new List<string>();
+                //Missions
+                List<string> M_HeaderKeysToTranslate = new List<string>();
                     List<string> M_HeaderTranslatedTexts = new List<string>();
 
                     List<string> M_DescKeysToTranslate = new List<string>();
@@ -893,8 +917,20 @@ public class LanguageDatabase : MonoBehaviour
                     notificationTranslatedTexts = result;
                 });
 
-                    //Missions
-                    foreach (var item in Language.MissionHeaderMessages)
+                foreach (var item in Language.NotificationRewardMessages)
+                {
+                    if (item.Key == string.Empty)
+                        continue;
+                    notificationRewardKeysToTranslate.Add(item.Key);
+                }
+
+                await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), notificationRewardKeysToTranslate, (result) =>
+                {
+                    notificationRewardTranslatedTexts = result;
+                });
+
+                //Missions
+                foreach (var item in Language.MissionHeaderMessages)
                     {
                         if (item.Key == string.Empty)
                             continue;
@@ -1117,8 +1153,13 @@ public class LanguageDatabase : MonoBehaviour
                     Language.NotificationMessages[i].ActiveLanguage = notificationTranslatedTexts[i];
                 }
 
-                    //MissionsAdding
-                    Debug.Log("Language.MissionHeaderMessages.Count => " + Language.MissionHeaderMessages.Count + " M_HeaderTranslatedTexts.Count => " + M_HeaderTranslatedTexts.Count);
+                Debug.Log("Language.NotificationRewardMessages.Count => " + Language.NotificationRewardMessages.Count + " notificationTranslatedTexts.Count => " + notificationRewardTranslatedTexts.Count);
+                for (int i = 0; i < notificationRewardTranslatedTexts.Count; i++)
+                {
+                    Language.NotificationRewardMessages[i].ActiveLanguage = notificationRewardTranslatedTexts[i];
+                }
+                //MissionsAdding
+                Debug.Log("Language.MissionHeaderMessages.Count => " + Language.MissionHeaderMessages.Count + " M_HeaderTranslatedTexts.Count => " + M_HeaderTranslatedTexts.Count);
                     for (int i = 0; i < M_HeaderTranslatedTexts.Count; i++)
                     {
                         Language.MissionHeaderMessages[i].ActiveLanguage = M_HeaderTranslatedTexts[i];

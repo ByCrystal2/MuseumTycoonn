@@ -1089,11 +1089,11 @@ public class NPCBehaviour : MonoBehaviour
     public void CheckQuest(MissionTargetType _targetType) //Investigate or Beat
     {
         if (MissionManager.instance == null) return;
-        int happinessLimit = 80;
+        int happinessLimit = 70;
         int sadLimit = 20;
-        int stressLimit = 80;
+        int stressLimit = 50;
         int relaxLimit = 20;
-        int toiletLimit = 70;
+        int toiletLimit = 60;
 
         int step = 0;
         var mission = MissionManager.instance.collectionHandler.GetCurrentMission();

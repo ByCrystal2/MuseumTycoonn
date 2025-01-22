@@ -142,7 +142,7 @@ public class MissionManager : MonoBehaviour
             NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(10002), new SenderHelper(WhoSends.System, 9999), 1, new NotificationRewardHandler(10002, () =>
             {
                 MuseumManager.instance.AddGold(1000);
-            }), null, null, LanguageDatabase.instance.Language.NotificationRewardMessages.Where(x => x.TargetID == gm3.ID).SingleOrDefault().ActiveLanguage);
+            }), null, null,"" /*LanguageDatabase.instance.Language.NotificationRewardMessages.Where(x => x.TargetID == gm3.ID).SingleOrDefault().ActiveLanguage*/);
         });
         //gameMissions.Add(gm1);
         //gameMissions.Add(gm2); // bu yorum satirlari testlerden sonra acilacak!
@@ -233,25 +233,25 @@ public class GameMission
             if (LanguageDatabase.instance.TranslationWillBeProcessed)
             {
                 string newDesc = new string(Description);
-                newDesc = Description.Replace("{%now}/{%tot}", collection.StartValue + "/" + collection.EndValue);
+                newDesc = newDesc.Replace("{%now}/{%tot}", collection.StartValue + "/" + collection.EndValue);
 
                 if (targetNpcInteractionTypeLanguageData != null)
-                    newDesc = Description.Replace("{%t}", targetNpcInteractionTypeLanguageData.ActiveLanguage);
+                    newDesc = newDesc.Replace("{%t}", targetNpcInteractionTypeLanguageData.ActiveLanguage);
 
                 if (collection.missionRequirements.missionColorType != MissionColorType.None)
-                    newDesc = Description.Replace("{%cl}", targetNpcInteractionColorLanguageData.ActiveLanguage);
+                    newDesc = newDesc.Replace("{%cl}", targetNpcInteractionColorLanguageData.ActiveLanguage);
                 else
-                    newDesc = Description.Replace("{%cl}", "");
+                    newDesc = newDesc.Replace("{%cl}", "");
 
                 if (collection.missionRequirements.targetState != MissionTargetState.None)
-                    newDesc = Description.Replace("{%st}", targetNpcInteractionStateLanguageData.ActiveLanguage);
+                    newDesc = newDesc.Replace("{%st}", targetNpcInteractionStateLanguageData.ActiveLanguage);
                 else
-                    newDesc = Description.Replace("{%st}", "");
+                    newDesc = newDesc.Replace("{%st}", "");
 
-                if (targetNpcInteractionColorLanguageData != null && targetNpcInteractionStateLanguageData != null)
-                    newDesc = Description.Replace("{%loc2}", targetNpcInteractionHelperLanguageData.ActiveLanguage);
+                if (collection.missionRequirements.missionColorType != MissionColorType.None && collection.missionRequirements.targetState != MissionTargetState.None)
+                    newDesc = newDesc.Replace("{%loc2}", targetNpcInteractionHelperLanguageData.ActiveLanguage);
                 else
-                    newDesc = Description.Replace("{%loc2}", "");
+                    newDesc = newDesc.Replace("{%loc2}", "");
                 Debug.Log("Game mission (int)collection.missionRequirements.targetColor: " + (int)collection.missionRequirements.targetColor);
                 Debug.Log("Game mission (int)collection.missionRequirements.targetState: " + (int)collection.missionRequirements.targetState);
                 Debug.Log("Game mission (int)collection.missionRequirements.targetType: " + (int)collection.missionRequirements.targetType);
