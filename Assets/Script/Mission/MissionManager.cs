@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -52,7 +53,7 @@ public class MissionManager : MonoBehaviour
                 Debug.LogWarning("Boyle bir gorev zaten gonderilmis. Mevcut gorev bitene kadar ayni turde gorev gelemez!");
                 return;
             }
-            randomMission.GetMissionCollection().CreateRequirement();
+            randomMission.GetMissionCollection().missionRequirements = randomMission.GetMissionCollection().CreateRequirement();
             randomMission.UpdateDesc();
             NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(100000), new SenderHelper(WhoSends.System, 9999), 2, null, null, null/*,randomMission.Description*/);
             NotificationHandler handler = NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(randomMission.TargetNotificationID), new SenderHelper(WhoSends.System, 9999), 1, null, new NotificationMissionHandler(randomMission.TargetNotificationID, () =>
@@ -112,6 +113,7 @@ public class MissionManager : MonoBehaviour
             // Npc ile farkli gorevler icin bura kullanilabilinir.
         }
     }
+    public readonly string npcInteractionDefaultString = "{%now}/{%tot} {%t}. {%loc1}: {%cl} {%loc2} {%st}";
     void InitGameMissions()
     {
         gameMissions.Clear();
@@ -119,30 +121,30 @@ public class MissionManager : MonoBehaviour
         gm1.SetRewardEvent(() =>
         {
             NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(6), new SenderHelper(WhoSends.System, 9999), 2);
-            NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(9999), new SenderHelper(WhoSends.System, 9999), 1, new NotificationRewardHandler(9999, () =>
+            NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(10001), new SenderHelper(WhoSends.System, 9999), 1, new NotificationRewardHandler(10001, () =>
             {
                 MuseumManager.instance.AddGem(20);
-            }), null, null, LanguageDatabase.instance.Language.NotificationRewardMessages.Where(x=> x.TargetID == gm1.ID).SingleOrDefault().ActiveLanguage);
+            }), null, null, LanguageDatabase.instance.Language.NotificationRewardMessages.Where(x=> x.TargetID == (gm1.ID + 10000)).SingleOrDefault().ActiveLanguage);
         });
 
         GameMission gm2 = new GameMission(2, 100000, 100002, "Gold Görevi", "8 adet altýn topla!", 210, 60, MissionType.Collection, new CollectionHelper(0, 8, MissionCollectionType.Gold));
         gm2.SetRewardEvent(() =>
         {
             NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(6), new SenderHelper(WhoSends.System, 9999), 2);
-            NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(10001), new SenderHelper(WhoSends.System, 9999), 1, new NotificationRewardHandler(10001, () =>
+            NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(10002), new SenderHelper(WhoSends.System, 9999), 1, new NotificationRewardHandler(10002, () =>
             {
                 MuseumManager.instance.AddGold(2500);
-            }), null, null, LanguageDatabase.instance.Language.NotificationRewardMessages.Where(x => x.TargetID == gm2.ID).SingleOrDefault().ActiveLanguage);
+            }), null, null, LanguageDatabase.instance.Language.NotificationRewardMessages.Where(x => x.TargetID == (gm2.ID + 10000)).SingleOrDefault().ActiveLanguage);
         });
 
-        GameMission gm3 = new GameMission(3, 100000, 100003, "Interact With Visitors", "{%now}/{%tot} {%t}. {%loc1}: {%cl} {%loc2} {%st}", 300, 60, MissionType.Collection, new CollectionHelper(0, 5, MissionCollectionType.NpcInteraction));
+        GameMission gm3 = new GameMission(3, 100000, 100003, "Interact With Visitors", npcInteractionDefaultString, 300, 60, MissionType.Collection, new CollectionHelper(0, 5, MissionCollectionType.NpcInteraction));
         gm3.SetRewardEvent(() =>
         {
             NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(6), new SenderHelper(WhoSends.System, 9999), 2);
-            NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(10002), new SenderHelper(WhoSends.System, 9999), 1, new NotificationRewardHandler(10002, () =>
+            NotificationManager.instance.SendNotification(NotificationManager.instance.GetNotificationWithID(10003), new SenderHelper(WhoSends.System, 9999), 1, new NotificationRewardHandler(10003, () =>
             {
                 MuseumManager.instance.AddGold(5000);
-            }), null, null, LanguageDatabase.instance.Language.NotificationRewardMessages.Where(x => x.TargetID == gm3.ID).SingleOrDefault().ActiveLanguage);
+            }), null, null, LanguageDatabase.instance.Language.NotificationRewardMessages.Where(x => x.TargetID == (gm3.ID + 10000)).SingleOrDefault().ActiveLanguage);
         });
         //gameMissions.Add(gm1);
         //gameMissions.Add(gm2); // bu yorum satirlari testlerden sonra acilacak!
@@ -207,12 +209,7 @@ public class GameMission
             Header = header;
 
         if (targetDescLanguageData != null)
-        {
-            if (collection.missionCollectionType == MissionCollectionType.NpcInteraction)            
-                Description = description.Replace("{%loc1}", targetDescLanguageData.ActiveLanguage);
-            else
-                Description = targetDescLanguageData.ActiveLanguage;
-        }
+            Description = targetDescLanguageData.ActiveLanguage;
         else { Description = description; }
         MissionComplationTime = missionComplationTime;
         ValidityPeriodMission = validityPeriodMission;
@@ -224,6 +221,16 @@ public class GameMission
     public void UpdateDesc()
     {
         if (collection.missionCollectionType != MissionCollectionType.NpcInteraction) return;
+        this.Description = MissionManager.instance.npcInteractionDefaultString;
+
+        LanguageData targetHeaderLanguageData = LanguageDatabase.instance.Language.MissionHeaderMessages.Where(x => x.TargetID == ID).SingleOrDefault();
+        LanguageData targetDescLanguageData = LanguageDatabase.instance.Language.MissionDescriptionMessages.Where(x => x.TargetID == 999).SingleOrDefault();
+
+        if (targetHeaderLanguageData != null)
+            Header = targetHeaderLanguageData.ActiveLanguage;
+
+        if (targetDescLanguageData != null)
+            Description = Description.Replace("{%loc1}", targetDescLanguageData.ActiveLanguage);
 
         LanguageData targetNpcInteractionColorLanguageData = LanguageDatabase.instance.Language.MissionNpcInteractionColorMessages.Where(x => x.TargetID == (int)collection.missionRequirements.targetColor).SingleOrDefault();
         LanguageData targetNpcInteractionStateLanguageData = LanguageDatabase.instance.Language.MissionNpcInteractionStateMessages.Where(x => x.TargetID == (int)collection.missionRequirements.targetState).SingleOrDefault();
@@ -252,9 +259,9 @@ public class GameMission
                     newDesc = newDesc.Replace("{%loc2}", targetNpcInteractionHelperLanguageData.ActiveLanguage);
                 else
                     newDesc = newDesc.Replace("{%loc2}", "");
-                Debug.Log("Game mission (int)collection.missionRequirements.targetColor: " + (int)collection.missionRequirements.targetColor);
-                Debug.Log("Game mission (int)collection.missionRequirements.targetState: " + (int)collection.missionRequirements.targetState);
-                Debug.Log("Game mission (int)collection.missionRequirements.targetType: " + (int)collection.missionRequirements.targetType);
+                Debug.Log("Game mission (int)collection.missionRequirements.targetColor: " + collection.missionRequirements.targetColor);
+                Debug.Log("Game mission (int)collection.missionRequirements.targetState: " + collection.missionRequirements.targetState);
+                Debug.Log("Game mission (int)collection.missionRequirements.targetType: " + collection.missionRequirements.targetType);
                 Debug.Log("Game mission newDesc: " + newDesc);
 
                 Description = newDesc;
