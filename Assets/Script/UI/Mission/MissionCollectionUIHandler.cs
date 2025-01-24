@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class MissionCollectionUIHandler : MonoBehaviour
 {
+    public CollectionInfoPanelController infoPanelController;
     [SerializeField] Sprite[] iconSprites;    
     [Header("Value UIs")]
     [SerializeField] Image imgIcon;

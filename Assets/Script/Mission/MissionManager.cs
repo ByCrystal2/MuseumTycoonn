@@ -104,6 +104,7 @@ public class MissionManager : MonoBehaviour
             CollectionHelper collectionHelper = _gameMission.GetMissionCollection();
             UIController.instance.missionUIHandler.collectionUIHandler.SetDatas(collectionHelper);
             UIController.instance.missionUIHandler.collectionUIHandler.StartMissionLifeTime(_gameMission.MissionComplationTime);
+            UIController.instance.missionUIHandler.collectionUIHandler.infoPanelController.SetInfoText(_gameMission.Description);
             collectionHandler.SetMission(_gameMission);
             collectionHandler.CollectionProcess();
         }
@@ -380,7 +381,7 @@ public class CollectionHelper
         if (r <= 49)
         {
             //State Quest
-            _missionRequirements.targetState = (MissionTargetState)Random.Range(0, (int)MissionTargetState.Length);
+            _missionRequirements.targetState = (MissionTargetState)Random.Range(1, (int)MissionTargetState.Length);
         }
         else
         {
