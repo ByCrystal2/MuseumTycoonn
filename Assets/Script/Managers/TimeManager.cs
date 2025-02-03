@@ -120,8 +120,11 @@ public class TimeManager : MonoBehaviour
     private IEnumerator TimeProgress()
     {
         int lastOneMinute = CurrentDateTime.Minute;
-        int nextFiveMinute = (CurrentDateTime.Minute + 5) % 60;
-        int nextTenMinute = (CurrentDateTime.Minute + 10) % 60;
+        int nextFiveMinute = (CurrentDateTime.Minute / 5) * 5 + 5;
+        int nextTenMinute = (CurrentDateTime.Minute / 10) * 10 + 10;
+
+        if (nextFiveMinute >= 60) nextFiveMinute -= 60;
+        if (nextTenMinute >= 60) nextTenMinute -= 60;
 
         while (true)
         {
@@ -138,19 +141,21 @@ public class TimeManager : MonoBehaviour
             }
 
             // 5 dakikalýk kontrol
-            if (CurrentDateTime.Minute >= nextFiveMinute)
+            if (CurrentDateTime.Minute == nextFiveMinute)
             {
                 Debug.Log("5 dakika islemleri calisiyor...");
                 OnFiveMinutePassed?.Invoke();
-                nextFiveMinute = (nextFiveMinute + 5) % 60;
+                nextFiveMinute += 5;
+                if (nextFiveMinute >= 60) nextFiveMinute -= 60;
             }
 
             // 10 dakikalýk kontrol
-            if (CurrentDateTime.Minute >= nextTenMinute)
+            if (CurrentDateTime.Minute == nextTenMinute)
             {
                 Debug.Log("10 dakika islemleri calisiyor...");
                 OnTenMinutePassed?.Invoke();
-                nextTenMinute = (nextTenMinute + 10) % 60;
+                nextTenMinute += 10;
+                if (nextTenMinute >= 60) nextTenMinute -= 60;
             }
 
             // Ödül sistemi kontrolü
@@ -163,6 +168,7 @@ public class TimeManager : MonoBehaviour
             }
         }
     }
+
 
 
 

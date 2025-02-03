@@ -33,13 +33,13 @@ public class MissionManager : MonoBehaviour
     }
     private void OnDisable()
     {
-        TimeManager.instance.OnOneMinutePassed -= StartRandomGameMission;
+        TimeManager.instance.OnFiveMinutePassed -= StartRandomGameMission;
     }
     IEnumerator WaitForTimerManager()
     {
         yield return new WaitUntil(() => TimeManager.instance != null);
         Debug.Log("in WaitForTimerManager method.");
-        TimeManager.instance.OnOneMinutePassed += StartRandomGameMission;
+        TimeManager.instance.OnFiveMinutePassed += StartRandomGameMission;
     }
     private void StartRandomGameMission()
     {
@@ -147,8 +147,8 @@ public class MissionManager : MonoBehaviour
                 MuseumManager.instance.AddGold(5000);
             }), null, null, LanguageDatabase.instance.Language.NotificationRewardMessages.Where(x => x.TargetID == (gm3.ID + 10000)).SingleOrDefault().ActiveLanguage);
         });
-        //gameMissions.Add(gm1);
-        //gameMissions.Add(gm2); // bu yorum satirlari testlerden sonra acilacak!
+        gameMissions.Add(gm1);
+        gameMissions.Add(gm2); // bu yorum satirlari testlerden sonra acilacak!
         gameMissions.Add(gm3);
 #if UNITY_EDITOR
         for (int i = 0; i < gameMissions.Count; i++)
