@@ -7,8 +7,10 @@ using UnityEngine.UI;
 
 public class SettingsController : MonoBehaviour
 {
-    [SerializeField] private Button achievementButton;
     [SerializeField] private GameObject settingsPanel;
+    [Header("Buttons")]
+    [SerializeField] private Button creditsButton;
+    [SerializeField] private Button achievementButton;
 
     [Header("Audio Settings")]
     [SerializeField] private Slider generalVolumeSlider;
@@ -28,6 +30,7 @@ public class SettingsController : MonoBehaviour
     private void Awake()
     {
         achievementButton.onClick.AddListener(ShowAchievementsUI);
+        creditsButton.onClick.AddListener(CreditsHandler.instance.CreditsPanelSetActivation);
     }
 
     private void Start()
