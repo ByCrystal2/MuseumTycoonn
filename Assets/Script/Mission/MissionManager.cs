@@ -33,16 +33,19 @@ public class MissionManager : MonoBehaviour
     }
     private void OnDisable()
     {
-        TimeManager.instance.OnFiveMinutePassed -= StartRandomGameMission;
+        //TimeManager.instance.OnFiveMinutePassed -= StartRandomGameMission;
+        TimeManager.instance.OnOneMinutePassed -= StartRandomGameMission;
     }
     IEnumerator WaitForTimerManager()
     {
         yield return new WaitUntil(() => TimeManager.instance != null);
         Debug.Log("in WaitForTimerManager method.");
-        TimeManager.instance.OnFiveMinutePassed += StartRandomGameMission;
+        //TimeManager.instance.OnFiveMinutePassed += StartRandomGameMission;
+        TimeManager.instance.OnOneMinutePassed += StartRandomGameMission;
     }
     private void StartRandomGameMission()
     {
+        if (!GameManager.instance.IsWatchTutorial) return;
         if (NpcManager.instance != null && NpcManager.instance.databaseProcessComplated)
         {
             Debug.Log("In StartRandomGameMission method.");

@@ -56,32 +56,32 @@ public class ItemManager : MonoBehaviour
             //Star Count 1
             ItemData itemTutorialGift = new ItemData(9999, "King of The Museum", "Kral'ýn hediyesi", 1, 0, null, ItemType.Table, ShoppingType.Gold, 2, 2);
             ItemData item6 = new ItemData(1005, "Frida Kahlo", "Yýpranmýþ bir tablo", 1, 500, null, ItemType.Table, ShoppingType.Gold, 1, 4);
-            ItemData item7 = new ItemData(1006, "Käthe Kollwitz", "1985'te resmedilen bir tablo", 1, 1000, null, ItemType.Table, ShoppingType.Gold, 1, 3);
+            ItemData item7 = new ItemData(1006, "Käthe Kollwitz", "1985 yýlýnda resmedilen bir tablo", 1, 1000, null, ItemType.Table, ShoppingType.Gold, 1, 3);
             ItemData item8 = new ItemData(1007, "Gabriele Münter", "Kýzýl nehir tablo", 1, 1500, null, ItemType.Table, ShoppingType.Gold, 1, 1);
             ItemData item9 = new ItemData(1008, "Michelangelo Buonarroti", "Eski bir tablo", 1, 2000, null, ItemType.Table, ShoppingType.Gold, 1, 2);
             ItemData item10 = new ItemData(1009, "Georges Seurat", "Yýpranmýþ bir tablo", 1, 2500, null, ItemType.Table, ShoppingType.Gold, 1, 3);
             //Star Count 2
             ItemData item11 = new ItemData(1010, "Edgar Degas", "Yýpranmýþ bir tablo", 1, 2000, null, ItemType.Table, ShoppingType.Gold, 2, 2);
-            ItemData item12 = new ItemData(1011, "Sofonisba Anguissola", "1985'te resmedilen bir tablo", 1, 2500, null, ItemType.Table, ShoppingType.Gold, 2, 1);
+            ItemData item12 = new ItemData(1011, "Sofonisba Anguissola", "1985 yýlýnda resmedilen bir tablo", 1, 2500, null, ItemType.Table, ShoppingType.Gold, 2, 1);
             ItemData item13 = new ItemData(1012, "Rembrandt van Rijn", "Kýzýl nehir tablo", 1, 3000, null, ItemType.Table, ShoppingType.Gold, 2, 4);
             ItemData item14 = new ItemData(1013, "Michelangelo Buonarroti", "Eski bir tablo", 1, 3500, null, ItemType.Table, ShoppingType.Gold, 2, 2);
             ItemData item15 = new ItemData(1014, "Paula Modersohn-Becker", "Yýpranmýþ bir tablo", 1, 4000, null, ItemType.Table, ShoppingType.Gold, 2, 1);
             ItemData item16 = new ItemData(1015, "Georges Seurat", "Yýpranmýþ bir tablo", 1, 5000, null, ItemType.Table, ShoppingType.Gold, 2, 3);
             //Star Count 3
             ItemData item17 = new ItemData(1016, "Frida Kahlo", "Yýpranmýþ bir tablo", 1, 5000, null, ItemType.Table, ShoppingType.Gold, 3, 2);
-            ItemData item18 = new ItemData(1017, "Käthe Kollwitz", "1985'te resmedilen bir tablo", 1, 7000, null, ItemType.Table, ShoppingType.Gold, 3, 1);
+            ItemData item18 = new ItemData(1017, "Käthe Kollwitz", "1985 yýlýnda resmedilen bir tablo", 1, 7000, null, ItemType.Table, ShoppingType.Gold, 3, 1);
             ItemData item19 = new ItemData(1018, "Leonardo da Vinci", "Kýzýl nehir tablo", 1, 7500, null, ItemType.Table, ShoppingType.Gold, 3, 3);
             ItemData item20 = new ItemData(1019, "Michelangelo Buonarroti", "Eski bir tablo", 1, 8000, null, ItemType.Table, ShoppingType.Gold, 3, 4);
             ItemData item21 = new ItemData(1020, "Leonardo da Vinci", "Yýpranmýþ bir tablo", 1, 10000, null, ItemType.Table, ShoppingType.Gold, 3, 2);
             //Star Count 4
             ItemData item22 = new ItemData(1021, "Helen Frankenthaler", "Yýpranmýþ bir tablo", 1, 10000, null, ItemType.Table, ShoppingType.Gold, 4, 2);
-            ItemData item23 = new ItemData(1022, "Leonardo da Vinci", "1985'te resmedilen bir tablo", 1, 15000, null, ItemType.Table, ShoppingType.Gold, 4, 3);
+            ItemData item23 = new ItemData(1022, "Leonardo da Vinci", "1985 yýlýnda resmedilen bir tablo", 1, 15000, null, ItemType.Table, ShoppingType.Gold, 4, 3);
             ItemData item24 = new ItemData(1023, "Vincent van Gogh", "Kýzýl nehir tablo", 1, 20000, null, ItemType.Table, ShoppingType.Gold, 4, 1);
             ItemData item25 = new ItemData(1024, "Michelangelo Buonarroti", "Eski bir tablo", 1, 25000, null, ItemType.Table, ShoppingType.Gold, 4, 3);
             ItemData item26 = new ItemData(1025, "Vincent van Gogh", "Yýpranmýþ bir tablo", 1, 30000, null, ItemType.Table, ShoppingType.Gold, 4, 4);
             //Star Count 5
             ItemData item27 = new ItemData(1026, "Leonardo da Vinci", "Yýpranmýþ bir tablo", 1, 45000, null, ItemType.Table, ShoppingType.Gold, 5, 2);
-            ItemData item28 = new ItemData(1027, "Artemisia Gentileschi", "1985'te resmedilen bir tablo", 1, 60000, null, ItemType.Table, ShoppingType.Gold, 5, 1);
+            ItemData item28 = new ItemData(1027, "Artemisia Gentileschi", "1985 yýlýnda resmedilen bir tablo", 1, 60000, null, ItemType.Table, ShoppingType.Gold, 5, 1);
 
             //DailyItems
             //Gem
@@ -211,17 +211,17 @@ public class ItemManager : MonoBehaviour
 
             #region Randomize Itemler
 
-            ItemData rItem1 = new ItemData(2000, "Fatmagul Burak", "Super Tablo", 1, 150, null, ItemType.Table, ShoppingType.Gem, 5, 4);
-            ItemData rItem2 = new ItemData(2001, "Ahmet Burak", "Tablo", 1, 2000, null, ItemType.Table, ShoppingType.Gold, 4, 2);
-            ItemData rItem3 = new ItemData(2002, "Mehmet Gok", "Tablo1", 1, 13.99f, null, ItemType.Table, ShoppingType.RealMoney, 3, 3);
-            ItemData rItem4 = new ItemData(2003, "Koray Erdun", "Tablo2", 1, 1000, null, ItemType.Table, ShoppingType.Gold, 2, 1);
-            ItemData rItem5 = new ItemData(2004, "Mertcan Gok", "Tablo3", 1, 31, null, ItemType.Table, ShoppingType.Gem, 1, 5);
+            //ItemData rItem1 = new ItemData(2000, "Fatmagul Burak", "Super Tablo", 1, 150, null, ItemType.Table, ShoppingType.Gem, 5, 4);
+            //ItemData rItem2 = new ItemData(2001, "Ahmet Burak", "Tablo", 1, 2000, null, ItemType.Table, ShoppingType.Gold, 4, 2);
+            //ItemData rItem3 = new ItemData(2002, "Mehmet Gok", "Tablo1", 1, 13.99f, null, ItemType.Table, ShoppingType.RealMoney, 3, 3);
+            //ItemData rItem4 = new ItemData(2003, "Koray Erdun", "Tablo2", 1, 1000, null, ItemType.Table, ShoppingType.Gold, 2, 1);
+            //ItemData rItem5 = new ItemData(2004, "Mertcan Gok", "Tablo3", 1, 31, null, ItemType.Table, ShoppingType.Gem, 1, 5);
 
-            RItems.Add(rItem1);
-            RItems.Add(rItem2);
-            RItems.Add(rItem3);
-            RItems.Add(rItem4);
-            RItems.Add(rItem5);
+            //RItems.Add(rItem1);
+            //RItems.Add(rItem2);
+            //RItems.Add(rItem3);
+            //RItems.Add(rItem4);
+            //RItems.Add(rItem5);
 
             #endregion
         }

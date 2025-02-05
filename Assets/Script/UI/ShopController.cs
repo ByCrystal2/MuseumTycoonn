@@ -33,6 +33,7 @@ public class ShopController : MonoBehaviour
             return;
         }
         instance = this;
+
     }
 
     public void GetCurrentShoppingTypeItems()

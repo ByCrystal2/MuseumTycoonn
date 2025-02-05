@@ -180,6 +180,8 @@ public class UIController : MonoBehaviour
         instance = this;
         if (SceneManager.GetActiveScene().name == Scenes.TutorialLevel.ToString()) return;
         DontDestroyOnLoad(this);
+        languageStrings = new List<string>() { "Required Skill Score", "Max Level", "Increase Level", "Locked" };
+        SkillQuestionInfos = new List<string>() { "Purchase Process", "Do you confirm the purchase?", "Available", "Gem", "Gold", "Product Price", "Paid"};
         GemText.text = "0";
         SkillRequiredInfoPanel.SetActive(false);
         GoldText.text = "" + MuseumManager.instance.GetCurrentGold();

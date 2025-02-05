@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using TaskExtensions;
-using System.Threading.Tasks;
-using static Unity.Physics.Authoring.CustomPhysicsProxyAuthoring;
 public class NpcManager : MonoBehaviour
 {
     public static NpcManager instance { get; private set; }

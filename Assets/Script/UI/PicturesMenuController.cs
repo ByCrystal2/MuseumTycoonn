@@ -48,7 +48,7 @@ public class PicturesMenuController : MonoBehaviour
     public int lastClickedIndex = -1;
 
     public List<string> PictureStrings = new List<string>(); // 0 => eklendi | 1 => guncellendi (degistirildi) | 2 => tablo sec | 3 => yeterli | 4 => ekle | 5 => degistir | 6 => yetersiz
-    public static PicturesMenuController instance { get; set; }
+    public static PicturesMenuController instance { get; private set; }
     private void Awake()
     {
         if (instance)
@@ -57,6 +57,7 @@ public class PicturesMenuController : MonoBehaviour
             return;
         }
         instance = this;
+        PictureStrings = new List<string>() { "Added", "Updated", "Select Painting", "Enough", "Add", "Update", "Insufficient" };
     }
 
     private void Start()

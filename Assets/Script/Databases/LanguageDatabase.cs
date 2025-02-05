@@ -550,153 +550,174 @@ public class LanguageDatabase : MonoBehaviour
         //GENERAL
 
         //ItemAdding
-        Debug.Log("Language.ItemDescriptions.Count => " + Language.ItemDescriptions.Count + " itemDescTranslatedTexts.Count => " + itemDescTranslatedTexts.Count);
+        Debug.Log("Language.ItemDescriptions.Count => " + Language.ItemDescriptions.Count + "itemDescTranslatedTexts.Count => " + itemDescTranslatedTexts.Count);
         for (int i = 0; i < itemDescTranslatedTexts.Count; i++)
         {
             Debug.Log("itemDescTranslatedTexts[i] => " + itemDescTranslatedTexts[i] + " and i => " + i);
+            if (i >= Language.ItemDescriptions.Count) break;
             Language.ItemDescriptions[i].ActiveLanguage = itemDescTranslatedTexts[i];
         }
         //ItemAdding
         //SkillAdding
-        Debug.Log("Language.SkillNames.Count => " + Language.SkillNames.Count + " skillNameTranslatedTexts.Count => " + skillNameTranslatedTexts.Count);
+        Debug.Log("Language.SkillNames.Count => " + Language.SkillNames.Count + "skillNameTranslatedTexts.Count => " + skillNameTranslatedTexts.Count);
         for (int i = 0; i < skillNameTranslatedTexts.Count; i++)
         {
+            if (i >= Language.SkillNames.Count) break;
             Language.SkillNames[i].ActiveLanguage = skillNameTranslatedTexts[i];
         }
-        Debug.Log("Language.SkillDescriptions.Count => " + Language.SkillDescriptions.Count + " skillDescTranslatedTexts.Count => " + skillDescTranslatedTexts.Count);
+        Debug.Log("Language.SkillDescriptions.Count => " + Language.SkillDescriptions.Count + "skillDescTranslatedTexts.Count => " + skillDescTranslatedTexts.Count);
         for (int i = 0; i < skillDescTranslatedTexts.Count; i++)
         {
             if (i >= Language.SkillDescriptions.Count) break;
             Language.SkillDescriptions[i].ActiveLanguage = skillDescTranslatedTexts[i];
         }
-        Debug.Log("Language.SkillEffects.Count => " + Language.SkillEffects.Count + " skillEffectTranslatedTexts.Count => " + skillEffectTranslatedTexts.Count);
+        Debug.Log("Language.SkillEffects.Count => " + Language.SkillEffects.Count + "skillEffectTranslatedTexts.Count => " + skillEffectTranslatedTexts.Count);
         for (int i = 0; i < skillEffectTranslatedTexts.Count; i++)
         {
+            if (i >= Language.SkillEffects.Count) break;
             Language.SkillEffects[i].ActiveLanguage = skillEffectTranslatedTexts[i];
         }
         Debug.Log("Language.SkillDefaultStrings.Count => " + Language.SkillDefaultStrings.Count + "skillDefaultStringTranslatedTexts.Count => " + skillDefaultStringTranslatedTexts.Count);
         for (int i = 0; i < skillDefaultStringTranslatedTexts.Count; i++)
         {
+            if (i >= Language.SkillDefaultStrings.Count) break;
             Language.SkillDefaultStrings[i].ActiveLanguage = skillDefaultStringTranslatedTexts[i];
         }
-        Debug.Log("Language.SkillInfoStrings.Count => " + Language.SkillInfoStrings.Count + " skillInfoTranslatedTexts.Count => " + skillInfoTranslatedTexts.Count);
+        Debug.Log("Language.SkillInfoStrings.Count => " + Language.SkillInfoStrings.Count + "skillInfoTranslatedTexts.Count => " + skillInfoTranslatedTexts.Count);
         for (int i = 0; i < skillInfoTranslatedTexts.Count; i++)
         {
+            if (i >= Language.SkillInfoStrings.Count) break;
             Language.SkillInfoStrings[i].ActiveLanguage = skillInfoTranslatedTexts[i];
         }
         //SkillAdding
 
-        //NPCAdding
-        Debug.Log("Language.CommendEvulations.Count => " + Language.CommendEvulations.Count + " npcCommendTranslatedTexts.Count => " + npcCommendTranslatedTexts.Count);
+        //NPCCommendAdding
+        Debug.Log("Language.CommendEvulations.Count => " + Language.CommendEvulations.Count + "npcCommendTranslatedTexts.Count => " + npcCommendTranslatedTexts.Count);
         for (int i = 0; i < npcCommendTranslatedTexts.Count; i++)
         {
+            if (i >= Language.CommendEvulations.Count) break;
             Language.CommendEvulations[i].ActiveLanguage = npcCommendTranslatedTexts[i];
         }
-        //NPCAdding
+        //NPCCommendAdding
 
-        //DialogAdding
-        Debug.Log("Language.DialogsMessages.Count => " + Language.DialogsMessages.Count + " dialogTranslatedTexts.Count => " + dialogTranslatedTexts.Count);
+        //NPCSAdding
+        Debug.Log("Language.DialogsMessages.Count => " + Language.DialogsMessages.Count + "dialogTranslatedTexts.Count => " + dialogTranslatedTexts.Count);
         for (int i = 0; i < dialogTranslatedTexts.Count; i++)
         {
+            if (i >= Language.DialogsMessages.Count) break;
             Language.DialogsMessages[i].ActiveLanguage = dialogTranslatedTexts[i];
         }
-        //DialogAdding
+        //NPCSAdding
 
         //NotificationAdding
-        Debug.Log("Language.NotificationMessages.Count => " + Language.NotificationMessages.Count + " notificationTranslatedTexts.Count => " + notificationTranslatedTexts.Count);
+        Debug.Log("Language.NotificationMessages.Count => " + Language.NotificationMessages.Count + "notificationTranslatedTexts.Count => " + notificationTranslatedTexts.Count);
         for (int i = 0; i < notificationTranslatedTexts.Count; i++)
         {
+            if (i >= Language.NotificationMessages.Count) break;
             Language.NotificationMessages[i].ActiveLanguage = notificationTranslatedTexts[i];
         }
 
         Debug.Log("Language.NotificationRewardMessages.Count => " + Language.NotificationRewardMessages.Count + " notificationTranslatedTexts.Count => " + notificationRewardTranslatedTexts.Count);
         for (int i = 0; i < notificationRewardTranslatedTexts.Count; i++)
         {
+            if (i >= Language.NotificationRewardMessages.Count) break;
             Language.NotificationRewardMessages[i].ActiveLanguage = notificationRewardTranslatedTexts[i];
         }
         //MissionsAdding
         Debug.Log("Language.MissionHeaderMessages.Count => " + Language.MissionHeaderMessages.Count + " M_HeaderTranslatedTexts.Count => " + M_HeaderTranslatedTexts.Count);
-            for (int i = 0; i < M_HeaderTranslatedTexts.Count; i++)
-            {
-                Language.MissionHeaderMessages[i].ActiveLanguage = M_HeaderTranslatedTexts[i];
-            }
+        for (int i = 0; i < M_HeaderTranslatedTexts.Count; i++)
+        {
+            if (i >= Language.MissionHeaderMessages.Count) break;
+            Language.MissionHeaderMessages[i].ActiveLanguage = M_HeaderTranslatedTexts[i];
+        }
 
-            Debug.Log("Language.MissionDescriptionMessages.Count => " + Language.MissionDescriptionMessages.Count + " M_DescTranslatedTexts.Count => " + M_DescTranslatedTexts.Count);
-            for (int i = 0; i < M_DescTranslatedTexts.Count; i++)
-            {
-                Language.MissionDescriptionMessages[i].ActiveLanguage = M_DescTranslatedTexts[i];
-            }
+        Debug.Log("Language.MissionDescriptionMessages.Count => " + Language.MissionDescriptionMessages.Count + " M_DescTranslatedTexts.Count => " + M_DescTranslatedTexts.Count);
+        for (int i = 0; i < M_DescTranslatedTexts.Count; i++)
+        {
+            if (i >= Language.MissionDescriptionMessages.Count) break;
+            Language.MissionDescriptionMessages[i].ActiveLanguage = M_DescTranslatedTexts[i];
+        }
 
-                //NPCInteractionAdding
-                Debug.Log("Language.MissionNpcInteractionTypeMessages.Count => " + Language.MissionNpcInteractionTypeMessages.Count + " M_NpcInteractionTypeTranslatedTexts.Count => " + M_NpcInteractionTypeTranslatedTexts.Count);
-                for (int i = 0; i < M_NpcInteractionTypeTranslatedTexts.Count; i++)
-                {
-                    Language.MissionNpcInteractionTypeMessages[i].ActiveLanguage = M_NpcInteractionTypeTranslatedTexts[i];
-                }
+        //NPCInteractionAdding
+        Debug.Log("Language.MissionNpcInteractionTypeMessages.Count => " + Language.MissionNpcInteractionTypeMessages.Count + " M_NpcInteractionTypeTranslatedTexts.Count => " + M_NpcInteractionTypeTranslatedTexts.Count);
+        for (int i = 0; i < M_NpcInteractionTypeTranslatedTexts.Count; i++)
+        {
+            if (i >= Language.MissionNpcInteractionTypeMessages.Count) break;
+            Language.MissionNpcInteractionTypeMessages[i].ActiveLanguage = M_NpcInteractionTypeTranslatedTexts[i];
+        }
 
-                Debug.Log("Language.MissionNpcInteractionColorTypeMessages.Count => " + Language.MissionNpcInteractionColorTypeMessages.Count + " M_NpcInteractionColorTypeTranslatedTexts.Count => " + M_NpcInteractionColorTypeTranslatedTexts.Count);
-                for (int i = 0; i < M_NpcInteractionColorTypeTranslatedTexts.Count; i++)
-                {
-                    Language.MissionNpcInteractionColorTypeMessages[i].ActiveLanguage = M_NpcInteractionColorTypeTranslatedTexts[i];
-                }
+        Debug.Log("Language.MissionNpcInteractionColorTypeMessages.Count => " + Language.MissionNpcInteractionColorTypeMessages.Count + " M_NpcInteractionColorTypeTranslatedTexts.Count => " + M_NpcInteractionColorTypeTranslatedTexts.Count);
+        for (int i = 0; i < M_NpcInteractionColorTypeTranslatedTexts.Count; i++)
+        {
+            if (i >= Language.MissionNpcInteractionColorTypeMessages.Count) break;
+            Language.MissionNpcInteractionColorTypeMessages[i].ActiveLanguage = M_NpcInteractionColorTypeTranslatedTexts[i];
+        }
 
-                Debug.Log("Language.MissionNpcInteractionColorMessages.Count => " + Language.MissionNpcInteractionColorMessages.Count + " M_NpcInteractionTargetColorTranslatedTexts.Count => " + M_NpcInteractionTargetColorTranslatedTexts.Count);
-                for (int i = 0; i < M_NpcInteractionTargetColorTranslatedTexts.Count; i++)
-                {
-                    Language.MissionNpcInteractionColorMessages[i].ActiveLanguage = M_NpcInteractionTargetColorTranslatedTexts[i];
-                }
+        Debug.Log("Language.MissionNpcInteractionColorMessages.Count => " + Language.MissionNpcInteractionColorMessages.Count + " M_NpcInteractionTargetColorTranslatedTexts.Count => " + M_NpcInteractionTargetColorTranslatedTexts.Count);
+        for (int i = 0; i < M_NpcInteractionTargetColorTranslatedTexts.Count; i++)
+        {
+            if (i >= Language.MissionNpcInteractionColorMessages.Count) break;
+            Language.MissionNpcInteractionColorMessages[i].ActiveLanguage = M_NpcInteractionTargetColorTranslatedTexts[i];
+        }
 
-                Debug.Log("Language.MissionNpcInteractionStateMessages.Count => " + Language.MissionNpcInteractionStateMessages.Count + " M_NpcInteractionStateTranslatedTexts.Count => " + M_NpcInteractionStateTranslatedTexts.Count);
-                for (int i = 0; i < M_NpcInteractionStateTranslatedTexts.Count; i++)
-                {
-                    Language.MissionNpcInteractionStateMessages[i].ActiveLanguage = M_NpcInteractionStateTranslatedTexts[i];
-                }
+        Debug.Log("Language.MissionNpcInteractionStateMessages.Count => " + Language.MissionNpcInteractionStateMessages.Count + " M_NpcInteractionStateTranslatedTexts.Count => " + M_NpcInteractionStateTranslatedTexts.Count);
+        for (int i = 0; i < M_NpcInteractionStateTranslatedTexts.Count; i++)
+        {
+            if (i >= Language.MissionNpcInteractionStateMessages.Count) break;
+            Language.MissionNpcInteractionStateMessages[i].ActiveLanguage = M_NpcInteractionStateTranslatedTexts[i];
+        }
 
-                Debug.Log("Language.MissionNpcInteractionHelperMessages.Count => " + Language.MissionNpcInteractionHelperMessages.Count + " M_NpcInteractionHelperTranslatedTexts.Count => " + M_NpcInteractionHelperTranslatedTexts.Count);
-                for (int i = 0; i < M_NpcInteractionHelperTranslatedTexts.Count; i++)
-                {
-                    Language.MissionNpcInteractionHelperMessages[i].ActiveLanguage = M_NpcInteractionHelperTranslatedTexts[i];
-                }
+        Debug.Log("Language.MissionNpcInteractionHelperMessages.Count => " + Language.MissionNpcInteractionHelperMessages.Count + " M_NpcInteractionHelperTranslatedTexts.Count => " + M_NpcInteractionHelperTranslatedTexts.Count);
+        for (int i = 0; i < M_NpcInteractionHelperTranslatedTexts.Count; i++)
+        {
+            if (i >= Language.MissionNpcInteractionHelperMessages.Count) break;
+            Language.MissionNpcInteractionHelperMessages[i].ActiveLanguage = M_NpcInteractionHelperTranslatedTexts[i];
+        }
 
-                //NPCInteractionAdding
-            //MissionsAdding
+        //NPCInteractionAdding
+        //MissionsAdding
         //NotificationAdding
 
         //GeneralAdding
         Debug.Log("Language.PictureInfoStrings.Count => " + Language.PictureInfoStrings.Count + "pictureInfoTranslatedTexts.Count => " + pictureInfoTranslatedTexts.Count);
         for (int i = 0; i < pictureInfoTranslatedTexts.Count; i++)
         {
+            if (i >= Language.PictureInfoStrings.Count) break;
             Language.PictureInfoStrings[i].ActiveLanguage = pictureInfoTranslatedTexts[i];
         }
 
         Debug.Log("Language.InternetCheckInfoStrings.Count => " + Language.InternetCheckInfoStrings.Count + "internetCheckInfoTranslatedTexts.Count => " + internetCheckInfoTranslatedTexts.Count);
         for (int i = 0; i < internetCheckInfoTranslatedTexts.Count; i++)
         {
+            if (i >= Language.InternetCheckInfoStrings.Count) break;
             Language.InternetCheckInfoStrings[i].ActiveLanguage = internetCheckInfoTranslatedTexts[i];
         }
 
         Debug.Log("Language.ShopQuestionInfoStrings.Count => " + Language.ShopQuestionInfoStrings.Count + "shopQuestionInfoTranslatedTexts.Count => " + shopQuestionInfoTranslatedTexts.Count);
         for (int i = 0; i < shopQuestionInfoTranslatedTexts.Count; i++)
         {
+            if (i >= Language.ShopQuestionInfoStrings.Count) break;
             Language.ShopQuestionInfoStrings[i].ActiveLanguage = shopQuestionInfoTranslatedTexts[i];
         }
 
         Debug.Log("Language.WorkerInfoStrings.Count => " + Language.WorkerInfoStrings.Count + "workerInfoTranslatedTexts.Count => " + workerInfoTranslatedTexts.Count);
         for (int i = 0; i < workerInfoTranslatedTexts.Count; i++)
         {
+            if (i >= Language.WorkerInfoStrings.Count) break;
             Language.WorkerInfoStrings[i].ActiveLanguage = workerInfoTranslatedTexts[i];
         }
-
         //Customization
         Debug.Log("Language.customize_SelectedAnEquipmentStrings.Count => " + Language.customize_SelectedAnEquipmentStrings.Count + "customize_OnSelectedAnEquipmentTranslatedTexts.Count => " + customize_OnSelectedAnEquipmentTranslatedTexts.Count);
         for (int i = 0; i < customize_OnSelectedAnEquipmentTranslatedTexts.Count; i++)
         {
+            if (i >= Language.customize_SelectedAnEquipmentStrings.Count) break;
             Language.customize_SelectedAnEquipmentStrings[i].ActiveLanguage = customize_OnSelectedAnEquipmentTranslatedTexts[i];
         }
 
         Debug.Log("Language.customize_OnExitProcessStrings.Count => " + Language.customize_OnExitProcessStrings.Count + "customize_OnExitProcessTranslatedTexts.Count => " + customize_OnExitProcessTranslatedTexts.Count);
         for (int i = 0; i < customize_OnExitProcessTranslatedTexts.Count; i++)
         {
+            if (i >= Language.customize_OnExitProcessStrings.Count) break;
             Language.customize_OnExitProcessStrings[i].ActiveLanguage = customize_OnExitProcessTranslatedTexts[i];
         }
         //Customization
@@ -728,93 +749,97 @@ public class LanguageDatabase : MonoBehaviour
             foreach (Languages language in Enum.GetValues(typeof(Languages)))
             {
                 //ITEMS
-                List<string> itemDescKeysToTranslate = new List<string>();
-                List<string> itemDescTranslatedTexts = new List<string>();
+                List<LanguageData> itemDescKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> itemDescTranslatedTexts = new List<LanguageData>();
                 //ITEMS
+
                 //SKILLS
-                List<string> skillNameKeysToTranslate = new List<string>();
-                List<string> skillNameTranslatedTexts = new List<string>();
+                List<LanguageData> skillNameKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> skillNameTranslatedTexts = new List<LanguageData>();
 
-                List<string> skillDescKeysToTranslate = new List<string>();
-                List<string> skillDescTranslatedTexts = new List<string>();
+                List<LanguageData> skillDescKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> skillDescTranslatedTexts = new List<LanguageData>();
 
-                List<string> skillEffectKeysToTranslate = new List<string>();
-                List<string> skillEffectTranslatedTexts = new List<string>();
+                List<LanguageData> skillEffectKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> skillEffectTranslatedTexts = new List<LanguageData>();
 
-                List<string> skillDefaultStringKeysToTranslate = new List<string>();
-                List<string> skillDefaultStringTranslatedTexts = new List<string>();
+                List<LanguageData> skillDefaultStringKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> skillDefaultStringTranslatedTexts = new List<LanguageData>();
 
-                List<string> skillInfoKeysToTranslate = new List<string>();
-                List<string> skillInfoTranslatedTexts = new List<string>();
+                List<LanguageData> skillInfoKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> skillInfoTranslatedTexts = new List<LanguageData>();
                 //SKILLS
 
                 //NPCS
-                List<string> npcCommendKeysToTranslate = new List<string>();
-                List<string> npcCommendTranslatedTexts = new List<string>();
+                List<LanguageData> npcCommendKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> npcCommendTranslatedTexts = new List<LanguageData>();
                 //NPCS
 
                 //Dialogs
-                List<string> dialogKeysToTranslate = new List<string>();
-                List<string> dialogTranslatedTexts = new List<string>();
+                List<LanguageData> dialogKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> dialogTranslatedTexts = new List<LanguageData>();
                 //Dialogs
 
                 //NOTIFICATIONS
-                List<string> notificationKeysToTranslate = new List<string>();
-                List<string> notificationTranslatedTexts = new List<string>();
+                List<LanguageData> notificationKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> notificationTranslatedTexts = new List<LanguageData>();
 
-                List<string> notificationRewardKeysToTranslate = new List<string>();
-                List<string> notificationRewardTranslatedTexts = new List<string>();
+                List<LanguageData> notificationRewardKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> notificationRewardTranslatedTexts = new List<LanguageData>();
+                //NOTIFICATIONS
+
                 //Missions
-                List<string> M_HeaderKeysToTranslate = new List<string>();
-                    List<string> M_HeaderTranslatedTexts = new List<string>();
+                List<LanguageData> M_HeaderKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> M_HeaderTranslatedTexts = new List<LanguageData>();
 
-                    List<string> M_DescKeysToTranslate = new List<string>();
-                    List<string> M_DescTranslatedTexts = new List<string>();
-                        //NPCInteraction
-                        List<string> M_NpcInteractionTypeKeysToTranslate = new List<string>();
-                        List<string> M_NpcInteractionTypeTranslatedTexts = new List<string>();
+                List<LanguageData> M_DescKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> M_DescTranslatedTexts = new List<LanguageData>();
 
-                        List<string> M_NpcInteractionColorTypeKeysToTranslate = new List<string>();
-                        List<string> M_NpcInteractionColorTypeTranslatedTexts = new List<string>();
+                //NPCInteraction
+                List<LanguageData> M_NpcInteractionTypeKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> M_NpcInteractionTypeTranslatedTexts = new List<LanguageData>();
 
-                        List<string> M_NpcInteractionTargetColorKeysToTranslate = new List<string>();
-                        List<string> M_NpcInteractionTargetColorTranslatedTexts = new List<string>();
+                List<LanguageData> M_NpcInteractionColorTypeKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> M_NpcInteractionColorTypeTranslatedTexts = new List<LanguageData>();
 
-                        List<string> M_NpcInteractionStateKeysToTranslate = new List<string>();
-                        List<string> M_NpcInteractionStateTranslatedTexts = new List<string>();
+                List<LanguageData> M_NpcInteractionTargetColorKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> M_NpcInteractionTargetColorTranslatedTexts = new List<LanguageData>();
 
-                        List<string> M_NpcInteractionHelperKeysToTranslate = new List<string>();
-                        List<string> M_NpcInteractionHelperTranslatedTexts = new List<string>();
-                        //NPCInteraction
-                    //Missions
-                //NOTIFICATIONS
+                List<LanguageData> M_NpcInteractionStateKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> M_NpcInteractionStateTranslatedTexts = new List<LanguageData>();
+
+                List<LanguageData> M_NpcInteractionHelperKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> M_NpcInteractionHelperTranslatedTexts = new List<LanguageData>();
+                //NPCInteraction
+                //Missions
 
                 //General
-                List<string> pictureInfoKeysToTranslate = new List<string>();
-                List<string> pictureInfoTranslatedTexts = new List<string>();
+                List<LanguageData> pictureInfoKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> pictureInfoTranslatedTexts = new List<LanguageData>();
 
-                List<string> internetCheckInfoKeysToTranslate = new List<string>();
-                List<string> internetCheckInfoTranslatedTexts = new List<string>();
+                List<LanguageData> internetCheckInfoKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> internetCheckInfoTranslatedTexts = new List<LanguageData>();
 
-                List<string> shopQuestionInfoKeysToTranslate = new List<string>();
-                List<string> shopQuestionInfoTranslatedTexts = new List<string>();
+                List<LanguageData> shopQuestionInfoKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> shopQuestionInfoTranslatedTexts = new List<LanguageData>();
 
-                List<string> workerInfoKeysToTranslate = new List<string>();
-                List<string> workerInfoTranslatedTexts = new List<string>();
+                List<LanguageData> workerInfoKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> workerInfoTranslatedTexts = new List<LanguageData>();
 
                 //Customization
-                List<string> customize_OnSelectedAnEquipmentKeysToTranslate = new List<string>();
-                List<string> customize_OnSelectedAnEquipmentTranslatedTexts = new List<string>();
+                List<LanguageData> customize_OnSelectedAnEquipmentKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> customize_OnSelectedAnEquipmentTranslatedTexts = new List<LanguageData>();
 
-                List<string> customize_OnExitProcessKeysToTranslate = new List<string>();
-                List<string> customize_OnExitProcessTranslatedTexts = new List<string>();
+                List<LanguageData> customize_OnExitProcessKeysToTranslate = new List<LanguageData>();
+                List<LanguageData> customize_OnExitProcessTranslatedTexts = new List<LanguageData>();
                 //Customization
                 //General
+
 
                 //SKILLS
                 foreach (var item in Language.SkillNames)
                 {
-                    skillNameKeysToTranslate.Add(item.Key);
+                    skillNameKeysToTranslate.Add(item);
                 }
                 await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), skillNameKeysToTranslate, (result) =>
                 {
@@ -823,7 +848,7 @@ public class LanguageDatabase : MonoBehaviour
 
                 foreach (var item in Language.SkillDescriptions)
                 {
-                    skillDescKeysToTranslate.Add(item.Key);
+                    skillDescKeysToTranslate.Add(item);
                 }
 
                 await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), skillDescKeysToTranslate, (result) =>
@@ -833,7 +858,7 @@ public class LanguageDatabase : MonoBehaviour
 
                 foreach (var item in Language.SkillEffects)
                 {
-                    skillEffectKeysToTranslate.Add(item.Key);
+                    skillEffectKeysToTranslate.Add(item);
                 }
 
                 await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), skillEffectKeysToTranslate, (result) =>
@@ -843,7 +868,7 @@ public class LanguageDatabase : MonoBehaviour
 
                 foreach (var item in Language.SkillDefaultStrings)
                 {
-                    skillDefaultStringKeysToTranslate.Add(item.Key);
+                    skillDefaultStringKeysToTranslate.Add(item);
                 }
 
                 await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), skillDefaultStringKeysToTranslate, (result) =>
@@ -853,7 +878,7 @@ public class LanguageDatabase : MonoBehaviour
 
                 foreach (var item in Language.SkillInfoStrings)
                 {
-                    skillInfoKeysToTranslate.Add(item.Key);
+                    skillInfoKeysToTranslate.Add(item);
                 }
 
                 await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), skillInfoKeysToTranslate, (result) =>
@@ -867,7 +892,7 @@ public class LanguageDatabase : MonoBehaviour
                 {
                     if (item.Key == string.Empty)
                         continue;
-                    itemDescKeysToTranslate.Add(item.Key);
+                    itemDescKeysToTranslate.Add(item);
                 }
 
                 await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), itemDescKeysToTranslate, (result) =>
@@ -881,7 +906,7 @@ public class LanguageDatabase : MonoBehaviour
                 {
                     if (item.Key == string.Empty)
                         continue;
-                    dialogKeysToTranslate.Add(item.Key);
+                    dialogKeysToTranslate.Add(item);
                 }
 
                 await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), dialogKeysToTranslate, (result) =>
@@ -895,7 +920,7 @@ public class LanguageDatabase : MonoBehaviour
                 {
                     if (item.Key == string.Empty)
                         continue;
-                    npcCommendKeysToTranslate.Add(item.Key);
+                    npcCommendKeysToTranslate.Add(item);
                 }
 
                 await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), npcCommendKeysToTranslate, (result) =>
@@ -909,7 +934,7 @@ public class LanguageDatabase : MonoBehaviour
                 {
                     if (item.Key == string.Empty)
                         continue;
-                    notificationKeysToTranslate.Add(item.Key);
+                    notificationKeysToTranslate.Add(item);
                 }
 
                 await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), notificationKeysToTranslate, (result) =>
@@ -921,7 +946,7 @@ public class LanguageDatabase : MonoBehaviour
                 {
                     if (item.Key == string.Empty)
                         continue;
-                    notificationRewardKeysToTranslate.Add(item.Key);
+                    notificationRewardKeysToTranslate.Add(item);
                 }
 
                 await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), notificationRewardKeysToTranslate, (result) =>
@@ -934,7 +959,7 @@ public class LanguageDatabase : MonoBehaviour
                     {
                         if (item.Key == string.Empty)
                             continue;
-                        M_HeaderKeysToTranslate.Add(item.Key);
+                        M_HeaderKeysToTranslate.Add(item);
                     }
 
                     await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), M_HeaderKeysToTranslate, (result) =>
@@ -946,7 +971,7 @@ public class LanguageDatabase : MonoBehaviour
                     {
                         if (item.Key == string.Empty)
                             continue;
-                        M_DescKeysToTranslate.Add(item.Key);
+                        M_DescKeysToTranslate.Add(item);
                     }
 
                     await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), M_DescKeysToTranslate, (result) =>
@@ -959,7 +984,7 @@ public class LanguageDatabase : MonoBehaviour
                         {
                             if (item.Key == string.Empty)
                                 continue;
-                            M_NpcInteractionTypeKeysToTranslate.Add(item.Key);
+                            M_NpcInteractionTypeKeysToTranslate.Add(item);
                         }
 
                         await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), M_NpcInteractionTypeKeysToTranslate, (result) =>
@@ -971,7 +996,7 @@ public class LanguageDatabase : MonoBehaviour
                         {
                             if (item.Key == string.Empty)
                                 continue;
-                            M_NpcInteractionColorTypeKeysToTranslate.Add(item.Key);
+                            M_NpcInteractionColorTypeKeysToTranslate.Add(item);
                         }
 
                         await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), M_NpcInteractionColorTypeKeysToTranslate, (result) =>
@@ -983,7 +1008,7 @@ public class LanguageDatabase : MonoBehaviour
                         {
                             if (item.Key == string.Empty)
                                 continue;
-                            M_NpcInteractionTargetColorKeysToTranslate.Add(item.Key);
+                            M_NpcInteractionTargetColorKeysToTranslate.Add(item);
                         }
 
                         await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), M_NpcInteractionTargetColorKeysToTranslate, (result) =>
@@ -995,7 +1020,7 @@ public class LanguageDatabase : MonoBehaviour
                         {
                             if (item.Key == string.Empty)
                                 continue;
-                            M_NpcInteractionStateKeysToTranslate.Add(item.Key);
+                            M_NpcInteractionStateKeysToTranslate.Add(item);
                         }
 
                         await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), M_NpcInteractionStateKeysToTranslate, (result) =>
@@ -1007,7 +1032,7 @@ public class LanguageDatabase : MonoBehaviour
                         {
                             if (item.Key == string.Empty)
                                 continue;
-                            M_NpcInteractionHelperKeysToTranslate.Add(item.Key);
+                            M_NpcInteractionHelperKeysToTranslate.Add(item);
                         }
 
                         await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), M_NpcInteractionHelperKeysToTranslate, (result) =>
@@ -1023,7 +1048,7 @@ public class LanguageDatabase : MonoBehaviour
                 {
                     if (item.Key == string.Empty)
                         continue;
-                    pictureInfoKeysToTranslate.Add(item.Key);
+                    pictureInfoKeysToTranslate.Add(item);
                 }
 
                 await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), pictureInfoKeysToTranslate, (result) =>
@@ -1034,7 +1059,7 @@ public class LanguageDatabase : MonoBehaviour
                 {
                     if (item.Key == string.Empty)
                         continue;
-                    internetCheckInfoKeysToTranslate.Add(item.Key);
+                    internetCheckInfoKeysToTranslate.Add(item);
                 }
 
                 await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), internetCheckInfoKeysToTranslate, (result) =>
@@ -1046,7 +1071,7 @@ public class LanguageDatabase : MonoBehaviour
                 {
                     if (item.Key == string.Empty)
                         continue;
-                    shopQuestionInfoKeysToTranslate.Add(item.Key);
+                    shopQuestionInfoKeysToTranslate.Add(item);
                 }
 
                 await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), shopQuestionInfoKeysToTranslate, (result) =>
@@ -1058,7 +1083,7 @@ public class LanguageDatabase : MonoBehaviour
                 {
                     if (item.Key == string.Empty)
                         continue;
-                    workerInfoKeysToTranslate.Add(item.Key);
+                    workerInfoKeysToTranslate.Add(item);
                 }
 
                 await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), workerInfoKeysToTranslate, (result) =>
@@ -1071,7 +1096,7 @@ public class LanguageDatabase : MonoBehaviour
                 {
                     if (item.Key == string.Empty)
                         continue;
-                    customize_OnSelectedAnEquipmentKeysToTranslate.Add(item.Key);
+                    customize_OnSelectedAnEquipmentKeysToTranslate.Add(item);
                 }
 
                 await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), customize_OnSelectedAnEquipmentKeysToTranslate, (result) =>
@@ -1083,7 +1108,7 @@ public class LanguageDatabase : MonoBehaviour
                 {
                     if (item.Key == string.Empty)
                         continue;
-                    customize_OnExitProcessKeysToTranslate.Add(item.Key);
+                    customize_OnExitProcessKeysToTranslate.Add(item);
                 }
 
                 await GameManager.instance.BulkTranslateAndAssignAsync(GetEnumDescription(language), customize_OnExitProcessKeysToTranslate, (result) =>
@@ -1093,157 +1118,236 @@ public class LanguageDatabase : MonoBehaviour
                 //Customization
                 //GENERAL
 
-                //ItemAdding
-                Debug.Log("Language.ItemDescriptions.Count => " + Language.ItemDescriptions.Count + "itemDescTranslatedTexts.Count => " + itemDescTranslatedTexts.Count);
+                // ITEM DESCRIPTIONS
+                Debug.Log("Language.ItemDescriptions.Count => " + Language.ItemDescriptions.Count +
+                          " itemDescTranslatedTexts.Count => " + itemDescTranslatedTexts.Count);
                 for (int i = 0; i < itemDescTranslatedTexts.Count; i++)
                 {
-                    Debug.Log("itemDescTranslatedTexts[i] => " + itemDescTranslatedTexts[i] + " and i => " + i);
-                    Language.ItemDescriptions[i].ActiveLanguage = itemDescTranslatedTexts[i];
+                    Debug.Log("itemDescTranslatedTexts[i].TargetID => " + itemDescTranslatedTexts[i].TargetID + " and i => " + i);
+                    if (i >= Language.ItemDescriptions.Count) break;
+                    LanguageData currentData = itemDescTranslatedTexts[i];
+                    Language.ItemDescriptions[i] = new LanguageData(currentData.TargetID, Language.ItemDescriptions[i].Key, currentData.Key);
                 }
-                //ItemAdding
-                //SkillAdding
-                Debug.Log("Language.SkillNames.Count => " + Language.SkillNames.Count + "skillNameTranslatedTexts.Count => " + skillNameTranslatedTexts.Count);
+
+                // SKILL NAMES
+                Debug.Log("Language.SkillNames.Count => " + Language.SkillNames.Count +
+                          " skillNameTranslatedTexts.Count => " + skillNameTranslatedTexts.Count);
                 for (int i = 0; i < skillNameTranslatedTexts.Count; i++)
                 {
-                    Language.SkillNames[i].ActiveLanguage = skillNameTranslatedTexts[i];
+                    if (i >= Language.SkillNames.Count) break;
+                    LanguageData currentData = skillNameTranslatedTexts[i];
+                    Language.SkillNames[i] = new LanguageData(currentData.TargetID, Language.SkillNames[i].Key, currentData.Key);
                 }
-                Debug.Log("Language.SkillDescriptions.Count => " + Language.SkillDescriptions.Count + "skillDescTranslatedTexts.Count => " + skillDescTranslatedTexts.Count);
+
+                // SKILL DESCRIPTIONS
+                Debug.Log("Language.SkillDescriptions.Count => " + Language.SkillDescriptions.Count +
+                          " skillDescTranslatedTexts.Count => " + skillDescTranslatedTexts.Count);
                 for (int i = 0; i < skillDescTranslatedTexts.Count; i++)
                 {
                     if (i >= Language.SkillDescriptions.Count) break;
-                    Language.SkillDescriptions[i].ActiveLanguage = skillDescTranslatedTexts[i];
+                    LanguageData currentData = skillDescTranslatedTexts[i];
+                    Language.SkillDescriptions[i] = new LanguageData(currentData.TargetID, Language.SkillDescriptions[i].Key, currentData.Key);
                 }
-                Debug.Log("Language.SkillEffects.Count => " + Language.SkillEffects.Count + "skillEffectTranslatedTexts.Count => " + skillEffectTranslatedTexts.Count);
+
+                // SKILL EFFECTS
+                Debug.Log("Language.SkillEffects.Count => " + Language.SkillEffects.Count +
+                          " skillEffectTranslatedTexts.Count => " + skillEffectTranslatedTexts.Count);
                 for (int i = 0; i < skillEffectTranslatedTexts.Count; i++)
                 {
-                    Language.SkillEffects[i].ActiveLanguage = skillEffectTranslatedTexts[i];
+                    if (i >= Language.SkillEffects.Count) break;
+                    LanguageData currentData = skillEffectTranslatedTexts[i];
+                    Language.SkillEffects[i] = new LanguageData(currentData.TargetID, Language.SkillEffects[i].Key, currentData.Key);
                 }
-                Debug.Log("Language.SkillDefaultStrings.Count => " + Language.SkillDefaultStrings.Count + "skillDefaultStringTranslatedTexts.Count => " + skillDefaultStringTranslatedTexts.Count);
+
+                // SKILL Default Strings
+                Debug.Log("Language.SkillDefaultStrings.Count => " + Language.SkillDefaultStrings.Count +
+                          " skillDefaultStringTranslatedTexts.Count => " + skillDefaultStringTranslatedTexts.Count);
                 for (int i = 0; i < skillDefaultStringTranslatedTexts.Count; i++)
                 {
-                    Language.SkillDefaultStrings[i].ActiveLanguage = skillDefaultStringTranslatedTexts[i];
+                    if (i >= Language.SkillDefaultStrings.Count) break;
+                    LanguageData currentData = skillDefaultStringTranslatedTexts[i];
+                    Language.SkillDefaultStrings[i] = new LanguageData(currentData.TargetID, Language.SkillDefaultStrings[i].Key, currentData.Key);
                 }
-                Debug.Log("Language.SkillInfoStrings.Count => " + Language.SkillInfoStrings.Count + "skillInfoTranslatedTexts.Count => " + skillInfoTranslatedTexts.Count);
+
+                // SKILL Info Strings
+                Debug.Log("Language.SkillInfoStrings.Count => " + Language.SkillInfoStrings.Count +
+                          " skillInfoTranslatedTexts.Count => " + skillInfoTranslatedTexts.Count);
                 for (int i = 0; i < skillInfoTranslatedTexts.Count; i++)
                 {
-                    Language.SkillInfoStrings[i].ActiveLanguage = skillInfoTranslatedTexts[i];
+                    if (i >= Language.SkillInfoStrings.Count) break;
+                    LanguageData currentData = skillInfoTranslatedTexts[i];
+                    Language.SkillInfoStrings[i] = new LanguageData(currentData.TargetID, Language.SkillInfoStrings[i].Key, currentData.Key);
                 }
-                //SkillAdding
 
-                //NPCCommendAdding
-                Debug.Log("Language.CommendEvulations.Count => " + Language.CommendEvulations.Count + "npcCommendTranslatedTexts.Count => " + npcCommendTranslatedTexts.Count);
+                // NPC COMMANDS
+                Debug.Log("Language.CommendEvulations.Count => " + Language.CommendEvulations.Count +
+                          " npcCommendTranslatedTexts.Count => " + npcCommendTranslatedTexts.Count);
                 for (int i = 0; i < npcCommendTranslatedTexts.Count; i++)
                 {
-                    Language.CommendEvulations[i].ActiveLanguage = npcCommendTranslatedTexts[i];
+                    if (i >= Language.CommendEvulations.Count) break;
+                    LanguageData currentData = npcCommendTranslatedTexts[i];
+                    Language.CommendEvulations[i] = new LanguageData(currentData.TargetID, Language.CommendEvulations[i].Key, currentData.Key);
                 }
-                //NPCCommendAdding
 
-                //NPCSAdding
-                Debug.Log("Language.DialogsMessages.Count => " + Language.DialogsMessages.Count + "dialogTranslatedTexts.Count => " + dialogTranslatedTexts.Count);
+                // DIALOGS
+                Debug.Log("Language.DialogsMessages.Count => " + Language.DialogsMessages.Count +
+                          " dialogTranslatedTexts.Count => " + dialogTranslatedTexts.Count);
                 for (int i = 0; i < dialogTranslatedTexts.Count; i++)
                 {
-                    Language.DialogsMessages[i].ActiveLanguage = dialogTranslatedTexts[i];
+                    if (i >= Language.DialogsMessages.Count) break;
+                    LanguageData currentData = dialogTranslatedTexts[i];
+                    Language.DialogsMessages[i] = new LanguageData(currentData.TargetID, Language.DialogsMessages[i].Key, currentData.Key);
                 }
-                //NPCSAdding
 
-                //NotificationAdding
-                Debug.Log("Language.NotificationMessages.Count => " + Language.NotificationMessages.Count + "notificationTranslatedTexts.Count => " + notificationTranslatedTexts.Count);
+                // NOTIFICATIONS
+                Debug.Log("Language.NotificationMessages.Count => " + Language.NotificationMessages.Count +
+                          " notificationTranslatedTexts.Count => " + notificationTranslatedTexts.Count);
                 for (int i = 0; i < notificationTranslatedTexts.Count; i++)
                 {
-                    Language.NotificationMessages[i].ActiveLanguage = notificationTranslatedTexts[i];
+                    if (i >= Language.NotificationMessages.Count) break;
+                    LanguageData currentData = notificationTranslatedTexts[i];
+                    Language.NotificationMessages[i] = new LanguageData(currentData.TargetID, Language.NotificationMessages[i].Key, currentData.Key);
                 }
 
-                Debug.Log("Language.NotificationRewardMessages.Count => " + Language.NotificationRewardMessages.Count + " notificationTranslatedTexts.Count => " + notificationRewardTranslatedTexts.Count);
+                Debug.Log("Language.NotificationRewardMessages.Count => " + Language.NotificationRewardMessages.Count +
+                          " notificationRewardTranslatedTexts.Count => " + notificationRewardTranslatedTexts.Count);
                 for (int i = 0; i < notificationRewardTranslatedTexts.Count; i++)
                 {
-                    Language.NotificationRewardMessages[i].ActiveLanguage = notificationRewardTranslatedTexts[i];
+                    if (i >= Language.NotificationRewardMessages.Count) break;
+                    LanguageData currentData = notificationRewardTranslatedTexts[i];
+                    Language.NotificationRewardMessages[i] = new LanguageData(currentData.TargetID, Language.NotificationRewardMessages[i].Key, currentData.Key);
                 }
-                //MissionsAdding
-                Debug.Log("Language.MissionHeaderMessages.Count => " + Language.MissionHeaderMessages.Count + " M_HeaderTranslatedTexts.Count => " + M_HeaderTranslatedTexts.Count);
-                    for (int i = 0; i < M_HeaderTranslatedTexts.Count; i++)
-                    {
-                        Language.MissionHeaderMessages[i].ActiveLanguage = M_HeaderTranslatedTexts[i];
-                    }
 
-                    Debug.Log("Language.MissionDescriptionMessages.Count => " + Language.MissionDescriptionMessages.Count + " M_DescTranslatedTexts.Count => " + M_DescTranslatedTexts.Count);
-                    for (int i = 0; i < M_DescTranslatedTexts.Count; i++)
-                    {
-                        Language.MissionDescriptionMessages[i].ActiveLanguage = M_DescTranslatedTexts[i];
-                    }
-
-                        //NPCInteractionAdding
-                        Debug.Log("Language.MissionNpcInteractionTypeMessages.Count => " + Language.MissionNpcInteractionTypeMessages.Count + " M_NpcInteractionTypeTranslatedTexts.Count => " + M_NpcInteractionTypeTranslatedTexts.Count);
-                        for (int i = 0; i < M_NpcInteractionTypeTranslatedTexts.Count; i++)
-                        {
-                            Language.MissionNpcInteractionTypeMessages[i].ActiveLanguage = M_NpcInteractionTypeTranslatedTexts[i];
-                        }
-
-                        Debug.Log("Language.MissionNpcInteractionColorTypeMessages.Count => " + Language.MissionNpcInteractionColorTypeMessages.Count + " M_NpcInteractionColorTypeTranslatedTexts.Count => " + M_NpcInteractionColorTypeTranslatedTexts.Count);
-                        for (int i = 0; i < M_NpcInteractionColorTypeTranslatedTexts.Count; i++)
-                        {
-                            Language.MissionNpcInteractionColorTypeMessages[i].ActiveLanguage = M_NpcInteractionColorTypeTranslatedTexts[i];
-                        }
-
-                        Debug.Log("Language.MissionNpcInteractionColorMessages.Count => " + Language.MissionNpcInteractionColorMessages.Count + " M_NpcInteractionTargetColorTranslatedTexts.Count => " + M_NpcInteractionTargetColorTranslatedTexts.Count);
-                        for (int i = 0; i < M_NpcInteractionTargetColorTranslatedTexts.Count; i++)
-                        {
-                            Language.MissionNpcInteractionColorMessages[i].ActiveLanguage = M_NpcInteractionTargetColorTranslatedTexts[i];
-                        }
-
-                        Debug.Log("Language.MissionNpcInteractionStateMessages.Count => " + Language.MissionNpcInteractionStateMessages.Count + " M_NpcInteractionStateTranslatedTexts.Count => " + M_NpcInteractionStateTranslatedTexts.Count);
-                        for (int i = 0; i < M_NpcInteractionStateTranslatedTexts.Count; i++)
-                        {
-                            Language.MissionNpcInteractionStateMessages[i].ActiveLanguage = M_NpcInteractionStateTranslatedTexts[i];
-                        }
-
-                        Debug.Log("Language.MissionNpcInteractionHelperMessages.Count => " + Language.MissionNpcInteractionHelperMessages.Count + " M_NpcInteractionHelperTranslatedTexts.Count => " + M_NpcInteractionHelperTranslatedTexts.Count);
-                        for (int i = 0; i < M_NpcInteractionHelperTranslatedTexts.Count; i++)
-                        {
-                            Language.MissionNpcInteractionHelperMessages[i].ActiveLanguage = M_NpcInteractionHelperTranslatedTexts[i];
-                        }
-
-                        //NPCInteractionAdding
-                    //MissionsAdding
-                //NotificationAdding
-
-                //GeneralAdding
-                Debug.Log("Language.PictureInfoStrings.Count => " + Language.PictureInfoStrings.Count + "pictureInfoTranslatedTexts.Count => " + pictureInfoTranslatedTexts.Count);
+                //General
+                Debug.Log("Language.PictureInfoStrings.Count => " + Language.PictureInfoStrings.Count +
+                          " pictureInfoTranslatedTexts.Count => " + pictureInfoTranslatedTexts.Count);
                 for (int i = 0; i < pictureInfoTranslatedTexts.Count; i++)
                 {
-                    Language.PictureInfoStrings[i].ActiveLanguage = pictureInfoTranslatedTexts[i];
+                    if (i >= Language.PictureInfoStrings.Count) break;
+                    LanguageData currentData = pictureInfoTranslatedTexts[i];
+                    Language.PictureInfoStrings[i] = new LanguageData(currentData.TargetID, Language.PictureInfoStrings[i].Key, currentData.Key);
                 }
 
-                Debug.Log("Language.InternetCheckInfoStrings.Count => " + Language.InternetCheckInfoStrings.Count + "internetCheckInfoTranslatedTexts.Count => " + internetCheckInfoTranslatedTexts.Count);
+                Debug.Log("Language.InternetCheckInfoStrings.Count => " + Language.InternetCheckInfoStrings.Count +
+                          " internetCheckInfoTranslatedTexts.Count => " + internetCheckInfoTranslatedTexts.Count);
                 for (int i = 0; i < internetCheckInfoTranslatedTexts.Count; i++)
                 {
-                    Language.InternetCheckInfoStrings[i].ActiveLanguage = internetCheckInfoTranslatedTexts[i];
+                    if (i >= Language.InternetCheckInfoStrings.Count) break;
+                    LanguageData currentData = internetCheckInfoTranslatedTexts[i];
+                    Language.InternetCheckInfoStrings[i] = new LanguageData(currentData.TargetID, Language.InternetCheckInfoStrings[i].Key, currentData.Key);
                 }
 
-                Debug.Log("Language.ShopQuestionInfoStrings.Count => " + Language.ShopQuestionInfoStrings.Count + "shopQuestionInfoTranslatedTexts.Count => " + shopQuestionInfoTranslatedTexts.Count);
+                Debug.Log("Language.InternetCheckInfoStrings.Count => " + Language.InternetCheckInfoStrings.Count +
+                          " internetCheckInfoTranslatedTexts.Count => " + internetCheckInfoTranslatedTexts.Count);
+                for (int i = 0; i < internetCheckInfoTranslatedTexts.Count; i++)
+                {
+                    if (i >= Language.InternetCheckInfoStrings.Count) break;
+                    LanguageData currentData = internetCheckInfoTranslatedTexts[i];
+                    Language.InternetCheckInfoStrings[i] = new LanguageData(currentData.TargetID, Language.InternetCheckInfoStrings[i].Key, currentData.Key);
+                }
+
+                Debug.Log("Language.ShopQuestionInfoStrings.Count => " + Language.ShopQuestionInfoStrings.Count +
+                          " shopQuestionInfoTranslatedTexts.Count => " + shopQuestionInfoTranslatedTexts.Count);
                 for (int i = 0; i < shopQuestionInfoTranslatedTexts.Count; i++)
                 {
-                    Language.ShopQuestionInfoStrings[i].ActiveLanguage = shopQuestionInfoTranslatedTexts[i];
+                    if (i >= Language.ShopQuestionInfoStrings.Count) break;
+                    LanguageData currentData = shopQuestionInfoTranslatedTexts[i];
+                    Language.ShopQuestionInfoStrings[i] = new LanguageData(currentData.TargetID, Language.ShopQuestionInfoStrings[i].Key, currentData.Key);
                 }
 
-                Debug.Log("Language.WorkerInfoStrings.Count => " + Language.WorkerInfoStrings.Count + "workerInfoTranslatedTexts.Count => " + workerInfoTranslatedTexts.Count);
+                Debug.Log("Language.WorkerInfoStrings.Count => " + Language.WorkerInfoStrings.Count +
+                          " workerInfoTranslatedTexts.Count => " + workerInfoTranslatedTexts.Count);
                 for (int i = 0; i < workerInfoTranslatedTexts.Count; i++)
                 {
-                    Language.WorkerInfoStrings[i].ActiveLanguage = workerInfoTranslatedTexts[i];
+                    if (i >= Language.WorkerInfoStrings.Count) break;
+                    LanguageData currentData = workerInfoTranslatedTexts[i];
+                    Language.WorkerInfoStrings[i] = new LanguageData(currentData.TargetID, Language.WorkerInfoStrings[i].Key, currentData.Key);
                 }
-                //Customization
-                Debug.Log("Language.customize_SelectedAnEquipmentStrings.Count => " + Language.customize_SelectedAnEquipmentStrings.Count + "customize_OnSelectedAnEquipmentTranslatedTexts.Count => " + customize_OnSelectedAnEquipmentTranslatedTexts.Count);
-                for (int i = 0; i < customize_OnSelectedAnEquipmentTranslatedTexts.Count; i++)
+                //General
+
+                // MISSIONS
+                Debug.Log("Language.MissionHeaderMessages.Count => " + Language.MissionHeaderMessages.Count +
+                          " M_HeaderTranslatedTexts.Count => " + M_HeaderTranslatedTexts.Count);
+                for (int i = 0; i < M_HeaderTranslatedTexts.Count; i++)
                 {
-                    Language.customize_SelectedAnEquipmentStrings[i].ActiveLanguage = customize_OnSelectedAnEquipmentTranslatedTexts[i];
+                    if (i >= Language.MissionHeaderMessages.Count) break;
+                    LanguageData currentData = M_HeaderTranslatedTexts[i];
+                    Language.MissionHeaderMessages[i] = new LanguageData(currentData.TargetID, Language.MissionHeaderMessages[i].Key, currentData.Key);
                 }
 
-                Debug.Log("Language.customize_OnExitProcessStrings.Count => " + Language.customize_OnExitProcessStrings.Count + "customize_OnExitProcessTranslatedTexts.Count => " + customize_OnExitProcessTranslatedTexts.Count);
+                Debug.Log("Language.MissionDescriptionMessages.Count => " + Language.MissionDescriptionMessages.Count +
+                          " M_DescTranslatedTexts.Count => " + M_DescTranslatedTexts.Count);
+                for (int i = 0; i < M_DescTranslatedTexts.Count; i++)
+                {
+                    if (i >= Language.MissionDescriptionMessages.Count) break;
+                    LanguageData currentData = M_DescTranslatedTexts[i];
+                    Language.MissionDescriptionMessages[i] = new LanguageData(currentData.TargetID, Language.MissionDescriptionMessages[i].Key, currentData.Key);
+                }
+
+                Debug.Log("Language.MissionNpcInteractionHelperMessages.Count => " + Language.MissionNpcInteractionHelperMessages.Count +
+                          " M_NpcInteractionHelperTranslatedTexts.Count => " + M_NpcInteractionHelperTranslatedTexts.Count);
+                for (int i = 0; i < M_NpcInteractionHelperTranslatedTexts.Count; i++)
+                {
+                    if (i >= Language.MissionNpcInteractionHelperMessages.Count) break;
+                    LanguageData currentData = M_NpcInteractionHelperTranslatedTexts[i];
+                    Language.MissionNpcInteractionHelperMessages[i] = new LanguageData(currentData.TargetID, Language.MissionNpcInteractionHelperMessages[i].Key, currentData.Key);
+                }
+
+                Debug.Log("Language.MissionNpcInteractionColorTypeMessages.Count => " + Language.MissionNpcInteractionColorTypeMessages.Count +
+                          " M_NpcInteractionColorTypeTranslatedTexts.Count => " + M_NpcInteractionColorTypeTranslatedTexts.Count);
+                for (int i = 0; i < M_NpcInteractionColorTypeTranslatedTexts.Count; i++)
+                {
+                    if (i >= Language.MissionNpcInteractionColorTypeMessages.Count) break;
+                    LanguageData currentData = M_NpcInteractionColorTypeTranslatedTexts[i];
+                    Language.MissionNpcInteractionColorTypeMessages[i] = new LanguageData(currentData.TargetID, Language.MissionNpcInteractionColorTypeMessages[i].Key, currentData.Key);
+                }
+
+                Debug.Log("Language.MissionNpcInteractionColorMessages.Count => " + Language.MissionNpcInteractionColorMessages.Count +
+                          " M_NpcInteractionTargetColorTranslatedTexts.Count => " + M_NpcInteractionTargetColorTranslatedTexts.Count);
+                for (int i = 0; i < M_NpcInteractionTargetColorTranslatedTexts.Count; i++)
+                {
+                    if (i >= Language.MissionNpcInteractionColorMessages.Count) break;
+                    LanguageData currentData = M_NpcInteractionTargetColorTranslatedTexts[i];
+                    Language.MissionNpcInteractionColorMessages[i] = new LanguageData(currentData.TargetID, Language.MissionNpcInteractionColorMessages[i].Key, currentData.Key);
+                }
+
+                Debug.Log("Language.MissionNpcInteractionStateMessages.Count => " + Language.MissionNpcInteractionStateMessages.Count +
+                          " M_NpcInteractionStateTranslatedTexts.Count => " + M_NpcInteractionStateTranslatedTexts.Count);
+                for (int i = 0; i < M_NpcInteractionStateTranslatedTexts.Count; i++)
+                {
+                    if (i >= Language.MissionNpcInteractionStateMessages.Count) break;
+                    LanguageData currentData = M_NpcInteractionStateTranslatedTexts[i];
+                    Language.MissionNpcInteractionStateMessages[i] = new LanguageData(currentData.TargetID, Language.MissionNpcInteractionStateMessages[i].Key, currentData.Key);
+                }
+
+                Debug.Log("Language.MissionNpcInteractionTypeMessages.Count => " + Language.MissionNpcInteractionTypeMessages.Count +
+                          " M_NpcInteractionTypeTranslatedTexts.Count => " + M_NpcInteractionTypeTranslatedTexts.Count);
+                for (int i = 0; i < M_NpcInteractionTypeTranslatedTexts.Count; i++)
+                {
+                    if (i >= Language.MissionNpcInteractionTypeMessages.Count) break;
+                    LanguageData currentData = M_NpcInteractionTypeTranslatedTexts[i];
+                    Language.MissionNpcInteractionTypeMessages[i] = new LanguageData(currentData.TargetID, Language.MissionNpcInteractionTypeMessages[i].Key, currentData.Key);
+                }
+
+                // CUSTOMIZATION
+                Debug.Log("Language.customize_SelectedAnEquipmentStrings.Count => " + Language.customize_SelectedAnEquipmentStrings.Count +
+                          " customize_OnSelectedAnEquipmentTranslatedTexts.Count => " + customize_OnSelectedAnEquipmentTranslatedTexts.Count);
+                for (int i = 0; i < customize_OnSelectedAnEquipmentTranslatedTexts.Count; i++)
+                {
+                    if (i >= Language.customize_SelectedAnEquipmentStrings.Count) break;
+                    LanguageData currentData = customize_OnSelectedAnEquipmentTranslatedTexts[i];
+                    Language.customize_SelectedAnEquipmentStrings[i] = new LanguageData(currentData.TargetID, Language.customize_SelectedAnEquipmentStrings[i].Key, currentData.Key);
+                }
+
+                Debug.Log("Language.customize_OnExitProcessStrings.Count => " + Language.customize_OnExitProcessStrings.Count +
+                          " customize_OnExitProcessTranslatedTexts.Count => " + customize_OnExitProcessTranslatedTexts.Count);
                 for (int i = 0; i < customize_OnExitProcessTranslatedTexts.Count; i++)
                 {
-                    Language.customize_OnExitProcessStrings[i].ActiveLanguage = customize_OnExitProcessTranslatedTexts[i];
+                    if (i >= Language.customize_OnExitProcessStrings.Count) break;
+                    LanguageData currentData = customize_OnExitProcessTranslatedTexts[i];
+                    Language.customize_OnExitProcessStrings[i] = new LanguageData(currentData.TargetID, Language.customize_OnExitProcessStrings[i].Key, currentData.Key);
                 }
-                //Customization
-                //GeneralAdding
+
                 // JSON dosyasýný kaydet
                 Debug.LogWarning("Language Localization Test 1");
                 string jsonString = JsonUtility.ToJson(Language);
@@ -1357,5 +1461,11 @@ public class LanguageData
     {
         TargetID = _targetID;
         Key = _key;
+    }
+    public LanguageData(int _targetID, string _key, string _activeLanguage)
+    {
+        TargetID = _targetID;
+        Key = _key;
+        ActiveLanguage = _activeLanguage;
     }
 }

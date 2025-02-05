@@ -123,20 +123,37 @@ public class GameManager : MonoBehaviour
         // Çeviri tamamlandýðýnda callback fonksiyonunu çaðýrýn
         onTranslationComplete?.Invoke(translatedParts);
     }
-    public async System.Threading.Tasks.Task BulkTranslateAndAssignAsync(string language, List<string> textsToTranslate, Action<List<string>> onTranslationComplete)
+    public async System.Threading.Tasks.Task BulkTranslateAndAssignAsync(string language,List<LanguageData> textsToTranslateDatas,Action<List<LanguageData>> onTranslationComplete) // DÖNÜÞ TÝPÝNÝ List<LanguageData> YAPTIK!
     {
-        // 1. Adým: Tüm metinleri birleþtir
+        // 1. Adým: Çevrilecek metinleri ve TargetID'leri eþleþtiren bir liste oluþtur
+        List<(int TargetID, string Key)> textsWithIds = textsToTranslateDatas
+            .Select(data => (data.TargetID, data.Key))
+            .ToList();
+
+        // Çevrilecek metinleri al
+        List<string> textsToTranslate = textsWithIds.Select(x => x.Key).ToList();
+
+        // 2. Adým: Metinleri birleþtir
         string combinedText = string.Join("|", textsToTranslate);
 
-        // 2. Adým: Birleþik metni çevir
+        // 3. Adým: Birleþik metni çevir
         string translatedText = await translation.TranslateTextAsync(combinedText, GetLanguageShortString(language));
 
-        // 3. Adým: Çevirilen metni parçalara ayýr
+        // 4. Adým: Çevirilen metni parçala
         List<string> translatedParts = new List<string>(translatedText.Split('|'));
 
-        // Çeviri tamamlandýðýnda callback fonksiyonunu çaðýrýn
-        onTranslationComplete?.Invoke(translatedParts);
+        // 5. Adým: Çevirilen metinleri tekrar TargetID ile eþleþtir
+        List<LanguageData> translatedDataList = new List<LanguageData>();
+
+        for (int i = 0; i < textsWithIds.Count && i < translatedParts.Count; i++)
+        {
+            translatedDataList.Add(new LanguageData(textsWithIds[i].TargetID, translatedParts[i]));
+        }
+
+        // 6. Adým: Çeviri tamamlandýðýnda callback fonksiyonunu çaðýr
+        onTranslationComplete?.Invoke(translatedDataList);
     }
+
     public string GetLanguageShortString(string language)
     {
         return (language) switch
@@ -827,6 +844,7 @@ public class GameManager : MonoBehaviour
     public void TranslateSkillInfos()
     {
         List<LanguageData> skillInfoLanguageDatas = LanguageDatabase.instance.Language.SkillInfoStrings;
+        UIController.instance.languageStrings.Clear();
         int length = skillInfoLanguageDatas.Count;
         for (int i = 0; i < length; i++)
         {
@@ -836,6 +854,7 @@ public class GameManager : MonoBehaviour
     public void TranslatePictureInfos()
     {
         List<LanguageData> pictureInfoLanguageDatas = LanguageDatabase.instance.Language.PictureInfoStrings;
+        PicturesMenuController.instance.PictureStrings.Clear();
         int length = pictureInfoLanguageDatas.Count;
         for (int i = 0; i < length; i++)
         {
@@ -846,6 +865,7 @@ public class GameManager : MonoBehaviour
     public void TranslateShopQuestionInfos()
     {
         List<LanguageData> questionInfoLanguageDatas = LanguageDatabase.instance.Language.ShopQuestionInfoStrings;
+        UIController.instance.SkillQuestionInfos.Clear();
         int length = questionInfoLanguageDatas.Count;
         for (int i = 0; i < length; i++)
         {
