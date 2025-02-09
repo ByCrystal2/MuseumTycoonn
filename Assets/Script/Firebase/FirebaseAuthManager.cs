@@ -143,10 +143,6 @@ public class FirebaseAuthManager : MonoBehaviour
     {
         return auth;
     }
-    public FirebaseUser GetCurrentUser()
-    {
-        return currentUser;
-    }
     public DatabaseUser GetCurrentUserWithID()
     {
         return databaseUser;

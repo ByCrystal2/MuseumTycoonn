@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 public class TimeManager : MonoBehaviour
 {    
@@ -13,6 +14,9 @@ public class TimeManager : MonoBehaviour
     //Delegates
     public delegate void MinutePassedDelegate();
     public event MinutePassedDelegate OnOneMinutePassed;
+    public event MinutePassedDelegate OnTwoMinutePassed;
+    public event MinutePassedDelegate OnThreeMinutePassed;
+    public event MinutePassedDelegate OnFourMinutePassed;
     public event MinutePassedDelegate OnFiveMinutePassed;
     public event MinutePassedDelegate OnTenMinutePassed;
     //Delegates
@@ -119,46 +123,64 @@ public class TimeManager : MonoBehaviour
     //}
     private IEnumerator TimeProgress()
     {
-        int lastOneMinute = CurrentDateTime.Minute;
-        int nextFiveMinute = (CurrentDateTime.Minute / 5) * 5 + 5;
-        int nextTenMinute = (CurrentDateTime.Minute / 10) * 10 + 10;
+        int lastMinute = CurrentDateTime.Minute;
 
-        if (nextFiveMinute >= 60) nextFiveMinute -= 60;
-        if (nextTenMinute >= 60) nextTenMinute -= 60;
+        // Her dakika baþýna doðru olacak þekilde tetikleme noktalarý
+        HashSet<int> twoMinuteMarks = new HashSet<int>();
+        HashSet<int> threeMinuteMarks = new HashSet<int>();
+        HashSet<int> fourMinuteMarks = new HashSet<int>();
+        HashSet<int> fiveMinuteMarks = new HashSet<int>();
+        HashSet<int> tenMinuteMarks = new HashSet<int>();
+
+        // Dakikalarý iþaretleyerek baþlatýyoruz
+        for (int i = 2; i < 60; i += 2) twoMinuteMarks.Add(i);
+        for (int i = 3; i < 60; i += 3) threeMinuteMarks.Add(i);
+        for (int i = 4; i < 60; i += 4) fourMinuteMarks.Add(i);
+        for (int i = 5; i < 60; i += 5) fiveMinuteMarks.Add(i);
+        for (int i = 10; i < 60; i += 10) tenMinuteMarks.Add(i);
 
         while (true)
         {
             yield return new WaitForSeconds(1f); // 1 saniye bekle
-
-            CurrentDateTime = CurrentDateTime.AddSeconds(1); // Zamaný 1 saniye ilerlet
-
-            // Her dakika baþýnda delegate'i çaðýr
-            if (CurrentDateTime.Minute != lastOneMinute)
+            CurrentDateTime = CurrentDateTime.AddSeconds(1); // Zamaný ilerlet
+            if (CurrentDateTime.Minute != lastMinute)
             {
-                Debug.Log("1 dakika islemleri calisiyor...");
+                Debug.Log("CurrentDateTime dakika: " + CurrentDateTime.Minute);
+                lastMinute = CurrentDateTime.Minute;
+
+                // **1 Dakika iþlemleri**
+                Debug.Log("1 dakika iþlemleri çalýþýyor...");
                 OnOneMinutePassed?.Invoke();
-                lastOneMinute = CurrentDateTime.Minute;
+
+                // **Diðer iþlemler**
+                if (twoMinuteMarks.Contains(CurrentDateTime.Minute))
+                {
+                    Debug.Log("2 dakika iþlemleri çalýþýyor...");
+                    OnTwoMinutePassed?.Invoke();
+                }
+                if (threeMinuteMarks.Contains(CurrentDateTime.Minute))
+                {
+                    Debug.Log("3 dakika iþlemleri çalýþýyor...");
+                    OnThreeMinutePassed?.Invoke();
+                }
+                if (fourMinuteMarks.Contains(CurrentDateTime.Minute))
+                {
+                    Debug.Log("4 dakika iþlemleri çalýþýyor...");
+                    OnFourMinutePassed?.Invoke();
+                }
+                if (fiveMinuteMarks.Contains(CurrentDateTime.Minute))
+                {
+                    Debug.Log("5 dakika iþlemleri çalýþýyor...");
+                    OnFiveMinutePassed?.Invoke();
+                }
+                if (tenMinuteMarks.Contains(CurrentDateTime.Minute))
+                {
+                    Debug.Log("10 dakika iþlemleri çalýþýyor...");
+                    OnTenMinutePassed?.Invoke();
+                }
             }
 
-            // 5 dakikalýk kontrol
-            if (CurrentDateTime.Minute == nextFiveMinute)
-            {
-                Debug.Log("5 dakika islemleri calisiyor...");
-                OnFiveMinutePassed?.Invoke();
-                nextFiveMinute += 5;
-                if (nextFiveMinute >= 60) nextFiveMinute -= 60;
-            }
-
-            // 10 dakikalýk kontrol
-            if (CurrentDateTime.Minute == nextTenMinute)
-            {
-                Debug.Log("10 dakika islemleri calisiyor...");
-                OnTenMinutePassed?.Invoke();
-                nextTenMinute += 10;
-                if (nextTenMinute >= 60) nextTenMinute -= 60;
-            }
-
-            // Ödül sistemi kontrolü
+            // **Ödül sistemi kontrolü**
             if (GameManager.instance._rewardManager != null)
             {
                 if (!lastDailyCheck)
@@ -168,6 +190,10 @@ public class TimeManager : MonoBehaviour
             }
         }
     }
+
+
+
+
 
 
 

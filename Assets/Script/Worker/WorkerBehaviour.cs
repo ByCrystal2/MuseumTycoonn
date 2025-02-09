@@ -378,7 +378,7 @@ public class WorkerBehaviour : MonoBehaviour
             Debug.LogError("isci maaisini 3 seferdir alamadi, envantere kaldirildi", transform);
         }
     }
-    public static float BaseSalary = 10;
+    public static float BaseSalary = 30;
 
     private void OnMouseDown()
     {

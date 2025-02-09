@@ -8,11 +8,14 @@ public class InternetCheck : MonoBehaviour
 {
     private bool isInternetAvailable = true;
     public List<string> InfoStrings = new List<string>(); // 0 => Internet Connection | 1 => Your internet connection has been lost. | 2 => Please check your connection.| 3 => Your internet connection has been restored.
-    private InternetCheck instance;
+    public static InternetCheck instance { get; private set; }
     private void Awake()
     {
         if (instance)
+        {
+            Destroy(gameObject);
             return;
+        }
         instance = this;
         DontDestroyOnLoad(gameObject);
     }

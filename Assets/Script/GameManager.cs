@@ -237,7 +237,7 @@ public class GameManager : MonoBehaviour
 #if UNITY_EDITOR
         FirestoreManager.instance.UpdateGameLanguageInGameDatas(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
 #else
-        FirestoreManager.instance.UpdateGameLanguageInGameDatas(FirebaseAuthManager.instance.GetCurrentUser().UserId);
+        FirestoreManager.instance.UpdateGameLanguageInGameDatas(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
 #endif
     }
     public GameMode GetCurrentGameMode()
@@ -870,6 +870,16 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < length; i++)
         {
             UIController.instance.SkillQuestionInfos.Add(questionInfoLanguageDatas[i].ActiveLanguage);
+        }
+    }
+    public void TranslateInternetCheckInfoStrings()
+    {
+        List<LanguageData> checkInfoLanguageDatas = LanguageDatabase.instance.Language.InternetCheckInfoStrings;
+        InternetCheck.instance.InfoStrings.Clear();
+        int length = checkInfoLanguageDatas.Count;
+        for (int i = 0; i < length; i++)
+        {
+            InternetCheck.instance.InfoStrings.Add(checkInfoLanguageDatas[i].ActiveLanguage);
         }
     }
     public void TranslateNotificationMessages()

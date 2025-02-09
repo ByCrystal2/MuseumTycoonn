@@ -34,14 +34,16 @@ public class MissionManager : MonoBehaviour
     private void OnDisable()
     {
         //TimeManager.instance.OnFiveMinutePassed -= StartRandomGameMission;
-        TimeManager.instance.OnOneMinutePassed -= StartRandomGameMission;
+        //TimeManager.instance.OnThreeMinutePassed -= StartRandomGameMission;
+        TimeManager.instance.OnThreeMinutePassed -= StartRandomGameMission;
     }
     IEnumerator WaitForTimerManager()
     {
         yield return new WaitUntil(() => TimeManager.instance != null);
         Debug.Log("in WaitForTimerManager method.");
         //TimeManager.instance.OnFiveMinutePassed += StartRandomGameMission;
-        TimeManager.instance.OnOneMinutePassed += StartRandomGameMission;
+        //TimeManager.instance.OnThreeMinutePassed += StartRandomGameMission;
+        TimeManager.instance.OnThreeMinutePassed += StartRandomGameMission;
     }
     private void StartRandomGameMission()
     {

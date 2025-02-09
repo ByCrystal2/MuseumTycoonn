@@ -128,6 +128,7 @@ public class NpcManager : MonoBehaviour
             GameManager.instance.TranslateShopQuestionInfos();
             GameManager.instance.TranslateNotificationMessages();
             GameManager.instance.TranslateCustomizationStrings();
+            GameManager.instance.TranslateInternetCheckInfoStrings();
         }
         //TRANSLATE PROCESSES
         GameManager.instance.LoadSkills();

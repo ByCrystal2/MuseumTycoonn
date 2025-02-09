@@ -59,7 +59,7 @@ public class FirestoreManager : MonoBehaviour
     public IEnumerator CheckIfUserExists()
     {
         yield return new WaitUntil(() => db != null);
-        Query userQuery = db.Collection("Users").WhereEqualTo("userID", FirebaseAuthManager.instance.GetCurrentUser().UserId);
+        Query userQuery = db.Collection("Users").WhereEqualTo("userID", FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
 
         userQuery.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
@@ -87,12 +87,12 @@ public class FirestoreManager : MonoBehaviour
     
     private void AddNewPlayerToDataBase()
     {
-        Firebase.Auth.FirebaseUser user = FirebaseAuthManager.instance.GetCurrentUser();
+        DatabaseUser user = FirebaseAuthManager.instance.GetCurrentUserWithID();
         var userRegistration = new Dictionary<string, object>();        
-        string id = user.UserId;
+        string id = user.UserID;
         string email = user.Email;
         string telNo = user.PhoneNumber;
-        string name = user.DisplayName;
+        string name = user.Name;
         var signInDate = FieldValue.ServerTimestamp;
 
         userRegistration.Add("userID", id);
@@ -373,48 +373,61 @@ public class FirestoreManager : MonoBehaviour
         }
         else
         {
-            var userGameData = new Dictionary<string, object>();
+            try
+            {
+                var userGameData = new Dictionary<string, object>();
 
-            bool watchTutorial = false;
-            bool firstGame = true;
+                bool watchTutorial = false;
+                bool firstGame = true;
 
-            float gold = 0f, culture = 0f, gem = 0f, skillPoint = 0f;
-            int currentCultureLevel = 0;
-            userGameData.Add("IsWatchTutorial", watchTutorial);
-            userGameData.Add("IsFirstGame", firstGame);
-            userGameData.Add("Gold", gold);
-            userGameData.Add("Culture", culture);
-            userGameData.Add("Gem", gem);
-            userGameData.Add("SkillPoint", skillPoint);
-            userGameData.Add("CurrentCultureLevel", currentCultureLevel);
-            userGameData.Add("GameLanguage", "English");
-            userGameData.Add("ActiveRoomsRequiredMoney", GameManager.instance.ActiveRoomsRequiredMoney);
-            userGameData.Add("BaseWorkerHiringPrice", GameManager.instance.BaseWorkerHiringPrice);
-            userGameData.Add("PurchasedItemIDs", MuseumManager.instance.PurchasedItems.Select(x=> x.ID).ToList());
-            userGameData.Add("DailyRewardItemIDs", ItemManager.instance.CurrentDailyRewardItems.Select(x=> x.ID).ToList());
-            userGameData.Add("DailyRewardItemsPurchased", ItemManager.instance.CurrentDailyRewardItems.Select(x=> x.IsPurchased).ToList());
-            userGameData.Add("DailyRewardItemsLocked", ItemManager.instance.CurrentDailyRewardItems.Select(x=> x.IsLocked).ToList());
-            userGameData.Add("WorkersInInventoryIDs", MuseumManager.instance.WorkersInInventory.Select(x=> x.ID).ToList());
-            userGameData.Add("LastDailyRewardTime", MuseumManager.instance.lastDailyRewardTime.ToString("yyyy-MM-dd HH:mm:ss"));
-            userGameData.Add("WhatDay", TimeManager.instance.WhatDay);
-            userGameData.Add("RemoveAllAds", GoogleAdsManager.instance.adsData.RemovedAllAds);
-            //Achievements
-            userGameData.Add("PurchasedRoomCount", GPGamesManager.instance.achievementController.PurchasedRoomCount);
-            userGameData.Add("NumberOfTablesPlaced", GPGamesManager.instance.achievementController.NumberOfTablesPlaced );
-            userGameData.Add("NumberOfVisitors", GPGamesManager.instance.achievementController.NumberOfVisitors);
-            userGameData.Add("NumberOfStatuesPlaced", GPGamesManager.instance.achievementController.NumberOfStatuesPlaced);
-            userGameData.Add("TotalNumberOfMuseumVisitors", GPGamesManager.instance.achievementController.TotalNumberOfMuseumVisitors);
-            userGameData.Add("TotalWorkerHiringCount", GPGamesManager.instance.achievementController.TotalWorkerHiringCount);
-            userGameData.Add("TotalWorkerAssignCount", GPGamesManager.instance.achievementController.TotalWorkerAssignCount);
-            //Achievements
-            userGameData.Add( "Timestamp", FieldValue.ServerTimestamp);
+                float gold = 0f, culture = 0f, gem = 0f, skillPoint = 0f;
+                int currentCultureLevel = 0;
+                userGameData.Add("IsWatchTutorial", watchTutorial);
+                userGameData.Add("IsFirstGame", firstGame);
+                userGameData.Add("Gold", gold);
+                userGameData.Add("Culture", culture);
+                userGameData.Add("Gem", gem);
+                userGameData.Add("SkillPoint", skillPoint);
+                userGameData.Add("CurrentCultureLevel", currentCultureLevel);
+                userGameData.Add("GameLanguage", "English");
+                Debug.Log("AddNewPlayerGameDataToDatabase method control 1");
+                userGameData.Add("ActiveRoomsRequiredMoney", GameManager.instance.ActiveRoomsRequiredMoney);
+                userGameData.Add("BaseWorkerHiringPrice", GameManager.instance.BaseWorkerHiringPrice);
+                userGameData.Add("PurchasedItemIDs", MuseumManager.instance.PurchasedItems.Select(x => x.ID).ToList());
+                userGameData.Add("DailyRewardItemIDs", ItemManager.instance.CurrentDailyRewardItems.Select(x => x.ID).ToList());
+                userGameData.Add("DailyRewardItemsPurchased", ItemManager.instance.CurrentDailyRewardItems.Select(x => x.IsPurchased).ToList());
+                Debug.Log("AddNewPlayerGameDataToDatabase method control 2");
+                userGameData.Add("DailyRewardItemsLocked", ItemManager.instance.CurrentDailyRewardItems.Select(x => x.IsLocked).ToList());
+                userGameData.Add("WorkersInInventoryIDs", MuseumManager.instance.WorkersInInventory.Select(x => x.ID).ToList());
+                userGameData.Add("LastDailyRewardTime", MuseumManager.instance.lastDailyRewardTime.ToString("yyyy-MM-dd HH:mm:ss"));
+                userGameData.Add("WhatDay", TimeManager.instance.WhatDay);
+                userGameData.Add("RemoveAllAds", GoogleAdsManager.instance.adsData.RemovedAllAds);
+                Debug.Log("AddNewPlayerGameDataToDatabase method control 3");
+                //Achievements
+                userGameData.Add("PurchasedRoomCount", GPGamesManager.instance.achievementController.PurchasedRoomCount);
+                userGameData.Add("NumberOfTablesPlaced", GPGamesManager.instance.achievementController.NumberOfTablesPlaced);
+                userGameData.Add("NumberOfVisitors", GPGamesManager.instance.achievementController.NumberOfVisitors);
+                userGameData.Add("NumberOfStatuesPlaced", GPGamesManager.instance.achievementController.NumberOfStatuesPlaced);
+                userGameData.Add("TotalNumberOfMuseumVisitors", GPGamesManager.instance.achievementController.TotalNumberOfMuseumVisitors);
+                Debug.Log("AddNewPlayerGameDataToDatabase method control 4");
+                userGameData.Add("TotalWorkerHiringCount", GPGamesManager.instance.achievementController.TotalWorkerHiringCount);
+                userGameData.Add("TotalWorkerAssignCount", GPGamesManager.instance.achievementController.TotalWorkerAssignCount);
+                Debug.Log("AddNewPlayerGameDataToDatabase method control 5");
+                //Achievements
+                userGameData.Add("Timestamp", FieldValue.ServerTimestamp);
 
-            DocumentReference addTask = await collectionReference.AddAsync(userGameData);
+                DocumentReference addTask = await collectionReference.AddAsync(userGameData);
 
-            if (addTask != null)
-                Debug.Log($"Game data with user ID {FirebaseAuthManager.instance.GetCurrentUser()?.UserId} successfully added.");
-            else
-                Debug.LogError("Failed to add game data.");
+                if (addTask != null)
+                    Debug.Log($"Game data with user ID {FirebaseAuthManager.instance.GetCurrentUserWithID()?.UserID} successfully added.");
+                else
+                    Debug.LogError("Failed to add game data.");
+            }
+            catch (Exception _ex)
+            {
+                Debug.LogError("NewPlayerAdded Bug! : " + _ex.Message);
+            }
+            
         }
 
     }
