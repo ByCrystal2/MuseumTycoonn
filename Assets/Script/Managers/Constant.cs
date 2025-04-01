@@ -4,13 +4,13 @@ using UnityEngine;
 
 public static class Constant
 {
-    private const string iAPIDCompany = "com_kosippysudio_";
+    private const string iAPIDCompany = "com_sidragames_";
     public static string IAPIDCompany { get { return iAPIDCompany; } }
-    private const string iAPIDGame = "museumofexcesses_";
+    private const string iAPIDGame = "regallegacy_";
     public static string IAPIDGame { get { return iAPIDGame; } }
 
-    private const string MainFolderName = "Kosippy Studio";
-    private const string GameFolderName = "Museum of Excesses";
+    private const string MainFolderName = "SidraGames";
+    private const string GameFolderName = "RegalLegacy";
     public static readonly string SaveLocation = $"{MainFolderName}/{GameFolderName}";
 
     public static List<string> NPCNamesMale = new List<string>()
