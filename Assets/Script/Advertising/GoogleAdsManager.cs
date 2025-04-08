@@ -55,8 +55,8 @@ public class GoogleAdsManager : MonoBehaviour
     //const string _interstitialAdUnitId = "ca-app-pub-3940256099942544/1033173712"; // test id
     //const string _bannerViewAdId = "ca-app-pub-3940256099942544/6300978111"; // test id
 
-    const string _interstitialAdUnitId = "ca-app-pub-1301273545593514/7020426654";
-    const string _bannerViewAdId = "ca-app-pub-1301273545593514/3164054074";
+    const string _interstitialAdUnitId = "ca-app-pub-8077228590147031/3400693532";
+    const string _bannerViewAdId = "ca-app-pub-8077228590147031/6361661117";
 #elif PLATFORM_ANDROID
     const string _rewardedAdUnitId = "";
     const string _interstitialAdUnitId = "";
