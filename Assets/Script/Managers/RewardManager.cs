@@ -69,11 +69,11 @@ public class RewardManager : MonoBehaviour
         //Gem
         RewardAdData rad25 = new RewardAdData(25, 20, ItemType.Gem, 20);
         RewardAdData rad26 = new RewardAdData(26, 21, ItemType.Gem, 20);
-        RewardAdData rad27 = new RewardAdData(27, 22, ItemType.Gem, 20);
-        RewardAdData rad28 = new RewardAdData(28, 23, ItemType.Gem, 20);
-        RewardAdData rad29 = new RewardAdData(29, 24, ItemType.Gem, 20);
-        RewardAdData rad30 = new RewardAdData(30, 25, ItemType.Gem, 20);
-        //Gem
+        //RewardAdData rad27 = new RewardAdData(27, 22, ItemType.Gem, 20); Google addmoba eklendikten sonra aktif edilecek.
+        //RewardAdData rad28 = new RewardAdData(28, 23, ItemType.Gem, 20);
+        //RewardAdData rad29 = new RewardAdData(29, 24, ItemType.Gem, 20);
+        //RewardAdData rad30 = new RewardAdData(30, 25, ItemType.Gem, 20);
+        ////Gem
 
         //Gold
         RewardAdData rad31 = new RewardAdData(31, 3000, ItemType.Gold, 20);
@@ -111,10 +111,10 @@ public class RewardManager : MonoBehaviour
         rewardAdDatas.Add(rad24);
         rewardAdDatas.Add(rad25);
         rewardAdDatas.Add(rad26);
-        rewardAdDatas.Add(rad27);
-        rewardAdDatas.Add(rad28);
-        rewardAdDatas.Add(rad29);
-        rewardAdDatas.Add(rad30);
+        //rewardAdDatas.Add(rad27); Google addmoba eklendikten sonra aktif edilecek.
+        //rewardAdDatas.Add(rad28);
+        //rewardAdDatas.Add(rad29);
+        //rewardAdDatas.Add(rad30);
         rewardAdDatas.Add(rad31);
         rewardAdDatas.Add(rad32);
         rewardAdDatas.Add(rad33);
