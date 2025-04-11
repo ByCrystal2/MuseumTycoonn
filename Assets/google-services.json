@@ -12,7 +12,20 @@
           "package_name": "com.sidragames.regallegacy"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1095852848857-78ecivg6fagoa04ek2n3kotamui4apa4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sidragames.regallegacy",
+            "certificate_hash": "27599e570d82745346a733c26ce0dc1d4a307ca2"
+          }
+        },
+        {
+          "client_id": "1095852848857-bhram178hciepat02j2djllb4bnbu5mv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAVDYyCVJuII53KiWCbRJp0_OQiRCHUt5s"
@@ -20,9 +33,15 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1095852848857-bhram178hciepat02j2djllb4bnbu5mv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-8077228590147031~5438627537"
     }
   ],
   "configuration_version": "1"
