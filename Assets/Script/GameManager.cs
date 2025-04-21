@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
     public float BaseWorkerHiringPrice;
     public bool IsFirstGame = true, IsWatchTutorial;
     [SerializeField] bool enableRuntimeDebugger;
+    public bool IsDemo; // If this bool variable ‘IsDemo’ is true, the current version is the demo version.
 
     private System.Threading.CancellationTokenSource cts;
     DynamicTranslation translation;
@@ -539,7 +540,7 @@ public class GameManager : MonoBehaviour
         int totalWorkerHiringCount = gameDatas.ContainsKey("TotalWorkerHiringCount") ? Convert.ToInt32(gameDatas["TotalWorkerHiringCount"]) : 0;
         int totalWorkerAssignCount = gameDatas.ContainsKey("TotalWorkerAssignCount") ? Convert.ToInt32(gameDatas["TotalWorkerAssignCount"]) : 0;
 
-        GPGamesManager.instance.achievementController.SetDatas(purchasedRoomCount, numberOfTablesPlaced, numberOfVisitors, numberOfStatuesPlaced, totalNumberOfMuseumVisitors,totalWorkerHiringCount, totalWorkerAssignCount);
+        //GPGamesManager.instance.achievementController.SetDatas(purchasedRoomCount, numberOfTablesPlaced, numberOfVisitors, numberOfStatuesPlaced, totalNumberOfMuseumVisitors,totalWorkerHiringCount, totalWorkerAssignCount);
     }
     public void PictureChangesReqiuredAmountCalculater()
     {        
@@ -556,37 +557,37 @@ public class GameManager : MonoBehaviour
     }
     public async System.Threading.Tasks.Task LoadRemoveAds()
     {
-        try
-        {
-            Debug.Log("LoadRemoveAds test 1 complated;");
-            Dictionary<string, object> gameDatas = new Dictionary<string, object>();
+        //try
+        //{
+        //    Debug.Log("LoadRemoveAds test 1 complated;");
+        //    Dictionary<string, object> gameDatas = new Dictionary<string, object>();
 
-            gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID).WithCancellation(GetFirebaseToken().Token);
+        //    gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID).WithCancellation(GetFirebaseToken().Token);
 
-            AdverstingData databaseAdversting = new AdverstingData();
-            bool removeAds = gameDatas.ContainsKey("RemoveAllAds") ? Convert.ToBoolean(gameDatas["RemoveAllAds"]) : false;
-            databaseAdversting.RemovedAllAds = removeAds;
-            if (GoogleAdsManager.instance != null)
-                GoogleAdsManager.instance.adsData = databaseAdversting;
+        //    AdverstingData databaseAdversting = new AdverstingData();
+        //    bool removeAds = gameDatas.ContainsKey("RemoveAllAds") ? Convert.ToBoolean(gameDatas["RemoveAllAds"]) : false;
+        //    databaseAdversting.RemovedAllAds = removeAds;
+        //    if (GoogleAdsManager.instance != null)
+        //        GoogleAdsManager.instance.adsData = databaseAdversting;
 
-            Debug.Log("LoadRemoveAds test 2 complated;");
-            if (GoogleAdsManager.instance.adsData.RemovedAllAds)
-            {
-                GoogleAdsManager.instance.StartInterstitialAdBool(false);
-                GoogleAdsManager.instance.StartBannerAdBool(false);
-            }
-            else
-            {
-                GoogleAdsManager.instance.StartInterstitialAdBool(true);
-                GoogleAdsManager.instance.StartBannerAdBool(true);
-            }
-            GoogleAdsManager.instance.StartRewardAdBool(true);
-            Debug.Log("LoadRemoveAds test 3 complated;");
-        }
-        catch (Exception _Ex)
-        {
-            Debug.Log("LoadRemoveAds method caught an error => " + _Ex.Message);
-        }
+        //    Debug.Log("LoadRemoveAds test 2 complated;");
+        //    if (GoogleAdsManager.instance.adsData.RemovedAllAds)
+        //    {
+        //        GoogleAdsManager.instance.StartInterstitialAdBool(false);
+        //        GoogleAdsManager.instance.StartBannerAdBool(false);
+        //    }
+        //    else
+        //    {
+        //        GoogleAdsManager.instance.StartInterstitialAdBool(true);
+        //        GoogleAdsManager.instance.StartBannerAdBool(true);
+        //    }
+        //    GoogleAdsManager.instance.StartRewardAdBool(true);
+        //    Debug.Log("LoadRemoveAds test 3 complated;");
+        //}
+        //catch (Exception _Ex)
+        //{
+        //    Debug.Log("LoadRemoveAds method caught an error => " + _Ex.Message);
+        //}
        
 
     }
@@ -1148,7 +1149,7 @@ public class PlayerSaveData
     public List<SkillNode> SkillNodes = new List<SkillNode>();
     public List<WorkerData> CurrentWorkerDatas = new List<WorkerData>();
     public List<WorkerData> InventoryWorkerDatas = new List<WorkerData>();
-    public AdverstingData adData; //ADS SISTEMI KURULDUKTAN SONRA EKLENECEK.
+    //public AdverstingData adData; //ADS SISTEMI KURULDUKTAN SONRA EKLENECEK.
 
     public List<EditObjData> StatueDatas = new List<EditObjData>();
 

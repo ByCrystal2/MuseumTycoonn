@@ -177,7 +177,7 @@ public class NpcManager : MonoBehaviour
                 ItemManager.instance.CurrentDailyRewardItems[index] = updatedItem;
             }
             //GameManager.instance._rewardManager.CheckRewards(true);
-            GPGamesManager.instance.achievementController.FirstGameAchievement();
+            //GPGamesManager.instance.achievementController.FirstGameAchievement();
         }
         Debug.Log("Database load test 8 complated.");
         LoadingScene.ComplateLoadingStep();

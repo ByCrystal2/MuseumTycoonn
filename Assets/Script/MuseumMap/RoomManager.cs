@@ -101,7 +101,7 @@ public partial class RoomManager : MonoBehaviour
                 MuseumManager.instance.SpendingGem(purchasedRoom.RequiredMoney);
                 GameManager.instance.Save();
 
-                GoogleAdsManager.instance.ShowInterstitialAd();
+                //GoogleAdsManager.instance.ShowInterstitialAd();
             }
             else
             {
@@ -116,7 +116,7 @@ public partial class RoomManager : MonoBehaviour
                 RoomsActivationAndPurchasedControl(purchasedRoom, roomDatas);
                 MuseumManager.instance.SpendingGold(purchasedRoom.RequiredMoney);
                 GameManager.instance.Save();
-                GoogleAdsManager.instance.ShowInterstitialAd();
+                //GoogleAdsManager.instance.ShowInterstitialAd();
             }
             else
             {
@@ -128,7 +128,7 @@ public partial class RoomManager : MonoBehaviour
         {
             // Gercek Parayla satin alinan oda islemleri...
             //BuyingConsumables.instance.BuyItemFromStore(purchasedRoom);
-            GoogleAdsManager.instance.ShowInterstitialAd();
+            //GoogleAdsManager.instance.ShowInterstitialAd();
         }
     }
 
@@ -147,7 +147,7 @@ public partial class RoomManager : MonoBehaviour
         purchasedRoom.isLock = false;
         purchasedRoom.isActive = true;
         purchasedRoom.IsPurchased(true);
-        GPGamesManager.instance.achievementController.IncreasePurchasedRoomCount();
+        //GPGamesManager.instance.achievementController.IncreasePurchasedRoomCount();
         RoomUIHandler _purchasedHandler= UIController.instance.roomUISPanelController.GetRoomUI(purchasedRoom.availableRoomCell);
         _purchasedHandler.UpdateMyUI();
         int purchasedRoomCellNumber = purchasedRoom.availableRoomCell.CellNumber;
@@ -208,7 +208,7 @@ public partial class RoomManager : MonoBehaviour
 
         FirestoreManager.instance.roomDatasHandler.AddRoomsWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, forDatabaseRoomDatas);
 
-        GPGamesManager.instance.achievementController.PurchasedRoomControl();
+        //GPGamesManager.instance.achievementController.PurchasedRoomControl();
     }
 
     

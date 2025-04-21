@@ -213,7 +213,7 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
     }
     void AdsRemoveComplate(ItemData _ads)
     {
-        GoogleAdsManager.instance.RemoveAds();
+        //GoogleAdsManager.instance.RemoveAds();
         ItemManager.instance.GetAllItemDatas().Remove(_ads);
         ItemManager.instance.GetAllIAPItemDatas().Remove(_ads);
         MuseumManager.instance.PurchasedItems.Add(_ads);

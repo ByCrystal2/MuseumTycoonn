@@ -346,7 +346,7 @@ public class FortuneWheelManager : MonoBehaviour
 	/// <param name="awardCoins">Coins for user</param>
 	public void RewardCoins (int awardCoins)
 	{
-		GoogleAdsManager.instance.ShowRewardedAd();
+		//GoogleAdsManager.instance.ShowRewardedAd();
 		_currentCoinsAmount += awardCoins;
 		// Show animated delta coins
 		DeltaCoinsText.text = String.Format("+{0}", awardCoins);

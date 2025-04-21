@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Firebase.Auth;
 using UnityEngine.SceneManagement;
-using GooglePlayGames;
-using GooglePlayGames.BasicApi;
 using System.Linq;
 
 public class FirebaseAuthManager : MonoBehaviour
@@ -30,17 +28,18 @@ public class FirebaseAuthManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
-
     }
 
     void Start()
     {
+        auth = FirebaseAuth.DefaultInstance;
+
 #if UNITY_EDITOR
         if (System.IO.File.Exists(Application.persistentDataPath + "/" + "Admin/" + "LoggedIn_EditorUser" + ".json"))
         {
             EditorSingInController.gameObject.SetActive(false);
-            string jsonString = System.IO.File.ReadAllText(Application.persistentDataPath + "/" + "Admin/" + "LoggedIn_EditorUser" + ".json"); // read the json file from the file system
-            DatabaseUser user = JsonUtility.FromJson<DatabaseUser>(jsonString); // de-serialize the data to your myData object
+            string jsonString = System.IO.File.ReadAllText(Application.persistentDataPath + "/" + "Admin/" + "LoggedIn_EditorUser" + ".json");
+            DatabaseUser user = JsonUtility.FromJson<DatabaseUser>(jsonString);
             SetDatabaseUser(user);
             StartCoroutine(FirestoreManager.instance.CheckIfUserExists(databaseUser.UserID, databaseUser.Email, databaseUser.PhoneNumber, databaseUser.Name));
             CreateNewLoading();
@@ -49,59 +48,57 @@ public class FirebaseAuthManager : MonoBehaviour
         {
             EditorSingInController.gameObject.SetActive(true);
         }
-        return;
 #endif
-        PlayGamesPlatform.Activate();
-        PlayGamesPlatform.Instance.Authenticate(ProcessAuthentication);
+#if !UNITY_EDITOR
+        SignInWithEmailAndPassword("test@gmail.com", "testuser123");
+#endif
     }
 
-    internal void ProcessAuthentication(SignInStatus status)
+    public void SignInWithEmailAndPassword(string email, string password)
     {
-        if (status == SignInStatus.Success)
-        {
-            Debug.Log("ProcessAuthentication(SignInStatus status) Status success!");
-            try
-            {
-                PlayGamesPlatform.Instance.RequestServerSideAccess(true, code =>
-                {
-                    auth = FirebaseAuth.DefaultInstance;
-                    Credential credential = PlayGamesAuthProvider.GetCredential(code);
-                    StartCoroutine(AuthGet(credential));
-                });
-            }
-            catch (System.Exception e)
-            {
-                HandleException(e);
-            }
-        }
-        else
-        {
-
-            Debug.Log("Auth Failed! result => " + status.ToString());
-        }
+        StartCoroutine(SignInCoroutine(email, password));
     }
 
-    private IEnumerator AuthGet(Credential credential)
+    private IEnumerator SignInCoroutine(string email, string password)
     {
-        var task = auth.SignInWithCredentialAsync(credential);
-
+        var task = auth.SignInWithEmailAndPasswordAsync(email, password);
         yield return new WaitUntil(() => task.IsCompleted);
 
-        if (task.IsCanceled)
-        {
-            Debug.Log("Auth Cancelled!");
-        }
-        else if (task.IsFaulted)
+        if (task.IsCanceled || task.IsFaulted)
         {
             HandleException(task.Exception);
-            Debug.Log("Auth Faulted!");
         }
         else
         {
-            currentUser = task.Result;
-            databaseUser = new DatabaseUser(currentUser.DisplayName,currentUser.Email,currentUser.PhoneNumber,currentUser.UserId);
+            currentUser = task.Result.User;
+            databaseUser = new DatabaseUser(currentUser.DisplayName, currentUser.Email, currentUser.PhoneNumber, currentUser.UserId);
             StartCoroutine(FirestoreManager.instance.CheckIfUserExists());
-            Debug.Log("Auth Success => " + currentUser.UserId);
+            CreateNewLoading();
+        }
+    }
+
+    public void RegisterWithEmailAndPassword(string email, string password, string name)
+    {
+        StartCoroutine(RegisterCoroutine(email, password, name));
+    }
+
+    private IEnumerator RegisterCoroutine(string email, string password, string name)
+    {
+        var task = auth.CreateUserWithEmailAndPasswordAsync(email, password);
+        yield return new WaitUntil(() => task.IsCompleted);
+
+        if (task.IsCanceled || task.IsFaulted)
+        {
+            HandleException(task.Exception);
+        }
+        else
+        {
+            currentUser = task.Result.User;
+            UserProfile profile = new UserProfile { DisplayName = name };
+            currentUser.UpdateUserProfileAsync(profile);
+
+            databaseUser = new DatabaseUser(name, currentUser.Email, currentUser.PhoneNumber, currentUser.UserId);
+            StartCoroutine(FirestoreManager.instance.CheckIfUserExists());
             CreateNewLoading();
         }
     }
@@ -116,15 +113,16 @@ public class FirebaseAuthManager : MonoBehaviour
         Canvas[] canvases = FindObjectsOfType<Canvas>();
         Transform canvas = transform;
         foreach (Canvas c in canvases)
-            if (!loadingCanvasIgnoringTags.Contains(c.tag)){canvas = c.transform; break;}
+            if (!loadingCanvasIgnoringTags.Contains(c.tag)) { canvas = c.transform; break; }
         if (canvas != null)
         {
             GameObject obj = Instantiate(LoadingPanel, canvas);
             obj.GetComponent<LoadingScene>().LoadNextScene();
         }
         else
-            Debug.Log("Mevcut sahnede canvas bulunmamaktadir veya tum canvaslar engellenenler listesindedir. Mevcut sahne:"+SceneManager.GetActiveScene().name);
+            Debug.Log("Mevcut sahnede canvas bulunmamaktadir veya tum canvaslar engellenenler listesindedir. Mevcut sahne:" + SceneManager.GetActiveScene().name);
     }
+
     public void ForFireBaseLoading()
     {
         Canvas[] canvases = FindObjectsOfType<Canvas>();
@@ -139,19 +137,23 @@ public class FirebaseAuthManager : MonoBehaviour
         else
             Debug.Log("Mevcut sahnede canvas bulunmamaktadir veya tum canvaslar engellenenler listesindedir. Mevcut sahne:" + SceneManager.GetActiveScene().name);
     }
+
     public FirebaseAuth GetAuth()
     {
         return auth;
     }
+
     public DatabaseUser GetCurrentUserWithID()
     {
         return databaseUser;
     }
+
     public void SetDatabaseUser(DatabaseUser user)
     {
-        databaseUser = new DatabaseUser(user.Name,user.Email,user.PhoneNumber,user.UserID);
+        databaseUser = new DatabaseUser(user.Name, user.Email, user.PhoneNumber, user.UserID);
     }
 }
+
 [System.Serializable]
 public class DatabaseUser
 {
