@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
     public float BaseWorkerHiringPrice;
     public bool IsFirstGame = true, IsWatchTutorial;
     [SerializeField] bool enableRuntimeDebugger;
+    public bool IsDemo; // If the bool variable named ‘IsDemo’ in the GameManager script is true, the current build will be in the demo version.
 
     private System.Threading.CancellationTokenSource cts;
     DynamicTranslation translation;
