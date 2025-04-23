@@ -540,7 +540,7 @@ public class GameManager : MonoBehaviour
         int totalWorkerHiringCount = gameDatas.ContainsKey("TotalWorkerHiringCount") ? Convert.ToInt32(gameDatas["TotalWorkerHiringCount"]) : 0;
         int totalWorkerAssignCount = gameDatas.ContainsKey("TotalWorkerAssignCount") ? Convert.ToInt32(gameDatas["TotalWorkerAssignCount"]) : 0;
 
-        GPGamesManager.instance.achievementController.SetDatas(purchasedRoomCount, numberOfTablesPlaced, numberOfVisitors, numberOfStatuesPlaced, totalNumberOfMuseumVisitors,totalWorkerHiringCount, totalWorkerAssignCount);
+        //GPGamesManager.instance.achievementController.SetDatas(purchasedRoomCount, numberOfTablesPlaced, numberOfVisitors, numberOfStatuesPlaced, totalNumberOfMuseumVisitors,totalWorkerHiringCount, totalWorkerAssignCount);
     }
     public void PictureChangesReqiuredAmountCalculater()
     {        

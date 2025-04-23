@@ -267,7 +267,7 @@ public class ShopController : MonoBehaviour
         }
         else
         {
-            _newItem.transform.GetChild(5).transform.GetChild(2).GetComponent<Text>().text = BuyingConsumables.instance.GetProductLocalizedPriceString(_currentItem.IAP_ID);
+            //_newItem.transform.GetChild(5).transform.GetChild(2).GetComponent<Text>().text = BuyingConsumables.instance.GetProductLocalizedPriceString(_currentItem.IAP_ID);
             Debug.Log("_currentItem.IAP_ID => " + _currentItem.IAP_ID);
             _newItem.transform.GetChild(5).transform.GetChild(1).gameObject.SetActive(false);
 
@@ -362,7 +362,7 @@ public class ShopController : MonoBehaviour
             // {//Satin alma islemi iptalse. (no tusuna basildiysa)
 
             // }, null, null, null, null);
-            BuyingConsumables.instance.BuyItemFromStore(_item);
+            //BuyingConsumables.instance.BuyItemFromStore(_item);
             GameManager.instance.Save();
         }
 

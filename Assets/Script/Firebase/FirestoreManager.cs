@@ -210,13 +210,13 @@ public class FirestoreManager : MonoBehaviour
                 { "RemoveAllAds", GoogleAdsManager.instance.adsData.RemovedAllAds },
 
             //Achievements
-            { "PurchasedRoomCount", GPGamesManager.instance.achievementController.PurchasedRoomCount },
-            { "NumberOfTablesPlaced", GPGamesManager.instance.achievementController.NumberOfTablesPlaced },
-            { "NumberOfVisitors", GPGamesManager.instance.achievementController.NumberOfVisitors },
-            { "NumberOfStatuesPlaced", GPGamesManager.instance.achievementController.NumberOfStatuesPlaced },
-            { "TotalNumberOfMuseumVisitors", GPGamesManager.instance.achievementController.TotalNumberOfMuseumVisitors },
-            { "TotalWorkerHiringCount", GPGamesManager.instance.achievementController.TotalWorkerHiringCount },
-            { "TotalWorkerAssignCount", GPGamesManager.instance.achievementController.TotalWorkerAssignCount },
+            //{ "PurchasedRoomCount", GPGamesManager.instance.achievementController.PurchasedRoomCount },
+            //{ "NumberOfTablesPlaced", GPGamesManager.instance.achievementController.NumberOfTablesPlaced },
+            //{ "NumberOfVisitors", GPGamesManager.instance.achievementController.NumberOfVisitors },
+            //{ "NumberOfStatuesPlaced", GPGamesManager.instance.achievementController.NumberOfStatuesPlaced },
+            //{ "TotalNumberOfMuseumVisitors", GPGamesManager.instance.achievementController.TotalNumberOfMuseumVisitors },
+            //{ "TotalWorkerHiringCount", GPGamesManager.instance.achievementController.TotalWorkerHiringCount },
+            //{ "TotalWorkerAssignCount", GPGamesManager.instance.achievementController.TotalWorkerAssignCount },
                 //Achievements
                 { "Timestamp", FieldValue.ServerTimestamp }
 
@@ -404,14 +404,14 @@ public class FirestoreManager : MonoBehaviour
                 userGameData.Add("RemoveAllAds", GoogleAdsManager.instance.adsData.RemovedAllAds);
                 Debug.Log("AddNewPlayerGameDataToDatabase method control 3");
                 //Achievements
-                userGameData.Add("PurchasedRoomCount", GPGamesManager.instance.achievementController.PurchasedRoomCount);
-                userGameData.Add("NumberOfTablesPlaced", GPGamesManager.instance.achievementController.NumberOfTablesPlaced);
-                userGameData.Add("NumberOfVisitors", GPGamesManager.instance.achievementController.NumberOfVisitors);
-                userGameData.Add("NumberOfStatuesPlaced", GPGamesManager.instance.achievementController.NumberOfStatuesPlaced);
-                userGameData.Add("TotalNumberOfMuseumVisitors", GPGamesManager.instance.achievementController.TotalNumberOfMuseumVisitors);
-                Debug.Log("AddNewPlayerGameDataToDatabase method control 4");
-                userGameData.Add("TotalWorkerHiringCount", GPGamesManager.instance.achievementController.TotalWorkerHiringCount);
-                userGameData.Add("TotalWorkerAssignCount", GPGamesManager.instance.achievementController.TotalWorkerAssignCount);
+                //userGameData.Add("PurchasedRoomCount", GPGamesManager.instance.achievementController.PurchasedRoomCount);
+                //userGameData.Add("NumberOfTablesPlaced", GPGamesManager.instance.achievementController.NumberOfTablesPlaced);
+                //userGameData.Add("NumberOfVisitors", GPGamesManager.instance.achievementController.NumberOfVisitors);
+                //userGameData.Add("NumberOfStatuesPlaced", GPGamesManager.instance.achievementController.NumberOfStatuesPlaced);
+                //userGameData.Add("TotalNumberOfMuseumVisitors", GPGamesManager.instance.achievementController.TotalNumberOfMuseumVisitors);
+                //Debug.Log("AddNewPlayerGameDataToDatabase method control 4");
+                //userGameData.Add("TotalWorkerHiringCount", GPGamesManager.instance.achievementController.TotalWorkerHiringCount);
+                //userGameData.Add("TotalWorkerAssignCount", GPGamesManager.instance.achievementController.TotalWorkerAssignCount);
                 Debug.Log("AddNewPlayerGameDataToDatabase method control 5");
                 //Achievements
                 userGameData.Add("Timestamp", FieldValue.ServerTimestamp);
