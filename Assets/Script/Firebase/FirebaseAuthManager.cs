@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Firebase.Auth;
 using UnityEngine.SceneManagement;
-using GooglePlayGames;
-using GooglePlayGames.BasicApi;
 using System.Linq;
 
 public class FirebaseAuthManager : MonoBehaviour
@@ -51,57 +49,55 @@ public class FirebaseAuthManager : MonoBehaviour
         }
         return;
 #endif
-        PlayGamesPlatform.Activate();
-        PlayGamesPlatform.Instance.Authenticate(ProcessAuthentication);
+        auth = FirebaseAuth.DefaultInstance;
+        SignInWithEmailAndPassword("test@gmail.com", "testuser123");
     }
 
-    internal void ProcessAuthentication(SignInStatus status)
+    public void SignInWithEmailAndPassword(string email, string password)
     {
-        if (status == SignInStatus.Success)
-        {
-            Debug.Log("ProcessAuthentication(SignInStatus status) Status success!");
-            try
-            {
-                PlayGamesPlatform.Instance.RequestServerSideAccess(true, code =>
-                {
-                    auth = FirebaseAuth.DefaultInstance;
-                    Credential credential = PlayGamesAuthProvider.GetCredential(code);
-                    StartCoroutine(AuthGet(credential));
-                });
-            }
-            catch (System.Exception e)
-            {
-                HandleException(e);
-            }
-        }
-        else
-        {
-
-            Debug.Log("Auth Failed! result => " + status.ToString());
-        }
+        StartCoroutine(SignInCoroutine(email, password));
     }
 
-    private IEnumerator AuthGet(Credential credential)
+    private IEnumerator SignInCoroutine(string email, string password)
     {
-        var task = auth.SignInWithCredentialAsync(credential);
-
+        var task = auth.SignInWithEmailAndPasswordAsync(email, password);
         yield return new WaitUntil(() => task.IsCompleted);
 
-        if (task.IsCanceled)
-        {
-            Debug.Log("Auth Cancelled!");
-        }
-        else if (task.IsFaulted)
+        if (task.IsCanceled || task.IsFaulted)
         {
             HandleException(task.Exception);
-            Debug.Log("Auth Faulted!");
         }
         else
         {
-            currentUser = task.Result;
-            databaseUser = new DatabaseUser(currentUser.DisplayName,currentUser.Email,currentUser.PhoneNumber,currentUser.UserId);
+            currentUser = task.Result.User;
+            databaseUser = new DatabaseUser(currentUser.DisplayName, currentUser.Email, currentUser.PhoneNumber, currentUser.UserId);
             StartCoroutine(FirestoreManager.instance.CheckIfUserExists());
-            Debug.Log("Auth Success => " + currentUser.UserId);
+            CreateNewLoading();
+        }
+    }
+
+    public void RegisterWithEmailAndPassword(string email, string password, string name)
+    {
+        StartCoroutine(RegisterCoroutine(email, password, name));
+    }
+
+    private IEnumerator RegisterCoroutine(string email, string password, string name)
+    {
+        var task = auth.CreateUserWithEmailAndPasswordAsync(email, password);
+        yield return new WaitUntil(() => task.IsCompleted);
+
+        if (task.IsCanceled || task.IsFaulted)
+        {
+            HandleException(task.Exception);
+        }
+        else
+        {
+            currentUser = task.Result.User;
+            UserProfile profile = new UserProfile { DisplayName = name };
+            currentUser.UpdateUserProfileAsync(profile);
+
+            databaseUser = new DatabaseUser(name, currentUser.Email, currentUser.PhoneNumber, currentUser.UserId);
+            StartCoroutine(FirestoreManager.instance.CheckIfUserExists());
             CreateNewLoading();
         }
     }
@@ -113,6 +109,7 @@ public class FirebaseAuthManager : MonoBehaviour
 
     public void CreateNewLoading()
     {
+        Debug.Log("CreateNewLoading method is starting...");
         Canvas[] canvases = FindObjectsOfType<Canvas>();
         Transform canvas = transform;
         foreach (Canvas c in canvases)

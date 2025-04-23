@@ -12,7 +12,7 @@ using UnityEngine.UI;
 public class LoadingScene : MonoBehaviour
 {
     public Slider loadingSlider; // Eðer yükleme çubuðu kullanacaksanýz
-    public TextMeshProUGUI loadingText;
+    public Text loadingText;
     bool isLoading = false; // Yüklenme durumunu takip eden bayrak
     public void LoadNextScene()
     {
