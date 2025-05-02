@@ -27,7 +27,6 @@ public class pnlRewardAdController : MonoBehaviour, IPointerClickHandler
             {
                 adStarting = false;
                 UIController.instance.CloseRewardAdPanel(true);
-                GoogleAdsManager.instance.StartRewardAdBool(true);
             }
         }
     }
@@ -63,6 +62,5 @@ public class pnlRewardAdController : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        GoogleAdsManager.instance.ShowRewardedAd();
     }
 }

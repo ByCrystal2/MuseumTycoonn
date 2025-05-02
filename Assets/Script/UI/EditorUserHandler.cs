@@ -11,30 +11,30 @@ public class EditorUserHandler : MonoBehaviour
     [SerializeField] Text eMail_Text;
     [SerializeField] Text phone_Text;
     [SerializeField] Button login_Button;
-    DatabaseUser user;
+    //DatabaseUser user;
     private void Start()
     {
         login_Button.onClick.RemoveAllListeners();
         login_Button.onClick.AddListener(LoginProcess);
     }
-    public void InitEditorUser(DatabaseUser _user)
-    {
-        name_Text.text = _user.Name;
-        iD_Text.text = _user.UserID;
-        eMail_Text.text = _user.Email;
-        phone_Text.text = _user.PhoneNumber;
-        user = new DatabaseUser(_user.Name, _user.Email, _user.PhoneNumber, _user.UserID);
-    }
+    //public void InitEditorUser(DatabaseUser _user)
+    //{
+    //    name_Text.text = _user.Name;
+    //    iD_Text.text = _user.UserID;
+    //    eMail_Text.text = _user.Email;
+    //    phone_Text.text = _user.PhoneNumber;
+    //    user = new DatabaseUser(_user.Name, _user.Email, _user.PhoneNumber, _user.UserID);
+    //}
     void LoginProcess()
     {
+        //Data json'dan cekilmeli (editor giris islemleri!!)
         UIInteractHandler.instance.AskQuestion("Login", $"Do you want to log in with the account name {name_Text.text}?", (x) => {
             //UIInteractHandler.instance.AskQuestion("")
-            FirebaseAuthManager.instance.SetDatabaseUser(user);
-            StartCoroutine(FirestoreManager.instance.CheckIfUserExists(user.UserID, user.Email, user.PhoneNumber, user.Name));
+            //StartCoroutine(FirestoreManager.instance.CheckIfUserExists(user.UserID, user.Email, user.PhoneNumber, user.Name));
 
             if (EditorUserSignCanvasController.instance.IsRememberMe())
             {
-                string jsonData = JsonUtility.ToJson(user, true);
+                //string jsonData = JsonUtility.ToJson(user, true);
                 string folderPath = Path.Combine(Application.persistentDataPath, "Admin");
                 string filePath = Path.Combine(folderPath, "LoggedIn_EditorUser.json");
 
@@ -49,7 +49,7 @@ public class EditorUserHandler : MonoBehaviour
                 if (!File.Exists(filePath))
                 {
                     Debug.Log("Dosya mevcut deðil, oluþturuluyor...");
-                    File.WriteAllText(filePath, jsonData);
+                    //File.WriteAllText(filePath, jsonData);
                     Debug.Log("Veri kaydedildi: " + filePath);
                 }
                 else
@@ -57,7 +57,7 @@ public class EditorUserHandler : MonoBehaviour
                     Debug.Log("File exists.");
                 }
             }        
-            FirebaseAuthManager.instance.CreateNewLoading();
+            //FirebaseAuthManager.instance.CreateNewLoading();
         });
     }
 }

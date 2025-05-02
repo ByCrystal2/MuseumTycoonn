@@ -103,7 +103,7 @@ public class CustomizeHandler : MonoBehaviour
             (yes) =>
             {
                 SwitchCustomizePanel();
-                FirestoreManager.instance.customizationDatasHandler.AddCustomizationDataWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, characterCustomizeData,true);
+                //Data json'dan cekilmeli (customize datalarinin kaydedilmesi..)
                 RightUIPanelController.instance.UIVisibleClose(false);
                 PlayerManager.instance.UnLockPlayer();
                 UIController.instance.CloseJoystickObj(false);
@@ -116,7 +116,7 @@ public class CustomizeHandler : MonoBehaviour
         UIInteractHandler.instance.AskQuestion("Özelleþtirmeyi Kaydet #Çeviri", "Deðiþiklikleri onaylýyor musunuz? (Mevcut Slotu Kaydeder.) #Çeviri",
             (yes) =>
             {
-                FirestoreManager.instance.customizationDatasHandler.AddCustomizationDataWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, characterCustomizeData, false);
+                //FirestoreManager.instance.customizationDatasHandler.AddCustomizationDataWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, characterCustomizeData, false);
                 UpdateEquipmentStats();
             }, null, null, null, null, null);
     }

@@ -70,7 +70,6 @@ public class ObjectLeaveRoomPanelController : MonoBehaviour
         UIController.instance.SetActivationRoomEditingPanel(false);
         RightUIPanelController.instance.UIVisibleClose(false);
         UIController.instance.CloseJoystickObj(false);
-        FirestoreManager.instance.statueDatasHandler.AddOrUpdateStatueWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, flagData);
         gameObject.SetActive(false);
     }
 }

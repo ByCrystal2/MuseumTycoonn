@@ -113,8 +113,6 @@ public class DialogueManager : MonoBehaviour
         GameManager.instance.IsFirstGame = false;
         SetActivationDialoguePanel(false);
         await DatabaseWaitingDatas();
-        GPGamesManager.instance.achievementController.IncreaseNumberOfStatuesPlaced();
-        GPGamesManager.instance.achievementController.StatuesPlacedCountControl();
         currentTrigger.gameObject.SetActive(false);
         UIController.instance.tutorialUISPanel.gameObject.SetActive(false);
         PlayerManager.instance.UnLockPlayer();
@@ -128,8 +126,6 @@ public class DialogueManager : MonoBehaviour
         //    npc.enabled = true;
         //}
         SpawnHandler.instance.StartSpawnProcess();
-
-        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, true);
 
         CinemachineTransition(false);
         //GameManager.instance.Save();
@@ -147,24 +143,11 @@ public class DialogueManager : MonoBehaviour
         newDatabaseItem.id = 208;
 
        MuseumManager.instance.lastDailyRewardTime = DailyRewardsPanelController.instance.firstItemPurchasedtime;
-
-        string userID = FirebaseAuthManager.instance.GetCurrentUserWithID().UserID;
-
-        await FirestoreManager.instance.roomDatasHandler.IERoomDataProcces(userID, RoomManager.instance.CurrentEditedRoom);
         EditObjData clickedEditObjBehaviour = RoomManager.instance.statuesHandler.editObjs.Where(x => x.ID == 9999).SingleOrDefault();
         clickedEditObjBehaviour._currentRoomCell = new RoomCell(CellLetter.A, 5);
-        FirestoreManager.instance.statueDatasHandler.AddOrUpdateStatueWithUserId(userID, clickedEditObjBehaviour);
-
-        await FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId(userID, newDatabaseItem);
-         FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId(userID, MuseumManager.instance.InventoryPictures.Where(x => x.painterData.ID == 9999).SingleOrDefault());
-
-         await FirestoreManager.instance.skillDatasHandler.AddSkillWithUserId(userID, SkillTreeManager.instance.skillNodes.Where(x=> x.ID == 0).SingleOrDefault());
-         FirestoreManager.instance.skillDatasHandler.AddSkillWithUserId(userID, SkillTreeManager.instance.skillNodes.Where(x=> x.ID == 1).SingleOrDefault());
 
         List<RoomData> activeRoomDatas = RoomManager.instance.RoomDatas.Where(x => x.isActive).ToList();
-        await FirestoreManager.instance.roomDatasHandler.AddRoomsWithUserId(userID, activeRoomDatas);
-         FirestoreManager.instance.workerDatasHandler.AddWorkerWithUserId(userID, MuseumManager.instance.CurrentActiveWorkers.FirstOrDefault().MyDatas);
-        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
+        //Data json'dan cekilmeli (tutorialda dialog bitince cagirilan ve temel verilen databaseye kaydedilme islemleri...)
 
     }
     private void CinemachineTransition(bool _goTutorial)
@@ -301,7 +284,7 @@ public class DialogueManager : MonoBehaviour
             sceneTransPanel.DOLocalMove(new Vector3(169, 2383, 0), 5);
             yield return new WaitForSeconds(5);
             yield return StartCoroutine(TutorialEndPanelController.Instance.IEStartEndPanelProgress());
-            FirebaseAuthManager.instance.CreateNewLoading();
+            //Data json'dan cekilmeli (CreateNewLoading metotu cagilirmali.)
         }
         else
         {

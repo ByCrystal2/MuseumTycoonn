@@ -250,7 +250,6 @@ public class StatuesHandler
         Debug.Log($"In OnInventoryAddingProcess method: myTargetRoom is null? {myTargetRoom == null}, myTargetRoom.isHasStatue: {myTargetRoom.isHasStatue}, myTargetRoom.StatueID: {myTargetRoom.GetMyStatueInTheMyRoom().ID}");
         myTargetRoom.isHasStatue = false;
         myTargetRoom.SetMyStatue(null);
-        FirestoreManager.instance.roomDatasHandler.IERoomDataProcces(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, myTargetRoom);
         activeEditObjs.Remove(currentData);
         inventoryEditObjs.Add(currentData);
         OrderBy(false);

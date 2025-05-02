@@ -127,7 +127,6 @@ public class DailyRewardsPanelController : MonoBehaviour
             newInventoryItem.painterData = new PainterData(_currentRewardItem.ID, _currentRewardItem.Description, _currentRewardItem.Name, _currentRewardItem.StarCount);
             MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
 
-             FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
         }
         //GameManager.instance.Save();
     }

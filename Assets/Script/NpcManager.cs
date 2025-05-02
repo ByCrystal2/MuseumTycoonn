@@ -54,7 +54,6 @@ public class NpcManager : MonoBehaviour
 
         GameManager.instance._rewardManager = FindObjectOfType<RewardManager>();
         AudioManager.instance.buttonSoundHandlers = FindObjectsOfType<ButtonSoundHandler>().ToList();
-        FirebaseAuthManager.instance.ForFireBaseLoading();
         AwakeLoadingProcesses();
     }
     public bool databaseProcessComplated = false;
@@ -67,8 +66,6 @@ public class NpcManager : MonoBehaviour
         {
             GameManager.instance.ActiveRoomsRequiredMoney = 1000;
             GameManager.instance.BaseWorkerHiringPrice = 500;
-
-            await FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
         }
         LoadingScene.ComplateLoadingStep();
         Debug.Log("Database load test 2 complated.");
@@ -83,8 +80,6 @@ public class NpcManager : MonoBehaviour
         LoadingScene.ComplateLoadingStep();
         Debug.Log("Database load test 4 complated.");
         //Gaming Services Activation
-
-        BuyingConsumables.instance.InitializePurchasing();
         Debug.Log("Database load test 5 complated.");
         LoadingScene.ComplateLoadingStep();
         //Start Method
@@ -177,7 +172,6 @@ public class NpcManager : MonoBehaviour
                 ItemManager.instance.CurrentDailyRewardItems[index] = updatedItem;
             }
             //GameManager.instance._rewardManager.CheckRewards(true);
-            GPGamesManager.instance.achievementController.FirstGameAchievement();
         }
         Debug.Log("Database load test 8 complated.");
         LoadingScene.ComplateLoadingStep();
@@ -186,7 +180,6 @@ public class NpcManager : MonoBehaviour
         Debug.Log("Database load test 9 complated.");
         UIController.instance.SetUpdateWeeklyRewards();
         Debug.Log("Database load test 10 complated.");
-        await GameManager.instance.LoadRemoveAds();
         LoadingScene.ComplateLoadingStep();
         Debug.Log("Database load test 11 complated.");
         await GameManager.instance.LoadRooms();

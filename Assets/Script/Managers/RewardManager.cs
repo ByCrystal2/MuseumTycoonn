@@ -246,8 +246,6 @@ public class RewardManager : MonoBehaviour
         Debug.Log("[AFTER] TimeManager.instance.timeData.WhatDay => " + TimeManager.instance.WhatDay);
 
         UIController.instance.SetUpdateWeeklyRewards();
-
-        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
         //GameManager.instance.Save();
 
     }

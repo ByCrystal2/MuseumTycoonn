@@ -267,7 +267,7 @@ public class ShopController : MonoBehaviour
         }
         else
         {
-            _newItem.transform.GetChild(5).transform.GetChild(2).GetComponent<Text>().text = BuyingConsumables.instance.GetProductLocalizedPriceString(_currentItem.IAP_ID);
+            _newItem.transform.GetChild(5).transform.GetChild(2).GetComponent<Text>().text = "demo";
             Debug.Log("_currentItem.IAP_ID => " + _currentItem.IAP_ID);
             _newItem.transform.GetChild(5).transform.GetChild(1).gameObject.SetActive(false);
 
@@ -299,7 +299,7 @@ public class ShopController : MonoBehaviour
                          newInventoryItem.painterData = new PainterData(_item.ID, _item.Description, _item.Name, _item.StarCount);
                          MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
 
-                         FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, newInventoryItem);
+                         //Data json'dan cekilmeli (yeni item ekleme)
                          ItemsBuyingUpdate(_item);
                      }
                  }
@@ -335,7 +335,7 @@ public class ShopController : MonoBehaviour
                         newInventoryItem.painterData = new PainterData(_item.ID, _item.Description, _item.Name, _item.StarCount);
                         MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
 
-                        FirestoreManager.instance.pictureDatasHandler.AddPictureIdWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, newInventoryItem);
+                        //Data json'dan cekilmeli (yeni item ekleme)
 
                         ItemsBuyingUpdate(_item);
                     }
@@ -362,7 +362,6 @@ public class ShopController : MonoBehaviour
             // {//Satin alma islemi iptalse. (no tusuna basildiysa)
 
             // }, null, null, null, null);
-            BuyingConsumables.instance.BuyItemFromStore(_item);
             GameManager.instance.Save();
         }
 
@@ -372,8 +371,6 @@ public class ShopController : MonoBehaviour
         ItemManager.instance.ShopItemDatas.Remove(_item);
         MuseumManager.instance.PurchasedItems.Add(_item);
         //ItemManager.instance.AddItemInShop(ItemManager.instance.RItems[Random.Range(0, ItemManager.instance.RItems.Count)]);
-
-        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
 
         GetCurrentShoppingTypeItems();
     }

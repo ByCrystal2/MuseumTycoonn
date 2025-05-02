@@ -1,4 +1,3 @@
-using Firebase.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -77,7 +76,6 @@ public class RoomData : MonoBehaviour
     }
     public async void LoadThisRoom()
     {
-        string userID = FirebaseAuthManager.instance.GetCurrentUserWithID().UserID;
         RequiredMoney = GameManager.instance.ActiveRoomsRequiredMoney;
 
         if (CurrentShoppingType == ShoppingType.RealMoney)
@@ -182,48 +180,36 @@ public class RoomData : MonoBehaviour
 
                         //PictureData currentPictureData = GameManager.instance.CurrentSaveData.CurrentPictures.Where(x => x.id == pe._pictureData.id).SingleOrDefault();
                         Debug.Log("RoomCode => " + availableRoomCell.CellLetter.ToString() + availableRoomCell.CellNumber.ToString() + " pe.name => " + pe.name + " and pe._pictureData.id => " + pe._pictureData.id);
-                        FirestoreManager.instance.pictureDatasHandler.GetPictureInDatabase(userID, pe._pictureData.id)
-                        .ContinueWithOnMainThread(async (task) =>
+                        PictureData databasePicture = new PictureData(); //Data json'dan cekilmeli
+                        if (databasePicture != null)
                         {
-                            if (task.IsCompleted && !task.IsFaulted)
+                            Debug.Log("databaseRoom.painterData.ID => " + databasePicture.painterData.ID + " databaseRoom.isActive => " + databasePicture.isActive + " databaseRoom.TextureID => " + databasePicture.TextureID);
+
+                            if (databasePicture.isActive)
                             {
-                                PictureData databasePicture = task.Result;
-                                if (databasePicture != null)
+                                pe._pictureData = databasePicture;
+                                pe.UpdateVisual(true);
+                                if (!isLock)
                                 {
-                                    Debug.Log("databaseRoom.painterData.ID => " + databasePicture.painterData.ID + " databaseRoom.isActive => " + databasePicture.isActive + " databaseRoom.TextureID => " + databasePicture.TextureID);
-
-                                    if (databasePicture.isActive)
-                                    {
-                                        pe._pictureData = databasePicture;
-                                        pe.UpdateVisual(true);
-                                        if (!isLock)
-                                        {
-                                            if (pe._pictureData.TextureID > 0)
-                                                pe.SetImage(true);
-                                            RoomManager.instance.ActivateRoomLocations(this);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //Eger mevcut PictureElement'in Picture ID'si ile Database PictureDatas dokumani TabloID eslesiyorsa ve bu eslesmeden gelen pictureData'nin isActivesi false ise buraya girer.
-
-                                    }
-
+                                    if (pe._pictureData.TextureID > 0)
+                                        pe.SetImage(true);
+                                    RoomManager.instance.ActivateRoomLocations(this);
                                 }
                             }
                             else
                             {
-                                Debug.LogError("Hata olustu: " + task.Exception);
+                                //Eger mevcut PictureElement'in Picture ID'si ile Database PictureDatas dokumani TabloID eslesiyorsa ve bu eslesmeden gelen pictureData'nin isActivesi false ise buraya girer.
                             }
-                        });
-
-
+                        }
+                    }
+                    else
+                    {
+                        //Debug.LogError("Hata olustu: " + task.Exception);
                     }
                 }
             }
-        }        
-        Debug.Log("This Room is loaded => " + availableRoomCell.CellLetter.ToString() + availableRoomCell.CellNumber.ToString());
-    }
+        }
+    }     
 
 
     IEnumerator WaitForRoomUISHandler()

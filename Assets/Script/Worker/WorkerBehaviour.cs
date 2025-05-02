@@ -325,8 +325,7 @@ public class WorkerBehaviour : MonoBehaviour
             mainModule.duration = 5;
             item.Stop();
             item.Play();
-        }
-        FirestoreManager.instance.workerDatasHandler.UpdateWorkerData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, MyDatas);
+        }        
     }
 
     private void OnEnergyRunOut()

@@ -159,6 +159,5 @@ public class SettingsController : MonoBehaviour
 
     private void ShowAchievementsUI()
     {
-        GPGamesManager.instance.achievementController.ShowAchievements();
     }
 }

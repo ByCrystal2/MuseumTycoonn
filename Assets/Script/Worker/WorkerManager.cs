@@ -1,4 +1,3 @@
-using Firebase.Extensions;
 using GameTask;
 using System.Collections;
 using System.Collections.Generic;
@@ -246,8 +245,6 @@ public class WorkerManager : MonoBehaviour
     public void AddWorkerToInventory(WorkerBehaviour _newWorker)
     {
         MuseumManager.instance.WorkersInInventory.Add(_newWorker);
-
-        FirestoreManager.instance.UpdateGameData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
     }
     public int GetBaseHiringWorkerWithMuseumLevel()
     {
@@ -280,12 +277,9 @@ public class WorkerManager : MonoBehaviour
             data.MyRoomWorkersIDs.Clear();
         }
         worker.MyDatas.WorkerIn = WorkerIn.Inventory;
-        FirestoreManager.instance.roomDatasHandler.AddRoomsWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, workerRooms);
 
         worker.MyDatas.WorkRoomsIDs.Clear();
         worker.MyScript.IWorkRoomsIDs.Clear();
-
-        FirestoreManager.instance.workerDatasHandler.UpdateWorkerData(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, worker.MyDatas);
 
         MuseumManager.instance.CurrentActiveWorkers.Remove(worker);
         MuseumManager.instance.WorkersInInventory.Add(worker);

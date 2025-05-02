@@ -715,10 +715,9 @@ public class UIController : MonoBehaviour
                 currentSkill.Purchased(true);
 
                 //Database skill Adding
-                FirestoreManager.instance.skillDatasHandler.AddSkillWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, currentSkill);
+                //Data json'dan cekilmeli (yeni skill ekleme)
 
                 SkillTreeManager.instance.RefreshSkillBonuses();
-                GoogleAdsManager.instance.ShowInterstitialAd();
             }
             else
             {
@@ -1092,7 +1091,6 @@ public class UIController : MonoBehaviour
     }
     public void ActiveInHierarchyDailyRewardPanelControl()
     {
-        GoogleAdsManager.instance.ShowInterstitialAd();
         if (!dailyRewardActive)
         {
             GeneralButtonActivation(true, DailyRewardPanelOnButton);

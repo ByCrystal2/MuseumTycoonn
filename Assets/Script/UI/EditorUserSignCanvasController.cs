@@ -21,12 +21,12 @@ public class EditorUserSignCanvasController : MonoBehaviour
     private void OnEnable()
     {
         ClearContent();
-        List<DatabaseUser> users = FirebaseAuthManager.instance.editorUsers;
-        foreach (DatabaseUser user in users)
-        {
-            EditorUserHandler userHandler = Instantiate(editUserUIPrefab, content);
-            userHandler.InitEditorUser(user);
-        }
+        //List<DatabaseUser> users = FirebaseAuthManager.instance.editorUsers;
+        //foreach (DatabaseUser user in users)
+        //{
+        //    EditorUserHandler userHandler = Instantiate(editUserUIPrefab, content);
+        //    userHandler.InitEditorUser(user);
+        //}
     }
     void ClearContent()
     {

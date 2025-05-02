@@ -208,7 +208,6 @@ public class PicturesMenuController : MonoBehaviour
             MuseumManager.instance.SpendingGold(GameManager.instance.PictureChangeRequiredAmount);
             if (CurrentPicture._pictureData.isFirst)
             {
-                GPGamesManager.instance.achievementController.IncreaseNumberOfTablesPlaced();
                 SetPictureUpdateButton(false, PictureStrings[0], Color.white);
                 CurrentPicture._pictureData.isActive = true;
                 //MuseumManager.instance.GetPictureElement(PictureChangeRequiredAmount = Mathf.RoundToInt(CurrentPicture._pictureData.RequiredGold * 0.5f);
@@ -254,18 +253,13 @@ public class PicturesMenuController : MonoBehaviour
             if(!isFirst)
                 MuseumManager.instance.InventoryPictures.Add(inventoryData);
             MuseumManager.instance.GetPictureElement(CurrentPicture._pictureData.id).UpdateVisual();
-            string userID = FirebaseAuthManager.instance.GetCurrentUserWithID().UserID;
-
-            FirestoreManager.instance.pictureDatasHandler.UpdatePictureData(userID, wallData.painterData.ID, inventoryData);
-            FirestoreManager.instance.pictureDatasHandler.UpdatePictureData(userID, inventoryData.painterData.ID, wallData);
+            //Data json'dan cekilmeli (envanterde ki data duvarda ki dataya, duvarda ki datanin envanterde ki dataya gelis kismi.)
             Debug.Log("inventoryData.painterData.ID => " + inventoryData.painterData.ID + " wallData.painterData.ID => " + wallData.painterData.ID);
             Debug.Log("inventoryData.isActive => " + inventoryData.isActive + " wallData.isActive => " + wallData.isActive);
             //FirestoreManager.instance.firestoreItemsManager.AddSkillWithUserId(FirebaseAuthManager.instance.GetCurrentUser().UserId,CurrentPicture._pictureData.id); // asil kod bu. Testten sonra buna gecilmeli!
             UpdatePicture();
             CurrentPicture.SetImage(!CurrentPicture._pictureData.isLocked);
             StartCoroutine(nameof(WaitForSpendingGoldPicture));
-
-            GPGamesManager.instance.achievementController.PlacedTableControl();
         }
         else
         {

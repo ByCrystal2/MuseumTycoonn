@@ -213,13 +213,8 @@ public class RoomEditingPanelController : MonoBehaviour
         RoomManager.instance.statuesHandler.UpdateSendingStatueDatas(currentStateContent.MyStatue);
         if (GameManager.instance.IsWatchTutorial)
         {
-            string userID = FirebaseAuthManager.instance.GetCurrentUserWithID().UserID;
 
-            await FirestoreManager.instance.roomDatasHandler.IERoomDataProcces(userID, RoomManager.instance.CurrentEditedRoom);
-            FirestoreManager.instance.statueDatasHandler.AddOrUpdateStatueWithUserId(userID, currentStateContent.MyStatue);
-
-            GPGamesManager.instance.achievementController.IncreaseNumberOfStatuesPlaced();
-            GPGamesManager.instance.achievementController.StatuesPlacedCountControl();
+            
         }
         ClickedEditObjBehaviour = null;
         //UIController.instance.SetActivationRoomEditingPanel(false);
