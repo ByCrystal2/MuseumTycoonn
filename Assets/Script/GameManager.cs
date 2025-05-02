@@ -187,7 +187,7 @@ public class GameManager : MonoBehaviour
             string userId = FirebaseAuthManager.instance.GetCurrentUserWithID().UserID;
 
             // Fetch game data from Firestore
-            Dictionary<string, object> gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(userId)
+            Dictionary<string, object> gameDatas = await FirestoreManager.instance.GetUserGameDataAsync(userId)
                 .WithCancellation(GameManager.instance.GetFirebaseToken().Token)
                 .ContinueWithOnMainThread(task =>
                 {

@@ -1,484 +1,553 @@
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
-using Firebase.Firestore;
-using Firebase.Extensions;
-using Firebase;
-using System.Linq;
-using System;
-using TaskExtensions;
+using FirebaseWebGL.Scripts.FirebaseBridge; // Namespace for FirebaseWebGL Bridge
 
 public class FirestoreManager : MonoBehaviour
 {
-    public FirebaseFirestore db;
-    public FirestoreRoomDatasHandler roomDatasHandler;
-    public FirestorePictureDatasHandler pictureDatasHandler;
-    public FirestoreStatueDatasHandler statueDatasHandler;
-    public FirestoreSkillDatasHandler skillDatasHandler;
-    public FirestoreWorkerDatasHandler workerDatasHandler;
-    public FirestoreCustomizationDatasHandler customizationDatasHandler;
-    public static FirestoreManager instance { get; private set;}
+    // Singleton instance
+    public static FirestoreManager instance { get; private set; }
+
+    // TaskCompletionSources for async operations
+    private TaskCompletionSource<string> getUserTCS;
+    private TaskCompletionSource<string> createUserTCS;
+    private TaskCompletionSource<string> createGameDataTCS;
+    private TaskCompletionSource<Dictionary<string, object>> getGameDataTCS;
+    private TaskCompletionSource<bool> updateGameLangTCS;
+
+    // Temporarily store userId for query
+    private string queryUserId;
+
     private void Awake()
     {
-        if (instance)
+        // Setup singleton pattern
+        if (instance != null && instance != this)
         {
             Destroy(gameObject);
             return;
         }
         instance = this;
-        DontDestroyOnLoad(gameObject);       
+        DontDestroyOnLoad(gameObject);
+
+        // Ensure a consistent GameObject name for callbacks (needed for SendMessage from JS)
+        gameObject.name = "FirestoreManager";
     }
 
-    private void Start()
+    /// <summary>
+    /// Checks if a user exists by userId, creates a new user document if not,
+    /// and ensures a GameDatas document under the user. Returns the user document ID.
+    /// </summary>
+    public async Task<string> GetOrCreateUserAsync(string userId, string userEmail, string userTelNo, string userName)
     {
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
+        // Attempt to find existing user document by userId
+        string userDocId = await GetUserDocumentIdByUserID(userId);
+        if (string.IsNullOrEmpty(userDocId))
         {
-            if (task.IsCompleted)
-            {
-                FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(innerTask =>
-                {
-                    Firebase.DependencyStatus dependencyStatus = innerTask.Result;
-                    if (dependencyStatus == Firebase.DependencyStatus.Available)
-                    {
-                        // Firebase is ready to use.
-                        db = FirebaseFirestore.DefaultInstance;
-                        Debug.Log("Firebase Firestore is ready to use.");
-                    }
-                    else
-                    {
-                        Debug.LogError($"Could not resolve all Firebase dependencies: {dependencyStatus}");
-                    }
-                });
-            }
-            else
-            {
-                Debug.LogError("Failed to check and fix Firebase dependencies.");
-            }
-        });
+            // User not found; create new user document
+            userDocId = await CreateUserDocumentAsync(userId, userEmail, userTelNo, userName);
+            // After creating user, create a GameDatas subcollection document
+            await CreateUserGameDataDocAsync(userDocId);
+        }
+        return userDocId;
     }
-    public IEnumerator CheckIfUserExists()
-    {
-        yield return new WaitUntil(() => db != null);
-        Query userQuery = db.Collection("Users").WhereEqualTo("userID", FirebaseAuthManager.instance.GetCurrentUserWithID().UserID);
 
-        userQuery.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+    /// <summary>
+    /// Retrieves the user's GameDatas document fields as a dictionary (including a "_docId" entry for the document ID).
+    /// </summary>
+    public async Task<Dictionary<string, object>> GetUserGameDataAsync(string userId)
+    {
+        // Get user document ID by userId
+        string userDocId = await GetUserDocumentIdByUserID(userId);
+        if (string.IsNullOrEmpty(userDocId))
+            return null;
+
+        // Prepare to get game data
+        getGameDataTCS = new TaskCompletionSource<Dictionary<string, object>>();
+
+        // Call Firestore to get documents in subcollection "GameDatas"
+        FirebaseFirestore.GetDocumentsInCollection($"Users/{userDocId}/GameDatas",
+            gameObject.name, "OnGetUserGameDataSuccess", "OnGetUserGameDataError");
+
+        // Wait for callback and get result dictionary
+        Dictionary<string, object> gameData = await getGameDataTCS.Task;
+        return gameData;
+    }
+
+    /// <summary>
+    /// Updates only the "GameLanguage" field in the user's GameDatas document.
+    /// </summary>
+    public async Task UpdateGameLanguageAsync(string userId, object newLanguage)
+    {
+        // Find the user document ID
+        string userDocId = await GetUserDocumentIdByUserID(userId);
+        if (string.IsNullOrEmpty(userDocId))
+            throw new Exception("User document not found for userID: " + userId);
+
+        // Get the GameDatas document (including its document ID in returned dictionary)
+        Dictionary<string, object> gameData = await GetUserGameDataAsync(userId);
+        if (gameData == null || !gameData.ContainsKey("_docId"))
+            throw new Exception("GameDatas document not found for userID: " + userId);
+        string gameDataDocId = gameData["_docId"].ToString();
+
+        // Prepare JSON for update (only the GameLanguage field)
+        Dictionary<string, object> updateDict = new Dictionary<string, object>
         {
-            if (task.IsCompleted)
-            {
-                QuerySnapshot snapshot = task.Result;
+            { "GameLanguage", newLanguage }
+        };
+        string jsonUpdate = DictionaryToJson(updateDict);
 
-                if (snapshot.Count > 0)
-                {
-                    Debug.Log("User exists in database.");
-                    //veriler burda yuklenecek...
+        updateGameLangTCS = new TaskCompletionSource<bool>();
 
-                }
-                else
-                {
-                    AddNewPlayerToDataBase();
-                }
-            }
-            else
-            {
-                Debug.LogError("Error getting document: " + task.Exception);
-            }
-        });
+        // Call Firestore to update the document field
+        FirebaseFirestore.UpdateDocument($"Users/{userDocId}/GameDatas",
+            gameDataDocId, jsonUpdate, gameObject.name, "OnUpdateGameDataSuccess", "OnUpdateGameDataError");
+
+        // Wait for callback completion
+        await updateGameLangTCS.Task;
     }
-    
-    private void AddNewPlayerToDataBase()
-    {
-        DatabaseUser user = FirebaseAuthManager.instance.GetCurrentUserWithID();
-        var userRegistration = new Dictionary<string, object>();        
-        string id = user.UserID;
-        string email = user.Email;
-        string telNo = user.PhoneNumber;
-        string name = user.Name;
-        var signInDate = FieldValue.ServerTimestamp;
 
-        userRegistration.Add("userID", id);
-        userRegistration.Add("userEmail", email);
-        userRegistration.Add("userTelNo", telNo);
-        userRegistration.Add("userName", name);
-        userRegistration.Add("userSignInDate", signInDate);
-        db.Collection("Users").AddAsync(userRegistration).ContinueWithOnMainThread(task => {
-            if (task.IsCompleted)
-            {
-                Debug.Log("User added successfully.");
-                AddNewPlayerGameDataToDatabase(task.Result);
-            }
-            else
-            {
-                Debug.LogError("Failed to add user: " + task.Exception);
-            }
-        });
+    /// <summary>
+    /// Helper to get the Firestore document ID for a user by userId field.
+    /// Returns empty string if not found.
+    /// </summary>
+    private async Task<string> GetUserDocumentIdByUserID(string userId)
+    {
+        queryUserId = userId;
+        getUserTCS = new TaskCompletionSource<string>();
+
+        // Get all documents in "Users" collection
+        FirebaseFirestore.GetDocumentsInCollection("Users", gameObject.name, "OnGetUsersSuccess", "OnGetUsersError");
+
+        // Wait for callback and result (docId or empty)
+        string docId = await getUserTCS.Task;
+        return docId;
     }
-    DocumentReference gameDataRef;
-    public async System.Threading.Tasks.Task UpdateGameData(string userId, bool _overwrite = false)
-    {
-        if (GameManager.instance != null) if (!GameManager.instance.IsWatchTutorial && !_overwrite) return;
-        // Kullanýcý ID'si ile belgeyi sorgula
-        var museumDatas = MuseumManager.instance.GetSaveData();
-        Debug.Log("UpdateGameData method is starting...");
 
-        if (gameDataRef == null)
+    /// <summary>
+    /// Creates a new user document in "Users" collection with provided fields.
+    /// Returns the new document ID.
+    /// </summary>
+    private async Task<string> CreateUserDocumentAsync(string userId, string userEmail, string userTelNo, string userName)
+    {
+        createUserTCS = new TaskCompletionSource<string>();
+
+        // Prepare user data dictionary
+        Dictionary<string, object> userData = new Dictionary<string, object>
         {
-            Query query = db.Collection("Users").WhereEqualTo("userID", userId);
-            try
-            {
+            { "userID", userId },
+            { "userEmail", userEmail },
+            { "userTelNo", userTelNo },
+            { "userName", userName },
+            { "userSignInDate", DateTime.UtcNow.ToString("o") } // ISO 8601 format
+        };
+        string jsonUser = DictionaryToJson(userData);
 
-                await query.GetSnapshotAsync().ContinueWithOnMainThread(async task =>
+        // Create document in "Users" with autogenerated ID
+        FirebaseFirestore.AddDocument("Users", jsonUser, gameObject.name, "OnCreateUserSuccess", "OnCreateUserError");
+
+        // Wait for callback to get new doc ID
+        string newDocId = await createUserTCS.Task;
+        return newDocId;
+    }
+
+    /// <summary>
+    /// Creates a new document in the "GameDatas" subcollection for a given user document ID.
+    /// Returns the new game data document ID.
+    /// </summary>
+    private async Task<string> CreateUserGameDataDocAsync(string userDocId)
+    {
+        createGameDataTCS = new TaskCompletionSource<string>();
+
+        // Prepare initial game data (e.g. default GameLanguage)
+        Dictionary<string, object> gameData = new Dictionary<string, object>
+        {
+            { "GameLanguage", "EN" }
+        };
+        string jsonGameData = DictionaryToJson(gameData);
+
+        // Add document to subcollection "GameDatas" under the user document
+        FirebaseFirestore.AddDocument($"Users/{userDocId}/GameDatas", jsonGameData, gameObject.name,
+            "OnCreateGameDataSuccess", "OnCreateGameDataError");
+
+        // Wait for callback to get new game data doc ID
+        string newGameDataDocId = await createGameDataTCS.Task;
+        return newGameDataDocId;
+    }
+
+    #region FirebaseWebGL Bridge Callback Handlers
+
+    // Called when GetDocumentsInCollection("Users", ...) succeeds.
+    private void OnGetUsersSuccess(string json)
+    {
+        try
+        {
+            string foundDocId = string.Empty;
+
+            // Parse JSON response to find user with matching userID
+            var data = JsonParser.Parse(json) as Dictionary<string, object>;
+            if (data != null && data.ContainsKey("documents"))
             {
-                if (task.IsCompleted)
+                var documents = data["documents"] as List<object>;
+                if (documents != null)
                 {
-                    QuerySnapshot snapshot = task.Result;
-
-                    if (snapshot.Documents.Count() > 0)
+                    foreach (var docObj in documents)
                     {
-                        DocumentSnapshot documentSnapshot = snapshot.Documents.FirstOrDefault();
-                        DocumentReference documentReference = documentSnapshot.Reference;
-
-                        // Belge varsa, alt koleksiyon olan PictureDatas'ta tabloyu bul ve güncelle
-                        CollectionReference gameDatasRef = documentReference.Collection("GameDatas");
-
-                        await gameDatasRef.GetSnapshotAsync().ContinueWithOnMainThread(async gameDataTask =>
+                        var doc = docObj as Dictionary<string, object>;
+                        if (doc != null && doc.ContainsKey("fields") && doc.ContainsKey("name"))
                         {
-                            if (gameDataTask.IsCompleted)
+                            var fields = doc["fields"] as Dictionary<string, object>;
+                            if (fields != null && fields.ContainsKey("userID"))
                             {
-                                QuerySnapshot gameDataSnapshot = gameDataTask.Result;
-
-                                if (gameDataSnapshot.Documents.Count() > 0)
+                                var userIdField = fields["userID"] as Dictionary<string, object>;
+                                if (userIdField != null && userIdField.ContainsKey("stringValue"))
                                 {
-                                    Debug.Log("GameData is exits with " + userId + " userId");
-                                    DocumentSnapshot gameDataDocument = gameDataSnapshot.Documents.FirstOrDefault();
-                                    gameDataRef = gameDataDocument.Reference;
-
-                                    UpdateGameDatasHelper(museumDatas, gameDataRef, userId);
-
+                                    string idVal = userIdField["stringValue"] as string;
+                                    if (idVal == queryUserId)
+                                    {
+                                        // Found the matching user document
+                                        string fullName = doc["name"] as string;
+                                        foundDocId = ExtractDocumentIdFromName(fullName);
+                                        break;
+                                    }
                                 }
                             }
-                            else
-                            {
-                                Debug.LogError($"Error querying game data: {gameDataTask.Exception}");
-                            }
-                        });
-                    }
-                    else
-                    {
-                        Debug.LogError($"No document found for user ID: {userId}");
+                        }
                     }
                 }
-                else
-                {
-                    Debug.LogError($"Error querying documents: {task.Exception}");
-                }
-            });
             }
-            catch (Exception _ex)
+            // Set result (either foundDocId or empty if not found)
+            if (getUserTCS != null && !getUserTCS.Task.IsCompleted)
             {
-                Debug.LogError($"UpdateGameData method error cathing. Error: " + _ex.Message);
-            } 
+                getUserTCS.SetResult(foundDocId);
+            }
         }
-        else
+        catch (Exception e)
         {
-            UpdateGameDatasHelper(museumDatas, gameDataRef, userId);
-            Debug.Log("GameData is not null!");
+            if (getUserTCS != null)
+                getUserTCS.SetException(e);
         }
     }
-    async void UpdateGameDatasHelper((float _gold,float _Culture, float _Gem, float _SkillPoint, int _CurrentCultureLevel) museumDatas, DocumentReference gameDataRef, string userId)
+
+    // Called if GetDocumentsInCollection("Users", ...) fails.
+    private void OnGetUsersError(string error)
+    {
+        if (getUserTCS != null && !getUserTCS.Task.IsCompleted)
+            getUserTCS.SetException(new Exception(error));
+    }
+
+    private void OnCreateUserSuccess(string name)
+    {
+        // 'name' should be the full document path or doc ID
+        string docId = ExtractDocumentIdFromName(name);
+        if (createUserTCS != null && !createUserTCS.Task.IsCompleted)
+            createUserTCS.SetResult(docId);
+    }
+
+    private void OnCreateUserError(string error)
+    {
+        if (createUserTCS != null && !createUserTCS.Task.IsCompleted)
+            createUserTCS.SetException(new Exception(error));
+    }
+
+    private void OnCreateGameDataSuccess(string name)
+    {
+        string docId = ExtractDocumentIdFromName(name);
+        if (createGameDataTCS != null && !createGameDataTCS.Task.IsCompleted)
+            createGameDataTCS.SetResult(docId);
+    }
+
+    private void OnCreateGameDataError(string error)
+    {
+        if (createGameDataTCS != null && !createGameDataTCS.Task.IsCompleted)
+            createGameDataTCS.SetException(new Exception(error));
+    }
+
+    // Called when GetDocumentsInCollection("Users/{user}/GameDatas", ...) succeeds.
+    private void OnGetUserGameDataSuccess(string json)
     {
         try
         {
-            Dictionary<string, object> updates = new Dictionary<string, object>
+            Dictionary<string, object> result = new Dictionary<string, object>();
+            var data = JsonParser.Parse(json) as Dictionary<string, object>;
+            if (data != null && data.ContainsKey("documents"))
             {
-                { "IsWatchTutorial",  GameManager.instance.IsWatchTutorial},
-                { "IsFirstGame", GameManager.instance.IsFirstGame },
-                { "Gold", museumDatas._gold },
-                { "Culture", museumDatas._Culture },
-                { "Gem", museumDatas._Gem },
-                { "SkillPoint", museumDatas._SkillPoint },
-                { "CurrentCultureLevel", museumDatas._CurrentCultureLevel },
-                { "GameLanguage", GameManager.instance.GetGameLanguage() },
-                { "ActiveRoomsRequiredMoney", GameManager.instance.ActiveRoomsRequiredMoney },
-                { "BaseWorkerHiringPrice", GameManager.instance.BaseWorkerHiringPrice },
-                { "PurchasedItemIDs", MuseumManager.instance.PurchasedItems.Select(x=> x.ID).ToList() },
-                { "DailyRewardItemIDs", ItemManager.instance.CurrentDailyRewardItems.Select(x=> x.ID).ToList() },
-                { "DailyRewardItemsPurchased", ItemManager.instance.CurrentDailyRewardItems.Select(x=> x.IsPurchased).ToList() },
-                { "DailyRewardItemsLocked", ItemManager.instance.CurrentDailyRewardItems.Select(x=> x.IsLocked).ToList() },
-                { "WorkersInInventoryIDs", MuseumManager.instance.WorkersInInventory.Select(x=> x.ID).ToList()},
-                { "LastDailyRewardTime", MuseumManager.instance.lastDailyRewardTime.ToString("yyyy-MM-dd HH:mm:ss") },
-                { "WhatDay", TimeManager.instance.WhatDay },
-                { "RemoveAllAds", GoogleAdsManager.instance.adsData.RemovedAllAds },
-
-            //Achievements
-            //{ "PurchasedRoomCount", GPGamesManager.instance.achievementController.PurchasedRoomCount },
-            //{ "NumberOfTablesPlaced", GPGamesManager.instance.achievementController.NumberOfTablesPlaced },
-            //{ "NumberOfVisitors", GPGamesManager.instance.achievementController.NumberOfVisitors },
-            //{ "NumberOfStatuesPlaced", GPGamesManager.instance.achievementController.NumberOfStatuesPlaced },
-            //{ "TotalNumberOfMuseumVisitors", GPGamesManager.instance.achievementController.TotalNumberOfMuseumVisitors },
-            //{ "TotalWorkerHiringCount", GPGamesManager.instance.achievementController.TotalWorkerHiringCount },
-            //{ "TotalWorkerAssignCount", GPGamesManager.instance.achievementController.TotalWorkerAssignCount },
-                //Achievements
-                { "Timestamp", FieldValue.ServerTimestamp }
-
-            };
-
-            await gameDataRef.UpdateAsync(updates).ContinueWithOnMainThread(updateTask =>
-            {
-                if (updateTask.IsCompleted)
+                var documents = data["documents"] as List<object>;
+                if (documents != null && documents.Count > 0)
                 {
-                    Debug.Log($"Game data successfully updated for user {userId}");
-                }
-                else if (updateTask.IsFaulted)
-                {
-                    Debug.LogError($"Failed to update game data: {updateTask.Exception}");
-                }
-            });
-        }
-        catch (Exception _ex)
-        {
-            Debug.LogError($"Error updating game data: {_ex}");
-        }
-    }
-    string updatedLanguage = "";
-    public async System.Threading.Tasks.Task UpdateGameLanguageInGameDatas(string userId)
-    {
-        // Kullanýcý ID'si ile belgeyi sorgula
-        if (updatedLanguage == GameManager.instance.GetGameLanguage()) return;
-
-        Query query = db.Collection("Users").WhereEqualTo("userID", userId);
-        Debug.Log("UpdateGameLanguageInGameDatas method is starting...");
-
-        try
-        {
-            QuerySnapshot snapshot = await query.GetSnapshotAsync().WithCancellation(GameManager.instance.GetFirebaseToken().Token);
-
-            if (snapshot.Documents.Count() > 0)
-            {
-                DocumentSnapshot documentSnapshot = snapshot.Documents.FirstOrDefault();
-                DocumentReference documentReference = documentSnapshot.Reference;
-
-                // Belge varsa, alt koleksiyon olan GameDatas'ta tabloyu bul ve güncelle
-                CollectionReference gameDatasRef = documentReference.Collection("GameDatas");
-
-                QuerySnapshot gameDataSnapshot = await gameDatasRef.GetSnapshotAsync().WithCancellation(GameManager.instance.GetFirebaseToken().Token);
-
-                if (gameDataSnapshot.Documents.Count() > 0)
-                {
-                    Debug.Log("GameData exists with userId " + userId);
-                    DocumentSnapshot gameDataDocument = gameDataSnapshot.Documents.FirstOrDefault();
-                    DocumentReference gameDataRef = gameDataDocument.Reference;
-
-                    var museumDatas = MuseumManager.instance.GetSaveData();
-
-                    try
+                    // Take first document in GameDatas subcollection
+                    var doc = documents[0] as Dictionary<string, object>;
+                    if (doc != null)
                     {
-                        Dictionary<string, object> updates = new Dictionary<string, object>
-                    {
-                        { "GameLanguage", GameManager.instance.GetGameLanguage() },
-                        { "Timestamp", FieldValue.ServerTimestamp }
-                        };
-
-                        await gameDataRef.UpdateAsync(updates).ContinueWithOnMainThread(task =>
+                        // Extract docId from name and include in result
+                        if (doc.ContainsKey("name"))
                         {
-                            if (task.IsCompleted && !task.IsFaulted)
-                            {
-                                Debug.Log($"Game data successfully updated for user {userId}");
-                                updatedLanguage = GameManager.instance.GetGameLanguage();
-                            }
-                        });                        
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.LogError($"Error updating game data: {ex.Message}");
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning("No game data documents found.");
-                }
-            }
-            else
-            {
-                Debug.LogWarning($"No document found for user ID: {userId}");
-            }
-        }
-        catch (System.Threading.Tasks.TaskCanceledException)
-        {
-            Debug.Log("UpdateGameLanguageInGameDatasAsync operation was canceled.");
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"Error querying documents: {ex.Message}");
-        }
-    }
-    QuerySnapshot _gameDataQuerySnapshot;
-    public async System.Threading.Tasks.Task<Dictionary<string, object>> GetGameDataInDatabase(string userId)
-    {
-        var gameDataDictonary = new Dictionary<string, object>();
-        Debug.Log("_gameDataQuerySnapshot GetGameDataInDatabase method is starting.");
-        try
-        {
-            // Kullanýcýya ait belgeleri sorgula
-            if (_gameDataQuerySnapshot == null)
-            {
-                Debug.Log("_gameDataQuerySnapshot is null");
-                Query query = db.Collection("Users").WhereEqualTo("userID", userId);
-                QuerySnapshot querySnapshot = await query.GetSnapshotAsync();
-
-                foreach (DocumentSnapshot documentSnapshot in querySnapshot.Documents)
-                {
-                    if (documentSnapshot.Exists)
-                    {
-                        Debug.Log("_gameDataQuerySnapshot documentSnapshot.Exists true.");
-                        CollectionReference gameDataRef = documentSnapshot.Reference.Collection("GameDatas");
-                        QuerySnapshot gameDataQuerySnapshot = await gameDataRef.GetSnapshotAsync();
-
-                        foreach (DocumentSnapshot gameDataDocumentSnapshot in gameDataQuerySnapshot.Documents)
+                            string name = doc["name"] as string;
+                            string docId = ExtractDocumentIdFromName(name);
+                            result["_docId"] = docId;
+                        }
+                        // Extract all fields into result dictionary
+                        if (doc.ContainsKey("fields"))
                         {
-                            if (gameDataDocumentSnapshot.Exists)
+                            var fields = doc["fields"] as Dictionary<string, object>;
+                            if (fields != null)
                             {
-                                gameDataDictonary = gameDataDocumentSnapshot.ToDictionary();
+                                foreach (var kv in fields)
+                                {
+                                    var fieldValue = kv.Value as Dictionary<string, object>;
+                                    if (fieldValue != null)
+                                    {
+                                        if (fieldValue.ContainsKey("stringValue"))
+                                            result[kv.Key] = fieldValue["stringValue"];
+                                        else if (fieldValue.ContainsKey("integerValue"))
+                                            result[kv.Key] = Convert.ToInt64(fieldValue["integerValue"]);
+                                        else if (fieldValue.ContainsKey("doubleValue"))
+                                            result[kv.Key] = Convert.ToDouble(fieldValue["doubleValue"]);
+                                        else if (fieldValue.ContainsKey("booleanValue"))
+                                            result[kv.Key] = Convert.ToBoolean(fieldValue["booleanValue"]);
+                                        // Extend with other Firestore types if needed
+                                    }
+                                }
                             }
                         }
-                        _gameDataQuerySnapshot = gameDataQuerySnapshot;
                     }
-                } 
+                }
+            }
+            if (getGameDataTCS != null && !getGameDataTCS.Task.IsCompleted)
+                getGameDataTCS.SetResult(result);
+        }
+        catch (Exception e)
+        {
+            if (getGameDataTCS != null)
+                getGameDataTCS.SetException(e);
+        }
+    }
+
+    private void OnGetUserGameDataError(string error)
+    {
+        if (getGameDataTCS != null && !getGameDataTCS.Task.IsCompleted)
+            getGameDataTCS.SetException(new Exception(error));
+    }
+
+    private void OnUpdateGameDataSuccess(string result)
+    {
+        if (updateGameLangTCS != null && !updateGameLangTCS.Task.IsCompleted)
+            updateGameLangTCS.SetResult(true);
+    }
+
+    private void OnUpdateGameDataError(string error)
+    {
+        if (updateGameLangTCS != null && !updateGameLangTCS.Task.IsCompleted)
+            updateGameLangTCS.SetException(new Exception(error));
+    }
+
+    #endregion
+
+    /// <summary>
+    /// Extracts the Firestore document ID from a full document path string.
+    /// </summary>
+    private string ExtractDocumentIdFromName(string name)
+    {
+        if (string.IsNullOrEmpty(name))
+            return name;
+        int lastSlash = name.LastIndexOf('/');
+        return (lastSlash >= 0 && lastSlash < name.Length - 1) ? name.Substring(lastSlash + 1) : name;
+    }
+
+    /// <summary>
+    /// Converts a dictionary to a JSON string for Firestore.
+    /// </summary>
+    private string DictionaryToJson(Dictionary<string, object> dict)
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        sb.Append("{");
+        bool first = true;
+        foreach (var kv in dict)
+        {
+            if (!first) sb.Append(",");
+            first = false;
+            sb.Append($"\"{kv.Key}\":");
+            var value = kv.Value;
+            if (value == null)
+            {
+                sb.Append("null");
+            }
+            else if (value is string)
+            {
+                sb.Append($"\"{EscapeJsonString((string)value)}\"");
+            }
+            else if (value is bool)
+            {
+                sb.Append((bool)value ? "true" : "false");
+            }
+            else if (value is IDictionary)
+            {
+                sb.Append(DictionaryToJson(new Dictionary<string, object>((IDictionary<string, object>)value)));
+            }
+            else if (value is IList)
+            {
+                sb.Append("[");
+                bool firstInList = true;
+                foreach (var elem in (IList)value)
+                {
+                    if (!firstInList) sb.Append(",");
+                    firstInList = false;
+                    if (elem is string)
+                        sb.Append($"\"{EscapeJsonString((string)elem)}\"");
+                    else if (elem is bool)
+                        sb.Append((bool)elem ? "true" : "false");
+                    else if (elem is IDictionary)
+                        sb.Append(DictionaryToJson(new Dictionary<string, object>((IDictionary<string, object>)elem)));
+                    else
+                        sb.Append(elem.ToString());
+                }
+                sb.Append("]");
             }
             else
             {
-                Debug.Log("_gameDataQuerySnapshot is not null");
-                foreach (DocumentSnapshot gameDataDocumentSnapshot in _gameDataQuerySnapshot.Documents)
-                    if (gameDataDocumentSnapshot.Exists)
-                    {
-                        gameDataDictonary = gameDataDocumentSnapshot.ToDictionary();
-                        Debug.Log("_gameDataQuerySnapshot documentSnapshot.Exists true.");
-                    }
-
+                sb.Append(Convert.ToString(value, System.Globalization.CultureInfo.InvariantCulture));
             }
         }
-        catch (Exception ex)
-        {
-            Debug.LogError($"Error getting statue data: {ex.Message}");
-        }
-        return gameDataDictonary;
+        sb.Append("}");
+        return sb.ToString();
     }
-    public async void AddNewPlayerGameDataToDatabase(DocumentReference _documentReference)
-    {
-        CollectionReference collectionReference = _documentReference.Collection("GameDatas");
-        QuerySnapshot documentSnapshot = await collectionReference.GetSnapshotAsync();
 
-        if (documentSnapshot.Count > 0)
+    /// <summary>
+    /// Escapes special characters in a JSON string value.
+    /// </summary>
+    private string EscapeJsonString(string str)
+    {
+        return str.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "\\r").Replace("\t", "\\t");
+    }
+}
+
+/// <summary>
+/// A minimal JSON parser for simple JSON structures (for Firestore responses).
+/// </summary>
+public static class JsonParser
+{
+    public static object Parse(string json)
+    {
+        if (string.IsNullOrEmpty(json))
+            return null;
+        int index = 0;
+        return ParseValue(json, ref index);
+    }
+
+    private static object ParseValue(string json, ref int index)
+    {
+        SkipWhitespace(json, ref index);
+        if (index >= json.Length) return null;
+        char c = json[index];
+        if (c == '{') return ParseObject(json, ref index);
+        if (c == '[') return ParseArray(json, ref index);
+        if (c == '"') return ParseString(json, ref index);
+        if (char.IsDigit(c) || c == '-') return ParseNumber(json, ref index);
+        if (json.Substring(index).StartsWith("true"))
         {
-            Debug.Log($"GameDatas already exists for user.");
+            index += 4;
+            return true;
+        }
+        if (json.Substring(index).StartsWith("false"))
+        {
+            index += 5;
+            return false;
+        }
+        if (json.Substring(index).StartsWith("null"))
+        {
+            index += 4;
+            return null;
+        }
+        return null;
+    }
+
+    private static Dictionary<string, object> ParseObject(string json, ref int index)
+    {
+        var dict = new Dictionary<string, object>();
+        index++; // skip '{'
+        while (true)
+        {
+            SkipWhitespace(json, ref index);
+            if (index >= json.Length) break;
+            if (json[index] == '}')
+            {
+                index++;
+                break;
+            }
+            string key = ParseString(json, ref index);
+            SkipWhitespace(json, ref index);
+            if (index < json.Length && json[index] == ':') index++;
+            object value = ParseValue(json, ref index);
+            dict[key] = value;
+            SkipWhitespace(json, ref index);
+            if (index < json.Length && json[index] == ',') { index++; continue; }
+        }
+        return dict;
+    }
+
+    private static List<object> ParseArray(string json, ref int index)
+    {
+        var list = new List<object>();
+        index++; // skip '['
+        while (true)
+        {
+            SkipWhitespace(json, ref index);
+            if (index >= json.Length) break;
+            if (json[index] == ']')
+            {
+                index++;
+                break;
+            }
+            object value = ParseValue(json, ref index);
+            list.Add(value);
+            SkipWhitespace(json, ref index);
+            if (index < json.Length && json[index] == ',') { index++; continue; }
+        }
+        return list;
+    }
+
+    private static string ParseString(string json, ref int index)
+    {
+        index++; // skip initial quote
+        int start = index;
+        while (index < json.Length)
+        {
+            if (json[index] == '\\')
+            {
+                index += 2;
+                continue;
+            }
+            if (json[index] == '"') break;
+            index++;
+        }
+        string str = json.Substring(start, index - start);
+        index++; // skip closing '"'
+        return str.Replace("\\\"", "\"").Replace("\\\\", "\\").Replace("\\n", "\n").Replace("\\r", "\r").Replace("\\t", "\t");
+    }
+
+    private static object ParseNumber(string json, ref int index)
+    {
+        int start = index;
+        while (index < json.Length && ("-+0123456789.eE".IndexOf(json[index]) != -1))
+            index++;
+        string number = json.Substring(start, index - start);
+        if (number.Contains(".") || number.Contains("e") || number.Contains("E"))
+        {
+            if (double.TryParse(number, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double d))
+                return d;
         }
         else
         {
-            try
-            {
-                var userGameData = new Dictionary<string, object>();
-
-                bool watchTutorial = false;
-                bool firstGame = true;
-
-                float gold = 0f, culture = 0f, gem = 0f, skillPoint = 0f;
-                int currentCultureLevel = 0;
-                userGameData.Add("IsWatchTutorial", watchTutorial);
-                userGameData.Add("IsFirstGame", firstGame);
-                userGameData.Add("Gold", gold);
-                userGameData.Add("Culture", culture);
-                userGameData.Add("Gem", gem);
-                userGameData.Add("SkillPoint", skillPoint);
-                userGameData.Add("CurrentCultureLevel", currentCultureLevel);
-                userGameData.Add("GameLanguage", "English");
-                Debug.Log("AddNewPlayerGameDataToDatabase method control 1");
-                userGameData.Add("ActiveRoomsRequiredMoney", GameManager.instance.ActiveRoomsRequiredMoney);
-                userGameData.Add("BaseWorkerHiringPrice", GameManager.instance.BaseWorkerHiringPrice);
-                userGameData.Add("PurchasedItemIDs", MuseumManager.instance.PurchasedItems.Select(x => x.ID).ToList());
-                userGameData.Add("DailyRewardItemIDs", ItemManager.instance.CurrentDailyRewardItems.Select(x => x.ID).ToList());
-                userGameData.Add("DailyRewardItemsPurchased", ItemManager.instance.CurrentDailyRewardItems.Select(x => x.IsPurchased).ToList());
-                Debug.Log("AddNewPlayerGameDataToDatabase method control 2");
-                userGameData.Add("DailyRewardItemsLocked", ItemManager.instance.CurrentDailyRewardItems.Select(x => x.IsLocked).ToList());
-                userGameData.Add("WorkersInInventoryIDs", MuseumManager.instance.WorkersInInventory.Select(x => x.ID).ToList());
-                userGameData.Add("LastDailyRewardTime", MuseumManager.instance.lastDailyRewardTime.ToString("yyyy-MM-dd HH:mm:ss"));
-                userGameData.Add("WhatDay", TimeManager.instance.WhatDay);
-                userGameData.Add("RemoveAllAds", GoogleAdsManager.instance.adsData.RemovedAllAds);
-                Debug.Log("AddNewPlayerGameDataToDatabase method control 3");
-                //Achievements
-                //userGameData.Add("PurchasedRoomCount", GPGamesManager.instance.achievementController.PurchasedRoomCount);
-                //userGameData.Add("NumberOfTablesPlaced", GPGamesManager.instance.achievementController.NumberOfTablesPlaced);
-                //userGameData.Add("NumberOfVisitors", GPGamesManager.instance.achievementController.NumberOfVisitors);
-                //userGameData.Add("NumberOfStatuesPlaced", GPGamesManager.instance.achievementController.NumberOfStatuesPlaced);
-                //userGameData.Add("TotalNumberOfMuseumVisitors", GPGamesManager.instance.achievementController.TotalNumberOfMuseumVisitors);
-                //Debug.Log("AddNewPlayerGameDataToDatabase method control 4");
-                //userGameData.Add("TotalWorkerHiringCount", GPGamesManager.instance.achievementController.TotalWorkerHiringCount);
-                //userGameData.Add("TotalWorkerAssignCount", GPGamesManager.instance.achievementController.TotalWorkerAssignCount);
-                Debug.Log("AddNewPlayerGameDataToDatabase method control 5");
-                //Achievements
-                userGameData.Add("Timestamp", FieldValue.ServerTimestamp);
-
-                DocumentReference addTask = await collectionReference.AddAsync(userGameData);
-
-                if (addTask != null)
-                    Debug.Log($"Game data with user ID {FirebaseAuthManager.instance.GetCurrentUserWithID()?.UserID} successfully added.");
-                else
-                    Debug.LogError("Failed to add game data.");
-            }
-            catch (Exception _ex)
-            {
-                Debug.LogError("NewPlayerAdded Bug! : " + _ex.Message);
-            }
-            
+            if (long.TryParse(number, out long l))
+                return l;
         }
-
+        return null;
     }
-    public IEnumerator CheckIfUserExists(string _overrideUserID, string _overrideUserEmail, string _overrideUserTelNo, string _overrideUserName)
+
+    private static void SkipWhitespace(string json, ref int index)
     {
-        yield return new WaitUntil(() => db != null);
-        Query userQuery = db.Collection("Users").WhereEqualTo("userID", _overrideUserID);
-
-        userQuery.GetSnapshotAsync().ContinueWithOnMainThread(task =>
-        {
-            if (task.IsCompleted)
-            {
-                QuerySnapshot snapshot = task.Result;
-
-                if (snapshot.Count > 0)
-                {
-                    Debug.Log("User exists in database.");
-                }
-                else
-                {
-                    AddNewPlayerToDataBase(_overrideUserID, _overrideUserEmail, _overrideUserTelNo, _overrideUserName);                    
-                }
-            }
-            else
-            {
-                Debug.LogError("Error getting document: " + task.Exception);
-            }
-        });
-    }
-    private void AddNewPlayerToDataBase(string _overrideUserID, string _overrideUserEmail, string _overrideUserTelNo, string _overrideUserName)
-    {
-        var userRegistration = new Dictionary<string, object>();
-        var signInDate = FieldValue.ServerTimestamp;
-
-        userRegistration.Add("userID", _overrideUserID);
-        userRegistration.Add("userEmail", _overrideUserEmail);
-        userRegistration.Add("userTelNo", _overrideUserTelNo);
-        userRegistration.Add("userName", _overrideUserName);
-        userRegistration.Add("userSignInDate", signInDate);
-
-        db.Collection("Users").AddAsync(userRegistration).ContinueWithOnMainThread(task => {
-            if (task.IsCompleted)
-            {
-                Debug.Log("User added successfully.");
-                DocumentReference documentReference = task.Result;
-                AddNewPlayerGameDataToDatabase(documentReference);
-            }
-            else
-            {
-                Debug.LogError("Failed to add user: " + task.Exception);
-            }
-        });
+        while (index < json.Length && char.IsWhiteSpace(json[index]))
+            index++;
     }
 }
