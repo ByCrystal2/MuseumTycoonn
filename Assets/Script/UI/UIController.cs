@@ -715,7 +715,6 @@ public class UIController : MonoBehaviour
                 currentSkill.Purchased(true);
 
                 //Database skill Adding
-                //Data json'dan cekilmeli (yeni skill ekleme)
 
                 SkillTreeManager.instance.RefreshSkillBonuses();
             }

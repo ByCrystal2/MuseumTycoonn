@@ -298,8 +298,6 @@ public class ShopController : MonoBehaviour
                          newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
                          newInventoryItem.painterData = new PainterData(_item.ID, _item.Description, _item.Name, _item.StarCount);
                          MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
-
-                         //Data json'dan cekilmeli (yeni item ekleme)
                          ItemsBuyingUpdate(_item);
                      }
                  }
@@ -335,8 +333,6 @@ public class ShopController : MonoBehaviour
                         newInventoryItem.painterData = new PainterData(_item.ID, _item.Description, _item.Name, _item.StarCount);
                         MuseumManager.instance.AddNewItemToInventory(newInventoryItem);
 
-                        //Data json'dan cekilmeli (yeni item ekleme)
-
                         ItemsBuyingUpdate(_item);
                     }
                 }
@@ -362,7 +358,7 @@ public class ShopController : MonoBehaviour
             // {//Satin alma islemi iptalse. (no tusuna basildiysa)
 
             // }, null, null, null, null);
-            GameManager.instance.Save();
+            GameManager.instance.SaveGame();
         }
 
     }

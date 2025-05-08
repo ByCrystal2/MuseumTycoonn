@@ -99,7 +99,7 @@ public partial class RoomManager : MonoBehaviour
             {
                 RoomsActivationAndPurchasedControl(purchasedRoom, roomDatas);
                 MuseumManager.instance.SpendingGem(purchasedRoom.RequiredMoney);
-                GameManager.instance.Save();
+                GameManager.instance.SaveGame();
 
             }
             else
@@ -114,7 +114,7 @@ public partial class RoomManager : MonoBehaviour
             {
                 RoomsActivationAndPurchasedControl(purchasedRoom, roomDatas);
                 MuseumManager.instance.SpendingGold(purchasedRoom.RequiredMoney);
-                GameManager.instance.Save();
+                GameManager.instance.SaveGame();
             }
             else
             {

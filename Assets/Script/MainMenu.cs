@@ -72,8 +72,7 @@ public class MainMenu : MonoBehaviour
     }
     void OnStartButtonClick()
     {
-        //FirebaseAuthManager.instance.CreateNewLoading();
-        //Data json'dan cekilmeli (CreateNewLoading metotu olusturulmali!)
+        AuthManager.instance.CreateNewLoading();
     }
     public void NewLanguageButtonAnim()
     {

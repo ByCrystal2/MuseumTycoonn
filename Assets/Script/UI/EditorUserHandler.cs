@@ -57,7 +57,7 @@ public class EditorUserHandler : MonoBehaviour
                     Debug.Log("File exists.");
                 }
             }        
-            //FirebaseAuthManager.instance.CreateNewLoading();
+            //AuthManager.instance.CreateNewLoading();
         });
     }
 }

@@ -70,7 +70,7 @@ public class WorkerPurchasePanelController : MonoBehaviour
                 WorkerManager.instance.TransferMarketWorkerToInventory(MyWorkerID);
                 Destroy(workersToBuy.gameObject);
                 UIController.instance.GetDesiredWorkersInContent(MuseumManager.instance.WorkersInInventory.Where(x => x.ID == MyWorkerID).SingleOrDefault().workerType);
-                GameManager.instance.Save();
+                GameManager.instance.SaveGame();
                 break;
             }
         }

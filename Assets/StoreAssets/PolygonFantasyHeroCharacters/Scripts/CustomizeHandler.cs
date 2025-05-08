@@ -103,11 +103,11 @@ public class CustomizeHandler : MonoBehaviour
             (yes) =>
             {
                 SwitchCustomizePanel();
-                //Data json'dan cekilmeli (customize datalarinin kaydedilmesi..)
                 RightUIPanelController.instance.UIVisibleClose(false);
                 PlayerManager.instance.UnLockPlayer();
                 UIController.instance.CloseJoystickObj(false);
                 UpdateEquipmentStats();
+                GameManager.instance.SaveGame();
             },null,null,null,null,null);
     }
     void SaveButtonProcesses()

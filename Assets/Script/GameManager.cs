@@ -4,8 +4,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using TaskExtensions;
 using Translator;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
@@ -31,9 +33,14 @@ public class GameManager : MonoBehaviour
     public float BaseWorkerHiringPrice;
     public bool IsFirstGame = true, IsWatchTutorial;
     [SerializeField] bool enableRuntimeDebugger;
+    [SerializeField] bool isDemo; // Bu field true olursa, mevcut versiyon demo surumu olur.
 
     private System.Threading.CancellationTokenSource cts;
     DynamicTranslation translation;
+
+    public bool isLoadedGame;
+    private const string encryptionKey = "SavePassword";
+    private const string fileExtension = ".art";
     private void Awake()
     {
         if (instance)
@@ -76,6 +83,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitUntil(() => task1.IsCompleted);
         if (IsFirstGame)
             ItemManager.instance.SetCalculatedDailyRewardItems();
+        LoadGame();
         LoadIsWatchTutorialAsync();
         LoadDailyRewardItems();
         LoadMuseumNumeralDatas();
@@ -98,7 +106,7 @@ public class GameManager : MonoBehaviour
     {
         if (AutoSaveTimer < Time.time)
         {
-            Save();
+            SaveGame();
             AutoSaveTimer = Time.time + 300;
             Debug.Log("Auto Save!");
         }
@@ -187,169 +195,185 @@ public class GameManager : MonoBehaviour
     {
         CurrentGameMode = _gameMode;
     }
-    public void Save()
+    public bool LoadCompleted = false;
+    public void SaveGame(bool _newSave = false, string _newSaveName = "")
     {
-        //if (CurrentSaveData.SaveName == "")
-        //    CurrentSaveData.SaveName = _GameSave;
+        if (CurrentSaveData.SaveName == "")
+        {
+            Debug.LogError("Could not save the game, save data lost.");
+            return;
+        }
 
-        //CurrentSaveData.GameLanguage = GameLanguage;
+        if (!LoadCompleted)
+        {
+            Debug.LogError("Loading is not completed yet. Can not save.");
+            return;
+        }
 
-        //var a = MuseumManager.instance.GetSaveData();
-        //CurrentSaveData.Gold = a._gold;
-        //CurrentSaveData.Culture = a._Culture;
-        //CurrentSaveData.Gem = a._Gem;
-        //CurrentSaveData.SkillPoint = a._SkillPoint;
-        //CurrentSaveData.CurrentCultureLevel = a._CurrentCultureLevel;
+        string FileName = CurrentSaveData.UniqueSaveFolderName + "/" + (_newSaveName == "" ? CurrentSaveData.SaveName : _newSaveName);
+        if (File.Exists(Application.persistentDataPath + "/" + FileName + fileExtension)) //Check the save name is exist
+            File.Delete(Application.persistentDataPath + "/" + FileName + fileExtension);
 
-        //if (GameManager.instance != null)
-        //{
-        //    CurrentSaveData.IsFirstGame = GameManager.instance.IsFirstGame;
-        //}
+        long unixTimestamp = ((System.DateTimeOffset)System.DateTime.Now).ToUnixTimeSeconds();
 
-        //if (GameManager.instance != null)
-        //{
-        //    CurrentSaveData.IsWatchTutorial = GameManager.instance.IsWatchTutorial;
-        //}
+        bool newSave = CurrentSaveData.CreatedUID == 0;
+        if (_newSave)
+            newSave = true;
 
-        ////if (_rewardManager != null)
-        ////{
-        ////    CurrentSaveData.LastDailyRewardTime =  _rewardManager.lastDailyRewardTime.ToString("yyyy-MM-dd HH:mm:ss");
-        ////    CurrentSaveData.WhatDay = TimeManager.instance.WhatDay;
-        ////}
-        
+        if (isDemo)
+        _newSaveName = _newSaveName + "_Demo";
 
-        //Debug.Log("CurrentSaveData.LastDailyRewardTime => " + CurrentSaveData.LastDailyRewardTime);
-        //Debug.Log("CurrentSaveData.WhatDay => " + CurrentSaveData.WhatDay);
-        //List<RoomData> currentRooms = new List<RoomData>();
-        //if (RoomManager.instance != null)
-        //{
-        //    List<RoomData> AllActiveRooms = RoomManager.instance.RoomDatas.Where(x=> (x.isActive && !x.isLock) || x.isActive).ToList();
-        //    foreach (var room in AllActiveRooms)
-        //        currentRooms.Add(room);
-        //    Debug.Log("currentRooms.count: " + currentRooms.Count);
-        //}
 
-        //List<PictureData> currentActivePictures = new List<PictureData>();
-        //foreach (var item in MuseumManager.instance.AllPictureElements)
-        //    currentActivePictures.Add(item._pictureData);
-        //Debug.Log("currentActivePictures.count: " + currentActivePictures.Count);
+        PlayerSaveData savedata = new PlayerSaveData();
+        savedata.SaveName = !_newSave ? CurrentSaveData.SaveName : _newSaveName;
+        savedata.CreatedUID = !newSave ? CurrentSaveData.CreatedUID : unixTimestamp;
+        savedata.UniqueSaveFolderName = newSave ? CurrentSaveData.UniqueSaveFolderName + "_" + savedata.CreatedUID : CurrentSaveData.UniqueSaveFolderName;
+        savedata.LastSave = unixTimestamp;
 
-        //List<PictureData> inventoryPictures = new List<PictureData>();
-        //foreach (var item in MuseumManager.instance.InventoryPictures)
-        //    inventoryPictures.Add(item);
-        //Debug.Log("inventoryPictures.count: " + inventoryPictures.Count);
+        savedata.Gold = CurrentSaveData.Gold;
 
-        //List<ItemData> inventoryItems = new List<ItemData>();
-        //foreach (var item in MuseumManager.instance.PurchasedItems)
-        //{
-        //    inventoryItems.Add(item);
-        //}
-        //Debug.Log("inventoryItems.count: " + inventoryItems.Count);
+        savedata.customizeData = CurrentSaveData.customizeData;
 
-        //List<ItemData> dailyRewardItems = new List<ItemData>();
-        //foreach (var item in ItemManager.instance.CurrentDailyRewardItems)
-        //{
-        //    dailyRewardItems.Add(item);
-        //}
-        //Debug.Log("dailyRewardItems.count: " + dailyRewardItems.Count);
+        if (!_newSave)
+        {
+            CurrentSaveData = savedata;
+            string fullPath = Application.persistentDataPath + "/" + CurrentSaveData.UniqueSaveFolderName + "/" + CurrentSaveData.SaveName + fileExtension;
+            string folderPath = Application.persistentDataPath + "/" + CurrentSaveData.UniqueSaveFolderName;
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
 
-        //List<SkillNode> skillNodes = new List<SkillNode>();
-        //foreach (var skill in SkillTreeManager.instance.skillNodes)
-        //{
-        //    skillNodes.Add(skill);
-        //}
+            string jsonString = JsonUtility.ToJson(savedata);
+            byte[] encryptedData = EncryptStringToBytes(jsonString);
+            File.WriteAllBytes(fullPath, encryptedData);
 
-        //List<EditObjData> statueDatas = new List<EditObjData>();
-        //if (RoomManager.instance != null)
-        //{
-        //    foreach (var statueData in RoomManager.instance.statuesHandler.activeEditObjs)
-        //    {
-        //        statueDatas.Add(statueData);
-        //    }
-        //}
-        //List<WorkerData> currentWorkerDatas = new List<WorkerData>();
-        //List<WorkerData> inventoryWorkerDatas = new List<WorkerData>();
-        //Debug.Log("skillNodes.count: " + skillNodes.Count);
-        //if (WorkerManager.instance != null)
-        //{
-            
-        //    foreach (var currentWorker in MuseumManager.instance.CurrentActiveWorkers)
-        //    {
-        //        currentWorkerDatas.Add(currentWorker.MyDatas);
-        //    }
-        //    Debug.Log("currentWorkerDatas.count: " + currentWorkerDatas.Count);
-            
-        //    //foreach (var inventoryWorker in WorkerManager.instance.GetWorkersInInventory())
-        //    //{
-        //    //    inventoryWorkerDatas.Add(inventoryWorker.MyDatas);
-        //    //}
-        //    //Debug.Log("inventoryWorkerDatas.count: " + inventoryWorkerDatas.Count);
-        //}
+            Debug.Log("Save Game: " + CurrentSaveData.SaveName + " / Saved successfully.");
+        }
+        else
+        {
+            string fullPath = Application.persistentDataPath + "/" + savedata.UniqueSaveFolderName + "/" + savedata.SaveName + fileExtension;
+            string folderPath = Application.persistentDataPath + "/" + savedata.UniqueSaveFolderName;
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
 
-        //HashSet<string> savedRoomCells = new HashSet<string>(CurrentSaveData.Rooms.Select(r => r.availableRoomCell));
-        //foreach (var room in currentRooms)
-        //{
-        //    string roomCell = room.availableRoomCell.CellLetter.ToString() + room.availableRoomCell.CellNumber.ToString();
-        //    if (!savedRoomCells.Contains(roomCell))//
-        //    {
-        //        RoomSaveData newSaveData = new RoomSaveData();
-        //        newSaveData.availableRoomCell = roomCell;
-        //        newSaveData.isLock = room.isLock;
-        //        newSaveData.isActive = room.isActive;
-        //        newSaveData.RequiredMoney = room.RequiredMoney;
-        //        newSaveData.IsHasStatue = room.isHasStatue;
-        //        newSaveData.MyStatue = room.GetMyStatueInTheMyRoom();
+            string jsonString = JsonUtility.ToJson(savedata);
+            byte[] encryptedData = EncryptStringToBytes(jsonString);
+            File.WriteAllBytes(fullPath, encryptedData);
 
-        //        newSaveData.MyRoomWorkersIDs.Clear();
-        //        int length = room.MyRoomWorkersIDs.Count;
-        //        for (int i = 0; i < length; i++)
-        //        {
-        //            newSaveData.MyRoomWorkersIDs.Add(room.MyRoomWorkersIDs[i]);
-        //        }
-        //        CurrentSaveData.Rooms.Add(newSaveData);
-        //    }
-        //    else
-        //    {
-        //        RoomSaveData currentSavedRoom = CurrentSaveData.Rooms.Where(x=> x.availableRoomCell == roomCell).SingleOrDefault();
-        //        currentSavedRoom.isLock = room.isLock;
-        //        currentSavedRoom.isActive = room.isActive;
-        //        currentSavedRoom.RequiredMoney = room.RequiredMoney;
-        //        currentSavedRoom.IsHasStatue = room.isHasStatue;
-        //        currentSavedRoom.MyStatue = room.GetMyStatueInTheMyRoom();
+            Debug.Log("Save Game as new save: " + savedata.SaveName + " / Saved successfully.");
+        }
 
-        //        currentSavedRoom.MyRoomWorkersIDs.Clear();
-        //        int length = room.MyRoomWorkersIDs.Count;
-        //        for (int i = 0; i < length; i++)
-        //        {
-        //            currentSavedRoom.MyRoomWorkersIDs.Add(room.MyRoomWorkersIDs[i]);
-        //        }
-        //    }
-        //}
-
-        //CurrentSaveData.CurrentPictures = currentActivePictures;
-        ////CurrentSaveData.InventoryPictures = inventoryPictures;
-        //CurrentSaveData.PurchasedItems = inventoryItems;
-        //CurrentSaveData.DailyRewardItems = dailyRewardItems;
-        //CurrentSaveData.SkillNodes = skillNodes;
-        //CurrentSaveData.CurrentWorkerDatas = currentWorkerDatas;
-        //CurrentSaveData.InventoryWorkerDatas = inventoryWorkerDatas;
-        //CurrentSaveData.StatueDatas = statueDatas;
-
-        //if(GoogleAdsManager.instance != null)
-        //    CurrentSaveData.adData = GoogleAdsManager.instance.adsData;
-
-        ////if (RoomManager.instance != null)
-        //    //CurrentSaveData.ActiveRoomsRequiredMoney = RoomManager.instance.activeRoomsRequiredMoney;
-
-        ////if (WorkerManager.instance != null)
-        ////    CurrentSaveData.baseWorkerHiringPrice = WorkerManager.instance.BaseWorkerHiringPrice;
-
-        //string jsonString = JsonUtility.ToJson(CurrentSaveData);
-        //File.WriteAllText(Application.persistentDataPath + "/" + CurrentSaveData.SaveName + ".json", jsonString); // this will write the json to the specified path
-
-        //Debug.Log("Game Save Location: " + Application.persistentDataPath + "/" + CurrentSaveData.SaveName + ".json");
     }
+    public void LoadGame()
+    {
+        string path = CurrentSaveData.SaveName;
+        Debug.Log("Load save file location: " + Application.persistentDataPath + "/" + path + fileExtension);
+        if (File.Exists(Application.persistentDataPath + "/" + path + fileExtension))
+        {
+            byte[] loadBytes = File.ReadAllBytes(Application.persistentDataPath + "/" + path + fileExtension);
+            string decryptedData = DecryptStringFromBytes(loadBytes);
+            CurrentSaveData = JsonUtility.FromJson<PlayerSaveData>(decryptedData);
+        }
+        else
+        {
+            Debug.Log("Save could not be found.");
+            CurrentSaveData.ActiveRoomsRequiredMoney = 1000;
+        }
+        
+    }
+    IEnumerator LateLoad()
+    {
+        LoadCompleted = false;
+        yield return null;
 
+        yield return null;
+
+        LoadCompleted = true;
+
+        PictureChangesReqiuredAmountCalculater();
+        CurrentSaveData.baseWorkerHiringPrice = 500;
+    }
+    private byte[] EncryptStringToBytes(string plainText)
+    {
+        byte[] encrypted;
+
+        using (Aes aesAlg = Aes.Create())
+        {
+            // Ensure the key is valid for AES
+            aesAlg.Key = GetValidKey(encryptionKey, aesAlg);
+            aesAlg.Mode = CipherMode.CBC;
+            aesAlg.Padding = PaddingMode.PKCS7;
+
+            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+            using (MemoryStream msEncrypt = new MemoryStream())
+            {
+                msEncrypt.Write(aesAlg.IV, 0, aesAlg.IV.Length);
+                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                {
+                    using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                    {
+                        swEncrypt.Write(plainText);
+                    }
+                }
+                encrypted = msEncrypt.ToArray();
+            }
+        }
+
+        return encrypted;
+    }
+    // Decrypt bytes to string
+    public string DecryptStringFromBytes(byte[] cipherText)
+    {
+        string plaintext = "";
+
+        using (Aes aesAlg = Aes.Create())
+        {
+            byte[] iv = new byte[16];
+            System.Array.Copy(cipherText, iv, iv.Length);
+
+            // Ensure the key is valid for AES
+            aesAlg.Key = GetValidKey(encryptionKey, aesAlg);
+            aesAlg.IV = iv;
+            aesAlg.Mode = CipherMode.CBC;
+            aesAlg.Padding = PaddingMode.PKCS7;
+
+            ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+            using (MemoryStream msDecrypt = new MemoryStream(cipherText, iv.Length, cipherText.Length - iv.Length))
+            {
+                using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                {
+                    using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                    {
+                        plaintext = srDecrypt.ReadToEnd();
+                    }
+                }
+            }
+        }
+
+        return plaintext;
+    }
+    private byte[] GetValidKey(string key, Aes aesAlg)
+    {
+        // Convert the key string to bytes
+        byte[] keyBytes = System.Text.Encoding.UTF8.GetBytes(key);
+
+        // AES key sizes: 128-bit (16 bytes), 192-bit (24 bytes), or 256-bit (32 bytes)
+        int validKeySize = aesAlg.KeySize / 8;
+
+        // If the key is too large, truncate it. If it's too small, pad it with zeros.
+        byte[] validKey = new byte[validKeySize];
+        if (keyBytes.Length >= validKeySize)
+        {
+            Array.Copy(keyBytes, validKey, validKeySize);
+        }
+        else
+        {
+            Array.Copy(keyBytes, validKey, keyBytes.Length);
+        }
+
+        return validKey;
+    }
     public async System.Threading.Tasks.Task LoadRooms() //Bu metot firebase'den izole edildi fakat json formatina gecilmeli.
     {
         if (!IsFirstGame)
@@ -357,7 +381,7 @@ public class GameManager : MonoBehaviour
             try
             {
 
-                float activeRoomsRequiredMoney = 0; //Data json'dan cekilmeli
+                float activeRoomsRequiredMoney = CurrentSaveData.ActiveRoomsRequiredMoney;
 
                 Debug.Log("LoadRooms activeRoomsRequiredMoney => " + activeRoomsRequiredMoney);
                 ActiveRoomsRequiredMoney = activeRoomsRequiredMoney;
@@ -379,20 +403,20 @@ public class GameManager : MonoBehaviour
 
         try
         {
-            List<RoomData> databaseRooms = new List<RoomData>(); //Data json'dan cekilmeli.
+            List<RoomSaveData> databaseRooms = CurrentSaveData.Rooms;
 
             Debug.Log("Database room data retrieval completed.");
 
-            foreach (RoomData databaseRoom in databaseRooms)
+            foreach (RoomSaveData databaseRoom in databaseRooms)
             {
                 if (databaseRoom != null)
                 {
-                    Debug.Log($"databaseRoom.ID => {databaseRoom.ID} databaseRoom.isActive => {databaseRoom.isActive} databaseRoom.StatueID => {databaseRoom.GetMyStatueInTheMyRoom()?.ID}");
+                    //Debug.Log($"databaseRoom.ID => {databaseRoom.ID} databaseRoom.isActive => {databaseRoom.isActive} databaseRoom.StatueID => {databaseRoom.GetMyStatueInTheMyRoom()?.ID}");
 
                     RoomData myRoom = allRooms.SingleOrDefault(x => x.ID == databaseRoom.ID);
                     if (myRoom != null)
                     {
-                        myRoom = databaseRoom;
+                        myRoom = new RoomData(databaseRoom);
                         Debug.Log("myRoom.ID is " + myRoom.ID + " databaseRoom.ID is " + databaseRoom.ID);
 
                         if (myRoom.GetMyStatueInTheMyRoom() != null)
@@ -426,32 +450,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void Load()
-    {
-        if (CurrentSaveData.SaveName == "")
-            CurrentSaveData.SaveName = _GameSave;   
-        
-
-        if (File.Exists(Application.persistentDataPath + "/" + CurrentSaveData.SaveName + ".json"))
-        {
-            string jsonString = File.ReadAllText(Application.persistentDataPath + "/" + CurrentSaveData.SaveName + ".json"); // read the json file from the file system
-            CurrentSaveData = JsonUtility.FromJson<PlayerSaveData>(jsonString); // de-serialize the data to your myData object           
-            LoadGameLanguage();
-
-        }
-        else
-        {
-            Debug.Log("Save dosyasi yok..");
-            // su an saat 08:00  => lastDailyRewardTime = 08:00 
-            // => AfterDailyRewardTime => lastDailyRewardTime + dailyRewardInterval
-            // => WhichDay++ => if dailyRewardInterval <= (lastDailyRewardTime + dailyRewardInterval) - CurrentTime;
-            //08:00                //24               09:00
-            CurrentSaveData.ActiveRoomsRequiredMoney = 1000;                     
-            Save();
-        }
-        PictureChangesReqiuredAmountCalculater();
-        CurrentSaveData.baseWorkerHiringPrice = 500;
-    }
+    
     public void PictureChangesReqiuredAmountCalculater()
     {        
         int museumLevel = MuseumManager.instance.GetCurrentCultureLevel();
@@ -503,9 +502,7 @@ public class GameManager : MonoBehaviour
     //}
     public async void LoadMuseumNumeralDatas()
     {
-        float _gold=0, _culture=0, _gem=0, _skillPoint =0; //Data json'dan cekilmeli
-        int _currentCultureLevel=0;
-        MuseumManager.instance.SetSaveData(_gold, _culture, _gem, _skillPoint, _currentCultureLevel);
+        MuseumManager.instance.SetSaveData(CurrentSaveData.Gold, CurrentSaveData.Culture, CurrentSaveData.Gem, CurrentSaveData.SkillPoint, CurrentSaveData.CurrentCultureLevel);
     }
     public async System.Threading.Tasks.Task LoadIsFirstGame()
     {
@@ -513,7 +510,7 @@ public class GameManager : MonoBehaviour
 
         try
         {
-            firstGameResult = false;//Data json'dan cekilmeli
+            firstGameResult = CurrentSaveData.IsFirstGame;
 
             Debug.Log("Is First Game ? = " + firstGameResult);
             IsFirstGame = firstGameResult;
@@ -535,7 +532,7 @@ public class GameManager : MonoBehaviour
         {
 
 
-            watchTutorialResult = false; //Data json'dan cekilmeli
+            watchTutorialResult = CurrentSaveData.IsWatchTutorial;
 
             Debug.Log("Is Watch Tutorial ? = " + watchTutorialResult);
             IsWatchTutorial = watchTutorialResult;
@@ -557,7 +554,7 @@ public class GameManager : MonoBehaviour
         {
             List<PictureData> databasePictures;
 
-            databasePictures = new List<PictureData>(); //Data json'dan cekilmeli
+            databasePictures = CurrentSaveData.CurrentPictures;
 
             foreach (PictureData picture in databasePictures)
             {
@@ -582,7 +579,7 @@ public class GameManager : MonoBehaviour
     {
         List<ItemData> purchasedItems = new List<ItemData>();
 
-        List<int> itemIDs = new List<int>();//Data json'dan cekilmeli
+        List<int> itemIDs = CurrentSaveData.PurchasedItems.Select(x=> x.ID).ToList();
         foreach (int id in itemIDs)
         {
             ItemData databaseItem = ItemManager.instance.GetItemDataWithID(id);
@@ -677,7 +674,7 @@ public class GameManager : MonoBehaviour
         List<SkillNode> allSkills = SkillTreeManager.instance.skillNodes.ToList();
         List<int> skillNodeIDs = allSkills.Select(x => x.ID).ToList();
 
-        afterDatabaseSkills = new List<SkillNode>(); //Data json'dan cekilmeli
+        afterDatabaseSkills = CurrentSaveData.SkillNodes;
 
         int length = allSkills.Count; 
 
@@ -822,14 +819,14 @@ public class GameManager : MonoBehaviour
         Debug.Log("WorkerManager.instance.AllWorkers.Count => " + WorkerManager.instance.AllWorkers.Count);
         List<WorkerBehaviour> allWorkers = WorkerManager.instance.GetAllWorkers();
 
-        BaseWorkerHiringPrice = 0; //Data json'dan cekilmeli
+        BaseWorkerHiringPrice = CurrentSaveData.baseWorkerHiringPrice;
 
         List<WorkerData> currentActiveWorkers = new List<WorkerData>();
 
         List<int> workerIds = allWorkers.Select(x => x.ID).ToList();
         Debug.Log("workerIds.Count => " + workerIds.Count);
 
-        currentActiveWorkers = new List<WorkerData>(); //Data json'dan cekilmeli
+        currentActiveWorkers = CurrentSaveData.CurrentWorkerDatas;
 
         foreach (WorkerData databaseWorker in currentActiveWorkers)
         {
@@ -880,7 +877,7 @@ public class GameManager : MonoBehaviour
             WorkerManager.instance.SetDatabaseDatas(currentWorker, databaseWorker, Name);
         }
         List<WorkerData> inventoryWorkers = new List<WorkerData>();
-        List<int> inventoryWorkerIDs = new List<int>(); //Data json'dan cekilmeli
+        List<int> inventoryWorkerIDs = CurrentSaveData.InventoryWorkerDatas.Select(x=> x.ID).ToList();
         Debug.Log("inventoryWorkerIDs.Count => " + inventoryWorkerIDs);
         foreach (int id in inventoryWorkerIDs)
         {
@@ -907,27 +904,22 @@ public class GameManager : MonoBehaviour
     }
     public async System.Threading.Tasks.Task LoadDailyRewardItems()
     {
-        List<ItemData> dailyRewardItems = new List<ItemData>();
-
-        List<int> itemIDs = new List<int>();//Data json'dan cekilmeli
-        List<bool> itemsPurchased = new List<bool>();//Data json'dan cekilmeli
-        List<bool> itemsLocked = new List<bool>(); //Data json'dan cekilmeli
-        int length = itemIDs.Count;
-        for (int i = 0; i < length; i++)
-        {
-            ItemData databaseItem = ItemManager.instance.GetAllDailyRewardItemDatas().Where(x => x.ID == itemIDs[i]).SingleOrDefault();
-            databaseItem.IsPurchased = itemsPurchased[i];
-            databaseItem.IsLocked = itemsLocked[i];
-            Debug.Log($"DailyRewardDatabase id:{itemIDs[i]} and ItemManager item id {databaseItem.ID}");
-            dailyRewardItems.Add(databaseItem);
-        }
+        List<ItemData> dailyRewardItems = CurrentSaveData.DailyRewardItems;
+        //for (int i = 0; i < length; i++)
+        //{
+        //    ItemData databaseItem = ItemManager.instance.GetAllDailyRewardItemDatas().Where(x => x.ID == itemIDs[i]).SingleOrDefault();
+        //    databaseItem.IsPurchased = itemsPurchased[i];
+        //    databaseItem.IsLocked = itemsLocked[i];
+        //    Debug.Log($"DailyRewardDatabase id:{itemIDs[i]} and ItemManager item id {databaseItem.ID}");
+        //    dailyRewardItems.Add(databaseItem);
+        //}
         if (dailyRewardItems.Count > 0)
             ItemManager.instance.CurrentDailyRewardItems = dailyRewardItems;              
     }
     public async System.Threading.Tasks.Task LoadLastDailyRewardTime()
     {
-        string lastDateTimeString = "02/05/2025";//Data json'dan cekilmeli
-        byte whatDay = 0; //Data json'dan cekilmeli
+        string lastDateTimeString = CurrentSaveData.LastDailyRewardTime;
+        byte whatDay = CurrentSaveData.WhatDay;
         DateTime lastDateTime = DateTime.Parse(lastDateTimeString);
         Debug.Log("before Loading LastDailyRewardTime => " + lastDateTimeString);
         Debug.Log("before Loading WhatDay => " + whatDay);
@@ -947,7 +939,7 @@ public class GameManager : MonoBehaviour
     public async System.Threading.Tasks.Task LoadCustomizationData()
     {
         CharacterCustomizeData characterCustomize = new CharacterCustomizeData();
-        characterCustomize = new CharacterCustomizeData(); //Data json'dan cekilmeli
+        characterCustomize = CurrentSaveData.customizeData;
 
         CustomizeHandler.instance.characterCustomizeData = characterCustomize;
         Debug.Log("CustomizeHandler.instance.characterCustomizeData.LastSelectedCustomizeCategory => " + CustomizeHandler.instance.characterCustomizeData.LastSelectedCustomizeCategory);
@@ -978,9 +970,7 @@ public class GameManager : MonoBehaviour
         {
             if (NpcManager.instance != null && !NpcManager.instance.databaseProcessComplated) return;
             AudioManager.instance.SaveAudioSettings();
-            //Data json'dan cekilmeli (save islemi burda olmali! json cekme degil isaret olsun diye koydum)
-            if (CustomizeHandler.instance != null && CustomizeHandler.instance.characterCustomizeData != null)
-                //Data json'dan cekilmeli (Karakter customizaton'da save edilmeli.)
+            SaveGame();            
             TimeManager.instance.StopProgressCoroutine();
             Time.timeScale = 0;
         }
@@ -998,13 +988,14 @@ public class PlayerSaveData
 {
     public string SaveName;
     public string GameLanguage;
-
+    public string UniqueSaveFolderName;
+    public long CreatedUID;
+    public long LastSave;
     public float Gold;
     public float Culture;
     public float Gem;
     public float SkillPoint;
     public int CurrentCultureLevel;
-
     //IsFirstGame
     public bool IsFirstGame = true;
     //isWatchTutorial
@@ -1022,6 +1013,7 @@ public class PlayerSaveData
     public List<SkillNode> SkillNodes = new List<SkillNode>();
     public List<WorkerData> CurrentWorkerDatas = new List<WorkerData>();
     public List<WorkerData> InventoryWorkerDatas = new List<WorkerData>();
+    public CharacterCustomizeData customizeData = new CharacterCustomizeData();
 
     public List<EditObjData> StatueDatas = new List<EditObjData>();
 

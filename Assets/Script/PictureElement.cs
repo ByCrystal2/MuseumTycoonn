@@ -81,7 +81,7 @@ public class PictureElement : MonoBehaviour
         }
 
         if (!_isLoadGame)
-            GameManager.instance.Save();
+            GameManager.instance.SaveGame();
     }
 
     void SaveThisPicture()

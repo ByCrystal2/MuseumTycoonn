@@ -284,7 +284,7 @@ public class DialogueManager : MonoBehaviour
             sceneTransPanel.DOLocalMove(new Vector3(169, 2383, 0), 5);
             yield return new WaitForSeconds(5);
             yield return StartCoroutine(TutorialEndPanelController.Instance.IEStartEndPanelProgress());
-            //Data json'dan cekilmeli (CreateNewLoading metotu cagilirmali.)
+            AuthManager.instance.CreateNewLoading();
         }
         else
         {

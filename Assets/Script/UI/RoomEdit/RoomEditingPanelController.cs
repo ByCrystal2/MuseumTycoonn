@@ -223,7 +223,7 @@ public class RoomEditingPanelController : MonoBehaviour
         RightUIPanelController.instance.UIVisibleClose(false);
         UIController.instance.CloseJoystickObj(false);
         PlayerManager.instance.UnLockPlayer();
-        GameManager.instance.Save();
+        GameManager.instance.SaveGame();
     }
 
     public void ClearClikedStatueBonusContent()

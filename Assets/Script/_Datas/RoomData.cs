@@ -180,7 +180,7 @@ public class RoomData : MonoBehaviour
 
                         //PictureData currentPictureData = GameManager.instance.CurrentSaveData.CurrentPictures.Where(x => x.id == pe._pictureData.id).SingleOrDefault();
                         Debug.Log("RoomCode => " + availableRoomCell.CellLetter.ToString() + availableRoomCell.CellNumber.ToString() + " pe.name => " + pe.name + " and pe._pictureData.id => " + pe._pictureData.id);
-                        PictureData databasePicture = new PictureData(); //Data json'dan cekilmeli
+                        PictureData databasePicture = GameManager.instance.CurrentSaveData.CurrentPictures.Where(x=> x.id == pe._pictureData.id).SingleOrDefault();
                         if (databasePicture != null)
                         {
                             Debug.Log("databaseRoom.painterData.ID => " + databasePicture.painterData.ID + " databaseRoom.isActive => " + databasePicture.isActive + " databaseRoom.TextureID => " + databasePicture.TextureID);
@@ -287,6 +287,20 @@ public class RoomData : MonoBehaviour
             RoofLock.SetActive(true);
         }
     }
+    public RoomData(RoomSaveData saveData)
+    {
+        ID = saveData.ID;
+        availableRoomCell = new RoomCell((CellLetter)saveData.availableRoomCell[0], saveData.availableRoomCell[1]);
+        isLock = saveData.isLock;
+        isActive = saveData.isActive;
+        RequiredMoney = saveData.RequiredMoney;
+        isHasStatue = saveData.IsHasStatue;
+        MyStatue = saveData.MyStatue;
+        MyRoomWorkersIDs.Clear();
+        int length = MyRoomWorkersIDs.Count;
+        for (int i = 0; i < length; i++)
+            MyRoomWorkersIDs.Add(saveData.MyRoomWorkersIDs[i]);
+    }
 }
 public enum RoomType
 {
@@ -336,6 +350,7 @@ public enum CellLetter
 [System.Serializable]
 public class RoomSaveData
 {
+    public int ID;
     public string availableRoomCell;
     public bool isLock = true;
     public bool isActive = false;
