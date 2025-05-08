@@ -55,11 +55,11 @@ public class NpcManager : MonoBehaviour
         GameManager.instance._rewardManager = FindObjectOfType<RewardManager>();
         AudioManager.instance.buttonSoundHandlers = FindObjectsOfType<ButtonSoundHandler>().ToList();
         AuthManager.instance.ForFireBaseLoading();
-        AwakeLoadingProcesses();
+        StartCoroutine(AwakeLoadingProcesses());
     }
 
     public bool databaseProcessComplated = false;
-    public async void AwakeLoadingProcesses()
+    public IEnumerator AwakeLoadingProcesses()
     {
         Debug.Log("Database load test 1 complated.");
         databaseProcessComplated = false;
@@ -75,7 +75,8 @@ public class NpcManager : MonoBehaviour
         RoomManager.instance.AddRooms(); // in app baglantisi kurulmadan once odalar yuklendi.        
         //GameManager.instance.LoadInventoryPictures();
         //GameManager.instance.LoadStatues();
-        await GameManager.instance.LoadCustomizationData();        
+        yield return new WaitUntil(() => CustomizeHandler.instance != null);
+        GameManager.instance.LoadCustomizationData();        
         
         Debug.Log("Database load test 3 complated.");
         GameManager.instance.LoadWorkers();
@@ -184,7 +185,7 @@ public class NpcManager : MonoBehaviour
         Debug.Log("Database load test 10 complated.");
         LoadingScene.ComplateLoadingStep();
         Debug.Log("Database load test 11 complated.");
-        await GameManager.instance.LoadRooms();
+        yield return GameManager.instance.LoadRooms();
         LoadingScene.ComplateLoadingStep();
         Debug.Log("Database load test 12 complated.");
         RoomManager.instance.statuesHandler.ActiveStatuesControl();

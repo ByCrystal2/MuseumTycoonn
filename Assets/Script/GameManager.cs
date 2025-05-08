@@ -84,13 +84,19 @@ public class GameManager : MonoBehaviour
         if (IsFirstGame)
             ItemManager.instance.SetCalculatedDailyRewardItems();
         LoadGame();
-        StartCoroutine(LateLoad());
+        yield return StartCoroutine(LateLoad());
+        if (newSave)
+        {
+            SaveGame(true, "testuser123");
+            newSave = false;
+        }
         if (LanguageDatabase.instance.TranslationWillBeProcessed)
         LanguageDatabase.instance.LoadLanguageData();
         Debug.Log("CurrentSaveData.ActiveRoomsRequiredMoney => " + CurrentSaveData.ActiveRoomsRequiredMoney);
     }
     public void Init()
     {
+        AuthManager.instance.CreateNewLoading();
         TableCommentEvaluationManager.instance.AddAllNPCComments();
         SkillTreeManager.instance.AddSkillsForSkillTree();
         ItemManager.instance.AddItems();
@@ -194,6 +200,9 @@ public class GameManager : MonoBehaviour
     public bool LoadCompleted = false;
     public void SaveGame(bool _newSave = false, string _newSaveName = "")
     {
+        if (_newSaveName != "")
+            CurrentSaveData.SaveName = _newSaveName;
+
         if (CurrentSaveData.SaveName == "")
         {
             Debug.LogError("Could not save the game, save data lost.");
@@ -297,21 +306,23 @@ public class GameManager : MonoBehaviour
         }
 
     }
+    bool newSave = false;
     public void LoadGame()
     {
         string path = CurrentSaveData.SaveName;
         Debug.Log("Load save file location: " + Application.persistentDataPath + "/" + path + fileExtension);
         if (File.Exists(Application.persistentDataPath + "/" + path + fileExtension))
         {
+            newSave = false;
             byte[] loadBytes = File.ReadAllBytes(Application.persistentDataPath + "/" + path + fileExtension);
             string decryptedData = DecryptStringFromBytes(loadBytes);
             CurrentSaveData = JsonUtility.FromJson<PlayerSaveData>(decryptedData);
         }
         else
         {
+            newSave = true;
             Debug.Log("Save could not be found.");
-            CurrentSaveData.ActiveRoomsRequiredMoney = 1000;
-            SaveGame(true, "testuser123");
+            CurrentSaveData.ActiveRoomsRequiredMoney = 1000;            
         }
         
     }
@@ -320,13 +331,13 @@ public class GameManager : MonoBehaviour
         LoadCompleted = false;
         yield return null;
 
-        yield return null;
         LoadIsWatchTutorialAsync();
         LoadDailyRewardItems();
         LoadMuseumNumeralDatas();
         LoadInventoryPictures();
         LoadPurchasedItems();
 
+        yield return null;
         LoadCompleted = true;
 
         PictureChangesReqiuredAmountCalculater();
@@ -976,11 +987,15 @@ public class GameManager : MonoBehaviour
         Debug.Log("after Loading LastDailyRewardTime => " + lastDateTimeString);
         Debug.Log("after Loading WhatDay => " + whatDay);
     }
-    public async System.Threading.Tasks.Task LoadCustomizationData()
+    public void LoadCustomizationData()
     {
         CharacterCustomizeData characterCustomize = new CharacterCustomizeData();
-        characterCustomize = CurrentSaveData.customizeData;
+        characterCustomize = CurrentSaveData.customizeData == null ? new() : CurrentSaveData.customizeData;
+        characterCustomize.playerCustomizeData = CurrentSaveData.customizeData == null || CurrentSaveData.customizeData.playerCustomizeData == null ? new() : CurrentSaveData.customizeData.playerCustomizeData;
+        characterCustomize.playerCustomizeData.AllCustomizeData = CurrentSaveData.customizeData == null || CurrentSaveData.customizeData.playerCustomizeData == null || CurrentSaveData.customizeData.playerCustomizeData.AllCustomizeData == null ? new() : CurrentSaveData.customizeData.playerCustomizeData.AllCustomizeData;        
 
+        bool customizeinstanceIsNull = CustomizeHandler.instance == null;
+        Debug.Log("Customize Instance is null: " + customizeinstanceIsNull);
         CustomizeHandler.instance.characterCustomizeData = characterCustomize;
         Debug.Log("CustomizeHandler.instance.characterCustomizeData.LastSelectedCustomizeCategory => " + CustomizeHandler.instance.characterCustomizeData.LastSelectedCustomizeCategory);
         CustomizeHandler.instance.CustomizationInit();

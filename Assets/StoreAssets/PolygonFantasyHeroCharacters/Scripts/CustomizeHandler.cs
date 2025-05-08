@@ -4901,7 +4901,58 @@ public class CharacterCustomizeData
     public int LastSelectedCustomizeCategory;
     public int LastSelectedCustomizeHeader;
     public int LastSelectedColorHeader;
+    List<Color> DefaultColors;
+    public CharacterCustomizeData()
+    {
+        DefaultColors = new();
+        DefaultColors.Add(new Color(0.2431373f, 0.4196079f, 0.6196079f, 1));
+        DefaultColors.Add(new Color(0.8196079f, 0.6431373f, 0.2980392f, 1));
+        DefaultColors.Add(new Color(0.282353f, 0.2078432f, 0.1647059f, 1));
+        DefaultColors.Add(new Color(0.5960785f, 0.6117647f, 0.627451f, 1));
+        DefaultColors.Add(new Color(0.372549f, 0.3294118f, 0.2784314f, 1));
+        DefaultColors.Add(new Color(0.1764706f, 0.1960784f, 0.2156863f, 1));
+        DefaultColors.Add(new Color(0.345098f, 0.3764706f, 0.3960785f, 1));
+        DefaultColors.Add(new Color(0.2627451f, 0.2117647f, 0.1333333f, 1));
+        DefaultColors.Add(new Color(1f, 0.8000001f, 0.682353f, 1));
+        DefaultColors.Add(new Color(0.8039216f, 0.7019608f, 0.6313726f, 1));
+        DefaultColors.Add(new Color(0.9294118f, 0.6862745f, 0.5921569f, 1));
+        DefaultColors.Add(new Color(0.2283196f, 0.5822246f, 0.7573529f, 1));
+        DefaultColors.Add(new Color(0.2283196f, 0.5822246f, 0.7573529f, 1));
+    }
+    List<CustomizeElement> GetDefaultElements()
+    {
+        List<CustomizeElement> _default = new();
 
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Head, elementID = 1001 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.FacialHair, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Torso, elementID = 4004 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Arm_Upper_Right, elementID = 5001 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Arm_Upper_Left, elementID = 6001 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Arm_Lower_Right, elementID = 7001 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Arm_Lower_Left, elementID = 8001 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Hand_Right, elementID = 9001 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Hand_Left, elementID = 10001 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Hip, elementID = 11004 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Leg_Right, elementID = 12003 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Leg_Left, elementID = 13003 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Helmet, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Eyebrows, elementID = 102003 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Hair, elementID = 103004 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Hat, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Mask, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Helmet_Attachment, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Back_Attachment, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Shoulder_Attachment_Right, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Shoulder_Attachment_Left, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Elbow_Attachment_Right, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Elbow_Attachment_Left, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Hip_Attachment, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Knee_Attachment_Right, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Knee_Attachment_Left, elementID = 0 });
+        _default.Add(new CustomizeElement() { customizeSlot = CustomizeSlot.Elf_Ear, elementID = 0 });
+
+        return _default;
+    }
     public void SetDatas(PlayerCustomizeData _playerCustomizeData, List<int> _unlockedCustomizeElementIDs, int _lastSelectedCustomizeCategory, int _lastSelectedCustomizeHeader, int _lastSelectedColorHeader)
     {
         playerCustomizeData = _playerCustomizeData;

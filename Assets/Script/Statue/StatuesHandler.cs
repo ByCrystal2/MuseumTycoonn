@@ -110,6 +110,10 @@ public class StatuesHandler
         List<NPCBehaviour> _npcsInTheRoom = bonusStatueRoom.GetNpcsInTheMyRoom();
         foreach (var currentBonus in Bonusses)//
         {
+            bool listNull = _npcsInTheRoom == null;
+            bool bonusNull = currentBonus == null;
+            Debug.Log("npcInTheRoomList Null : " + listNull);
+            Debug.Log("currentBonus Null : " + bonusNull);
             Debug.Log("_npcsInTheRoom.Count => " + _npcsInTheRoom.Count + " CurrentBonus => " + currentBonus.BonusType);
             foreach (var npc in _npcsInTheRoom)
             {
