@@ -3747,6 +3747,9 @@ MonoBehaviour:
   CurrentSaveData:
     SaveName: 
     GameLanguage: 
+    UniqueSaveFolderName: 
+    CreatedUID: 0
+    LastSave: 0
     Gold: 0
     Culture: 0
     Gem: 0
@@ -3764,8 +3767,14 @@ MonoBehaviour:
     SkillNodes: []
     CurrentWorkerDatas: []
     InventoryWorkerDatas: []
-    adData:
-      RemovedAllAds: 0
+    customizeData:
+      playerCustomizeData:
+        selectedCustomizeSlot: 0
+        AllCustomizeData: []
+      unlockedCustomizeElementIDs: 
+      LastSelectedCustomizeCategory: 0
+      LastSelectedCustomizeHeader: 0
+      LastSelectedColorHeader: 0
     StatueDatas: []
     LastDailyRewardTime: 
     WhatDay: 0
@@ -3777,7 +3786,10 @@ MonoBehaviour:
   IsFirstGame: 1
   IsWatchTutorial: 0
   enableRuntimeDebugger: 0
+  isDemo: 1
+  isLoadedGame: 0
   DatabaseLanguageProgressComplated: 0
+  LoadCompleted: 0
 --- !u!4 &1202299727
 Transform:
   m_ObjectHideFlags: 0
@@ -6061,8 +6073,7 @@ PrefabInstance:
       propertyPath: m_text
       value: 100%
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 4645779583608692589, guid: 5a15cfd126e9c6c4c955fe01e02c5c0e, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

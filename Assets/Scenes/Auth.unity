@@ -777,7 +777,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LoadingPanel: {fileID: 7751130163739178004, guid: 5a15cfd126e9c6c4c955fe01e02c5c0e,
     type: 3}
-  loadingCanvasIgnoringTags: []
+  loadingCanvasIgnoringTags:
+  - UIInteraction
 --- !u!4 &486172882
 Transform:
   m_ObjectHideFlags: 0

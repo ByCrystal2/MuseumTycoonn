@@ -84,11 +84,7 @@ public class GameManager : MonoBehaviour
         if (IsFirstGame)
             ItemManager.instance.SetCalculatedDailyRewardItems();
         LoadGame();
-        LoadIsWatchTutorialAsync();
-        LoadDailyRewardItems();
-        LoadMuseumNumeralDatas();
-        LoadInventoryPictures();
-        LoadPurchasedItems();
+        StartCoroutine(LateLoad());
         if (LanguageDatabase.instance.TranslationWillBeProcessed)
         LanguageDatabase.instance.LoadLanguageData();
         Debug.Log("CurrentSaveData.ActiveRoomsRequiredMoney => " + CurrentSaveData.ActiveRoomsRequiredMoney);
@@ -230,8 +226,46 @@ public class GameManager : MonoBehaviour
         savedata.UniqueSaveFolderName = newSave ? CurrentSaveData.UniqueSaveFolderName + "_" + savedata.CreatedUID : CurrentSaveData.UniqueSaveFolderName;
         savedata.LastSave = unixTimestamp;
 
+        //NumeralDatas
         savedata.Gold = CurrentSaveData.Gold;
+        savedata.Culture = CurrentSaveData.Culture;
+        savedata.Gem = CurrentSaveData.Gem;
+        savedata.SkillPoint = CurrentSaveData.SkillPoint;
+        savedata.CurrentCultureLevel = CurrentSaveData.CurrentCultureLevel;
 
+        //Language
+        savedata.GameLanguage = CurrentSaveData.GameLanguage;
+
+        //Bools
+        savedata.IsWatchTutorial = CurrentSaveData.IsWatchTutorial;
+        savedata.IsFirstGame = CurrentSaveData.IsFirstGame;
+
+        //Pictures
+        savedata.CurrentPictures = CurrentSaveData.CurrentPictures;
+        savedata.InventoryPictures = CurrentSaveData.InventoryPictures;
+
+        //Rooms
+        savedata.Rooms = CurrentSaveData.Rooms;
+        savedata.ActiveRoomsRequiredMoney = CurrentSaveData.ActiveRoomsRequiredMoney;
+
+        //Items
+        savedata.PurchasedItems = CurrentSaveData.PurchasedItems;
+        savedata.DailyRewardItems = CurrentSaveData.DailyRewardItems;
+        savedata.LastDailyRewardTime = CurrentSaveData.LastDailyRewardTime;
+        savedata.WhatDay = CurrentSaveData.WhatDay;
+
+        //Workers
+        savedata.CurrentWorkerDatas = CurrentSaveData.CurrentWorkerDatas;
+        savedata.InventoryWorkerDatas = CurrentSaveData.InventoryWorkerDatas;
+        savedata.baseWorkerHiringPrice = CurrentSaveData.baseWorkerHiringPrice;
+
+        //Statues
+        savedata.StatueDatas = CurrentSaveData.StatueDatas;
+
+        //Skills
+        savedata.SkillNodes = CurrentSaveData.SkillNodes;
+
+        //CustomizeData
         savedata.customizeData = CurrentSaveData.customizeData;
 
         if (!_newSave)
@@ -277,6 +311,7 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("Save could not be found.");
             CurrentSaveData.ActiveRoomsRequiredMoney = 1000;
+            SaveGame(true, "testuser123");
         }
         
     }
@@ -286,6 +321,11 @@ public class GameManager : MonoBehaviour
         yield return null;
 
         yield return null;
+        LoadIsWatchTutorialAsync();
+        LoadDailyRewardItems();
+        LoadMuseumNumeralDatas();
+        LoadInventoryPictures();
+        LoadPurchasedItems();
 
         LoadCompleted = true;
 

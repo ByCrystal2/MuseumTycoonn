@@ -54,8 +54,10 @@ public class NpcManager : MonoBehaviour
 
         GameManager.instance._rewardManager = FindObjectOfType<RewardManager>();
         AudioManager.instance.buttonSoundHandlers = FindObjectsOfType<ButtonSoundHandler>().ToList();
+        AuthManager.instance.ForFireBaseLoading();
         AwakeLoadingProcesses();
     }
+
     public bool databaseProcessComplated = false;
     public async void AwakeLoadingProcesses()
     {
@@ -207,7 +209,7 @@ public class NpcManager : MonoBehaviour
 
     private void Start()
     {
-        PlayerManager.instance.LockPlayer();
+        PlayerManager.instance.LockPlayer();        
     }
     private void OnDisable()
     {
