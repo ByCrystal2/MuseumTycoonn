@@ -132,22 +132,25 @@ public class DialogueManager : MonoBehaviour
     }
     private async System.Threading.Tasks.Task DatabaseWaitingDatas()
     {
-        ItemData firstTableForPlayer = new ItemData(99999, "Vincent van Gogh", "Hediye Tablo", 1, 0, null, ItemType.Table, ShoppingType.Gold, 1, 3);
-        PictureData newDatabaseItem = new PictureData();
-        newDatabaseItem.TextureID = firstTableForPlayer.textureID;
-        newDatabaseItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
-        newDatabaseItem.painterData = new PainterData(firstTableForPlayer.ID, firstTableForPlayer.Description, firstTableForPlayer.Name, firstTableForPlayer.StarCount);
-        newDatabaseItem.isActive = true;
-        newDatabaseItem.isFirst = false;
-        newDatabaseItem.isLocked = false;
-        newDatabaseItem.id = 208;
+        //ItemData firstTableForPlayer = new ItemData(99999, "Vincent van Gogh", "Hediye Tablo", 1, 0, null, ItemType.Table, ShoppingType.Gold, 1, 3);
+        //PictureData newDatabaseItem = new PictureData();
+        //newDatabaseItem.TextureID = firstTableForPlayer.textureID;
+        //newDatabaseItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
+        //newDatabaseItem.painterData = new PainterData(firstTableForPlayer.ID, firstTableForPlayer.Description, firstTableForPlayer.Name, firstTableForPlayer.StarCount);
+        //newDatabaseItem.isActive = true;
+        //newDatabaseItem.isFirst = false;
+        //newDatabaseItem.isLocked = false;
+        //newDatabaseItem.id = 208;
 
        MuseumManager.instance.lastDailyRewardTime = DailyRewardsPanelController.instance.firstItemPurchasedtime;
-        EditObjData clickedEditObjBehaviour = RoomManager.instance.statuesHandler.editObjs.Where(x => x.ID == 9999).SingleOrDefault();
-        clickedEditObjBehaviour._currentRoomCell = new RoomCell(CellLetter.A, 5);
+        //EditObjData clickedEditObjBehaviour = RoomManager.instance.statuesHandler.editObjs.Where(x => x.ID == 9999).SingleOrDefault();
+        //clickedEditObjBehaviour._currentRoomCell = new RoomCell(CellLetter.A, 5);
 
-        List<RoomData> activeRoomDatas = RoomManager.instance.RoomDatas.Where(x => x.isActive).ToList();
+        //List<RoomData> activeRoomDatas = RoomManager.instance.RoomDatas.Where(x => x.isActive).ToList();
+        //RoomData targetRoom = activeRoomDatas.Where(x => x.availableRoomCell.CellLetter == CellLetter.A && x.availableRoomCell.CellNumber == 5).SingleOrDefault();
+        //targetRoom.
         //Data json'dan cekilmeli (tutorialda dialog bitince cagirilan ve temel verilen databaseye kaydedilme islemleri...)
+        GameManager.instance.SaveGame(true, "testuser123");
 
     }
     private void CinemachineTransition(bool _goTutorial)

@@ -55,6 +55,7 @@ public class AudioManager : MonoBehaviour
         if (pause)
         {
             // Oyun arka plana alýndýðýnda müzikleri durdur
+            if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Game")
             StopAllGameMusic();
         }
         else
@@ -62,7 +63,8 @@ public class AudioManager : MonoBehaviour
             // Oyun tekrar ön plana geldiðinde müziði yeniden baþlat
             if (gameMusicCoroutine == null)
             {
-                PlayMusicOfGame();
+                if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Game")
+                    PlayMusicOfGame();
             }
         }
     }

@@ -64,7 +64,7 @@ public class RoomData : MonoBehaviour
     }
     public List<NPCBehaviour> GetNpcsInTheMyRoom()
     {
-        return NPCsInTheRoom;
+        return NPCsInTheRoom == null ? new() : NPCsInTheRoom;
     }
     public EditObjData GetMyStatueInTheMyRoom()
     {
@@ -287,17 +287,17 @@ public class RoomData : MonoBehaviour
             RoofLock.SetActive(true);
         }
     }
-    public RoomData(RoomSaveData saveData)
+    public void OverwriteRoomSaveData(RoomSaveData saveData)
     {
         ID = saveData.ID;
-        availableRoomCell = new RoomCell((CellLetter)saveData.availableRoomCell[0], saveData.availableRoomCell[1]);
+        availableRoomCell = new RoomCell(saveData.availableRoomCell.CellLetter, saveData.availableRoomCell.CellNumber);
         isLock = saveData.isLock;
         isActive = saveData.isActive;
         RequiredMoney = saveData.RequiredMoney;
         isHasStatue = saveData.IsHasStatue;
         MyStatue = saveData.MyStatue;
         MyRoomWorkersIDs.Clear();
-        int length = MyRoomWorkersIDs.Count;
+        int length = saveData.MyRoomWorkersIDs.Count;
         for (int i = 0; i < length; i++)
             MyRoomWorkersIDs.Add(saveData.MyRoomWorkersIDs[i]);
     }
@@ -351,13 +351,27 @@ public enum CellLetter
 public class RoomSaveData
 {
     public int ID;
-    public string availableRoomCell;
+    public RoomCell availableRoomCell;
     public bool isLock = true;
     public bool isActive = false;
     public float RequiredMoney;
     public bool IsHasStatue = false;
     public EditObjData MyStatue;
     public List<int> MyRoomWorkersIDs = new List<int>();
+    public RoomSaveData(RoomData _copyRoom)
+    {
+        ID = _copyRoom.ID;
+        availableRoomCell = new RoomCell(_copyRoom.availableRoomCell.CellLetter, _copyRoom.availableRoomCell.CellNumber);
+        isLock = _copyRoom.isLock;
+        isActive = _copyRoom.isActive;
+        RequiredMoney = _copyRoom.RequiredMoney;
+        IsHasStatue = _copyRoom.isHasStatue;
+        MyStatue = new EditObjData(_copyRoom.GetMyStatueInTheMyRoom());
+        MyRoomWorkersIDs.Clear();
+        int length = _copyRoom.MyRoomWorkersIDs.Count;
+        for (int i = 0; i < length; i++)
+            MyRoomWorkersIDs.Add(_copyRoom.MyRoomWorkersIDs[i]);
+    }
 }
 
 [System.Serializable]

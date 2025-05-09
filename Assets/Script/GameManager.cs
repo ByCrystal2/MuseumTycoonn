@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
 
     public bool isLoadedGame;
     private const string encryptionKey = "SavePassword";
+    private const string fileName = "testuser123";
     private const string fileExtension = ".art";
     private void Awake()
     {
@@ -87,7 +88,7 @@ public class GameManager : MonoBehaviour
         yield return StartCoroutine(LateLoad());
         if (newSave)
         {
-            SaveGame(true, "testuser123");
+            //SaveGame(true, "testuser123");
             newSave = false;
         }
         if (LanguageDatabase.instance.TranslationWillBeProcessed)
@@ -200,8 +201,12 @@ public class GameManager : MonoBehaviour
     public bool LoadCompleted = false;
     public void SaveGame(bool _newSave = false, string _newSaveName = "")
     {
+        if (!IsWatchTutorial && IsFirstGame) return;
         if (_newSaveName != "")
-            CurrentSaveData.SaveName = _newSaveName;
+            if (isDemo)
+                CurrentSaveData.SaveName = _newSaveName + "_Demo";
+            else
+                CurrentSaveData.SaveName = _newSaveName;
 
         if (CurrentSaveData.SaveName == "")
         {
@@ -215,73 +220,81 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        string FileName = CurrentSaveData.UniqueSaveFolderName + "/" + (_newSaveName == "" ? CurrentSaveData.SaveName : _newSaveName);
+        PlayerSaveData savedata = new PlayerSaveData();
+        //Language
+        savedata.GameLanguage = GetGameLanguage();
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Game") return;
+
+        string FileName = "GameSave" + "/" + (_newSaveName == "" ? CurrentSaveData.SaveName : _newSaveName);
         if (File.Exists(Application.persistentDataPath + "/" + FileName + fileExtension)) //Check the save name is exist
             File.Delete(Application.persistentDataPath + "/" + FileName + fileExtension);
 
         long unixTimestamp = ((System.DateTimeOffset)System.DateTime.Now).ToUnixTimeSeconds();
 
-        bool newSave = CurrentSaveData.CreatedUID == 0;
-        if (_newSave)
-            newSave = true;
+        //bool newSave = CurrentSaveData.CreatedUID == 0;
+        //if (_newSave)
+        //    newSave = true;
 
         if (isDemo)
-        _newSaveName = _newSaveName + "_Demo";
+        {
+            _newSaveName = _newSaveName + "_Demo";
+            //CurrentSaveData.SaveName = CurrentSaveData.SaveName + "_Demo";
+        }
 
-
-        PlayerSaveData savedata = new PlayerSaveData();
         savedata.SaveName = !_newSave ? CurrentSaveData.SaveName : _newSaveName;
-        savedata.CreatedUID = !newSave ? CurrentSaveData.CreatedUID : unixTimestamp;
-        savedata.UniqueSaveFolderName = newSave ? CurrentSaveData.UniqueSaveFolderName + "_" + savedata.CreatedUID : CurrentSaveData.UniqueSaveFolderName;
-        savedata.LastSave = unixTimestamp;
+        //savedata.CreatedUID = !newSave ? CurrentSaveData.CreatedUID : unixTimestamp;
+        //savedata.UniqueSaveFolderName = newSave ? CurrentSaveData.UniqueSaveFolderName + "_" + savedata.CreatedUID : CurrentSaveData.UniqueSaveFolderName;
+        //savedata.LastSave = unixTimestamp;
 
         //NumeralDatas
-        savedata.Gold = CurrentSaveData.Gold;
-        savedata.Culture = CurrentSaveData.Culture;
-        savedata.Gem = CurrentSaveData.Gem;
-        savedata.SkillPoint = CurrentSaveData.SkillPoint;
-        savedata.CurrentCultureLevel = CurrentSaveData.CurrentCultureLevel;
-
-        //Language
-        savedata.GameLanguage = CurrentSaveData.GameLanguage;
+        var museumNumDatas = MuseumManager.instance.GetSaveData();
+        savedata.Gold = museumNumDatas._gold;
+        savedata.Culture = museumNumDatas._Culture;
+        savedata.Gem = museumNumDatas._Gem;
+        savedata.SkillPoint = museumNumDatas._SkillPoint;
+        savedata.CurrentCultureLevel = museumNumDatas._CurrentCultureLevel;        
 
         //Bools
-        savedata.IsWatchTutorial = CurrentSaveData.IsWatchTutorial;
-        savedata.IsFirstGame = CurrentSaveData.IsFirstGame;
+        savedata.IsWatchTutorial = IsWatchTutorial;
+        savedata.IsFirstGame = IsFirstGame;
 
         //Pictures
-        savedata.CurrentPictures = CurrentSaveData.CurrentPictures;
-        savedata.InventoryPictures = CurrentSaveData.InventoryPictures;
+        savedata.CurrentPictures = MuseumManager.instance.InventoryPictures;
+        //savedata.InventoryPictures = CurrentSaveData.InventoryPictures;
 
         //Rooms
-        savedata.Rooms = CurrentSaveData.Rooms;
-        savedata.ActiveRoomsRequiredMoney = CurrentSaveData.ActiveRoomsRequiredMoney;
+        List<RoomData> purchasedRooms = RoomManager.instance.RoomDatas.Where(x => x.isActive && !x.isLock).ToList();
+        List<RoomSaveData> roomSaveDatas = new List<RoomSaveData>();
+        foreach (var room in purchasedRooms)
+            roomSaveDatas.Add(new RoomSaveData(room));
+        savedata.Rooms = roomSaveDatas;
+        savedata.ActiveRoomsRequiredMoney = ActiveRoomsRequiredMoney;
 
         //Items
-        savedata.PurchasedItems = CurrentSaveData.PurchasedItems;
-        savedata.DailyRewardItems = CurrentSaveData.DailyRewardItems;
-        savedata.LastDailyRewardTime = CurrentSaveData.LastDailyRewardTime;
-        savedata.WhatDay = CurrentSaveData.WhatDay;
+        savedata.PurchasedItems = MuseumManager.instance.PurchasedItems;
+        savedata.DailyRewardItems = ItemManager.instance.CurrentDailyRewardItems;
+        savedata.LastDailyRewardTime = MuseumManager.instance.lastDailyRewardTime.ToString();
+        savedata.WhatDay = TimeManager.instance.WhatDay;
 
         //Workers
-        savedata.CurrentWorkerDatas = CurrentSaveData.CurrentWorkerDatas;
-        savedata.InventoryWorkerDatas = CurrentSaveData.InventoryWorkerDatas;
-        savedata.baseWorkerHiringPrice = CurrentSaveData.baseWorkerHiringPrice;
+        savedata.CurrentWorkerDatas = MuseumManager.instance.CurrentActiveWorkers.Select(x=> x.MyDatas).ToList();
+        savedata.InventoryWorkerDatas = MuseumManager.instance.WorkersInInventory.Select(x => x.MyDatas).ToList();
+        savedata.baseWorkerHiringPrice = BaseWorkerHiringPrice;
 
         //Statues
-        savedata.StatueDatas = CurrentSaveData.StatueDatas;
+        //savedata.StatueDatas = CurrentSaveData.StatueDatas;
 
         //Skills
-        savedata.SkillNodes = CurrentSaveData.SkillNodes;
+        savedata.SkillNodes = SkillTreeManager.instance.GetActiveSkillNodes();
 
         //CustomizeData
-        savedata.customizeData = CurrentSaveData.customizeData;
+        savedata.customizeData = CustomizeHandler.instance.characterCustomizeData;
 
         if (!_newSave)
         {
             CurrentSaveData = savedata;
-            string fullPath = Application.persistentDataPath + "/" + CurrentSaveData.UniqueSaveFolderName + "/" + CurrentSaveData.SaveName + fileExtension;
-            string folderPath = Application.persistentDataPath + "/" + CurrentSaveData.UniqueSaveFolderName;
+            string fullPath = Application.persistentDataPath + "/" + "GameSave" + "/" + CurrentSaveData.SaveName + fileExtension;
+            string folderPath = Application.persistentDataPath + "/" + "GameSave";
             if (!Directory.Exists(folderPath))
                 Directory.CreateDirectory(folderPath);
 
@@ -293,8 +306,8 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            string fullPath = Application.persistentDataPath + "/" + savedata.UniqueSaveFolderName + "/" + savedata.SaveName + fileExtension;
-            string folderPath = Application.persistentDataPath + "/" + savedata.UniqueSaveFolderName;
+            string fullPath = Application.persistentDataPath + "/" + "GameSave" + "/" + savedata.SaveName + fileExtension;
+            string folderPath = Application.persistentDataPath + "/" + "GameSave";
             if (!Directory.Exists(folderPath))
                 Directory.CreateDirectory(folderPath);
 
@@ -309,12 +322,12 @@ public class GameManager : MonoBehaviour
     bool newSave = false;
     public void LoadGame()
     {
-        string path = CurrentSaveData.SaveName;
-        Debug.Log("Load save file location: " + Application.persistentDataPath + "/" + path + fileExtension);
-        if (File.Exists(Application.persistentDataPath + "/" + path + fileExtension))
+        string path = isDemo ? fileName + "_Demo" : fileName;
+        Debug.Log("Load save file location: " + Application.persistentDataPath + "/" +"GameSave" + "/" + path + fileExtension);
+        if (File.Exists(Application.persistentDataPath + "/" + "GameSave" + "/" + path + fileExtension))
         {
             newSave = false;
-            byte[] loadBytes = File.ReadAllBytes(Application.persistentDataPath + "/" + path + fileExtension);
+            byte[] loadBytes = File.ReadAllBytes(Application.persistentDataPath + "/" + "GameSave" + "/" + path + fileExtension);
             string decryptedData = DecryptStringFromBytes(loadBytes);
             CurrentSaveData = JsonUtility.FromJson<PlayerSaveData>(decryptedData);
         }
@@ -467,7 +480,7 @@ public class GameManager : MonoBehaviour
                     RoomData myRoom = allRooms.SingleOrDefault(x => x.ID == databaseRoom.ID);
                     if (myRoom != null)
                     {
-                        myRoom = new RoomData(databaseRoom);
+                        myRoom.OverwriteRoomSaveData(databaseRoom);
                         Debug.Log("myRoom.ID is " + myRoom.ID + " databaseRoom.ID is " + databaseRoom.ID);
 
                         if (myRoom.GetMyStatueInTheMyRoom() != null)
@@ -515,42 +528,6 @@ public class GameManager : MonoBehaviour
     {
         GameLanguage = CurrentSaveData.GameLanguage;
     }
-    //public async System.Threading.Tasks.Task LoadRemoveAds()
-    //{
-    //    try
-    //    {
-    //        Debug.Log("LoadRemoveAds test 1 complated;");
-    //        Dictionary<string, object> gameDatas = new Dictionary<string, object>();
-
-    //        gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID).WithCancellation(GetFirebaseToken().Token);
-
-    //        AdverstingData databaseAdversting = new AdverstingData();
-    //        bool removeAds = gameDatas.ContainsKey("RemoveAllAds") ? Convert.ToBoolean(gameDatas["RemoveAllAds"]) : false;
-    //        databaseAdversting.RemovedAllAds = removeAds;
-    //        if (GoogleAdsManager.instance != null)
-    //            GoogleAdsManager.instance.adsData = databaseAdversting;
-
-    //        Debug.Log("LoadRemoveAds test 2 complated;");
-    //        if (GoogleAdsManager.instance.adsData.RemovedAllAds)
-    //        {
-    //            GoogleAdsManager.instance.StartInterstitialAdBool(false);
-    //            GoogleAdsManager.instance.StartBannerAdBool(false);
-    //        }
-    //        else
-    //        {
-    //            GoogleAdsManager.instance.StartInterstitialAdBool(true);
-    //            GoogleAdsManager.instance.StartBannerAdBool(true);
-    //        }
-    //        GoogleAdsManager.instance.StartRewardAdBool(true);
-    //        Debug.Log("LoadRemoveAds test 3 complated;");
-    //    }
-    //    catch (Exception _Ex)
-    //    {
-    //        Debug.Log("LoadRemoveAds method caught an error => " + _Ex.Message);
-    //    }
-       
-
-    //}
     public async void LoadMuseumNumeralDatas()
     {
         MuseumManager.instance.SetSaveData(CurrentSaveData.Gold, CurrentSaveData.Culture, CurrentSaveData.Gem, CurrentSaveData.SkillPoint, CurrentSaveData.CurrentCultureLevel);
@@ -744,6 +721,16 @@ public class GameManager : MonoBehaviour
                 SkillTreeManager.instance.SetSkillTextProcess(allSkills[i]);
                 Debug.Log(allSkills[i].ID + " li skill UI guncellenmistir.");
             }
+        }
+        int length1 = afterDatabaseSkills.Count;
+        for (int i = 0; i < length1; i++)
+        {
+            SkillNode databaseSkill = afterDatabaseSkills[i];
+            Debug.Log("DB Skill Infos: " + "ID: " + databaseSkill.ID + " IsLocked: " + databaseSkill.IsLocked + " IsPurchased: " + databaseSkill.IsPurchased);
+            SkillNode targetSkill = SkillTreeManager.instance.skillNodes.Where(x => x.ID == databaseSkill.ID).SingleOrDefault();
+            if (targetSkill != null)
+                Debug.Log("targetSkill.id: " + targetSkill.ID);
+            targetSkill = new SkillNode(databaseSkill);
         }
     }
     public void TranslateAllSkills()
@@ -1043,9 +1030,9 @@ public class PlayerSaveData
 {
     public string SaveName;
     public string GameLanguage;
-    public string UniqueSaveFolderName;
-    public long CreatedUID;
-    public long LastSave;
+    //public string UniqueSaveFolderName;
+    //public long CreatedUID;
+    //public long LastSave;
     public float Gold;
     public float Culture;
     public float Gem;
@@ -1061,7 +1048,7 @@ public class PlayerSaveData
     public float baseWorkerHiringPrice;
 
     public List<PictureData> CurrentPictures = new List<PictureData>();
-    public List<PictureData> InventoryPictures = new List<PictureData>();
+    //public List<PictureData> InventoryPictures = new List<PictureData>();
     public List<RoomSaveData> Rooms = new List<RoomSaveData>();
     public List<ItemData> PurchasedItems = new List<ItemData>();
     public List<ItemData> DailyRewardItems = new List<ItemData>();
@@ -1070,7 +1057,7 @@ public class PlayerSaveData
     public List<WorkerData> InventoryWorkerDatas = new List<WorkerData>();
     public CharacterCustomizeData customizeData = new CharacterCustomizeData();
 
-    public List<EditObjData> StatueDatas = new List<EditObjData>();
+    //public List<EditObjData> StatueDatas = new List<EditObjData>();
 
     //DailyReward
     public string LastDailyRewardTime = "";
