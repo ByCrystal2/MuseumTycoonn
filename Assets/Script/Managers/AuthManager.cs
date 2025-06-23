@@ -9,6 +9,7 @@ public class AuthManager : MonoBehaviour
     [SerializeField] GameObject LoadingPanel;
     [SerializeField]
     string[] loadingCanvasIgnoringTags;
+    [SerializeField] GameObject demoCanvas;
 
     public static AuthManager instance { get; private set; }
     private void Awake()

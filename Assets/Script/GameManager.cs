@@ -42,6 +42,8 @@ public class GameManager : MonoBehaviour
     private const string encryptionKey = "SavePassword";
     private const string fileName = "testuser123";
     private const string fileExtension = ".art";
+
+    [SerializeField] GameObject demoCanvas;
     private void Awake()
     {
         if (instance)
@@ -61,6 +63,8 @@ public class GameManager : MonoBehaviour
 
     public void Start()
     {
+        if (isDemo) demoCanvas.SetActive(true);
+        else demoCanvas.SetActive(false);
         StartCoroutine(WaitForInstance());
     }
     public IEnumerator WaitForInstance()
