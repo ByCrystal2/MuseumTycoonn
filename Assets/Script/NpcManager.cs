@@ -161,23 +161,23 @@ public class NpcManager : MonoBehaviour
             
 
             int index = TimeManager.instance.WhatDay;
-            // Eðer bulunduysa
+            // Eï¿½er bulunduysa
             if (index != -1)
             {
-                // Orijinal listedeki öðeyi al
+                // Orijinal listedeki ï¿½ï¿½eyi al
                 var originalItem = ItemManager.instance.CurrentDailyRewardItems[index];
 
-                // Orijinal öðenin bir kopyasýný oluþtur
+                // Orijinal ï¿½ï¿½enin bir kopyasï¿½nï¿½ oluï¿½tur
                 var updatedItem = originalItem;
 
-                // Kopyanýn üzerinde deðiþiklik yap
+                // Kopyanï¿½n ï¿½zerinde deï¿½iï¿½iklik yap
                 updatedItem.IsLocked = false;
 
-                // Kopyayý orijinal listeye geri yerleþtir
+                // Kopyayï¿½ orijinal listeye geri yerleï¿½tir
                 ItemManager.instance.CurrentDailyRewardItems[index] = updatedItem;
             }
             //GameManager.instance._rewardManager.CheckRewards(true);
-            GPGamesManager.instance.achievementController.FirstGameAchievement();
+            //GPGamesManager.instance.achievementController.FirstGameAchievement();
         }
         Debug.Log("Database load test 8 complated.");
         LoadingScene.ComplateLoadingStep();

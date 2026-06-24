@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
@@ -208,7 +207,7 @@ public class PicturesMenuController : MonoBehaviour
             MuseumManager.instance.SpendingGold(GameManager.instance.PictureChangeRequiredAmount);
             if (CurrentPicture._pictureData.isFirst)
             {
-                GPGamesManager.instance.achievementController.IncreaseNumberOfTablesPlaced();
+                //GPGamesManager.instance.achievementController.IncreaseNumberOfTablesPlaced();
                 SetPictureUpdateButton(false, PictureStrings[0], Color.white);
                 CurrentPicture._pictureData.isActive = true;
                 //MuseumManager.instance.GetPictureElement(PictureChangeRequiredAmount = Mathf.RoundToInt(CurrentPicture._pictureData.RequiredGold * 0.5f);
@@ -265,7 +264,7 @@ public class PicturesMenuController : MonoBehaviour
             CurrentPicture.SetImage(!CurrentPicture._pictureData.isLocked);
             StartCoroutine(nameof(WaitForSpendingGoldPicture));
 
-            GPGamesManager.instance.achievementController.PlacedTableControl();
+            //GPGamesManager.instance.achievementController.PlacedTableControl();
         }
         else
         {
@@ -320,7 +319,7 @@ public class PicturesMenuController : MonoBehaviour
         }
         else
         {
-            Debug.Log("Picture Ýçin para Yetersiz.");
+            Debug.Log("Picture ï¿½ï¿½in para Yetersiz.");
             SetPictureUpdateButton(false, PictureStrings[6], Color.red);
         }
     }
@@ -330,7 +329,7 @@ public class PicturesMenuController : MonoBehaviour
         imgPicture.sprite = CatchTheColors.instance.TextureToSprite(texture2D);
         if (GameManager.instance.PictureChangeRequiredAmount <= MuseumManager.instance.GetCurrentGold())
         {
-            Debug.Log("Picture Ýçin para Yeterli.");
+            Debug.Log("Picture ï¿½ï¿½in para Yeterli.");
             Debug.Log(GameManager.instance.PictureChangeRequiredAmount);
 
             if (CurrentPicture._pictureData.isFirst)

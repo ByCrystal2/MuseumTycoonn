@@ -215,9 +215,9 @@ namespace DigitalOpus.MB.Core
                 Debug.Assert(go != null);
                 Debug.Assert(name == null, "Should only call InitializeNew on a newly created DGO.");
                 gameObject = go;
-                name = String.Format("{0} {1}", gameObject.ToString(), gameObject.GetInstanceID());
+                name = String.Format("{0} {1}", gameObject.ToString(), gameObject.GetEntityId().GetHashCode());
                 if (go == null) return false;
-                instanceID = gameObject.GetInstanceID();
+                instanceID = gameObject.GetEntityId().GetHashCode();
                 return Initialize(beingDeleted);
             }
 
@@ -341,7 +341,7 @@ namespace DigitalOpus.MB.Core
             public override int GetHashCode()
             {
                 //OK if don't check bindPose well because bp should be the same
-                return (bone.GetInstanceID() % 2147483647) ^ (int)bindPose[0, 0];
+                return (bone.GetEntityId().GetHashCode() % 2147483647) ^ (int)bindPose[0, 0];
             }
         }
 
@@ -416,7 +416,7 @@ namespace DigitalOpus.MB.Core
             {
                 Debug.Assert(!_disposed && _collectedMeshData, "Mesh Channels Cache has not collected mesh data.");
                 MeshChannels mc;
-                if (!meshID2MeshChannels.TryGetValue(m.GetInstanceID(), out mc))
+                if (!meshID2MeshChannels.TryGetValue(m.GetEntityId().GetHashCode(), out mc))
                 {
                     Debug.LogError("Could not find mesh in the MeshChannelsCache." + m);    
                 }
@@ -428,7 +428,7 @@ namespace DigitalOpus.MB.Core
             {
                 Debug.Assert(!_disposed && _collectedMeshData, "Mesh Channels Cache has not collected mesh data.");
                 MeshChannels mc;
-                meshID2MeshChannels.TryGetValue(m.GetInstanceID(), out mc);
+                meshID2MeshChannels.TryGetValue(m.GetEntityId().GetHashCode(), out mc);
                 return mc.normals;
             }
             
@@ -436,7 +436,7 @@ namespace DigitalOpus.MB.Core
             {
                 Debug.Assert(!_disposed && _collectedMeshData, "Mesh Channels Cache has not collected mesh data.");
                 MeshChannels mc;
-                meshID2MeshChannels.TryGetValue(m.GetInstanceID(), out mc);
+                meshID2MeshChannels.TryGetValue(m.GetEntityId().GetHashCode(), out mc);
                 return mc.tangents;
             }
             
@@ -444,7 +444,7 @@ namespace DigitalOpus.MB.Core
             {
                 Debug.Assert(!_disposed && _collectedMeshData, "Mesh Channels Cache has not collected mesh data.");
                 MeshChannels mc;
-                meshID2MeshChannels.TryGetValue(m.GetInstanceID(), out mc);
+                meshID2MeshChannels.TryGetValue(m.GetEntityId().GetHashCode(), out mc);
                 return mc.uv0raw;
             }
             
@@ -452,7 +452,7 @@ namespace DigitalOpus.MB.Core
             {
                 Debug.Assert(!_disposed && _collectedMeshData, "Mesh Channels Cache has not collected mesh data.");
                 MeshChannels mc;
-                meshID2MeshChannels.TryGetValue(m.GetInstanceID(), out mc);
+                meshID2MeshChannels.TryGetValue(m.GetEntityId().GetHashCode(), out mc);
                 return mc.uv0modified;
             }
             
@@ -460,7 +460,7 @@ namespace DigitalOpus.MB.Core
             {
                 Debug.Assert(!_disposed && _collectedMeshData, "Mesh Channels Cache has not collected mesh data.");
                 MeshChannels mc;
-                meshID2MeshChannels.TryGetValue(m.GetInstanceID(), out mc);
+                meshID2MeshChannels.TryGetValue(m.GetEntityId().GetHashCode(), out mc);
                 return mc.uv2modified;
             }
 
@@ -468,7 +468,7 @@ namespace DigitalOpus.MB.Core
             {
                 Debug.Assert(!_disposed && _collectedMeshData, "Mesh Channels Cache has not collected mesh data.");
                 MeshChannels mc;
-                meshID2MeshChannels.TryGetValue(m.GetInstanceID(), out mc);
+                meshID2MeshChannels.TryGetValue(m.GetEntityId().GetHashCode(), out mc);
 
                 switch(channel)
                 {
@@ -500,7 +500,7 @@ namespace DigitalOpus.MB.Core
             {
                 Debug.Assert(!_disposed && _collectedMeshData, "Mesh Channels Cache has not collected mesh data.");
                 MeshChannels mc;
-                meshID2MeshChannels.TryGetValue(m.GetInstanceID(), out mc);
+                meshID2MeshChannels.TryGetValue(m.GetEntityId().GetHashCode(), out mc);
                 return mc.colors;
             }
 
@@ -530,10 +530,10 @@ namespace DigitalOpus.MB.Core
                 {
                     MB_DynamicGameObject dgo = toUpdateAndAddDGOs[i];
                     Mesh m = dgo._mesh;
-                    if (!meshID2MeshChannels.ContainsKey(m.GetInstanceID()))
+                    if (!meshID2MeshChannels.ContainsKey(m.GetEntityId().GetHashCode()))
                     {
                         MeshChannels mc = new MeshChannels();
-                        meshID2MeshChannels.Add(m.GetInstanceID(), mc);
+                        meshID2MeshChannels.Add(m.GetEntityId().GetHashCode(), mc);
                         {
                             if (doVerts) mc.vertices = m.vertices;
 
@@ -602,7 +602,7 @@ namespace DigitalOpus.MB.Core
                 Debug.Assert(!_disposed && _collectedMeshData, "Mesh Channels Cache has not collected mesh data.");
                 Mesh m = MB_Utility.GetMesh(r.gameObject);
                 MeshChannels mc;
-                meshID2MeshChannels.TryGetValue(m.GetInstanceID(), out mc);
+                meshID2MeshChannels.TryGetValue(m.GetEntityId().GetHashCode(), out mc);
                 {
                     if (r is SkinnedMeshRenderer &&
                         mc.bindPoses.Count > 0)
@@ -622,7 +622,7 @@ namespace DigitalOpus.MB.Core
                 Debug.Assert(!_disposed && _collectedMeshData, "Mesh Channels Cache has not collected mesh data.");
                 Mesh m = MB_Utility.GetMesh(r.gameObject);
                 MeshChannels mc;
-                meshID2MeshChannels.TryGetValue(m.GetInstanceID(), out mc);
+                meshID2MeshChannels.TryGetValue(m.GetEntityId().GetHashCode(), out mc);
                 return mc.boneWeights;
             }
             
@@ -630,7 +630,7 @@ namespace DigitalOpus.MB.Core
             /*internal int[] GetTriangles(Mesh m)
             {
                 Debug.Assert(!_disposed && _collectedMeshData, "Mesh Channels Cache has not collected mesh data.");
-                meshID2MeshChannels.TryGetValue(m.GetInstanceID(), out MeshChannels mc);
+                meshID2MeshChannels.TryGetValue(m.GetEntityId().GetHashCode(), out MeshChannels mc);
                 return mc.triangles;
             }*/
 
@@ -640,7 +640,7 @@ namespace DigitalOpus.MB.Core
                 // We are sure it is there for a reason.
                 Debug.Assert(!_disposed && _collectedMeshData, "Mesh Channels Cache has not collected mesh data.");
                 MeshChannels mc;
-                meshID2MeshChannels.TryGetValue(m.GetInstanceID(), out mc);
+                meshID2MeshChannels.TryGetValue(m.GetEntityId().GetHashCode(), out mc);
                 MBBlendShape[] shapes = new MBBlendShape[mc.blendShapes.Length];
                 for (int i = 0; i < shapes.Length; i++)
                 {

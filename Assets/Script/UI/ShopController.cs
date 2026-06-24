@@ -2,7 +2,6 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -92,7 +91,7 @@ public class ShopController : MonoBehaviour
                 }
                 switch (item.CurrentItemType)
                 {
-                    case ItemType.None: // Tür yoksa.
+                    case ItemType.None: // Tï¿½r yoksa.
                         Debug.Log("Itemin turu bulunmamaktadir.");
                         break;
                     case ItemType.Gem:
@@ -120,13 +119,13 @@ public class ShopController : MonoBehaviour
     {
         foreach (Transform child in itemContent)
         {
-            // Her bir çocuk nesneyi sil
+            // Her bir ï¿½ocuk nesneyi sil
             Destroy(child.gameObject);
         }
         Debug.Log("Magaza Temizlendi.");
     }
     
-    public void GetGemItems()//Gem button click e baðlýdýr.
+    public void GetGemItems()//Gem button click e baï¿½lï¿½dï¿½r.
     {
         if (currentShopUIType == ShopUIType.Gem)
             isAfterShopUIType = true;
@@ -147,7 +146,7 @@ public class ShopController : MonoBehaviour
             SetNewItemProparties(_newGem, gemItem, ItemType.Gem);
         }
     }
-    public void GetGoldItems()//Gold button click e baðlýdýr.
+    public void GetGoldItems()//Gold button click e baï¿½lï¿½dï¿½r.
     {
         if (currentShopUIType == ShopUIType.Gold)
             isAfterShopUIType = true;
@@ -169,7 +168,7 @@ public class ShopController : MonoBehaviour
         }
     }
 
-    public void GetTableItems()//Table button click e baðlýdýr.
+    public void GetTableItems()//Table button click e baï¿½lï¿½dï¿½r.
     {
         if (currentShopUIType == ShopUIType.Table)
             isAfterShopUIType = true;
@@ -233,7 +232,7 @@ public class ShopController : MonoBehaviour
             List<GameObject> CloseStars = new List<GameObject>();
             Transform parentObject1 = _newItem.transform.GetChild(6).transform.GetChild(0);
             Transform parentObject2 = _newItem.transform.GetChild(6).transform.GetChild(1);
-            // Tüm çocuklarý döngüyle al ve List'e ekle
+            // Tï¿½m ï¿½ocuklarï¿½ dï¿½ngï¿½yle al ve List'e ekle
             for (int i = 0; i < parentObject1.childCount; i++)
             {
                 CloseStars.Add(parentObject1.GetChild(i).gameObject);
@@ -277,7 +276,7 @@ public class ShopController : MonoBehaviour
     }
     public void BuyItem(ItemData _item)
     {
-        Debug.Log(_item.CurrentItemType + " Item tipinde ki " + _item.Amount + " miktarda  ürün " + _item.RequiredMoney + " " + _item.CurrentShoppingType + " karþýlýðýnda satýlmak istendi.");
+        Debug.Log(_item.CurrentItemType + " Item tipinde ki " + _item.Amount + " miktarda  ï¿½rï¿½n " + _item.RequiredMoney + " " + _item.CurrentShoppingType + " karï¿½ï¿½lï¿½ï¿½ï¿½nda satï¿½lmak istendi.");
         if (_item.CurrentShoppingType == ShoppingType.Gem)
         {
              UIInteractHandler.instance.AskQuestion($"{_item.CurrentItemType} {UIController.instance.SkillQuestionInfos[0]}", $"{UIController.instance.SkillQuestionInfos[1]}\n({UIController.instance.SkillQuestionInfos[2]} {UIController.instance.SkillQuestionInfos[3]}:{MuseumManager.instance.GetCurrentGem()} {UIController.instance.SkillQuestionInfos[5]}:{_item.RequiredMoney} {UIController.instance.SkillQuestionInfos[3]})", (x) =>
@@ -291,8 +290,8 @@ public class ShopController : MonoBehaviour
                      }
                      else if (_item.CurrentItemType == ItemType.Table)
                      {
-                         // Gemle satýn alýnan tablo
-                         //Tablo satýlýnca marketten kaldýrýlmayacak fakat satýn alýndý yazýsý çýkacak.
+                         // Gemle satï¿½n alï¿½nan tablo
+                         //Tablo satï¿½lï¿½nca marketten kaldï¿½rï¿½lmayacak fakat satï¿½n alï¿½ndï¿½ yazï¿½sï¿½ ï¿½ï¿½kacak.
                          PictureData newInventoryItem = new PictureData();
                          newInventoryItem.TextureID = _item.textureID;
                          newInventoryItem.RequiredGold = GameManager.instance.PictureChangeRequiredAmount;
@@ -306,7 +305,7 @@ public class ShopController : MonoBehaviour
                  else
                  {
                      UIController.instance.InsufficientGemEffect();
-                     Debug.Log("Mevcut olan " + MuseumManager.instance.GetCurrentGem() + " miktarýnýz, gerekli olan " + _item.RequiredMoney + " miktarýndan daha az.");
+                     Debug.Log("Mevcut olan " + MuseumManager.instance.GetCurrentGem() + " miktarï¿½nï¿½z, gerekli olan " + _item.RequiredMoney + " miktarï¿½ndan daha az.");
                  }
              }
              , (y) =>
@@ -343,7 +342,7 @@ public class ShopController : MonoBehaviour
                 else
                 {
                     UIController.instance.InsufficientGoldEffect();
-                    Debug.Log("Mevcut olan " + MuseumManager.instance.GetCurrentGold() + " miktarýnýz, gerekli olan " + _item.RequiredMoney + " miktarýndan daha az.");
+                    Debug.Log("Mevcut olan " + MuseumManager.instance.GetCurrentGold() + " miktarï¿½nï¿½z, gerekli olan " + _item.RequiredMoney + " miktarï¿½ndan daha az.");
                 }
             }
              , (y) =>

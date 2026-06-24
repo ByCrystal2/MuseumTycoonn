@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Firebase.Auth;
 using UnityEngine.SceneManagement;
-using GooglePlayGames;
-using GooglePlayGames.BasicApi;
 using System.Linq;
 
 public class FirebaseAuthManager : MonoBehaviour
@@ -51,11 +49,10 @@ public class FirebaseAuthManager : MonoBehaviour
         }
         return;
 #endif
-        PlayGamesPlatform.Activate();
-        PlayGamesPlatform.Instance.Authenticate(ProcessAuthentication);
+        
     }
 
-    internal void ProcessAuthentication(SignInStatus status)
+    /*internal void ProcessAuthentication(SignInStatus status)
     {
         if (status == SignInStatus.Success)
         {
@@ -79,7 +76,7 @@ public class FirebaseAuthManager : MonoBehaviour
 
             Debug.Log("Auth Failed! result => " + status.ToString());
         }
-    }
+    }*/
 
     private IEnumerator AuthGet(Credential credential)
     {

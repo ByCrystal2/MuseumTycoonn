@@ -40,12 +40,12 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
                     Debug.Log("IAP Rooms 0 index: " + IAPRooms[0].availableRoomCell.CellLetter + IAPRooms[0].availableRoomCell.CellNumber);
                     foreach (var room in IAPRooms)
                     {
-                        if (room.CurrentRoomType == RoomType.Normal) // item turu normal ise yapýlacak islemler...
+                        if (room.CurrentRoomType == RoomType.Normal) // item turu normal ise yapï¿½lacak islemler...
                         {
                             builder.AddProduct(room.IAP_ID, ProductType.NonConsumable);
                             Debug.Log("Oda Buildere Eklendi: " + room.ID + " " + room.IAP_ID + " " + room.availableRoomCell.CellLetter + room.availableRoomCell.CellNumber);
                         }
-                        else if (room.CurrentRoomType == RoomType.Special) // item turu special ise yapýlacak islemler...
+                        else if (room.CurrentRoomType == RoomType.Special) // item turu special ise yapï¿½lacak islemler...
                         {
                             builder.AddProduct(room.IAP_ID, ProductType.NonConsumable);
                             Debug.Log("Oda Buildere Eklendi: " + room.ID + " " + room.IAP_ID + " " + room.availableRoomCell.CellLetter + room.availableRoomCell.CellNumber);
@@ -108,7 +108,7 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
         }
         else
         {
-            Debug.Log("Ürün veya fiyat bilgisi bulunamadý.");
+            Debug.Log("ï¿½rï¿½n veya fiyat bilgisi bulunamadï¿½.");
             return "Null";
         }
     }
@@ -213,7 +213,7 @@ public class BuyingConsumables : MonoBehaviour, IDetailedStoreListener
     }
     void AdsRemoveComplate(ItemData _ads)
     {
-        GoogleAdsManager.instance.RemoveAds();
+        //GoogleAdsManager.instance.RemoveAds();
         ItemManager.instance.GetAllItemDatas().Remove(_ads);
         ItemManager.instance.GetAllIAPItemDatas().Remove(_ads);
         MuseumManager.instance.PurchasedItems.Add(_ads);

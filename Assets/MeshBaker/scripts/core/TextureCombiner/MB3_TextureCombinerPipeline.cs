@@ -283,7 +283,7 @@ namespace DigitalOpus.MB.Core
 
                 //analyze mesh or grab cached result of previous analysis, stores one result for each submesh
                 MB_Utility.MeshAnalysisResult[] mar;
-                if (!meshAnalysisResultsCache.TryGetValue(sharedMesh.GetInstanceID(), out mar))
+                if (!meshAnalysisResultsCache.TryGetValue(sharedMesh.GetEntityId().GetHashCode(), out mar))
                 {
                     mar = new MB_Utility.MeshAnalysisResult[sharedMesh.subMeshCount];
                     for (int j = 0; j < sharedMesh.subMeshCount; j++)
@@ -301,7 +301,7 @@ namespace DigitalOpus.MB.Core
                             Debug.LogWarning("Mesh for object " + obj + " has no UV channel but 'consider UVs' is enabled. Assuming UVs will be generated filling 0,0,1,1 rectangle.");
                         }
                     }
-                    meshAnalysisResultsCache.Add(sharedMesh.GetInstanceID(), mar);
+                    meshAnalysisResultsCache.Add(sharedMesh.GetEntityId().GetHashCode(), mar);
                 }
 
                 if (data._fixOutOfBoundsUVs && LOG_LEVEL >= MB2_LogLevel.trace)

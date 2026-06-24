@@ -50,7 +50,7 @@ public class SettingsController : MonoBehaviour
 
     private void InitializeSettings()
     {
-        // Slider ayarlarý
+        // Slider ayarlarï¿½
         generalVolumeSlider.maxValue = 100f;
         musicVolumeSlider.maxValue = 100f;
         soundEffectSlider.maxValue = 100f;
@@ -62,7 +62,7 @@ public class SettingsController : MonoBehaviour
         soundEffectSlider.onValueChanged.AddListener(_ => SetSoundEffectsVolume());
         dialogVolumeSlider.onValueChanged.AddListener(_ => SetDialogVolume());
 
-        // Grafik ve çözünürlük dropdown'larýný hazýrla
+        // Grafik ve ï¿½ï¿½zï¿½nï¿½rlï¿½k dropdown'larï¿½nï¿½ hazï¿½rla
         RefreshDropdowns();
     }
 
@@ -70,7 +70,7 @@ public class SettingsController : MonoBehaviour
 
     private void LoadCurrentAudioSettings()
     {
-        // Mevcut ses ayarlarýný AudioManager'dan çek
+        // Mevcut ses ayarlarï¿½nï¿½ AudioManager'dan ï¿½ek
         generalVolumeSlider.value = AudioManager.instance.GetGeneralVolume() * 100f;
         musicVolumeSlider.value = AudioManager.instance.GetMusicVolume() * 100f;
         soundEffectSlider.value = AudioManager.instance.GetSoundEffectsVolume() * 100f;
@@ -79,7 +79,7 @@ public class SettingsController : MonoBehaviour
 
     private void LoadCurrentGraphicSettings()
     {
-        // Grafik kalitesi ayarýný ve çözünürlüðü güncelle
+        // Grafik kalitesi ayarï¿½nï¿½ ve ï¿½ï¿½zï¿½nï¿½rlï¿½ï¿½ï¿½ gï¿½ncelle
         graphicQualityDropdown.value = QualitySettings.GetQualityLevel();
         resolutionDropdown.value = GetResolutionDropdownIndex(Screen.currentResolution);
     }
@@ -89,7 +89,7 @@ public class SettingsController : MonoBehaviour
         if (resolution.width == 1280 && resolution.height == 720) return 0;
         if (resolution.width == 1600 && resolution.height == 900) return 1;
         if (resolution.width == 1920 && resolution.height == 1080) return 2;
-        return 0; // Varsayýlan olarak 720p
+        return 0; // Varsayï¿½lan olarak 720p
     }
 
     private void RefreshDropdowns()
@@ -159,6 +159,6 @@ public class SettingsController : MonoBehaviour
 
     private void ShowAchievementsUI()
     {
-        GPGamesManager.instance.achievementController.ShowAchievements();
+        //GPGamesManager.instance.achievementController.ShowAchievements();
     }
 }

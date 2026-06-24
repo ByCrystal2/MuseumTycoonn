@@ -369,7 +369,7 @@ namespace DigitalOpus.MB.Core
                     //todo what if no UVs
                     //Find UV rect in source mesh
                     MB_Utility.MeshAnalysisResult[] mar;
-                    if (!meshAnalysisCache.TryGetValue(m.GetInstanceID(), out mar))
+                    if (!meshAnalysisCache.TryGetValue(m.GetEntityId().GetHashCode(), out mar))
                     {
                         mar = new MB_Utility.MeshAnalysisResult[m.subMeshCount];
                         for (int j = 0; j < m.subMeshCount; j++)
@@ -377,7 +377,7 @@ namespace DigitalOpus.MB.Core
                             meshChannelCache.hasOutOfBoundsUVs(m, ref mar[j], j);
                         }
                         
-                        meshAnalysisCache.Add(m.GetInstanceID(), mar);
+                        meshAnalysisCache.Add(m.GetEntityId().GetHashCode(), mar);
                     }
 
                     //this could be a mesh that was not used in the texture baking that has huge UV tiling too big for the rect that was baked

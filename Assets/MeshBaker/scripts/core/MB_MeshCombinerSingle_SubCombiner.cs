@@ -467,7 +467,7 @@ namespace DigitalOpus.MB.Core
                         {
                             Debug.Log(String.Format("Apply called:\n" +
                                 " tri={0}\n vert={1}\n norm={2}\n tan={3}\n uv={4}\n col={5}\n uv3={6}\n uv4={7}\n uv2={8}\n bone={9}\n blendShape{10}\n meshID={11}\n",
-                                triangles, vertices, normals, tangents, uvs, colors, uv3, uv4, uv2, bones, blendShapesFlag, mesh.GetInstanceID()));
+                                triangles, vertices, normals, tangents, uvs, colors, uv3, uv4, uv2, bones, blendShapesFlag, mesh.GetEntityId().GetHashCode()));
                         }
 
                         // If ApplyShowHide we don't want to clear the mesh.

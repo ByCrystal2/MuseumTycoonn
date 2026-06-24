@@ -440,7 +440,7 @@ public class NPCBehaviour : MonoBehaviour
         }
         else
         {
-            if (transform.GetInstanceID() > DialogTarget.transform.GetInstanceID())
+            if (transform.GetEntityId().GetHashCode() > DialogTarget.transform.GetEntityId().GetHashCode())
             {
                 int Stress = (int)GetNpcStress();
                 int partnerStress = (int)DialogTarget.GetNpcStress();
@@ -451,8 +451,8 @@ public class NPCBehaviour : MonoBehaviour
                     bool amIbeat;
                     if (partnerStress == Stress)
                     {
-                        int otherPriority = DialogTarget.transform.GetInstanceID();
-                        amIbeat = transform.GetInstanceID() > otherPriority;
+                        int otherPriority = DialogTarget.transform.GetEntityId().GetHashCode();
+                        amIbeat = transform.GetEntityId().GetHashCode() > otherPriority;
                     }
                     else
                     {

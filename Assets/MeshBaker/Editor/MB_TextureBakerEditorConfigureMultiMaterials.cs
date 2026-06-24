@@ -164,14 +164,14 @@ namespace DigitalOpus.MB.MBEditor
                 {
                     nVerts += mm.vertexCount;
                     MB_Utility.MeshAnalysisResult mar;
-                    if (!meshAnalysisResultCache.TryGetValue(mm.GetInstanceID(), out mar))
+                    if (!meshAnalysisResultCache.TryGetValue(mm.GetEntityId().GetHashCode(), out mar))
                     {
 
                         //EditorUtility.DisplayProgressBar("Analysing Scene", rpt + " Check Out Of Bounds UVs", .6f);
                         MB_Utility.hasOutOfBoundsUVs(mm, ref mar);
                         //Rect dummy = mar.uvRect;
                         MB_Utility.doSubmeshesShareVertsOrTris(mm, ref mar);
-                        meshAnalysisResultCache.Add(mm.GetInstanceID(), mar);
+                        meshAnalysisResultCache.Add(mm.GetEntityId().GetHashCode(), mar);
                     }
                     if (mar.hasOutOfBoundsUVs)
                     {

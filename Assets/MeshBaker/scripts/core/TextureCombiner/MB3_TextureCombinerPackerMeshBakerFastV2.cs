@@ -137,7 +137,7 @@ namespace DigitalOpus.MB.Core
                             mats.Clear();
                         }
 
-                        if (LOG_LEVEL >= MB2_LogLevel.debug) Debug.Log("Saving atlas " + data.texPropertyNames[propIdx].name + " w=" + atlas.width + " h=" + atlas.height + " id=" + atlas.GetInstanceID());
+                        if (LOG_LEVEL >= MB2_LogLevel.debug) Debug.Log("Saving atlas " + data.texPropertyNames[propIdx].name + " w=" + atlas.width + " h=" + atlas.height + " id=" + atlas.GetEntityId().GetHashCode());
                     }
                     atlases[propIdx] = atlas;
                     if (progressInfo != null) progressInfo("Saving atlas: '" + data.texPropertyNames[propIdx].name + "'", .04f);

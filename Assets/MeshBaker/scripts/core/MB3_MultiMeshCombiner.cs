@@ -52,7 +52,7 @@ namespace DigitalOpus.MB.Core
                 {
                     for (int j = 0; j < obsIn.Count; j++)
                     {
-                        if (obsIn[j].GetInstanceID() == gosToDelete[i])
+                        if (obsIn[j].GetEntityId().GetHashCode() == gosToDelete[i])
                         {
                             obsIn.RemoveAt(j);
                             break;
@@ -134,7 +134,7 @@ namespace DigitalOpus.MB.Core
         public override int GetNumVerticesFor(GameObject go)
         {
             CombinedMesh c = null;
-            if (obj2MeshCombinerMap.TryGetValue(go.GetInstanceID(), out c))
+            if (obj2MeshCombinerMap.TryGetValue(go.GetEntityId().GetHashCode(), out c))
             {
                 return c.combinedMesh.GetNumVerticesFor(go);
             }
@@ -175,7 +175,7 @@ namespace DigitalOpus.MB.Core
 
         public override bool CombinedMeshContains(GameObject go)
         {
-            return obj2MeshCombinerMap.ContainsKey(go.GetInstanceID());
+            return obj2MeshCombinerMap.ContainsKey(go.GetEntityId().GetHashCode());
         }
 
         bool _validateTextureBakeResults()
@@ -362,7 +362,7 @@ namespace DigitalOpus.MB.Core
             for (int i = 0; i < gos.Length; i++)
             {
                 CombinedMesh cm = null;
-                obj2MeshCombinerMap.TryGetValue(gos[i].GetInstanceID(), out cm);
+                obj2MeshCombinerMap.TryGetValue(gos[i].GetEntityId().GetHashCode(), out cm);
                 if (cm != null)
                 {
                     cm.gosToUpdate.Add(gos[i]);
@@ -404,7 +404,7 @@ namespace DigitalOpus.MB.Core
                     }
                     else
                     {
-                        delInstanceIDs[i] = deleteGOs[i].GetInstanceID();
+                        delInstanceIDs[i] = deleteGOs[i].GetEntityId().GetHashCode();
                     }
                 }
             }
@@ -481,19 +481,19 @@ namespace DigitalOpus.MB.Core
                                 return false;
                             }
                         }
-                        if (obj2MeshCombinerMap.ContainsKey(gos[i].GetInstanceID()))
+                        if (obj2MeshCombinerMap.ContainsKey(gos[i].GetEntityId().GetHashCode()))
                         {
                             bool isInDeleteList = false;
                             if (deleteGOinstanceIDs != null)
                             {
                                 for (int k = 0; k < deleteGOinstanceIDs.Length; k++)
                                 {
-                                    if (deleteGOinstanceIDs[k] == gos[i].GetInstanceID()) isInDeleteList = true;
+                                    if (deleteGOinstanceIDs[k] == gos[i].GetEntityId().GetHashCode()) isInDeleteList = true;
                                 }
                             }
                             if (!isInDeleteList)
                             {
-                                Debug.LogError("GameObject " + gos[i] + " is already in the combined mesh " + gos[i].GetInstanceID());
+                                Debug.LogError("GameObject " + gos[i] + " is already in the combined mesh " + gos[i].GetEntityId().GetHashCode());
                                 return false;
                             }
                         }
@@ -593,7 +593,7 @@ namespace DigitalOpus.MB.Core
                 {
                     cm.combinedMesh.resultSceneObject = _resultSceneObject;
                     cm.combinedMesh.BuildSceneMeshObject(gos, true);
-                    if (_LOG_LEVEL >= MB2_LogLevel.debug) MB2_Log.LogDebug("BuildSO combiner {0} goID {1} targetRenID {2} meshID {3}", i, cm.combinedMesh.targetRenderer.gameObject.GetInstanceID(), cm.combinedMesh.targetRenderer.GetInstanceID(), cm.combinedMesh.GetMesh().GetInstanceID());
+                    if (_LOG_LEVEL >= MB2_LogLevel.debug) MB2_Log.LogDebug("BuildSO combiner {0} goID {1} targetRenID {2} meshID {3}", i, cm.combinedMesh.targetRenderer.gameObject.GetEntityId().GetHashCode(), cm.combinedMesh.targetRenderer.GetEntityId().GetHashCode(), cm.combinedMesh.GetMesh().GetEntityId().GetHashCode());
 
                 }
                 else
@@ -607,7 +607,7 @@ namespace DigitalOpus.MB.Core
                 if (cm.gosToAdd.Count > 0 || cm.gosToDelete.Count > 0)
                 {
                     cm.combinedMesh.AddDeleteGameObjectsByID(cm.gosToAdd.ToArray(), cm.gosToDelete.ToArray(), disableRendererInSource);
-                    if (_LOG_LEVEL >= MB2_LogLevel.debug) MB2_Log.LogDebug("Baked combiner {0} obsAdded {1} objsRemoved {2} goID {3} targetRenID {4} meshID {5}", i, cm.gosToAdd.Count, cm.gosToDelete.Count, cm.combinedMesh.targetRenderer.gameObject.GetInstanceID(), cm.combinedMesh.targetRenderer.GetInstanceID(), cm.combinedMesh.GetMesh().GetInstanceID());
+                    if (_LOG_LEVEL >= MB2_LogLevel.debug) MB2_Log.LogDebug("Baked combiner {0} obsAdded {1} objsRemoved {2} goID {3} targetRenID {4} meshID {5}", i, cm.gosToAdd.Count, cm.gosToDelete.Count, cm.combinedMesh.targetRenderer.gameObject.GetEntityId().GetHashCode(), cm.combinedMesh.targetRenderer.GetEntityId().GetHashCode(), cm.combinedMesh.GetMesh().GetEntityId().GetHashCode());
                 }
                 Renderer r = cm.combinedMesh.targetRenderer;
                 Mesh m = cm.combinedMesh.GetMesh();
@@ -635,7 +635,7 @@ namespace DigitalOpus.MB.Core
                 CombinedMesh cm = meshCombiners[i];
                 for (int j = 0; j < cm.gosToAdd.Count; j++)
                 {
-                    obj2MeshCombinerMap.Add(cm.gosToAdd[j].GetInstanceID(), cm);
+                    obj2MeshCombinerMap.Add(cm.gosToAdd[j].GetEntityId().GetHashCode(), cm);
                 }
                 if (cm.gosToAdd.Count > 0 || cm.gosToDelete.Count > 0)
                 {

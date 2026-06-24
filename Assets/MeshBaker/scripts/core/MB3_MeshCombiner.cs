@@ -46,7 +46,7 @@ namespace DigitalOpus.MB.Core {
                 int hash = 23;
                 unchecked
                 {
-                    hash = hash * 31 + gameObject.GetInstanceID();
+                    hash = hash * 31 + gameObject.GetEntityId().GetHashCode();
                     hash = hash * 31 + blendShapeIndexInSrc;
                 }
                 return hash;

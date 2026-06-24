@@ -375,10 +375,10 @@ namespace DigitalOpus.MB.MBEditor
                         if (mm != null)
                         {
                             MB_Utility.MeshAnalysisResult mar;
-                            if (!meshAnalysisResultsCache.TryGetValue(mm.GetInstanceID(), out mar))
+                            if (!meshAnalysisResultsCache.TryGetValue(mm.GetEntityId().GetHashCode(), out mar))
                             {
                                 MB_Utility.hasOutOfBoundsUVs(mm, ref mar);
-                                meshAnalysisResultsCache.Add(mm.GetInstanceID(), mar);
+                                meshAnalysisResultsCache.Add(mm.GetEntityId().GetHashCode(), mar);
                             }
                             if (mar.hasOutOfBoundsUVs && excludeMeshesWithOBuvs)
                             {

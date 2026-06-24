@@ -15,13 +15,13 @@ public class RoomBlokClickHandler : MonoBehaviour
         Debug.Log("NPC: <color=#4CC324>" + _col.gameObject.name.ToString() + "</color> entered the room ID: <color=#4CC324>" + MyParentRoomData.ID + "</color>");
         if (_col.gameObject.TryGetComponent(out NPCBehaviour _enteredNpc))
         {
-            GPGamesManager.instance.achievementController.IncreaseNumberOfVisitors();
-            GPGamesManager.instance.achievementController.IncreaseOrDecreaseTotalNumberOfMuseumVisitor(true);
+            //GPGamesManager.instance.achievementController.IncreaseNumberOfVisitors();
+            //GPGamesManager.instance.achievementController.IncreaseOrDecreaseTotalNumberOfMuseumVisitor(true);
             _enteredNpc.SetEnteredRoom(MyParentRoomData);
             RoomManager.instance.AddNpcInTheRoom(MyParentRoomData, _enteredNpc);
 
-            GPGamesManager.instance.achievementController.VisitorCountControl();
-            GPGamesManager.instance.achievementController.TotalVisitorCountControl();
+            //GPGamesManager.instance.achievementController.VisitorCountControl();
+            //GPGamesManager.instance.achievementController.TotalVisitorCountControl();
         }
     }
     private void OnCollisionExit(Collision _col)
@@ -30,7 +30,7 @@ public class RoomBlokClickHandler : MonoBehaviour
         if (_col.gameObject.TryGetComponent(out NPCBehaviour _exitedNpc))
         {
             RoomManager.instance.RemoveNpcInTheRoom(MyParentRoomData, _exitedNpc);
-            GPGamesManager.instance.achievementController.IncreaseOrDecreaseTotalNumberOfMuseumVisitor(false);
+            //GPGamesManager.instance.achievementController.IncreaseOrDecreaseTotalNumberOfMuseumVisitor(false);
         }
     }
     IEnumerator WaitingForIsPointerOver()

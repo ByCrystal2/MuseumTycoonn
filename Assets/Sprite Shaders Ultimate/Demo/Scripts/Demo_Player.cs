@@ -58,7 +58,7 @@ namespace SpriteShadersUltimate.Demo
 
                 if(currentAnimation == runningSprites)
                 {
-                    nextFrame = Time.time + 0.2f / Mathf.Max(Mathf.Abs(rig.velocity.x), 3.5f);
+                    nextFrame = Time.time + 0.2f / Mathf.Max(Mathf.Abs(rig.linearVelocity.x), 3.5f);
                 }
                 else
                 {
@@ -81,8 +81,8 @@ namespace SpriteShadersUltimate.Demo
             if (snapPosition != Vector3.zero)
             {
                 //Snap to position:
-                rig.velocity = Vector2.Lerp(rig.velocity, new Vector2(0, -1f), Time.deltaTime * 5f);
-                if (Mathf.Abs(rig.velocity.x) < 1f && currentAnimation != hurtSprites)
+                rig.linearVelocity = Vector2.Lerp(rig.linearVelocity, new Vector2(0, -1f), Time.deltaTime * 5f);
+                if (Mathf.Abs(rig.linearVelocity.x) < 1f && currentAnimation != hurtSprites)
                 {
                     PlayAnimation(idleSprites);
                 }
@@ -94,21 +94,21 @@ namespace SpriteShadersUltimate.Demo
                 //Movement:
                 if ((Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) && currentAnimation != hurtSprites)
                 {
-                    rig.velocity = Vector2.Lerp(rig.velocity, new Vector2(7f, -1f), Time.deltaTime * 5f);
+                    rig.linearVelocity = Vector2.Lerp(rig.linearVelocity, new Vector2(7f, -1f), Time.deltaTime * 5f);
                     transform.eulerAngles = new Vector3(0, 0, 0);
                     PlayAnimation(runningSprites);
                 }
                 else if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) && currentAnimation != hurtSprites)
                 {
-                    rig.velocity = Vector2.Lerp(rig.velocity, new Vector2(-7f, -1f), Time.deltaTime * 5f);
+                    rig.linearVelocity = Vector2.Lerp(rig.linearVelocity, new Vector2(-7f, -1f), Time.deltaTime * 5f);
                     transform.eulerAngles = new Vector3(0, 180, 0);
                     PlayAnimation(runningSprites);
                 }
                 else
                 {
-                    rig.velocity = Vector2.Lerp(rig.velocity, new Vector2(0, -1f), Time.deltaTime * 5f);
+                    rig.linearVelocity = Vector2.Lerp(rig.linearVelocity, new Vector2(0, -1f), Time.deltaTime * 5f);
 
-                    if (Mathf.Abs(rig.velocity.x) < 1f && currentAnimation != hurtSprites)
+                    if (Mathf.Abs(rig.linearVelocity.x) < 1f && currentAnimation != hurtSprites)
                     {
                         PlayAnimation(idleSprites);
                     }
@@ -132,7 +132,7 @@ namespace SpriteShadersUltimate.Demo
 
         public void GetHurt(Vector2 velocity)
         {
-            rig.velocity = velocity;
+            rig.linearVelocity = velocity;
             transform.eulerAngles = new Vector3(0, velocity.x > 0 ? 180 : 0, 0);
             PlayAnimation(hurtSprites);
         }

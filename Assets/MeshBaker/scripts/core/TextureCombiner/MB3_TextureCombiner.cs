@@ -697,7 +697,7 @@ namespace DigitalOpus.MB.Core
                 Mesh m = MB_Utility.GetMesh(obj);
 
                 MB_Utility.MeshAnalysisResult[] mar;
-                if (!meshAnalysisResultsCache.TryGetValue(m.GetInstanceID(), out mar))
+                if (!meshAnalysisResultsCache.TryGetValue(m.GetEntityId().GetHashCode(), out mar))
                 {
                     mar = new MB_Utility.MeshAnalysisResult[m.subMeshCount];
                     MB_Utility.doSubmeshesShareVertsOrTris(m, ref mar[0]);
@@ -708,7 +708,7 @@ namespace DigitalOpus.MB.Core
                         //mar[j].hasOverlappingSubmeshTris = mar[0].hasOverlappingSubmeshTris;
                         mar[j].hasOverlappingSubmeshVerts = mar[0].hasOverlappingSubmeshVerts;
                     }
-                    meshAnalysisResultsCache.Add(m.GetInstanceID(), mar);
+                    meshAnalysisResultsCache.Add(m.GetEntityId().GetHashCode(), mar);
                 }
 
                 for (int j = 0; j < ms.Length; j++)

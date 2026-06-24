@@ -2,7 +2,6 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -67,7 +66,7 @@ public class RightUIPanelController : MonoBehaviour
         int index = 0;
         foreach (Button camButton in CamButtons)
         {
-            int capturedIndex = index; // Yerel deðiþken oluþturuyoruz
+            int capturedIndex = index; // Yerel deï¿½iï¿½ken oluï¿½turuyoruz
             camButton.onClick.AddListener(() => RoomManager.instance.CurrentEditedRoom.SetActivationMyRoomEditingCamera(capturedIndex, true));
             index++;
         }

@@ -197,7 +197,7 @@ public class RoomEditingPanelController : MonoBehaviour
 
         Vector3 anaScale = currentStateContent.transform.localScale;
 
-        // Prefabýn scale deðerlerini hesapla ve ayarla
+        // Prefabï¿½n scale deï¿½erlerini hesapla ve ayarla
 
         GameObject Statue = Instantiate(RoomManager.instance.statuesHandler.Statues[ClickedEditObjBehaviour.data.myStatueIndex], currentStateContent.transform);
         Vector3 prefabScale = new Vector3(Statue.transform.localScale.x / anaScale.x, Statue.transform.localScale.y / anaScale.y, Statue.transform.localScale.z / anaScale.z);
@@ -218,8 +218,8 @@ public class RoomEditingPanelController : MonoBehaviour
             await FirestoreManager.instance.roomDatasHandler.IERoomDataProcces(userID, RoomManager.instance.CurrentEditedRoom);
             FirestoreManager.instance.statueDatasHandler.AddOrUpdateStatueWithUserId(userID, currentStateContent.MyStatue);
 
-            GPGamesManager.instance.achievementController.IncreaseNumberOfStatuesPlaced();
-            GPGamesManager.instance.achievementController.StatuesPlacedCountControl();
+            //GPGamesManager.instance.achievementController.IncreaseNumberOfStatuesPlaced();
+            //GPGamesManager.instance.achievementController.StatuesPlacedCountControl();
         }
         ClickedEditObjBehaviour = null;
         //UIController.instance.SetActivationRoomEditingPanel(false);

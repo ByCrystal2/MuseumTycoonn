@@ -320,7 +320,7 @@ namespace DigitalOpus.MB.Core
 
         public override int GetNumVerticesFor(GameObject go)
         {
-            return GetNumVerticesFor(go.GetInstanceID());
+            return GetNumVerticesFor(go.GetEntityId().GetHashCode());
         }
 
         public override int GetNumVerticesFor(int instanceID)
@@ -424,7 +424,7 @@ namespace DigitalOpus.MB.Core
             }
 
             MB_Utility.MeshAnalysisResult[] res;
-            if (!meshAnalysisResults.TryGetValue(m.GetInstanceID(), out res))
+            if (!meshAnalysisResults.TryGetValue(m.GetEntityId().GetHashCode(), out res))
             {
                 // Process the mesh and cache the result.
                 int numSrcSubMeshes = m.subMeshCount;
@@ -434,7 +434,7 @@ namespace DigitalOpus.MB.Core
                     _meshChannelsCache.hasOutOfBoundsUVs(m, ref res[submeshIdx], submeshIdx);
                 }
 
-                meshAnalysisResults.Add(m.GetInstanceID(), res);
+                meshAnalysisResults.Add(m.GetEntityId().GetHashCode(), res);
             }
             
             int numUsedSrcSubMeshes = sharedMaterials.Length;
@@ -625,7 +625,7 @@ namespace DigitalOpus.MB.Core
                     HashSet<int> deleteSet = new HashSet<int>(_goToDelete);
                     for (int i = 0; i < objectsInCombinedMesh.Count; i++)
                     {
-                        bool deleteMe = deleteSet.Contains(objectsInCombinedMesh[i].gameObject.GetInstanceID());
+                        bool deleteMe = deleteSet.Contains(objectsInCombinedMesh[i].gameObject.GetEntityId().GetHashCode());
                         if (!deleteMe)
                         {
                             sb.AppendLine("    keeping in combined:" + objectsInCombinedMesh[i]);
@@ -746,7 +746,7 @@ namespace DigitalOpus.MB.Core
             for (int i = 0; i < _goToAdd.Length; i++)
             {
                 // if not already in mesh or we are deleting and re-adding in same operation
-                if (!instance2Combined_MapContainsKey(_goToAdd[i]) || Array.FindIndex<int>(_goToDelete, o => o == _goToAdd[i].GetInstanceID()) != -1)
+                if (!instance2Combined_MapContainsKey(_goToAdd[i]) || Array.FindIndex<int>(_goToDelete, o => o == _goToAdd[i].GetEntityId().GetHashCode()) != -1)
                 {
                     MB_DynamicGameObject dgo = new MB_DynamicGameObject();
                     dgo.InitializeNew(false, _goToAdd[i]);
@@ -788,8 +788,8 @@ namespace DigitalOpus.MB.Core
                     if (_goToAdd[i] != null)
                     {
                         toAddDGOs.Add(dgo);
-                        dgo.name = String.Format("{0} {1}", _goToAdd[i].ToString(), _goToAdd[i].GetInstanceID());
-                        dgo.instanceID = _goToAdd[i].GetInstanceID();
+                        dgo.name = String.Format("{0} {1}", _goToAdd[i].ToString(), _goToAdd[i].GetEntityId().GetHashCode());
+                        dgo.instanceID = _goToAdd[i].GetEntityId().GetHashCode();
                         dgo.gameObject = _goToAdd[i];
                         dgo.numVerts = m.vertexCount;
                         dgo.sourceSharedMaterials = sharedMaterials;
@@ -1010,7 +1010,7 @@ namespace DigitalOpus.MB.Core
                 if (_goToAdd[i] != null && disableRendererInSource)
                 {
                     MB_Utility.DisableRendererInSource(_goToAdd[i]);
-                    if (LOG_LEVEL == MB2_LogLevel.trace) Debug.Log("Disabling renderer on " + _goToAdd[i].name + " id=" + _goToAdd[i].GetInstanceID());
+                    if (LOG_LEVEL == MB2_LogLevel.trace) Debug.Log("Disabling renderer on " + _goToAdd[i].name + " id=" + _goToAdd[i].GetEntityId().GetHashCode());
                 }
             }
 
@@ -1353,7 +1353,7 @@ namespace DigitalOpus.MB.Core
                         Debug.LogError("The " + i + "th object on the list of objects to delete is 'Null'");
                     }
                     else {
-                        delInstanceIDs[i] = deleteGOs[i].GetInstanceID();
+                        delInstanceIDs[i] = deleteGOs[i].GetEntityId().GetHashCode();
                     }
                 }
             }

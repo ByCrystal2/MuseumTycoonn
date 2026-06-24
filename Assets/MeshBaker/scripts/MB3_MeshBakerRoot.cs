@@ -131,9 +131,9 @@ public abstract class MB3_MeshBakerRoot : MonoBehaviour {
 					mom.textureBakeResults.doMultiMaterial && 
 					validationLevel >= MB2_ValidationLevel.robust){
 					MB_Utility.MeshAnalysisResult mar;
-					if (!meshAnalysisResultCache.TryGetValue(m.GetInstanceID(),out mar)){
+					if (!meshAnalysisResultCache.TryGetValue(m.GetEntityId().GetHashCode(),out mar)){
 						MB_Utility.doSubmeshesShareVertsOrTris(m,ref mar);
-						meshAnalysisResultCache.Add (m.GetInstanceID(),mar);
+						meshAnalysisResultCache.Add (m.GetEntityId().GetHashCode(),mar);
 					}
 					if (mar.hasOverlappingSubmeshVerts){
 						Debug.LogWarning("Object " + objsToMesh[i] + " in the list of objects to combine has overlapping submeshes (submeshes share vertices). If the UVs associated with the shared vertices are important then this bake may not work. If you are using multiple materials then this object can only be combined with objects that use the exact same set of textures (each atlas contains one texture). There may be other undesirable side affects as well. Mesh Master, available in the asset store can fix overlapping submeshes.");	

@@ -45,10 +45,10 @@ namespace DigitalOpus.MB.Core
                 {
 
                     MeshChannels mc;
-                    if (!meshID2MeshChannels.TryGetValue(m.GetInstanceID(), out mc))
+                    if (!meshID2MeshChannels.TryGetValue(m.GetEntityId().GetHashCode(), out mc))
                     {
                         mc = new MeshChannels();
-                        meshID2MeshChannels.Add(m.GetInstanceID(), mc);
+                        meshID2MeshChannels.Add(m.GetEntityId().GetHashCode(), mc);
                     }
                     if (mc.blendShapes == null)
                     {

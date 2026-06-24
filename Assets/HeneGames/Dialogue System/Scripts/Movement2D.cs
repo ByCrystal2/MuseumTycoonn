@@ -21,7 +21,7 @@ namespace HeneGames.DialogueSystem
 
         private void FixedUpdate()
         {
-            rb2D.velocity = new Vector2(horizontal * 10f, rb2D.velocity.y);
+            rb2D.linearVelocity = new Vector2(horizontal * 10f, rb2D.linearVelocity.y);
         }
     }
 }

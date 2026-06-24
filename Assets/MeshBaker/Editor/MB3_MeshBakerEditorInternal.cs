@@ -281,7 +281,7 @@ namespace DigitalOpus.MB.MBEditor
                     Mesh m = (Mesh)mesh.objectReferenceValue;
                     if (m != null)
                     {
-                        l += " (" + m.GetInstanceID() + ")";
+                        l += " (" + m.GetEntityId().GetHashCode() + ")";
                     }
                     Mesh nm = (Mesh)EditorGUILayout.ObjectField(gc_combinedMesh, m, typeof(Mesh), true);
                     if (nm != m)
@@ -363,7 +363,7 @@ namespace DigitalOpus.MB.MBEditor
                     Mesh m = (Mesh)mesh.objectReferenceValue;
                     if (m != null)
                     {
-                        l += " (" + m.GetInstanceID() + ")";
+                        l += " (" + m.GetEntityId().GetHashCode() + ")";
                     }
                     Mesh nm = (Mesh)EditorGUILayout.ObjectField(gc_combinedMesh, m, typeof(Mesh), true);
                     if (nm != m)

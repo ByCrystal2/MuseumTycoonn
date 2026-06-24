@@ -111,38 +111,38 @@ public class GameManager : MonoBehaviour
     }
     public async System.Threading.Tasks.Task BulkTranslateAndAssignAsync(List<string> textsToTranslate, Action<List<string>> onTranslationComplete)
     {
-        // 1. Adým: Tüm metinleri birleþtir
+        // 1. Adï¿½m: Tï¿½m metinleri birleï¿½tir
         string combinedText = string.Join("|", textsToTranslate);
 
-        // 2. Adým: Birleþik metni çevir
+        // 2. Adï¿½m: Birleï¿½ik metni ï¿½evir
         string translatedText = await translation.TranslateTextAsync(combinedText, GetLanguageShortString(GetGameLanguage()));
 
-        // 3. Adým: Çevirilen metni parçalara ayýr
+        // 3. Adï¿½m: ï¿½evirilen metni parï¿½alara ayï¿½r
         List<string> translatedParts = new List<string>(translatedText.Split('|'));
 
-        // Çeviri tamamlandýðýnda callback fonksiyonunu çaðýrýn
+        // ï¿½eviri tamamlandï¿½ï¿½ï¿½nda callback fonksiyonunu ï¿½aï¿½ï¿½rï¿½n
         onTranslationComplete?.Invoke(translatedParts);
     }
-    public async System.Threading.Tasks.Task BulkTranslateAndAssignAsync(string language,List<LanguageData> textsToTranslateDatas,Action<List<LanguageData>> onTranslationComplete) // DÖNÜÞ TÝPÝNÝ List<LanguageData> YAPTIK!
+    public async System.Threading.Tasks.Task BulkTranslateAndAssignAsync(string language,List<LanguageData> textsToTranslateDatas,Action<List<LanguageData>> onTranslationComplete) // Dï¿½Nï¿½ï¿½ Tï¿½Pï¿½Nï¿½ List<LanguageData> YAPTIK!
     {
-        // 1. Adým: Çevrilecek metinleri ve TargetID'leri eþleþtiren bir liste oluþtur
+        // 1. Adï¿½m: ï¿½evrilecek metinleri ve TargetID'leri eï¿½leï¿½tiren bir liste oluï¿½tur
         List<(int TargetID, string Key)> textsWithIds = textsToTranslateDatas
             .Select(data => (data.TargetID, data.Key))
             .ToList();
 
-        // Çevrilecek metinleri al
+        // ï¿½evrilecek metinleri al
         List<string> textsToTranslate = textsWithIds.Select(x => x.Key).ToList();
 
-        // 2. Adým: Metinleri birleþtir
+        // 2. Adï¿½m: Metinleri birleï¿½tir
         string combinedText = string.Join("|", textsToTranslate);
 
-        // 3. Adým: Birleþik metni çevir
+        // 3. Adï¿½m: Birleï¿½ik metni ï¿½evir
         string translatedText = await translation.TranslateTextAsync(combinedText, GetLanguageShortString(language));
 
-        // 4. Adým: Çevirilen metni parçala
+        // 4. Adï¿½m: ï¿½evirilen metni parï¿½ala
         List<string> translatedParts = new List<string>(translatedText.Split('|'));
 
-        // 5. Adým: Çevirilen metinleri tekrar TargetID ile eþleþtir
+        // 5. Adï¿½m: ï¿½evirilen metinleri tekrar TargetID ile eï¿½leï¿½tir
         List<LanguageData> translatedDataList = new List<LanguageData>();
 
         for (int i = 0; i < textsWithIds.Count && i < translatedParts.Count; i++)
@@ -150,7 +150,7 @@ public class GameManager : MonoBehaviour
             translatedDataList.Add(new LanguageData(textsWithIds[i].TargetID, translatedParts[i]));
         }
 
-        // 6. Adým: Çeviri tamamlandýðýnda callback fonksiyonunu çaðýr
+        // 6. Adï¿½m: ï¿½eviri tamamlandï¿½ï¿½ï¿½nda callback fonksiyonunu ï¿½aï¿½ï¿½r
         onTranslationComplete?.Invoke(translatedDataList);
     }
 
@@ -435,12 +435,12 @@ public class GameManager : MonoBehaviour
             catch (System.Threading.Tasks.TaskCanceledException)
             {
                 Debug.Log("LoadRooms operation was canceled.");
-                return; // Ýþlem iptal edildiðinde geri dön.
+                return; // ï¿½ï¿½lem iptal edildiï¿½inde geri dï¿½n.
             }
             catch (Exception ex)
             {
                 Debug.LogError("Error loading game data: " + ex.Message);
-                return; // Hata durumunda geri dön.
+                return; // Hata durumunda geri dï¿½n.
             }
         }
 
@@ -485,7 +485,7 @@ public class GameManager : MonoBehaviour
         catch (System.Threading.Tasks.TaskCanceledException)
         {
             Debug.Log("LoadRooms operation was canceled.");
-            return; // Ýþlem iptal edildiðinde geri dön.
+            return; // ï¿½ï¿½lem iptal edildiï¿½inde geri dï¿½n.
         }
         catch (Exception ex)
         {
@@ -539,7 +539,7 @@ public class GameManager : MonoBehaviour
         int totalWorkerHiringCount = gameDatas.ContainsKey("TotalWorkerHiringCount") ? Convert.ToInt32(gameDatas["TotalWorkerHiringCount"]) : 0;
         int totalWorkerAssignCount = gameDatas.ContainsKey("TotalWorkerAssignCount") ? Convert.ToInt32(gameDatas["TotalWorkerAssignCount"]) : 0;
 
-        GPGamesManager.instance.achievementController.SetDatas(purchasedRoomCount, numberOfTablesPlaced, numberOfVisitors, numberOfStatuesPlaced, totalNumberOfMuseumVisitors,totalWorkerHiringCount, totalWorkerAssignCount);
+        //GPGamesManager.instance.achievementController.SetDatas(purchasedRoomCount, numberOfTablesPlaced, numberOfVisitors, numberOfStatuesPlaced, totalNumberOfMuseumVisitors,totalWorkerHiringCount, totalWorkerAssignCount);
     }
     public void PictureChangesReqiuredAmountCalculater()
     {        
@@ -563,14 +563,14 @@ public class GameManager : MonoBehaviour
 
             gameDatas = await FirestoreManager.instance.GetGameDataInDatabase(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID).WithCancellation(GetFirebaseToken().Token);
 
-            AdverstingData databaseAdversting = new AdverstingData();
+            //AdverstingData databaseAdversting = new AdverstingData();
             bool removeAds = gameDatas.ContainsKey("RemoveAllAds") ? Convert.ToBoolean(gameDatas["RemoveAllAds"]) : false;
-            databaseAdversting.RemovedAllAds = removeAds;
-            if (GoogleAdsManager.instance != null)
-                GoogleAdsManager.instance.adsData = databaseAdversting;
+            //databaseAdversting.RemovedAllAds = removeAds;
+            /*if (GoogleAdsManager.instance != null)
+                GoogleAdsManager.instance.adsData = databaseAdversting;*/
 
             Debug.Log("LoadRemoveAds test 2 complated;");
-            if (GoogleAdsManager.instance.adsData.RemovedAllAds)
+            /*if (GoogleAdsManager.instance.adsData.RemovedAllAds)
             {
                 GoogleAdsManager.instance.StartInterstitialAdBool(false);
                 GoogleAdsManager.instance.StartBannerAdBool(false);
@@ -580,7 +580,7 @@ public class GameManager : MonoBehaviour
                 GoogleAdsManager.instance.StartInterstitialAdBool(true);
                 GoogleAdsManager.instance.StartBannerAdBool(true);
             }
-            GoogleAdsManager.instance.StartRewardAdBool(true);
+            GoogleAdsManager.instance.StartRewardAdBool(true);*/
             Debug.Log("LoadRemoveAds test 3 complated;");
         }
         catch (Exception _Ex)
@@ -814,7 +814,7 @@ public class GameManager : MonoBehaviour
     }
     public void TranslateAllSkills()
     {
-        //Çeviri iþlemlerini baþlat
+        //ï¿½eviri iï¿½lemlerini baï¿½lat
         List<SkillNode> allSkills = SkillTreeManager.instance.skillNodes;
 
         List<LanguageData> skillNamesDatas = LanguageDatabase.instance.Language.SkillNames;
@@ -1087,7 +1087,7 @@ public class GameManager : MonoBehaviour
         {
             cts.Cancel();
             cts.Dispose();
-            cts = new System.Threading.CancellationTokenSource(); // Yeni bir token oluþtur.
+            cts = new System.Threading.CancellationTokenSource(); // Yeni bir token oluï¿½tur.
         }
     }
 
@@ -1148,7 +1148,7 @@ public class PlayerSaveData
     public List<SkillNode> SkillNodes = new List<SkillNode>();
     public List<WorkerData> CurrentWorkerDatas = new List<WorkerData>();
     public List<WorkerData> InventoryWorkerDatas = new List<WorkerData>();
-    public AdverstingData adData; //ADS SISTEMI KURULDUKTAN SONRA EKLENECEK.
+    //public AdverstingData adData; //ADS SISTEMI KURULDUKTAN SONRA EKLENECEK.
 
     public List<EditObjData> StatueDatas = new List<EditObjData>();
 
@@ -1174,7 +1174,7 @@ namespace TaskExtensions
                 }
             }
 
-            return await task; // task baþarýyla tamamlandý, sonucu dön.
+            return await task; // task baï¿½arï¿½yla tamamlandï¿½, sonucu dï¿½n.
         }
     }
 }
@@ -1198,21 +1198,21 @@ namespace Translator
     {
         public async Task<string> TranslateTextAsync(string text, string targetLanguage)
         {
-            // I2 Localization kullanarak çeviri iþlemi
-            // ForceTranslate fonksiyonunu doðrudan çaðýrýyoruz.
+            // I2 Localization kullanarak ï¿½eviri iï¿½lemi
+            // ForceTranslate fonksiyonunu doï¿½rudan ï¿½aï¿½ï¿½rï¿½yoruz.
             string localizedText = GoogleTranslation.ForceTranslate(text, "auto", targetLanguage);
 
             Debug.Log("LocalizedText => " + localizedText);
 
-            // Çevirinin baþarýlý olup olmadýðýný kontrol edin
+            // ï¿½evirinin baï¿½arï¿½lï¿½ olup olmadï¿½ï¿½ï¿½nï¿½ kontrol edin
             if (!string.IsNullOrEmpty(localizedText))
             {
                 return localizedText;
             }
             else
             {
-                Debug.LogError("Çeviri baþarýsýz oldu.");
-                return text; // Çeviri baþarýsýzsa, orijinal metni döndür
+                Debug.LogError("ï¿½eviri baï¿½arï¿½sï¿½z oldu.");
+                return text; // ï¿½eviri baï¿½arï¿½sï¿½zsa, orijinal metni dï¿½ndï¿½r
             }
         }
     }

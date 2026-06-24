@@ -116,7 +116,7 @@ public class FirestoreManager : MonoBehaviour
     public async System.Threading.Tasks.Task UpdateGameData(string userId, bool _overwrite = false)
     {
         if (GameManager.instance != null) if (!GameManager.instance.IsWatchTutorial && !_overwrite) return;
-        // Kullanýcý ID'si ile belgeyi sorgula
+        // Kullanï¿½cï¿½ ID'si ile belgeyi sorgula
         var museumDatas = MuseumManager.instance.GetSaveData();
         Debug.Log("UpdateGameData method is starting...");
 
@@ -137,7 +137,7 @@ public class FirestoreManager : MonoBehaviour
                         DocumentSnapshot documentSnapshot = snapshot.Documents.FirstOrDefault();
                         DocumentReference documentReference = documentSnapshot.Reference;
 
-                        // Belge varsa, alt koleksiyon olan PictureDatas'ta tabloyu bul ve güncelle
+                        // Belge varsa, alt koleksiyon olan PictureDatas'ta tabloyu bul ve gï¿½ncelle
                         CollectionReference gameDatasRef = documentReference.Collection("GameDatas");
 
                         await gameDatasRef.GetSnapshotAsync().ContinueWithOnMainThread(async gameDataTask =>
@@ -207,16 +207,16 @@ public class FirestoreManager : MonoBehaviour
                 { "WorkersInInventoryIDs", MuseumManager.instance.WorkersInInventory.Select(x=> x.ID).ToList()},
                 { "LastDailyRewardTime", MuseumManager.instance.lastDailyRewardTime.ToString("yyyy-MM-dd HH:mm:ss") },
                 { "WhatDay", TimeManager.instance.WhatDay },
-                { "RemoveAllAds", GoogleAdsManager.instance.adsData.RemovedAllAds },
+                { "RemoveAllAds", true },
 
             //Achievements
-            { "PurchasedRoomCount", GPGamesManager.instance.achievementController.PurchasedRoomCount },
-            { "NumberOfTablesPlaced", GPGamesManager.instance.achievementController.NumberOfTablesPlaced },
-            { "NumberOfVisitors", GPGamesManager.instance.achievementController.NumberOfVisitors },
-            { "NumberOfStatuesPlaced", GPGamesManager.instance.achievementController.NumberOfStatuesPlaced },
-            { "TotalNumberOfMuseumVisitors", GPGamesManager.instance.achievementController.TotalNumberOfMuseumVisitors },
-            { "TotalWorkerHiringCount", GPGamesManager.instance.achievementController.TotalWorkerHiringCount },
-            { "TotalWorkerAssignCount", GPGamesManager.instance.achievementController.TotalWorkerAssignCount },
+            { "PurchasedRoomCount", 1 },
+            { "NumberOfTablesPlaced", 1},
+            { "NumberOfVisitors", 1 },
+            { "NumberOfStatuesPlaced", 1 },
+            { "TotalNumberOfMuseumVisitors", 1 },
+            { "TotalWorkerHiringCount", 1 },
+            { "TotalWorkerAssignCount", 1 },
                 //Achievements
                 { "Timestamp", FieldValue.ServerTimestamp }
 
@@ -242,7 +242,7 @@ public class FirestoreManager : MonoBehaviour
     string updatedLanguage = "";
     public async System.Threading.Tasks.Task UpdateGameLanguageInGameDatas(string userId)
     {
-        // Kullanýcý ID'si ile belgeyi sorgula
+        // Kullanï¿½cï¿½ ID'si ile belgeyi sorgula
         if (updatedLanguage == GameManager.instance.GetGameLanguage()) return;
 
         Query query = db.Collection("Users").WhereEqualTo("userID", userId);
@@ -257,7 +257,7 @@ public class FirestoreManager : MonoBehaviour
                 DocumentSnapshot documentSnapshot = snapshot.Documents.FirstOrDefault();
                 DocumentReference documentReference = documentSnapshot.Reference;
 
-                // Belge varsa, alt koleksiyon olan GameDatas'ta tabloyu bul ve güncelle
+                // Belge varsa, alt koleksiyon olan GameDatas'ta tabloyu bul ve gï¿½ncelle
                 CollectionReference gameDatasRef = documentReference.Collection("GameDatas");
 
                 QuerySnapshot gameDataSnapshot = await gameDatasRef.GetSnapshotAsync().WithCancellation(GameManager.instance.GetFirebaseToken().Token);
@@ -318,7 +318,7 @@ public class FirestoreManager : MonoBehaviour
         Debug.Log("_gameDataQuerySnapshot GetGameDataInDatabase method is starting.");
         try
         {
-            // Kullanýcýya ait belgeleri sorgula
+            // Kullanï¿½cï¿½ya ait belgeleri sorgula
             if (_gameDataQuerySnapshot == null)
             {
                 Debug.Log("_gameDataQuerySnapshot is null");
@@ -401,17 +401,17 @@ public class FirestoreManager : MonoBehaviour
                 userGameData.Add("WorkersInInventoryIDs", MuseumManager.instance.WorkersInInventory.Select(x => x.ID).ToList());
                 userGameData.Add("LastDailyRewardTime", MuseumManager.instance.lastDailyRewardTime.ToString("yyyy-MM-dd HH:mm:ss"));
                 userGameData.Add("WhatDay", TimeManager.instance.WhatDay);
-                userGameData.Add("RemoveAllAds", GoogleAdsManager.instance.adsData.RemovedAllAds);
+                userGameData.Add("RemoveAllAds", true);
                 Debug.Log("AddNewPlayerGameDataToDatabase method control 3");
                 //Achievements
-                userGameData.Add("PurchasedRoomCount", GPGamesManager.instance.achievementController.PurchasedRoomCount);
-                userGameData.Add("NumberOfTablesPlaced", GPGamesManager.instance.achievementController.NumberOfTablesPlaced);
-                userGameData.Add("NumberOfVisitors", GPGamesManager.instance.achievementController.NumberOfVisitors);
-                userGameData.Add("NumberOfStatuesPlaced", GPGamesManager.instance.achievementController.NumberOfStatuesPlaced);
-                userGameData.Add("TotalNumberOfMuseumVisitors", GPGamesManager.instance.achievementController.TotalNumberOfMuseumVisitors);
+                userGameData.Add("PurchasedRoomCount", 1);
+                userGameData.Add("NumberOfTablesPlaced", 1);
+                userGameData.Add("NumberOfVisitors", 1);
+                userGameData.Add("NumberOfStatuesPlaced", 1);
+                userGameData.Add("TotalNumberOfMuseumVisitors", 1);
                 Debug.Log("AddNewPlayerGameDataToDatabase method control 4");
-                userGameData.Add("TotalWorkerHiringCount", GPGamesManager.instance.achievementController.TotalWorkerHiringCount);
-                userGameData.Add("TotalWorkerAssignCount", GPGamesManager.instance.achievementController.TotalWorkerAssignCount);
+                userGameData.Add("TotalWorkerHiringCount", 1);
+                userGameData.Add("TotalWorkerAssignCount", 1);
                 Debug.Log("AddNewPlayerGameDataToDatabase method control 5");
                 //Achievements
                 userGameData.Add("Timestamp", FieldValue.ServerTimestamp);

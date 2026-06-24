@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Unity.Entities.UniversalDelegates;
+//using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 
 public class LanguageDatabase : MonoBehaviour
@@ -44,13 +44,13 @@ public class LanguageDatabase : MonoBehaviour
         TextAsset jsonAsset = Resources.Load<TextAsset>(filePath);
         if (jsonAsset != null)
         {
-            // JSON dosyasýný yükle.
+            // JSON dosyasï¿½nï¿½ yï¿½kle.
             Debug.Log("jsonAsset is not null. filePath => " + filePath);
             Language = JsonUtility.FromJson<MainLanguageData>(jsonAsset.text);
         }
         else
         {
-            // Dosya yoksa çeviri yap ve JSON dosyasýný oluþtur.
+            // Dosya yoksa ï¿½eviri yap ve JSON dosyasï¿½nï¿½ oluï¿½tur.
             Debug.Log("jsonAsset is null. filePath => " + filePath);
             await TranslateAndSaveLanguageData();
         }
@@ -172,7 +172,7 @@ public class LanguageDatabase : MonoBehaviour
 
         //Customization
         Language.customize_SelectedAnEquipmentStrings = new List<LanguageData> { new LanguageData(0, "Do you want to buy the item?"), new LanguageData(1, "Price") };
-        Language.customize_OnExitProcessStrings = new List<LanguageData> { new LanguageData(0, "Karakter Özelleþtirmesi"), new LanguageData(1, "Deðiþiklikleri onaylýyor musunuz?") };
+        Language.customize_OnExitProcessStrings = new List<LanguageData> { new LanguageData(0, "Karakter ï¿½zelleï¿½tirmesi"), new LanguageData(1, "Deï¿½iï¿½iklikleri onaylï¿½yor musunuz?") };
         //Customization
         //General
     }
@@ -722,21 +722,21 @@ public class LanguageDatabase : MonoBehaviour
         }
         //Customization
         //GeneralAdding
-        // JSON dosyasýný kaydet
+        // JSON dosyasï¿½nï¿½ kaydet
         string jsonString = JsonUtility.ToJson(Language);
-        string directoryPath = "Assets/Resources/Languages"; // Resources klasörü içindeki Languages klasörü
+        string directoryPath = "Assets/Resources/Languages"; // Resources klasï¿½rï¿½ iï¿½indeki Languages klasï¿½rï¿½
         string filePath = Path.Combine(directoryPath, $"Language_{GameManager.instance.GetLanguageShortString(GameManager.instance.GetGameLanguage())}.json");
 
-        // Dosya yolu var mý kontrol et, yoksa oluþtur
+        // Dosya yolu var mï¿½ kontrol et, yoksa oluï¿½tur
         if (!Directory.Exists(directoryPath))
         {
             Directory.CreateDirectory(directoryPath);
         }
 
-        // Dosyayý oluþtur ve içine yaz
+        // Dosyayï¿½ oluï¿½tur ve iï¿½ine yaz
         File.WriteAllText(filePath, jsonString);
 
-        Debug.Log("Çeviri ve kayýt iþlemi tamamlandý.");
+        Debug.Log("ï¿½eviri ve kayï¿½t iï¿½lemi tamamlandï¿½.");
         waitBeforeTranslate = false;
     }
     public async Task TranslateAndSaveAllLanguageData()
@@ -1348,25 +1348,25 @@ public class LanguageDatabase : MonoBehaviour
                     Language.customize_OnExitProcessStrings[i] = new LanguageData(currentData.TargetID, Language.customize_OnExitProcessStrings[i].Key, currentData.Key);
                 }
 
-                // JSON dosyasýný kaydet
+                // JSON dosyasï¿½nï¿½ kaydet
                 Debug.LogWarning("Language Localization Test 1");
                 string jsonString = JsonUtility.ToJson(Language);
-                string directoryPath = "Assets/Resources/Languages"; // Resources klasörü içindeki Languages klasörü
+                string directoryPath = "Assets/Resources/Languages"; // Resources klasï¿½rï¿½ iï¿½indeki Languages klasï¿½rï¿½
                 string filePath = Path.Combine(directoryPath, $"Language_{GameManager.instance.GetLanguageShortString(GetEnumDescription(language))}.json");
                 Debug.LogWarning("Language Localization Test 2");
-                // Dosya yolu var mý kontrol et, yoksa oluþtur
+                // Dosya yolu var mï¿½ kontrol et, yoksa oluï¿½tur
                 if (!Directory.Exists(directoryPath))
                 {
                     Directory.CreateDirectory(directoryPath);
                 }
                 Debug.LogWarning("Language Localization Test 3");
-                // Dosyayý oluþtur ve içine yaz
+                // Dosyayï¿½ oluï¿½tur ve iï¿½ine yaz
                 File.WriteAllText(filePath, jsonString);
                 Debug.LogWarning("Language Localization Test 4");
             }
 
 
-            Debug.Log("Çeviri ve kayýt iþlemi tamamlandý.");
+            Debug.Log("ï¿½eviri ve kayï¿½t iï¿½lemi tamamlandï¿½.");
             waitBeforeTranslate = false;
         }
         catch (Exception _ex)

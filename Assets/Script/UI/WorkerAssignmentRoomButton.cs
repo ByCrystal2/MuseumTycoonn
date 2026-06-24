@@ -32,7 +32,7 @@ public class WorkerAssignmentRoomButton : MonoBehaviour,IPointerClickHandler
         {
             WorkerBehaviour currentBehaviour = WorkerManager.instance.GetAllWorkers().Where(x => x.ID == CurrentWorkerID).SingleOrDefault();
             Worker currentWorker = currentBehaviour.MyScript;
-            GPGamesManager.instance.achievementController.IncreaseWorkerAssignCount(currentWorker.WorkerType);
+            //GPGamesManager.instance.achievementController.IncreaseWorkerAssignCount(currentWorker.WorkerType);
             WorkerData currentWorkerData = currentBehaviour.MyDatas;
             currentWorkerData.WorkRoomsIDs.Add(CurrentRoomID);
             currentWorker.IWorkRoomsIDs.Add(CurrentRoomID);

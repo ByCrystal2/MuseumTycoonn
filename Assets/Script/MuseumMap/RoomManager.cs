@@ -45,7 +45,7 @@ public partial class RoomManager : MonoBehaviour
     }
     public void BuyTheRoom(RoomData currentRoom)
     {
-        Debug.Log("Kapý kilidine týklandý/dokunuldu.");      
+        Debug.Log("Kapï¿½ kilidine tï¿½klandï¿½/dokunuldu.");      
         currentRoomID = currentRoom.ID;
 
         PnlBuyRoom.SetActive(false);
@@ -101,12 +101,12 @@ public partial class RoomManager : MonoBehaviour
                 MuseumManager.instance.SpendingGem(purchasedRoom.RequiredMoney);
                 GameManager.instance.Save();
 
-                GoogleAdsManager.instance.ShowInterstitialAd();
+                //GoogleAdsManager.instance.ShowInterstitialAd();
             }
             else
             {
                 UIController.instance.InsufficientGemEffect();
-                Debug.Log(purchasedRoom.availableRoomCell.CellLetter + purchasedRoom.availableRoomCell.CellNumber + "  Numaralý Odayý Satýn Almaya Paran Yetmedi.");
+                Debug.Log(purchasedRoom.availableRoomCell.CellLetter + purchasedRoom.availableRoomCell.CellNumber + "  Numaralï¿½ Odayï¿½ Satï¿½n Almaya Paran Yetmedi.");
             }
         }
         else if (purchasedRoom.CurrentShoppingType == ShoppingType.Gold)
@@ -116,19 +116,19 @@ public partial class RoomManager : MonoBehaviour
                 RoomsActivationAndPurchasedControl(purchasedRoom, roomDatas);
                 MuseumManager.instance.SpendingGold(purchasedRoom.RequiredMoney);
                 GameManager.instance.Save();
-                GoogleAdsManager.instance.ShowInterstitialAd();
+                //GoogleAdsManager.instance.ShowInterstitialAd();
             }
             else
             {
                 UIController.instance.InsufficientGoldEffect();
-                Debug.Log(purchasedRoom.availableRoomCell.CellLetter +""+ purchasedRoom.availableRoomCell.CellNumber + "  Numaralý Odayý Satýn Almaya Paran Yetmedi.");
+                Debug.Log(purchasedRoom.availableRoomCell.CellLetter +""+ purchasedRoom.availableRoomCell.CellNumber + "  Numaralï¿½ Odayï¿½ Satï¿½n Almaya Paran Yetmedi.");
             }
         }
         else if (purchasedRoom.CurrentShoppingType == ShoppingType.RealMoney)
         {
             // Gercek Parayla satin alinan oda islemleri...
             //BuyingConsumables.instance.BuyItemFromStore(purchasedRoom);
-            GoogleAdsManager.instance.ShowInterstitialAd();
+            //GoogleAdsManager.instance.ShowInterstitialAd();
         }
     }
 
@@ -147,7 +147,7 @@ public partial class RoomManager : MonoBehaviour
         purchasedRoom.isLock = false;
         purchasedRoom.isActive = true;
         purchasedRoom.IsPurchased(true);
-        GPGamesManager.instance.achievementController.IncreasePurchasedRoomCount();
+        //GPGamesManager.instance.achievementController.IncreasePurchasedRoomCount();
         RoomUIHandler _purchasedHandler= UIController.instance.roomUISPanelController.GetRoomUI(purchasedRoom.availableRoomCell);
         _purchasedHandler.UpdateMyUI();
         int purchasedRoomCellNumber = purchasedRoom.availableRoomCell.CellNumber;
@@ -156,13 +156,13 @@ public partial class RoomManager : MonoBehaviour
         List<RoomData> _CellCodeRooms = roomDatas.Where(x => x.availableRoomCell.CellLetter == purchasedRoom.availableRoomCell.CellLetter || ((int)x.availableRoomCell.CellLetter) == ((int)purchasedRoom.availableRoomCell.CellLetter) + 1 || ((int)x.availableRoomCell.CellLetter) == ((int)purchasedRoom.availableRoomCell.CellLetter) - 1).ToList();
 
         
-        // A odalarý B Odalarý ve C Odalarý
+        // A odalarï¿½ B Odalarï¿½ ve C Odalarï¿½
         foreach (var currentRoom in _CellCodeRooms) //A1
         {
             int currentRoomCellNumber = currentRoom.availableRoomCell.CellNumber;
             int currentRoomCellLetter = ((int)currentRoom.availableRoomCell.CellLetter);
             
-            //Mevcut odamýz B3 diye düþünelim.
+            //Mevcut odamï¿½z B3 diye dï¿½ï¿½ï¿½nelim.
             if (!currentRoom.isActive && currentRoom.isLock)
             {
                 if ((currentRoomCellLetter == purchasedRoomCellLetter && currentRoomCellNumber == purchasedRoomCellNumber - 1) /* Mevcut Oda B3 ise */ || (currentRoomCellLetter == purchasedRoomCellLetter && currentRoomCellNumber == purchasedRoomCellNumber + 1) /* Mevcut Oda B5 ise */  || (currentRoomCellLetter == purchasedRoomCellLetter - 1 && currentRoomCellNumber == purchasedRoomCellNumber) /* Mevcut Oda A4 ise */  || (currentRoomCellLetter == purchasedRoomCellLetter + 1 && currentRoomCellNumber == purchasedRoomCellNumber) /* Mevcut Oda C4 ise */)
@@ -208,7 +208,7 @@ public partial class RoomManager : MonoBehaviour
 
         FirestoreManager.instance.roomDatasHandler.AddRoomsWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, forDatabaseRoomDatas);
 
-        GPGamesManager.instance.achievementController.PurchasedRoomControl();
+        //GPGamesManager.instance.achievementController.PurchasedRoomControl();
     }
 
     
@@ -223,16 +223,16 @@ public partial class RoomManager : MonoBehaviour
             if (multipleRooms)
             {
                 // Birden fazla oda var
-                _exMessage =  room.ID + " Bu ID'den Birden fazla oda mevcut. Bu odalar þunlardýr: ";
+                _exMessage =  room.ID + " Bu ID'den Birden fazla oda mevcut. Bu odalar ï¿½unlardï¿½r: ";
                 RoomData currentRoom = room;//A2
                 List<RoomCell> roomCodes = _roomDatas.Where(x => x.ID == roomId).Select(x=> x.availableRoomCell).ToList(); // RoomCell listesi at.
-                // Bütün odalarýmýzýn bulunduðu roomdatas listesinde, mevcut odamýzýn id'si ile eþleþen odalarýn RoomCell'ini listeledik ve RoomCell tipinde ki roomCodes adlý Listeye aktardýk.          
+                // Bï¿½tï¿½n odalarï¿½mï¿½zï¿½n bulunduï¿½u roomdatas listesinde, mevcut odamï¿½zï¿½n id'si ile eï¿½leï¿½en odalarï¿½n RoomCell'ini listeledik ve RoomCell tipinde ki roomCodes adlï¿½ Listeye aktardï¿½k.          
                 
                 
-                foreach (RoomCell roomCode in roomCodes) // örn: 3 adet roomCode var.
+                foreach (RoomCell roomCode in roomCodes) // ï¿½rn: 3 adet roomCode var.
                 {
                     
-                    _exMessage += (" " + roomCode.CellLetter + roomCode.CellNumber + " Kodlu Oda.").ToString(); //  room.ID + " Bu ID'den Birden fazla oda mevcut. Bu odalar þunlardýr: A1 Kodlu Oda. A2 Kodlu Oda. A3 Kodlu Oda."
+                    _exMessage += (" " + roomCode.CellLetter + roomCode.CellNumber + " Kodlu Oda.").ToString(); //  room.ID + " Bu ID'den Birden fazla oda mevcut. Bu odalar ï¿½unlardï¿½r: A1 Kodlu Oda. A2 Kodlu Oda. A3 Kodlu Oda."
                 }
                 
                 return false;
@@ -246,8 +246,8 @@ public partial class RoomManager : MonoBehaviour
         }
         else
         {
-            // Belirtilen ID'ye sahip oda bulunamadý
-            _exMessage = "Belirtilen ID'ye sahip oda bulunamadý";
+            // Belirtilen ID'ye sahip oda bulunamadï¿½
+            _exMessage = "Belirtilen ID'ye sahip oda bulunamadï¿½";
             return false;
         }
     }
@@ -375,7 +375,7 @@ public partial class RoomManager // Room Bonus Controller
     {
         pe.UpdateVisual(true);
 
-        // Coroutine'in tamamlanmasýný bekleyin
+        // Coroutine'in tamamlanmasï¿½nï¿½ bekleyin
         yield return StartCoroutine(pe.IEUpdateVisual(true));
 
         if (!_room.isLock && pe._pictureData.TextureID > 0)
