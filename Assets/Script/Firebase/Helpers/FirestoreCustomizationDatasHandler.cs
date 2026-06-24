@@ -5,7 +5,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TouchScript.Examples.Colors;
 using UnityEngine;
 
 public class FirestoreCustomizationDatasHandler : MonoBehaviour
@@ -33,7 +32,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
 
     public async Task AddCustomizationDataWithUserId(string userId, CharacterCustomizeData _customizeData, bool _multiSlotSave = false, int _overrideSlotId = -1)
     {
-        // Kullanýcý ID'si ile belgeyi sorgula
+        // Kullanï¿½cï¿½ ID'si ile belgeyi sorgula
         if (GameManager.instance != null) if (!GameManager.instance.IsWatchTutorial) return;
         Query query = db.Collection("Customizations").WhereEqualTo("userID", userId);
 
@@ -177,7 +176,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
     {
         try
         {
-            // Alt koleksiyon olan PictureDatas'ý sorgula
+            // Alt koleksiyon olan PictureDatas'ï¿½ sorgula
             CollectionReference customizeDatasRef = documentReference.Collection("CustomizationDatas");            
             int currentSlotId = _overrideSlotId == -1 ? _customizeData.playerCustomizeData.selectedCustomizeSlot : _overrideSlotId;
             Query query = customizeDatasRef.WhereEqualTo("SlotNumber", currentSlotId);
@@ -203,7 +202,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                         List<Color> colors = selectedCustomizeSlotData.Colors;
                         foreach (Color color in colors)
                         {
-                            // Her bir rengi RGB deðerleriyle bir dictionary olarak kaydediyoruz
+                            // Her bir rengi RGB deï¿½erleriyle bir dictionary olarak kaydediyoruz
                             var colorData = new Dictionary<string, float>
                         {
                             { "red", color.r },
@@ -287,7 +286,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
     {
         try
         {
-            // Alt koleksiyon olan PictureDatas'ý sorgula
+            // Alt koleksiyon olan PictureDatas'ï¿½ sorgula
             CollectionReference customizeDatasRef = documentReference.Collection("CustomizationDatas");
             int length = 1;
             if (_multiSlotSave) length = _customizeData.playerCustomizeData.AllCustomizeData.Count;
@@ -319,7 +318,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                             List<Color> colors = selectedCustomizeSlotData.Colors;
                             foreach (Color color in colors)
                             {
-                                // Her bir rengi RGB deðerleriyle bir dictionary olarak kaydediyoruz
+                                // Her bir rengi RGB deï¿½erleriyle bir dictionary olarak kaydediyoruz
                                 var colorData = new Dictionary<string, float>
                             {
                             { "red", color.r },
@@ -448,17 +447,17 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                                 List<Color> colors = new List<Color>();
                                 foreach (var colorDataObj in colorDataList)
                                 {
-                                    // Her bir renk dictionary'sini alýyoruz
+                                    // Her bir renk dictionary'sini alï¿½yoruz
                                     Dictionary<string, object> colorData = colorDataObj as Dictionary<string, object>;
 
                                     if (colorData != null)
                                     {
-                                        // Dictionary içinden RGB deðerlerini alýyoruz
+                                        // Dictionary iï¿½inden RGB deï¿½erlerini alï¿½yoruz
                                         float red = Convert.ToSingle(colorData["red"]);
                                         float green = Convert.ToSingle(colorData["green"]);
                                         float blue = Convert.ToSingle(colorData["blue"]);
 
-                                        // Yeni Color objesi oluþturuyoruz
+                                        // Yeni Color objesi oluï¿½turuyoruz
                                         Color color = new Color(red, green, blue);
                                         colors.Add(color);
                                     }
@@ -527,7 +526,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
     {
         if (GameManager.instance != null && !GameManager.instance.IsWatchTutorial) return;
 
-        // Kullanýcý ID'si ile belgeyi sorgula
+        // Kullanï¿½cï¿½ ID'si ile belgeyi sorgula
         Query query = db.Collection("Customizations").WhereEqualTo("userID", userId);
 
         query.GetSnapshotAsync().ContinueWithOnMainThread(task =>
@@ -540,7 +539,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                     DocumentSnapshot documentSnapshot = snapshot.Documents.FirstOrDefault();
                     DocumentReference documentReference = documentSnapshot.Reference;
 
-                    // Belgeyi bulduysak alt koleksiyon olan CustomizationDatas'ta tabloyu bul ve güncelle
+                    // Belgeyi bulduysak alt koleksiyon olan CustomizationDatas'ta tabloyu bul ve gï¿½ncelle
                     UpdateCustomizationDatas(documentReference, _customizeData, _overrideSlotId);
                 }
                 else
@@ -599,7 +598,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                 List<Color> colors = playerExtraCustomizeDatas.Colors;
                 foreach (Color color in colors)
                 {
-                    // Her bir rengi RGB deðerleriyle bir dictionary olarak kaydediyoruz
+                    // Her bir rengi RGB deï¿½erleriyle bir dictionary olarak kaydediyoruz
                     var colorData = new Dictionary<string, float>
                 {
                     { "red", color.r },
@@ -656,7 +655,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
 
                     if (snapshot.Documents.Count() > 0)
                     {
-                        // Mevcut elemanlarý guncelle
+                        // Mevcut elemanlarï¿½ guncelle
                         DocumentSnapshot elementDocSnap = snapshot.Documents.FirstOrDefault();
                         DocumentReference elementRef = elementDocSnap.Reference;
 
@@ -678,7 +677,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                                 {
                                     Debug.Log($"Element updated successfully: {elementRef.Id}");
 
-                                    // ElementID'yi iþlenmiþ olarak ekleyelim, böylece ayný element tekrar iþlenmez
+                                    // ElementID'yi iï¿½lenmiï¿½ olarak ekleyelim, bï¿½ylece aynï¿½ element tekrar iï¿½lenmez
                                     processedElementIDs.Add(element.elementID);
                                 }
                                 else
@@ -692,7 +691,7 @@ public class FirestoreCustomizationDatasHandler : MonoBehaviour
                     }
                     else
                     {
-                        // Eleman bulunamadýysa yeni eleman olarak ekle
+                        // Eleman bulunamadï¿½ysa yeni eleman olarak ekle
                         Debug.Log($"No element found with elementID: {element.elementID}, adding as new.");
                     }
                 }

@@ -403,10 +403,10 @@ public class UIController : MonoBehaviour
     public void ShowTab(int tabIndex)
     {
         StopCoroutine("SetActiveFalseWaiter");
-        // Belirtilen sekme içeriðini etkinleþtir.
+        // Belirtilen sekme iï¿½eriï¿½ini etkinleï¿½tir.
         Debug.Log(tabIndex);
         tabContents[tabIndex].SetActive(true);
-        // Diðer sekmelerin içeriðini devre dýþý býrak.
+        // Diï¿½er sekmelerin iï¿½eriï¿½ini devre dï¿½ï¿½ï¿½ bï¿½rak.
         for (int i = 0; i < tabContents.Length; i++)
         {
             if (i != tabIndex)
@@ -462,7 +462,7 @@ public class UIController : MonoBehaviour
 
         }
 
-        // Belirtilen sekme düðmesini vurgula, diðerlerini vurgulamayý kaldýr.
+        // Belirtilen sekme dï¿½ï¿½mesini vurgula, diï¿½erlerini vurgulamayï¿½ kaldï¿½r.
         for (int i = 0; i < tabButtons.Length; i++)
         {
             if (i == tabIndex)
@@ -501,7 +501,7 @@ public class UIController : MonoBehaviour
             }
         }
 
-        currentTab = tabIndex;  // Þu anki sekme indeksi güncelle.
+        currentTab = tabIndex;  // ï¿½u anki sekme indeksi gï¿½ncelle.
     }
     public void ShowSkillInfo(int _id) // Skill Buttons
     {
@@ -523,7 +523,7 @@ public class UIController : MonoBehaviour
             }            
             
 
-            // Pozisyonu belirlemek için bir switch-case yapýsý kullan
+            // Pozisyonu belirlemek iï¿½in bir switch-case yapï¿½sï¿½ kullan
             skillInfoPanel.transform.position = baseSkillOptions.transform.position;
             RectTransform panelRectTransform = skillInfoPanel.GetComponent<RectTransform>();
 
@@ -533,22 +533,22 @@ public class UIController : MonoBehaviour
             int pointerIndex = 0;
             switch ((BaseSkillOptions.SkillPoint)point)
             {
-                case BaseSkillOptions.SkillPoint.Point1: // Sol üst köþe
+                case BaseSkillOptions.SkillPoint.Point1: // Sol ï¿½st kï¿½ï¿½e
                     panelRectTransform.pivot = new Vector2(1, 0);
                     pointerIndex = 3;
                     break;
-                case BaseSkillOptions.SkillPoint.Point2: // Sað üst köþe
+                case BaseSkillOptions.SkillPoint.Point2: // Saï¿½ ï¿½st kï¿½ï¿½e
                     panelRectTransform.pivot = new Vector2(0, 0);
                     pointerIndex = 2;
                     break;
-                case BaseSkillOptions.SkillPoint.Point3: // Sol alt köþe
+                case BaseSkillOptions.SkillPoint.Point3: // Sol alt kï¿½ï¿½e
                     panelRectTransform.pivot = new Vector2(1, 1);
                     pointerIndex = 1;
                     Vector3 oldSkillRequierdPanelPos1 = SkillRequiredInfoPanel.transform.position;
                     Vector3 newSkillRequierdPanelPos1 = new Vector3(SubPanelLocations[1].position.x, oldSkillRequierdPanelPos1.y);
                     SkillRequiredInfoPanel.transform.position = newSkillRequierdPanelPos1;
                     break;
-                case BaseSkillOptions.SkillPoint.Point4: // Sað alt köþe
+                case BaseSkillOptions.SkillPoint.Point4: // Saï¿½ alt kï¿½ï¿½e
                     panelRectTransform.pivot = new Vector2(0, 1);
                     pointerIndex = 0;
                     break;
@@ -571,7 +571,7 @@ public class UIController : MonoBehaviour
         }
 
         SkillTreeManager.instance.CalculateForCurrentSkillEnoughLevelAndMoney(selectedSkill);
-        // Kilidi açýlabilir veya açýlamazsa düðmeyi güncelle
+        // Kilidi aï¿½ï¿½labilir veya aï¿½ï¿½lamazsa dï¿½ï¿½meyi gï¿½ncelle
         skillInfoPanel.SetActive(true);
         if (selectedSkill.IsPurchased && selectedSkill.SkillCurrentLevel == selectedSkill.SkillMaxLevel)
         {
@@ -652,7 +652,7 @@ public class UIController : MonoBehaviour
         }
 
         SkillTreeManager.instance.CalculateForCurrentSkillEnoughLevelAndMoney(selectedSkill);
-        // Kilidi açýlabilir veya açýlamazsa düðmeyi güncelle
+        // Kilidi aï¿½ï¿½labilir veya aï¿½ï¿½lamazsa dï¿½ï¿½meyi gï¿½ncelle
         skillInfoPanel.SetActive(true);
         if (selectedSkill.IsPurchased && selectedSkill.SkillCurrentLevel == selectedSkill.SkillMaxLevel)
         {
@@ -700,7 +700,7 @@ public class UIController : MonoBehaviour
 
 
 
-                Debug.Log($"Skill => {currentSkill.SkillName} Yetenek leveli => {currentSkill.SkillCurrentLevel} Yetenek Puaný => {currentSkill.SkillRequiredPoint}");
+                Debug.Log($"Skill => {currentSkill.SkillName} Yetenek leveli => {currentSkill.SkillCurrentLevel} Yetenek Puanï¿½ => {currentSkill.SkillRequiredPoint}");
 
 
                 if (currentSkill.SkillCurrentLevel > currentSkill.SkillMaxLevel)
@@ -718,7 +718,7 @@ public class UIController : MonoBehaviour
                 FirestoreManager.instance.skillDatasHandler.AddSkillWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, currentSkill);
 
                 SkillTreeManager.instance.RefreshSkillBonuses();
-                GoogleAdsManager.instance.ShowInterstitialAd();
+                //GoogleAdsManager.instance.ShowInterstitialAd();
             }
             else
             {
@@ -903,7 +903,7 @@ public class UIController : MonoBehaviour
             }
             else
             {
-                Debug.LogError("Geçersiz hexadecimal renk kodu: " + hexColor);
+                Debug.LogError("Geï¿½ersiz hexadecimal renk kodu: " + hexColor);
             }
 
             GoldText.transform.localPosition = defaultGoldTextPos;
@@ -926,7 +926,7 @@ public class UIController : MonoBehaviour
             }
             else
             {
-                Debug.LogError("Geçersiz hexadecimal renk kodu: " + hexColor);
+                Debug.LogError("Geï¿½ersiz hexadecimal renk kodu: " + hexColor);
             }
             GemText.transform.localPosition = defaultGemTextPos;
         });
@@ -1092,7 +1092,7 @@ public class UIController : MonoBehaviour
     }
     public void ActiveInHierarchyDailyRewardPanelControl()
     {
-        GoogleAdsManager.instance.ShowInterstitialAd();
+        //GoogleAdsManager.instance.ShowInterstitialAd();
         if (!dailyRewardActive)
         {
             GeneralButtonActivation(true, DailyRewardPanelOnButton);
@@ -1528,18 +1528,18 @@ public class UIController : MonoBehaviour
     {
         if (_newSpider != null)
         {
-            // Ýlk pozisyon
+            // ï¿½lk pozisyon
             Vector3 startPos = spiderOffset;
 
-            // Ýlk sallama konumu
+            // ï¿½lk sallama konumu
             Vector3 midPos = startPos + new Vector3(0, -500, 0) * swingHeight;
             Vector3 endPos = midPos + new Vector3(0, 100, 0);
 
-            // Ýlk sallama
+            // ï¿½lk sallama
             spiderTween = _newSpider.transform.DOMove(midPos, swingDuration / 2).SetEase(Ease.InOutQuad)
             .OnComplete(() =>
             {
-                // Ýkinci sallama ve baþlangýç konumuna dönme
+                // ï¿½kinci sallama ve baï¿½langï¿½ï¿½ konumuna dï¿½nme
                 spiderTween2 = _newSpider.transform.DOMove(endPos, swingDuration / 2).SetEase(Ease.InOutQuad);
             }); ;
         }

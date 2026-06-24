@@ -48,7 +48,7 @@ public class WorkerAssignmentRoomButton : MonoBehaviour,IPointerClickHandler
 
             FirestoreManager.instance.workerDatasHandler.AddWorkerWithUserId(FirebaseAuthManager.instance.GetCurrentUserWithID().UserID, currentBehaviour.MyDatas);
 
-            GPGamesManager.instance.achievementController.WorkerAssignControl(currentWorker.WorkerType);
+            //GPGamesManager.instance.achievementController.WorkerAssignControl(currentWorker.WorkerType);
             //GameManager.instance.Save();
         }
     }
