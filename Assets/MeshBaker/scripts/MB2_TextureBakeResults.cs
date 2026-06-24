@@ -331,9 +331,10 @@ public class MB_MaterialAndUVRect
     }
 
     public override int GetHashCode()
-    {
-        return material.GetInstanceID() ^ allPropsUseSameTiling_samplingEncapsulatinRect.GetHashCode() ^ propsUseDifferntTiling_srcUVsamplingRect.GetHashCode();
-    }
+{
+    // material.GetInstanceID() yerine material.GetEntityId().GetHashCode() kullanıyoruz
+    return material.GetEntityId().GetHashCode() ^ allPropsUseSameTiling_samplingEncapsulatinRect.GetHashCode() ^ propsUseDifferntTiling_srcUVsamplingRect.GetHashCode();
+}
 
     public override bool Equals(object obj)
     {
